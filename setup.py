@@ -2,28 +2,32 @@ import os
 import sys
 import glob
 import shutil
-from setuptools import setup,Command
+from setuptools import setup, Command
 from setuptools.command.test import test as TestCommand
 from pytest_ansible import __version__, __author__, __author_email__
 
-default_args = '-v --tb=native'
 
 
 class PyTest(TestCommand):
     def finalize_options(self):
         TestCommand.finalize_options(self)
         self.test_suite = True
-        self.test_args = os.environ.get('PY_ARGS', default_args)
+        # self.test_args = '--tb=native --ansible-host-pattern localhost --ansible-inventory inventory'
+        self.test_args = '--tb=native --ansible-inventory inventory'
 
-        if os.environ.has_key('PY_KEYWORDEXPR'):
+        if self.verbose:
+            self.test_args += ' -v'
+
+        if 'PY_ARGS' in os.environ:
+            self.test_args += ' ' + os.environ.get('PY_ARGS')
+
+        if 'PK_KEYWORDEXPR' in os.environ:
             self.test_args += ' -k "%s"' % os.environ.get('PY_KEYWORDEXPR')
 
-        self.test_args += " %s" % os.environ.get('PY_TESTS', 'test_pytest_ansible.py')
-
     def run_tests(self):
-        #import here, cause outside the eggs aren't loaded elsewhere
+        # import here, cause outside the eggs aren't loaded elsewhere
         import pytest
-        print "Running: pytest %s" % self.test_args
+        print "Running: py.test %s" % self.test_args
         sys.path.insert(0, 'lib')
         pytest.main(self.test_args)
 
@@ -31,10 +35,13 @@ class PyTest(TestCommand):
 class CleanCommand(Command):
     description = "Custom clean command that forcefully removes dist/build directories"
     user_options = []
+
     def initialize_options(self):
         self.cwd = None
+
     def finalize_options(self):
         self.cwd = os.getcwd()
+
     def run(self):
         assert os.getcwd() == self.cwd, 'Must be in package root: %s' % self.cwd
 
@@ -50,17 +57,19 @@ class CleanCommand(Command):
                 rm_list.append(root)
 
         # Find egg's
-        for egg_dir in glob.glob('*.egg') + \
-                       glob.glob('*egg-info'):
+        for egg_dir in glob.glob('*.egg') + glob.glob('*egg-info'):
             rm_list.append(egg_dir)
 
         # Zap!
         for rm in rm_list:
-            if self.verbose: print "Removing '%s'" % rm
+            if self.verbose:
+                print "Removing '%s'" % rm
             if os.path.isdir(rm):
-                if not self.dry_run: shutil.rmtree(rm)
+                if not self.dry_run:
+                    shutil.rmtree(rm)
             else:
-                if not self.dry_run: os.remove(rm)
+                if not self.dry_run:
+                    os.remove(rm)
 
 
 setup(
@@ -68,19 +77,25 @@ setup(
     version=__version__,
     description=__doc__,
     long_description=open('README.md').read(),
-    license='GPL',
+    license='MIT',
+    keywords='py.test pytest ansible',
     author=__author__,
     author_email=__author_email__,
     url='http://github.com/jlaska/pytest-ansible',
     platforms=['linux', 'osx', 'win32'],
     py_modules=['pytest_ansible'],
-    entry_points = {'pytest11': ['pytest_ansible = pytest_ansible'],},
+    entry_points={
+        'pytest11': [
+            'pytest_ansible = pytest_ansible'
+        ],
+    },
     zip_safe=False,
-    install_requires = ['ansible', 'pytest>=2.2.4'],
-    cmdclass = {'test': PyTest,
-                'clean': CleanCommand,
-                # 'build_sphinx': BuildSphinx},
-               },
+    install_requires=['ansible', 'pytest>=2.2.4'],
+    cmdclass={
+        'test': PyTest,
+        'clean': CleanCommand,
+        # 'build_sphinx': BuildSphinx},
+    },
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',

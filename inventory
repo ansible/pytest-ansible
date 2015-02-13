@@ -1,0 +1,8 @@
+[local]
+localhost ansible_connection=local ansible_python_interpreter='/usr/bin/env python'
+
+[local_ips]
+127.0.0.1 ansible_connection=local ansible_python_interpreter='/usr/bin/env python'
+127.0.0.2 ansible_connection=local ansible_python_interpreter='/usr/bin/env python'
+127.0.0.3 ansible_connection=local ansible_python_interpreter='/usr/bin/env python'
+127.0.0.4 ansible_connection=local ansible_python_interpreter='/usr/bin/env python'
