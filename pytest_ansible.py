@@ -1,3 +1,7 @@
+'''
+A pytest plugin to allow running ansible modules
+'''
+
 import os
 import py
 import pytest
