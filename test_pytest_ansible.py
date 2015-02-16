@@ -19,6 +19,19 @@ def test_module_ping_no_limit(ansible_module):
         assert 'module_name' in host['invocation']
         assert 'ping' == host['invocation']['module_name']
 
+@pytest.mark.ansible(inventory='local,')
+def test_module_ping_with_local_inventory(ansible_module):
+    '''Verify the ansible ping module while specifying a inventory:local,
+    '''
+    result = ansible_module.ping()
+    print json.dumps(result, indent=2)
+    assert len(result) == 1
+    for host in result.values():
+        assert 'failed' not in host
+        assert 'invocation' in host
+        assert 'module_name' in host['invocation']
+        assert 'ping' == host['invocation']['module_name']
+
 @pytest.mark.ansible(host_pattern='all')
 def test_module_ping_with_limit_all(ansible_module):
     '''Verify the ansible ping module while specifying a host_pattern:all
