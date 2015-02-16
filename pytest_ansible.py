@@ -23,6 +23,12 @@ class AnsibleNoHostsMatch(ansible.errors.AnsibleError):
     pass
 
 
+class AnsibleHostUnreachable(ansible.errors.AnsibleError):
+    def __init__(self, msg, result=None):
+        super(AnsibleHostUnreachable, self).__init__(msg)
+        self.result = result
+
+
 def pytest_addoption(parser):
     '''Add options to control ansible.'''
 
@@ -42,6 +48,11 @@ def pytest_addoption(parser):
                     default='all',
                     metavar='ANSIBLE_HOST_PATTERN',
                     help='ansible host pattern (default: %default)')
+    group.addoption('--ansible-connection',
+                    action='store',
+                    dest='ansible_connection',
+                    default=ansible.constants.DEFAULT_TRANSPORT,
+                    help="connection type to use (default: %default)")
     group.addoption('--ansible-user',
                     action='store',
                     dest='ansible_user',
@@ -138,16 +149,29 @@ class AnsibleModule(object):
     results = aw.git(repo='https://github.com/ansible/ansible.git', dest='/tmp/ansible')
     '''
 
-    def __init__(self, inventory, pattern, **kwargs):
-        self.inventory = inventory
-        self.pattern = pattern
-        self.options = kwargs
+    def __init__(self, **kwargs):
         self.module_name = None
+        self.options = kwargs
+        self.inventory = None
+        self.pattern = None
+
+        assert 'inventory' in self.options, "Missing required keyword argument 'inventory'"
+        self.inventory = self.options.get('inventory')
+        assert 'host_pattern' in self.options, "Missing required keyword argument 'host_pattern'"
+        self.pattern = self.options.get('host_pattern')
+
+        # Initialize ansible inventory manage
+        self.inventory_manager = ansible.inventory.Inventory(self.inventory)
 
     def __getattr__(self, name):
         self.module_name = name
-        return self.__run
+        log.debug("__getattr__(%s)" % name)
+        log.debug("dict: %s" % self.__dict__)
+        if name in self.__dict__:
+            log.debug("__getattr__(%s) returning builtin" % name)
+            return self.__dict__[name]
 
+        return self.__run
         # try:
         #     return self.__run
         # except ansible.errors.AnsibleConnectionFailed, e:
@@ -158,8 +182,6 @@ class AnsibleModule(object):
         '''
         The API provided by ansible is not intended as a public API.
         '''
-        # Initialize ansible inventory manage
-        inventory_manager = ansible.inventory.Inventory(self.inventory)
 
         # Assemble module argument string
         module_args = list()
@@ -168,8 +190,7 @@ class AnsibleModule(object):
         module_args = ' '.join(module_args)
 
         # Assert hosts matching the provided pattern exist
-        log.debug("inventory_manager.list_hosts(%s)" % self.pattern)
-        hosts = inventory_manager.list_hosts(self.pattern)
+        hosts = self.inventory_manager.list_hosts(self.pattern)
         if len(hosts) == 0:
             raise AnsibleNoHostsMatch("No hosts match:'%s'" % self.pattern)
 
@@ -178,9 +199,10 @@ class AnsibleModule(object):
 
         # Build module runner object
         runner = ansible.runner.Runner(
-            inventory=inventory_manager,
+            inventory=self.inventory_manager,
             pattern=self.pattern,
             module_name=self.module_name,
+            transport=self.options.get('connection'),
             module_args=module_args,
             complex_args=kwargs,
             sudo=self.options.get('sudo'),
@@ -202,18 +224,15 @@ class AnsibleModule(object):
         # Raise exception if host(s) unreachable
         # FIXME - if multiple hosts were involved, should an exception be raised?
         if results['dark']:
-            raise ansible.errors.AnsibleConnectionFailed("Host unreachable: %s" % json.dumps(results['dark'], indent=2))
+            raise AnsibleHostUnreachable("Host unreachable", results)
 
         # No hosts contacted
-        if not results['contacted']:
-            raise ansible.errors.AnsibleConnectionFailed("Provided hosts list is empty")
-
-        # No matching host contacted
-        if self.pattern not in inventory_manager.groups_list() and self.pattern not in results['contacted']:
-            raise AnsibleNoHostsMatch("No hosts match:'%s'" % self.pattern)
+        # if not results['contacted']:
+        #     raise ansible.errors.AnsibleConnectionFailed("Provided hosts list is empty")
 
         # Success!
-        return results['contacted']
+        return results
+        # return results['contacted']
         # return results['contacted'][self.pattern]
 
 
@@ -224,30 +243,32 @@ def ansible_module(request):
     '''
 
     # Grab options from command-line
-    inventory = request.config.getvalue('ansible_inventory')
-    host_pattern = request.config.getvalue('ansible_host_pattern')
-    sudo = request.config.getvalue('ansible_sudo')
-    sudo_user = request.config.getvalue('ansible_sudo_user')
+    kwargs = dict()
+    kwfields = ('ansible_inventory', 'ansible_host_pattern',
+                'ansible_connection', 'ansible_user', 'ansible_sudo', 'ansible_sudo_user')
+    for key in kwfields:
+        short_key = key[8:]
+        kwargs[short_key] = request.config.getvalue(key)
 
     # Override options from @pytest.mark.ansible
     ansible_args = getattr(request.function, 'ansible', None)
     if ansible_args:
-        if 'inventory' in ansible_args.kwargs:
-            inventory = ansible_args.kwargs['inventory']
-        if 'host_pattern' in ansible_args.kwargs:
-            host_pattern = ansible_args.kwargs['host_pattern']
-        if 'sudo' in ansible_args.kwargs:
-            sudo = ansible_args.kwargs['sudo']
-        if 'sudo_user' in ansible_args.kwargs:
-            sudo_user = ansible_args.kwargs['sudo_user']
+        for key in kwfields:
+            short_key = key[8:]
+            if short_key not in ansible_args.kwargs:
+                continue
+            kwargs[short_key] = ansible_args.kwargs[short_key]
+            log.debug("Override %s:%s" % (short_key, kwargs[short_key]))
 
-    return AnsibleModule(inventory, host_pattern, sudo=sudo, sudo_user=sudo_user)
+    return AnsibleModule(**kwargs)
 
 
 @pytest.fixture(scope='function')
-def ansible_facts(request, ansible_module):
+def ansible_facts(ansible_module):
     '''
     Return ansible_facts dictionary
     '''
-    results = ansible_module.setup()
-    return results
+    try:
+        return ansible_module.setup()
+    except AnsibleHostUnreachable, e:
+        return e.result
