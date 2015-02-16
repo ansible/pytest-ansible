@@ -1,8 +1,10 @@
 import os
 import py
 import pytest
+import json
 import logging
 import ansible.runner
+import ansible.constants
 import ansible.inventory
 import ansible.errors
 import ansible.utils
@@ -31,7 +33,7 @@ def pytest_addoption(parser):
     group.addoption('--ansible-inventory',
                     action='store',
                     dest='ansible_inventory',
-                    default='/etc/ansible/hosts',
+                    default=ansible.constants.DEFAULT_HOST_LIST,
                     metavar='ANSIBLE_INVENTORY',
                     help='ansible inventory file URI (default: %default)')
     group.addoption('--ansible-host-pattern',
@@ -40,10 +42,15 @@ def pytest_addoption(parser):
                     default='all',
                     metavar='ANSIBLE_HOST_PATTERN',
                     help='ansible host pattern (default: %default)')
+    group.addoption('--ansible-user',
+                    action='store',
+                    dest='ansible_user',
+                    default=ansible.constants.DEFAULT_REMOTE_USER,
+                    help='connect as this user (default: %default)')
     group.addoption('--ansible-sudo',
                     action='store_true',
                     dest='ansible_sudo',
-                    default=False,
+                    default=ansible.constants.DEFAULT_SUDO,
                     help='run operations with sudo [nopasswd] (default: %default)')
     group.addoption('--ansible-sudo-user',
                     action='store',
@@ -161,6 +168,7 @@ class AnsibleModule(object):
         module_args = ' '.join(module_args)
 
         # Assert hosts matching the provided pattern exist
+        log.debug("inventory_manager.list_hosts(%s)" % self.pattern)
         hosts = inventory_manager.list_hosts(self.pattern)
         if len(hosts) == 0:
             raise AnsibleNoHostsMatch("No hosts match:'%s'" % self.pattern)
@@ -194,7 +202,7 @@ class AnsibleModule(object):
         # Raise exception if host(s) unreachable
         # FIXME - if multiple hosts were involved, should an exception be raised?
         if results['dark']:
-            raise ansible.errors.AnsibleConnectionFailed("Host unreachable: %s" % self.module_name, results['dark'])
+            raise ansible.errors.AnsibleConnectionFailed("Host unreachable: %s" % json.dumps(results['dark'], indent=2))
 
         # No hosts contacted
         if not results['contacted']:
@@ -224,6 +232,8 @@ def ansible_module(request):
     # Override options from @pytest.mark.ansible
     ansible_args = getattr(request.function, 'ansible', None)
     if ansible_args:
+        if 'inventory' in ansible_args.kwargs:
+            inventory = ansible_args.kwargs['inventory']
         if 'host_pattern' in ansible_args.kwargs:
             host_pattern = ansible_args.kwargs['host_pattern']
         if 'sudo' in ansible_args.kwargs:
