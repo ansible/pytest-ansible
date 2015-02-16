@@ -86,7 +86,7 @@ setup(
     py_modules=['pytest_ansible'],
     entry_points={
         'pytest11': [
-            'pytest_ansible = pytest_ansible'
+            'pytest-ansible = pytest_ansible'
         ],
     },
     zip_safe=False,
