@@ -84,6 +84,10 @@ setup(
     url='http://github.com/jlaska/pytest-ansible',
     platforms=['linux', 'osx', 'win32'],
     py_modules=['pytest_ansible'],
+    tests_require = [
+        'ansible',
+        'pytest',
+    ],
     entry_points={
         'pytest11': [
             'pytest-ansible = pytest_ansible'
