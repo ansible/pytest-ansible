@@ -5,6 +5,7 @@ env:
   - TOXENV=py26
   - TOXENV=py27
 install:
-  - python setup.py install
+  - pip install tox
+  - pip install -r test-requirements.txt
 script:
   - tox
