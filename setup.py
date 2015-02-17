@@ -82,23 +82,19 @@ setup(
     author=__author__,
     author_email=__author_email__,
     url='http://github.com/jlaska/pytest-ansible',
-    platforms=['linux', 'osx', 'win32'],
+    platforms='any',
     py_modules=['pytest_ansible'],
-    tests_require = [
-        'ansible',
-        'pytest',
-    ],
     entry_points={
         'pytest11': [
             'pytest-ansible = pytest_ansible'
         ],
     },
     zip_safe=False,
-    install_requires=['ansible', 'pytest>=2.2.4'],
+    test_requires=['ansible', 'pytest>=2.2.4'],
+    install_requires=['tox', 'ansible', 'pytest>=2.2.4'],
     cmdclass={
         'test': PyTest,
         'clean': CleanCommand,
-        # 'build_sphinx': BuildSphinx},
     },
     classifiers=[
         'Development Status :: 5 - Production/Stable',
