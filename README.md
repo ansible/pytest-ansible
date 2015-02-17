@@ -8,11 +8,19 @@ pytest-ansible
 
 This repository contains a plugin for ``py.test`` which allows ansible modules to be used within tests and fixtures.
 
-Installation and Usage
-======================
+Installation
+============
 
 ```bash
 py.test --ansible-inventory [path_to_inventory]
 ```
 
 This plugin gets automatically connected to ``py.test`` via ``entry point`` if installed.
+
+Usage
+=====
+
+```python
+def test_foo(ansible_module):
+    result = ansible_module.ping()
+```
