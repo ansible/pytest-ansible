@@ -1,6 +1,5 @@
 import pytest
 import pytest_ansible
-import json
 
 
 # pytest_plugins = ['pytester', 'pytest_ansible']
