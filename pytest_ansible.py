@@ -1,7 +1,3 @@
-'''
-A pytest plugin to allow running ansible modules
-'''
-
 import os
 import py
 import pytest
@@ -169,13 +165,10 @@ class AnsibleModule(object):
 
     def __getattr__(self, name):
         self.module_name = name
-        log.debug("__getattr__(%s)" % name)
-        log.debug("dict: %s" % self.__dict__)
         if name in self.__dict__:
-            log.debug("__getattr__(%s) returning builtin" % name)
             return self.__dict__[name]
-
-        return self.__run
+        else:
+            return self.__run
         # try:
         #     return self.__run
         # except ansible.errors.AnsibleConnectionFailed, e:
@@ -255,7 +248,15 @@ def ansible_module(request):
         kwargs[short_key] = request.config.getvalue(key)
 
     # Override options from @pytest.mark.ansible
-    ansible_args = getattr(request.function, 'ansible', None)
+    if request.scope == 'function':
+        ansible_args = getattr(request.function, 'ansible', None)
+    elif request.scope == 'class':
+        ansible_args = getattr(request.cls, 'ansible', None)
+    elif request.scope == 'module':
+        ansible_args = getattr(request.module, 'ansible', None)
+    else:
+        ansible_args = None
+
     if ansible_args:
         for key in kwfields:
             short_key = key[8:]
