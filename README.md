@@ -10,8 +10,9 @@ This repository contains a plugin for ``py.test`` which allows ansible modules t
 
 Installation and Usage
 ======================
-.. code:: python
 
- py.test --ansible-inventory [path_to_inventory]
+```bash
+py.test --ansible-inventory [path_to_inventory]
+```
 
 This plugin gets automatically connected to ``py.test`` via ``entry point`` if installed.
