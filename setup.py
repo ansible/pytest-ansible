@@ -75,7 +75,7 @@ class CleanCommand(Command):
 setup(
     name="pytest-ansible",
     version=__version__,
-    description=__doc__,
+    description='Plugin for py.test to allow running ansible',
     long_description=open('README.md').read(),
     license='MIT',
     keywords='py.test pytest ansible',
