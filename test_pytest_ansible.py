@@ -35,14 +35,14 @@ def test_module_ping_without_limit(ansible_module):
     # assert contacted hosts ...
     assert 'contacted' in result
     assert len(result['contacted']) == len(ansible_module.inventory_manager.list_hosts('!unreachable'))
-    for host_data in result['contacted'].values():
-        assert_ping_response_success(host_data)
+    for contacted in result['contacted'].values():
+        assert_ping_response_success(contacted)
 
     # assert dark hosts ...
     assert 'dark' in result
     assert len(result['dark']) == len(ansible_module.inventory_manager.list_hosts('unreachable'))
-    for host_data in result['dark'].values():
-        assert_ping_response_failure(host_data)
+    for dark in result['dark'].values():
+        assert_ping_response_failure(dark)
 
 
 @pytest.mark.ansible(host_pattern='localhost')
@@ -54,8 +54,8 @@ def test_module_ping_with_limit_host(ansible_module):
     # assert contacted hosts ...
     assert 'contacted' in result
     assert len(result['contacted']) == 1
-    for host_data in result['contacted'].values():
-        assert_ping_response_success(host_data)
+    for contacted in result['contacted'].values():
+        assert_ping_response_success(contacted)
 
     # assert dark hosts ...
     assert not result['dark']
@@ -74,8 +74,8 @@ def test_module_ping_with_limit_group(ansible_module):
     # assert dark hosts ...
     assert result['dark']
     assert len(result['dark']) == len(ansible_module.inventory_manager.list_hosts('unreachable'))
-    for host_data in result['dark'].values():
-        assert_ping_response_failure(host_data)
+    for dark in result['dark'].values():
+        assert_ping_response_failure(dark)
 
 
 @pytest.mark.ansible(host_pattern='!unreachable')
@@ -87,8 +87,8 @@ def test_module_ping_with_limit_not_group(ansible_module):
     # assert contacted hosts ...
     assert 'contacted' in result
     assert len(result['contacted']) == len(ansible_module.inventory_manager.list_hosts('!unreachable'))
-    for host_data in result['contacted'].values():
-        assert_ping_response_success(host_data)
+    for contacted in result['contacted'].values():
+        assert_ping_response_success(contacted)
 
     # assert no dark hosts ...
     assert not result['dark']
@@ -103,8 +103,8 @@ def test_module_ping_override_connection(ansible_module):
     # assert contacted hosts ...
     assert 'contacted' in result
     assert len(result['contacted']) == len(ansible_module.inventory_manager.list_hosts('all'))
-    for host_data in result['contacted'].values():
-        assert_ping_response_success(host_data)
+    for contacted in result['contacted'].values():
+        assert_ping_response_success(contacted)
 
     # assert no dark hosts ...
     assert not result['dark']
@@ -119,8 +119,8 @@ def test_module_ping_override_inventory_and_connection(ansible_module):
     # assert contacted hosts ...
     assert 'contacted' in result
     assert len(result['contacted']) == 1
-    for host_data in result['contacted'].values():
-        assert_ping_response_success(host_data)
+    for contacted in result['contacted'].values():
+        assert_ping_response_success(contacted)
 
     # assert no dark hosts ...
     assert not result['dark']
@@ -135,8 +135,8 @@ def test_module_ping_with_limit_and_sudo(ansible_module):
     # assert contacted hosts ...
     assert 'contacted' in result
     assert len(result['contacted']) == 1
-    for host_data in result['contacted'].values():
-        assert_ping_response_failure(host_data)
+    for contacted in result['contacted'].values():
+        assert_ping_response_failure(contacted)
 
     # assert no dark hosts ...
     assert not result['dark']
@@ -166,5 +166,5 @@ def test_ansible_facts(ansible_facts, ansible_module):
     # assert dark hosts ...
     assert 'dark' in result
     assert len(result['dark']) == len(ansible_module.inventory_manager.list_hosts('unreachable'))
-    for host_data in result['dark'].values():
-        assert_ping_response_failure(host_data)
+    for dark in result['dark'].values():
+        assert_ping_response_failure(dark)
