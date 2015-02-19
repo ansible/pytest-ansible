@@ -117,7 +117,7 @@ For example, to interact with the local system, you would adjust the
 
 ```python
 @pytest.mark.ansible(host_pattern='local,', connection='local')
-def test_ping(ansible_module):
+def test_copy_local(ansible_module):
 
     # create a file with random data
     result = ansible_module.copy(
