@@ -1,2 +1,2 @@
-include *.md
-include inventory
+include *.py inventory README* LICENSE
+exclude test_*
