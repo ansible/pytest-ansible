@@ -1,7 +1,6 @@
 import os
 import py
 import pytest
-import json
 import logging
 import ansible.runner
 import ansible.constants
@@ -10,7 +9,7 @@ import ansible.errors
 import ansible.utils
 from urlparse import urlparse
 
-__version__ = '1.1'
+__version__ = '1.2'
 __author__ = "James Laska"
 __author_email__ = "<jlaska@ansible.com>"
 
@@ -24,9 +23,14 @@ class AnsibleNoHostsMatch(ansible.errors.AnsibleError):
 
 
 class AnsibleHostUnreachable(ansible.errors.AnsibleError):
-    def __init__(self, msg, result=None):
+    def __init__(self, msg, dark=None, contacted=None):
         super(AnsibleHostUnreachable, self).__init__(msg)
-        self.result = result
+        self.contacted = contacted
+        self.dark = dark
+
+    @property
+    def results(self):
+        return (self.contacted, self.dark)
 
 
 def pytest_addoption(parser):
@@ -77,9 +81,6 @@ def pytest_configure(config):
     used, download the file locally.
     '''
 
-    # Yuck, is there a better way to benefit from pytest_tmpdir?
-    tmpdir = config.pluginmanager.getplugin("tmpdir").TempdirHandler(config).getbasetemp()
-
     # Sanitize ansible_hostname
     ansible_hostname = config.getvalue('ansible_host_pattern')
 
@@ -91,83 +92,52 @@ def pytest_configure(config):
     # Verify --ansible-host-pattern was provided
     if not (config.option.help or config.option.showfixtures):
         if ansible_hostname is None:
-            print("ERROR: Missing required parameter --ansible-host-pattern")
-            py.test.exit("Missing required parameter --ansible-host-pattern")
+            msg = "ERROR: Missing required parameter --ansible-host-pattern"
+            print(msg)
+            py.test.exit(msg)
 
-    # Sanitize ansible_inventory
+    # Verify --ansible-inventory was provided
     ansible_inventory = config.getvalue('ansible_inventory')
     if not config.option.collectonly:
         '''
         Do some validation with the host_pattern?
         '''
-        if False:
-            import requests
-
-            # Open inventory file (download if necessary)
-            if os.path.exists(ansible_inventory):
-                fd = open(ansible_inventory, 'r')
-                inventory_data = fd.read()
-            elif '://' in ansible_inventory:
-                try:
-                    fd = requests.get(ansible_inventory)
-                except Exception, e:
-                    py.test.exit("Unable to download ansible inventory file - %s" % e)
-                inventory_data = fd.text
-            else:
-                py.test.exit("Ansible inventory file not found: %s" % ansible_inventory)
-
-            # Create new inventory in tmpdir
-            local_inventory = tmpdir.mkdir("ansible").join("inventory.ini").open('a+')
-            # Remember the local filename
-            ansible_inventory = local_inventory.name
-            config.option.ansible_inventory = local_inventory.name
-
-            # Ansible inventory files support host aliasing
-            # (http://www.ansibleworks.com/docs/intro_inventory.html#id10)
-            # If host aliasing is used, the <alias> likely won't match the
-            # base_url.  The following will re-write the provided inventory
-            # file, removing the alias.
-            # For example, an inventory pattern as noted below:
-            #   <alias> ansible_ssh_host=<fqdn> foo=bar
-            # Becomes:
-            #   <fqdn> ansible_ssh_host=<fqdn> foo=bar # <alias>
-            for line in inventory_data.split('\n'):
-                if ansible_hostname in line and not line.startswith(ansible_hostname):
-                    (alias, remainder) = line.split(' ', 1)
-                    line = "%s %s # %s" % (ansible_hostname, remainder, alias)
-                local_inventory.write(line + '\n')
+        if not os.path.exists(ansible_inventory):
+            msg = "ERROR: Unable to find an inventory file, specify one with --ansible-inventory ?"
+            print(msg)
+            py.test.exit(msg)
 
 
 class AnsibleModule(object):
     '''
     Wrapper around ansible.runner.Runner()
 
-    == Examples ==
-    aw = AnsibleModule('/path/to/inventory')
-    results = aw.command('mkdir /var/lib/testing', creates='/var/lib/testing')
-
-    results = aw.git(repo='https://github.com/ansible/ansible.git', dest='/tmp/ansible')
+    Sample Usage:
+      ansible = AnsibleModule(inventory='/path/to/inventory')
+      results = ansible.command('mkdir /var/lib/testing', creates='/var/lib/testing')
+      results = ansible.git(repo='https://github.com/ansible/ansible.git', dest='/tmp/ansible')
     '''
 
     def __init__(self, **kwargs):
-        self.module_name = None
         self.options = kwargs
-        self.inventory = None
-        self.pattern = None
+
+        # Module name is used when accessing an instance attribute (e.g.
+        # self.ping)
+        self.module_name = None
+
+        # Initialize ansible inventory manage
+        self.inventory_manager = None
 
         assert 'inventory' in self.options, "Missing required keyword argument 'inventory'"
         self.inventory = self.options.get('inventory')
         assert 'host_pattern' in self.options, "Missing required keyword argument 'host_pattern'"
         self.pattern = self.options.get('host_pattern')
 
-        # Initialize ansible inventory manage
-        self.inventory_manager = ansible.inventory.Inventory(self.inventory)
-
     def __getattr__(self, name):
-        self.module_name = name
         if name in self.__dict__:
             return self.__dict__[name]
         else:
+            self.module_name = name
             return self.__run
         # try:
         #     return self.__run
@@ -179,6 +149,9 @@ class AnsibleModule(object):
         '''
         The API provided by ansible is not intended as a public API.
         '''
+
+        # Update the inventory manager
+        self.inventory_manager = ansible.inventory.Inventory(self.inventory)
 
         # Assemble module argument string
         module_args = list()
@@ -199,9 +172,9 @@ class AnsibleModule(object):
             inventory=self.inventory_manager,
             pattern=self.pattern,
             module_name=self.module_name,
-            transport=self.options.get('connection'),
             module_args=module_args,
             complex_args=kwargs,
+            transport=self.options.get('connection'),
             sudo=self.options.get('sudo'),
             sudo_user=self.options.get('sudo_user'),)
 
@@ -221,26 +194,26 @@ class AnsibleModule(object):
         # Raise exception if host(s) unreachable
         # FIXME - if multiple hosts were involved, should an exception be raised?
         if results['dark']:
-            raise AnsibleHostUnreachable("Host unreachable", results)
+            raise AnsibleHostUnreachable("Host unreachable", dark=results['dark'], contacted=results['contacted'])
 
         # No hosts contacted
         # if not results['contacted']:
         #     raise ansible.errors.AnsibleConnectionFailed("Provided hosts list is empty")
 
         # Success!
-        return results
-        # return results['contacted']
+        # return results
+        return results['contacted']
         # return results['contacted'][self.pattern]
 
 
-@pytest.fixture(scope='function')
-def ansible_module(request):
-    '''
-    Return initialized ansibleWrapper
+def initialize(request):
+    '''Returns an initialized AnsibleWrapper instance
     '''
 
+    # Remember the pytest request attr
+    kwargs = dict(__request__=request)
+
     # Grab options from command-line
-    kwargs = dict()
     kwfields = ('ansible_inventory', 'ansible_host_pattern',
                 'ansible_connection', 'ansible_user', 'ansible_sudo', 'ansible_sudo_user')
     for key in kwfields:
@@ -248,24 +221,46 @@ def ansible_module(request):
         kwargs[short_key] = request.config.getvalue(key)
 
     # Override options from @pytest.mark.ansible
+    ansible_args = None
     if request.scope == 'function':
-        ansible_args = getattr(request.function, 'ansible', None)
+        if hasattr(request.function, 'ansible'):
+            ansible_args = request.function.ansible.kwargs
     elif request.scope == 'class':
-        ansible_args = getattr(request.cls, 'ansible', None)
-    elif request.scope == 'module':
-        ansible_args = getattr(request.module, 'ansible', None)
-    else:
-        ansible_args = None
+        if hasattr(request.cls, 'pytestmark'):
+            for pytestmark in request.cls.pytestmark:
+                if pytestmark.name == 'ansible':
+                    ansible_args = pytestmark.kwargs
+                else:
+                    continue
 
+    log.debug("ansible_args: %s" % ansible_args)
     if ansible_args:
         for key in kwfields:
             short_key = key[8:]
-            if short_key not in ansible_args.kwargs:
+            if short_key not in ansible_args:
                 continue
-            kwargs[short_key] = ansible_args.kwargs[short_key]
+            kwargs[short_key] = ansible_args[short_key]
             log.debug("Override %s:%s" % (short_key, kwargs[short_key]))
 
     return AnsibleModule(**kwargs)
+
+
+@pytest.fixture(scope='class')
+def ansible_module_cls(request):
+    '''
+    Return AnsibleWrapper instance with class scope.
+    '''
+
+    return initialize(request)
+
+
+@pytest.fixture(scope='function')
+def ansible_module(request):
+    '''
+    Return AnsibleWrapper instance with function scope.
+    '''
+
+    return initialize(request)
 
 
 @pytest.fixture(scope='function')
@@ -273,7 +268,9 @@ def ansible_facts(ansible_module):
     '''
     Return ansible_facts dictionary
     '''
+    # return ansible_module.setup()
     try:
         return ansible_module.setup()
     except AnsibleHostUnreachable, e:
-        return e.result
+        log.warning("Hosts unreachable: %s" % e.dark.keys())
+        return e.contacted
