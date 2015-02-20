@@ -1,34 +1,34 @@
 import os
-import sys
 import glob
 import shutil
+from ConfigParser import ConfigParser
 from setuptools import setup, Command
 from setuptools.command.test import test as TestCommand
 from pytest_ansible import __version__, __author__, __author_email__
-
 
 
 class PyTest(TestCommand):
     def finalize_options(self):
         TestCommand.finalize_options(self)
         self.test_suite = True
-        # self.test_args = '--tb=native --ansible-host-pattern localhost --ansible-inventory inventory'
-        self.test_args = '--tb=native --ansible-inventory inventory'
 
+        # read pytest.addopts from setup.cfg
+        cp = ConfigParser()
+        cp.read('setup.cfg')
+        self.test_args = cp.get('pytest', 'addopts')
+
+        # optionally enable verbosity
         if self.verbose:
             self.test_args += ' -v'
 
-        if 'PY_ARGS' in os.environ:
+        # load additional arguments from PYTEST_ARGS
+        if 'PYTEST_ARGS' in os.environ:
             self.test_args += ' ' + os.environ.get('PY_ARGS')
-
-        if 'PK_KEYWORDEXPR' in os.environ:
-            self.test_args += ' -k "%s"' % os.environ.get('PY_KEYWORDEXPR')
 
     def run_tests(self):
         # import here, cause outside the eggs aren't loaded elsewhere
         import pytest
         print "Running: py.test %s" % self.test_args
-        sys.path.insert(0, 'lib')
         pytest.main(self.test_args)
 
 
