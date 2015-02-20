@@ -133,25 +133,18 @@ def test_copy_local(ansible_module):
         for contacted in result['contacted'].values())
 ```
 
-### Parameterizing with class variables
+Note, the parameters provided by ``pytest.mark.ansible`` will apply to all
+class methods.
 
 ```python
-class TestWebservers(object):
-
-    ansible_host_pattern = 'webservers' # --ansible-host-pattern webservers
-    ansible_user = 'steve'              # --ansible-user steve
-    ansible_sudo = True                 # --ansible-sudo
-    ansible_sudo_user = 'httpd'         # --ansible-sudo-user httpd
-
-    def test_httpd_running(self, ansible_module):
-        # ensure httpd is running
-        result = ansible_module.service(name='httpd', state='running')
-
-        # the above ansible module will ensure things are running.  The
-        # following is only meant to demonstrate inspecting the resulting JSON
-        # object.
-        assert all(contacted['state'] == 'started' \
-            for contacted in result['contacted'].values())
+@pytest.mark.ansible(host_pattern='local,', connection='local')
+class Test_Local(object):
+    def test_install(self, ansible_module):
+        '''do some testing'''
+    def test_template(self, ansible_module):
+        '''do some testing'''
+    def test_service(self, ansible_module):
+        '''do some testing'''
 ```
 
 ### Exception handling
@@ -167,9 +160,9 @@ def test_shutdown(ansible_module):
         ansible_module.ping()
 ```
 
-Sometimes, only a single host is down, and others will have properly returned
-data.  The following demonstrates how to catch the exception, and inspect the
-results.
+Sometimes, only a single host is unreachable, and others will have properly
+returned data.  The following demonstrates how to catch the exception, and
+inspect the results.
 
 ```python
 @pytest.mark.ansible(inventory='good:bad')
