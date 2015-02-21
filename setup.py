@@ -23,7 +23,7 @@ class PyTest(TestCommand):
 
         # load additional arguments from PYTEST_ARGS
         if 'PYTEST_ARGS' in os.environ:
-            self.test_args += ' ' + os.environ.get('PY_ARGS')
+            self.test_args += ' ' + os.environ.get('PYTEST_ARGS')
 
     def run_tests(self):
         # import here, cause outside the eggs aren't loaded elsewhere
