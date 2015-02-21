@@ -133,6 +133,10 @@ class AnsibleModule(object):
         assert 'host_pattern' in self.options, "Missing required keyword argument 'host_pattern'"
         self.pattern = self.options.get('host_pattern')
 
+        # Initialize inventory_manager with the provided inventory and host_pattern
+        self.inventory_manager = ansible.inventory.Inventory(self.inventory)
+        self.inventory_manager.subset(self.pattern)
+
     def __getattr__(self, name):
         if name in self.__dict__:
             return self.__dict__[name]
@@ -151,7 +155,7 @@ class AnsibleModule(object):
         '''
 
         # Update the inventory manager
-        self.inventory_manager = ansible.inventory.Inventory(self.inventory)
+        # self.inventory_manager = ansible.inventory.Inventory(self.inventory)
 
         # Assemble module argument string
         module_args = list()
@@ -207,7 +211,7 @@ class AnsibleModule(object):
 
 
 def initialize(request):
-    '''Returns an initialized AnsibleWrapper instance
+    '''Returns an initialized AnsibleModule instance
     '''
 
     # Remember the pytest request attr
@@ -221,7 +225,7 @@ def initialize(request):
         kwargs[short_key] = request.config.getvalue(key)
 
     # Override options from @pytest.mark.ansible
-    ansible_args = None
+    ansible_args = dict()
     if request.scope == 'function':
         if hasattr(request.function, 'ansible'):
             ansible_args = request.function.ansible.kwargs
@@ -233,6 +237,7 @@ def initialize(request):
                 else:
                     continue
 
+    # Build kwargs to pass along to AnsibleModule
     log.debug("ansible_args: %s" % ansible_args)
     if ansible_args:
         for key in kwfields:
@@ -242,13 +247,19 @@ def initialize(request):
             kwargs[short_key] = ansible_args[short_key]
             log.debug("Override %s:%s" % (short_key, kwargs[short_key]))
 
+    # Was this fixture called in conjunction with a parametrized fixture
+    if 'ansible_host' in request.fixturenames:
+        kwargs['host_pattern'] = request.getfuncargvalue('ansible_host')
+    elif 'ansible_group' in request.fixturenames:
+        kwargs['host_pattern'] = request.getfuncargvalue('ansible_group')
+
     return AnsibleModule(**kwargs)
 
 
 @pytest.fixture(scope='class')
 def ansible_module_cls(request):
     '''
-    Return AnsibleWrapper instance with class scope.
+    Return AnsibleModule instance with class scope.
     '''
 
     return initialize(request)
@@ -257,7 +268,7 @@ def ansible_module_cls(request):
 @pytest.fixture(scope='function')
 def ansible_module(request):
     '''
-    Return AnsibleWrapper instance with function scope.
+    Return AnsibleModule instance with function scope.
     '''
 
     return initialize(request)
@@ -274,3 +285,14 @@ def ansible_facts(ansible_module):
     except AnsibleHostUnreachable, e:
         log.warning("Hosts unreachable: %s" % e.dark.keys())
         return e.contacted
+
+
+def pytest_generate_tests(metafunc):
+    if 'ansible_host' in metafunc.fixturenames:
+        # this doesn't support function/cls fixture overrides
+        inventory_manager = ansible.inventory.Inventory(metafunc.config.getvalue('ansible_inventory'))
+        pattern = metafunc.config.getvalue('ansible_host_pattern')
+        metafunc.parametrize("ansible_host", inventory_manager.list_hosts(pattern))
+    if 'ansible_group' in metafunc.fixturenames:
+        inventory_manager = ansible.inventory.Inventory(metafunc.config.getvalue('ansible_inventory'))
+        metafunc.parametrize("ansible_group", inventory_manager.list_groups())

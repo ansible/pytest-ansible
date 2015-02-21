@@ -160,6 +160,21 @@ def test_ansible_facts(ansible_facts, ansible_module):
         assert 'ansible_distribution' in host_facts['ansible_facts']
 
 
+def test_ansible_host(ansible_host, ansible_module):
+    '''Verify the parameterized fixture ansible_host restricts inventory properly
+    '''
+    # assert inventory is restricted to a single host matching 'ansible_host'
+    assert ansible_module.inventory_manager.list_hosts() == [ansible_host]
+
+
+def test_ansible_group(ansible_group, ansible_module):
+    '''Verify the parameterized fixture ansible_group restricts inventory properly
+    '''
+    # assert that only hosts from 'ansible_group' were found
+    for host in ansible_module.inventory_manager.get_hosts():
+        assert ansible_group in [g.name for g in host.get_groups()]
+
+
 @pytest.mark.ansible(host_pattern='localhost', connection='local')
 class Test_Fixture_Scope(object):
     '''Verify that pytest.mark.ansible applies to all class methods
