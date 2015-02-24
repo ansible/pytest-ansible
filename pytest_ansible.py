@@ -49,7 +49,7 @@ def pytest_addoption(parser):
     group.addoption('--ansible-host-pattern',
                     action='store',
                     dest='ansible_host_pattern',
-                    default='all',
+                    default=None,
                     metavar='ANSIBLE_HOST_PATTERN',
                     help='ansible host pattern (default: %default)')
     group.addoption('--ansible-connection',
@@ -91,7 +91,7 @@ def pytest_configure(config):
 
     # Verify --ansible-host-pattern was provided
     if not (config.option.help or config.option.showfixtures):
-        if ansible_hostname is None:
+        if ansible_hostname is None or ansible_hostname == '':
             msg = "ERROR: Missing required parameter --ansible-host-pattern"
             print(msg)
             py.test.exit(msg)
