@@ -7,7 +7,6 @@ import ansible.constants
 import ansible.inventory
 import ansible.errors
 import ansible.utils
-from urlparse import urlparse
 
 __version__ = '1.2'
 __author__ = "James Laska"
@@ -114,6 +113,8 @@ class AnsibleModule(object):
     '''
 
     def __init__(self, **kwargs):
+        log.debug("AnsibleWrapper(%s)" % kwargs)
+
         self.options = kwargs
 
         # Module name is used when accessing an instance attribute (e.g.
@@ -138,19 +139,11 @@ class AnsibleModule(object):
         else:
             self.module_name = name
             return self.__run
-        # try:
-        #     return self.__run
-        # except ansible.errors.AnsibleConnectionFailed, e:
-        #     result = dict(failed=True, msg="FAILED: %s" % str(e))
-        #     return ansible.runner.return_data.ReturnData(host=host, comm_ok=False, result=result)
 
     def __run(self, *args, **kwargs):
         '''
         The API provided by ansible is not intended as a public API.
         '''
-
-        # Update the inventory manager
-        # self.inventory_manager = ansible.inventory.Inventory(self.inventory)
 
         # Assemble module argument string
         module_args = list()
@@ -233,7 +226,6 @@ def initialize(request):
                     continue
 
     # Build kwargs to pass along to AnsibleModule
-    log.debug("ansible_args: %s" % ansible_args)
     if ansible_args:
         for key in kwfields:
             short_key = key[8:]
