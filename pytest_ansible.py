@@ -84,11 +84,6 @@ def pytest_configure(config):
     # Sanitize ansible_hostname
     ansible_hostname = config.getvalue('ansible_host_pattern')
 
-    # If using pytest_mozwebqa, just use the the value of --baseurl
-    if ansible_hostname is None and hasattr(config.option, 'base_url'):
-        # attempt to use --baseurl as ansible_host_pattern
-        ansible_hostname = urlparse(config.getvalue('base_url')).hostname
-
     # Verify --ansible-host-pattern was provided
     if not (config.option.help or config.option.showfixtures):
         if ansible_hostname is None or ansible_hostname == '':
