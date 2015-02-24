@@ -90,7 +90,7 @@ setup(
         ],
     },
     zip_safe=False,
-    test_requires=['ansible', 'pytest>=2.2.4'],
+    tests_requires=['ansible<2.0', 'pytest>=2.2.4'],
     install_requires=['tox', 'ansible', 'pytest>=2.2.4'],
     cmdclass={
         'test': PyTest,
