@@ -195,7 +195,6 @@ class AnsibleModule(object):
         # Success!
         # return results
         return results['contacted']
-        # return results['contacted'][self.pattern]
 
 
 def initialize(request):
