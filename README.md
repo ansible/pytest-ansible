@@ -42,16 +42,31 @@ The following fixtures are available:
 ### Fixture ``ansible_module``
 
 The ``ansible_module`` fixture allows tests and fixtures to call ansible
-[modules](http://docs.ansible.com/modules.html).  The fixture returns JSON data
-describing the ansible module result.  The format of the JSON data depends on
-the ``--ansible-inventory`` used, and the module.
+[modules](http://docs.ansible.com/modules.html).
 
-For example, the ansible ``ping`` module:
+A very basic example demonstrating the ansible [``ping`` module](http://docs.ansible.com/ping_module.html):
 
 ```python
 def test_ping(ansible_module):
-    result = ansible_module.ping()
-    assert 'ping' in result
+    ansible_module.ping()
+```
+
+The above example doesn't do any validation/inspection of the return value.  A
+more likely use case will involve inspecting the return value.  The
+``ansible_module`` fixture returns a JSON data describing the ansible module
+result.  The format of the JSON data depends on the ``--ansible-inventory``
+used, and the [ansible module](http://docs.ansible.com/modules_by_category.html).
+
+The following example demonstrates inspecting the module result.
+
+```python
+def test_ping(ansible_module):
+    contacted = ansible_module.ping()
+    for (host, result) in contacted.items():
+        assert 'ping' in result, \
+            "Failure on host:%s" % host
+        assert result['ping'] == 'pong', \
+            "Unexpected ping response: %s" % result['ping']
 ```
 
 A more involved example of updating the sshd configuration, and restarting the
@@ -60,18 +75,28 @@ service.
 ```python
 def test_sshd_config(ansible_module):
 
-    # Update sshd MaxSessions
-    result = ansible_module.lineinfile(
+    # update sshd MaxSessions
+    contacted = ansible_module.lineinfile(
         dest="/etc/ssh/sshd_config",
         regexp="^#?MaxSessions .*",
         line="MaxSessions 150")
     )
 
+    # assert desired outcome
+    for (host, result) in contacted.items():
+        assert 'failed' not in result, result['msg']
+        assert 'changed' in result
+
     # restart sshd
-    result = ansible_module.service(
+    contacted = ansible_module.service(
         name="sshd",
         state="restarted"
     )
+
+    # assert successful restart
+    for (host, result) in contacted.items():
+        assert 'changed' in result and result['changed']
+        assert result['name'] == 'sshd'
 
     # do other stuff ...
 ```
@@ -121,7 +146,7 @@ For example, to interact with the local system, you would adjust the
 def test_copy_local(ansible_module):
 
     # create a file with random data
-    result = ansible_module.copy(
+    contacted = ansible_module.copy(
         dest='/etc/motd',
         content='PyTest is amazing!',
         owner='root',
@@ -129,9 +154,16 @@ def test_copy_local(ansible_module):
         mode='0644',
     )
 
-    # assert the file was copied to all hosts in the inventory
-    assert all(contacted['changed'] \
-        for contacted in result['contacted'].values())
+    # assert only a single host was contacted
+    assert len(contacted) == 1, \
+        "Unexpected number of hosts contacted (%d != %d)" % \
+        (1, len(contacted))
+
+    assert 'local' in contacted
+
+    # assert the copy module reported changes
+    assert 'changed' in contacted['local']
+    assert contacted['local']['changed']
 ```
 
 Note, the parameters provided by ``pytest.mark.ansible`` will apply to all
@@ -169,12 +201,12 @@ inspect the results.
 @pytest.mark.ansible(inventory='good:bad')
 def test_inventory_unreachable(ansible_module):
     exc_info = pytest.raises(pytest_ansible.AnsibleHostUnreachable, ansible_module.ping)
-    result = exc_info.value.result
+    (contacted, dark) = exc_info.value.results
 
     # inspect the JSON result...
-    for contacted in result['contacted'].values():
-        assert contacted['ping'] == 'pong'
+    for (host, result) in contacted.items():
+        assert result['ping'] == 'pong'
 
-    for dark in result['dark'].values():
-        assert dark['failed'] == True
+    for (host, result) in dark.items():
+        assert result['failed'] == True
 ```
