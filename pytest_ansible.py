@@ -261,11 +261,22 @@ def ansible_module(request):
 
 
 @pytest.fixture(scope='function')
+def ansible_facts_cls(ansible_module_cls):
+    '''
+    Return ansible_facts dictionary
+    '''
+    try:
+        return ansible_module_cls.setup()
+    except AnsibleHostUnreachable, e:
+        log.warning("Hosts unreachable: %s" % e.dark.keys())
+        return e.contacted
+
+
+@pytest.fixture(scope='function')
 def ansible_facts(ansible_module):
     '''
     Return ansible_facts dictionary
     '''
-    # return ansible_module.setup()
     try:
         return ansible_module.setup()
     except AnsibleHostUnreachable, e:
