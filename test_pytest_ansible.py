@@ -1,8 +1,7 @@
 import pytest
-import pytest_ansible
+from pytest_ansible.errors import (AnsibleHostUnreachable, AnsibleNoHostsMatch)
 
 
-# pytest_plugins = ['pytester', 'pytest_ansible']
 pytest_plugins = 'pytester'
 
 
@@ -29,7 +28,7 @@ def assert_ping_response(data, failed):
 def test_ping(ansible_module):
     '''Verify the ansible ping module across all inventory
     '''
-    exc_info = pytest.raises(pytest_ansible.AnsibleHostUnreachable, ansible_module.ping)
+    exc_info = pytest.raises(AnsibleHostUnreachable, ansible_module.ping)
     (contacted, dark) = exc_info.value.results
 
     # assert contacted hosts ...
@@ -74,7 +73,7 @@ def test_ping_limit_localhost(ansible_module):
 def test_ping_limit_unreachable(ansible_module):
     '''Verify the ansible ping module while specifying a host_pattern:unreachable
     '''
-    exc_info = pytest.raises(pytest_ansible.AnsibleHostUnreachable, ansible_module.ping)
+    exc_info = pytest.raises(AnsibleHostUnreachable, ansible_module.ping)
     (contacted, dark) = exc_info.value.results
 
     # assert no contacted hosts ...
@@ -144,7 +143,7 @@ def test_ping_sudo(ansible_module):
 def test_ping_limit_no_matching_host(ansible_module):
     '''Verify the ansible ping fails when specifying a host_pattern that does not match
     '''
-    with pytest.raises(pytest_ansible.AnsibleNoHostsMatch):
+    with pytest.raises(AnsibleNoHostsMatch):
         ansible_module.ping()
 
 

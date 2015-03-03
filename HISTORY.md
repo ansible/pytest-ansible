@@ -1,5 +1,9 @@
 ## Release History
 
+### 1.2.3 (2015-03-03)
+
+* Resolve setuptools import failure by migrating from a module to a package
+
 ### 1.2.2 (2015-03-03)
 
 * Removed py module dependency

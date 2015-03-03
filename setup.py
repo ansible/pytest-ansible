@@ -99,7 +99,6 @@ setup(
     name="pytest-ansible",
     version=__version__,
     description='Plugin for py.test to allow running ansible',
-    # long_description=open('README.md').read(),
     long_description=long_description('README.md', 'HISTORY.md'),
     license='MIT',
     keywords='py.test pytest ansible',
@@ -107,16 +106,15 @@ setup(
     author_email=__author_email__,
     url='http://github.com/jlaska/pytest-ansible',
     platforms='any',
-    py_modules=['pytest_ansible'],
+    packages=['pytest_ansible'],
     entry_points={
         'pytest11': [
-            'pytest-ansible = pytest_ansible'
+            'pytest-ansible = pytest_ansible.plugin'
         ],
     },
     zip_safe=False,
     tests_requires=['ansible<2.0', 'pytest'],
     install_requires=['ansible<2.0', 'pytest'],
-    setup_requires=['pytest'],
     cmdclass={
         'test': PyTest,
         'clean': CleanCommand,

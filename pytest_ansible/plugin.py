@@ -4,31 +4,12 @@ import logging
 import ansible.runner
 import ansible.constants
 import ansible.inventory
-import ansible.errors
 import ansible.utils
+from pytest_ansible.errors import AnsibleNoHostsMatch, AnsibleHostUnreachable
 
-__version__ = '1.2.2'
-__author__ = "James Laska"
-__author_email__ = "<jlaska@ansible.com>"
 
 log = logging.getLogger(__name__)
-
 # ansible.utils.VERBOSITY = 4
-
-
-class AnsibleNoHostsMatch(ansible.errors.AnsibleError):
-    pass
-
-
-class AnsibleHostUnreachable(ansible.errors.AnsibleError):
-    def __init__(self, msg, dark=None, contacted=None):
-        super(AnsibleHostUnreachable, self).__init__(msg)
-        self.contacted = contacted
-        self.dark = dark
-
-    @property
-    def results(self):
-        return (self.contacted, self.dark)
 
 
 def pytest_addoption(parser):
