@@ -10,7 +10,7 @@ from pytest_ansible import __version__, __author__, __author_email__
 try:
     import pypandoc
     long_description = pypandoc.convert('README.md', 'rst')
-except (IOError, ImportError):
+except (OSError, IOError, ImportError):
     long_description = ''
 
 
