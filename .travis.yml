@@ -7,3 +7,6 @@ install:
   - pip install -r test-requirements.txt --use-mirrors
 script:
   - tox
+addons:
+  apt_packages:
+      - pandoc
