@@ -75,26 +75,24 @@ class CleanCommand(Command):
 def long_description(*paths):
     '''Returns a RST formated string.
     '''
-    long_description = ''
+    result = ''
 
     # attempt to import pandoc
     try:
         import pypandoc
     except ImportError:
-        return long_description
+        return result
 
     # attempt md -> rst conversion
     try:
         for path in paths:
-            print "PATH: '%s'" % path
-            long_description += pypandoc.convert(
-                path, 'rst',
-                format='markdown'
+            result += pypandoc.convert(
+                path, 'rst', format='markdown'
             )
     except (OSError, IOError):
-        return long_description
+        return result
 
-    return long_description
+    return result
 
 
 setup(
@@ -116,8 +114,8 @@ setup(
         ],
     },
     zip_safe=False,
-    tests_requires=['ansible<2.0', 'pytest>=2.2.4'],
-    install_requires=['tox', 'ansible', 'pytest>=2.2.4'],
+    tests_requires=['ansible<2.0', 'pytest'],
+    install_requires=['ansible<2.0', 'pytest'],
     cmdclass={
         'test': PyTest,
         'clean': CleanCommand,

@@ -210,3 +210,4 @@ def test_inventory_unreachable(ansible_module):
     for (host, result) in dark.items():
         assert result['failed'] == True
 ```
+
