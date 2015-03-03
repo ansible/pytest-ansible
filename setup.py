@@ -116,6 +116,7 @@ setup(
     zip_safe=False,
     tests_requires=['ansible<2.0', 'pytest'],
     install_requires=['ansible<2.0', 'pytest'],
+    setup_requires=['pytest'],
     cmdclass={
         'test': PyTest,
         'clean': CleanCommand,
