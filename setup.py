@@ -6,13 +6,6 @@ from setuptools import setup, Command
 from setuptools.command.test import test as TestCommand
 from pytest_ansible import __version__, __author__, __author_email__
 
-# Convert README.md into .rst
-try:
-    import pypandoc
-    long_description = pypandoc.convert('README.md', 'rst')
-except (OSError, IOError, ImportError):
-    long_description = ''
-
 
 class PyTest(TestCommand):
     def finalize_options(self):
@@ -79,12 +72,37 @@ class CleanCommand(Command):
                     os.remove(rm)
 
 
+def long_description(*paths):
+    '''Returns a RST formated string.
+    '''
+    long_description = ''
+
+    # attempt to import pandoc
+    try:
+        import pypandoc
+    except ImportError:
+        return long_description
+
+    # attempt md -> rst conversion
+    try:
+        for path in paths:
+            print "PATH: '%s'" % path
+            long_description += pypandoc.convert(
+                path, 'rst',
+                format='markdown'
+            )
+    except (OSError, IOError):
+        return long_description
+
+    return long_description
+
+
 setup(
     name="pytest-ansible",
     version=__version__,
     description='Plugin for py.test to allow running ansible',
     # long_description=open('README.md').read(),
-    long_description=long_description,
+    long_description=long_description('README.md', 'HISTORY.md'),
     license='MIT',
     keywords='py.test pytest ansible',
     author=__author__,
