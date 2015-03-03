@@ -1,5 +1,4 @@
 import os
-import py
 import pytest
 import logging
 import ansible.runner
@@ -88,7 +87,7 @@ def pytest_configure(config):
         if ansible_hostname is None or ansible_hostname == '':
             msg = "ERROR: Missing required parameter --ansible-host-pattern"
             print(msg)
-            py.test.exit(msg)
+            pytest.exit(msg)
 
     # Verify --ansible-inventory was provided
     ansible_inventory = config.getvalue('ansible_inventory')
@@ -99,7 +98,7 @@ def pytest_configure(config):
         if not os.path.exists(ansible_inventory):
             msg = "ERROR: Unable to find an inventory file, specify one with --ansible-inventory ?"
             print(msg)
-            py.test.exit(msg)
+            pytest.exit(msg)
 
 
 class AnsibleModule(object):
