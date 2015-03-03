@@ -6,6 +6,13 @@ from setuptools import setup, Command
 from setuptools.command.test import test as TestCommand
 from pytest_ansible import __version__, __author__, __author_email__
 
+# Convert README.md into .rst
+try:
+    import pypandoc
+    long_description = pypandoc.convert('README.md', 'rst')
+except (IOError, ImportError):
+    long_description = ''
+
 
 class PyTest(TestCommand):
     def finalize_options(self):
@@ -76,7 +83,8 @@ setup(
     name="pytest-ansible",
     version=__version__,
     description='Plugin for py.test to allow running ansible',
-    long_description=open('README.md').read(),
+    # long_description=open('README.md').read(),
+    long_description=long_description,
     license='MIT',
     keywords='py.test pytest ansible',
     author=__author__,
