@@ -72,7 +72,7 @@ def pytest_configure(config):
 
     # Verify --ansible-inventory was provided
     ansible_inventory = config.getvalue('ansible_inventory')
-    if not config.option.collectonly:
+    if not (config.option.collectonly or config.option.help):
         '''
         Do some validation with the host_pattern?
         '''
