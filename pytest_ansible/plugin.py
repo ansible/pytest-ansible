@@ -6,6 +6,10 @@ import ansible.constants
 import ansible.inventory
 import ansible.utils
 from pytest_ansible.errors import AnsibleNoHostsMatch, AnsibleHostUnreachable
+from pkg_resources import parse_version
+
+
+has_ansible_become = parse_version(ansible.__version__) >= parse_version('1.9.0')
 
 
 log = logging.getLogger(__name__)
@@ -41,16 +45,35 @@ def pytest_addoption(parser):
                     dest='ansible_user',
                     default=ansible.constants.DEFAULT_REMOTE_USER,
                     help='connect as this user (default: %default)')
+    # classic privilege escalation
     group.addoption('--ansible-sudo',
                     action='store_true',
                     dest='ansible_sudo',
                     default=ansible.constants.DEFAULT_SUDO,
-                    help='run operations with sudo [nopasswd] (default: %default)')
+                    help='run operations with sudo [nopasswd] (default: %default) (deprecated, use become)')
     group.addoption('--ansible-sudo-user',
                     action='store',
                     dest='ansible_sudo_user',
                     default='root',
-                    help='desired sudo user (default: %default)')
+                    help='desired sudo user (default: %default) (deprecated, use become)')
+
+    if has_ansible_become:
+        # consolidated privilege escalation
+        group.addoption('--ansible-become',
+                        action='store_true',
+                        dest='ansible_become',
+                        default=ansible.constants.DEFAULT_BECOME,
+                        help='run operations with become, nopasswd implied (default: %default)')
+        group.addoption('--ansible-become-method',
+                        action='store',
+                        dest='ansible_become_method',
+                        default=ansible.constants.DEFAULT_BECOME_METHOD,
+                        help="privilege escalation method to use (default: %%default), valid choices: [ %s ]" % (' | '.join(ansible.constants.BECOME_METHODS)))
+        group.addoption('--ansible-become-user',
+                        action='store',
+                        dest='ansible_become_user',
+                        default=ansible.constants.DEFAULT_BECOME_USER,
+                        help='run operations as this user (default: %default)')
 
 
 def pytest_configure(config):
@@ -59,6 +82,17 @@ def pytest_configure(config):
     Ensure --ansible-inventory references a valid file. If a remote URL is
     used, download the file locally.
     '''
+
+    # normalize ansible.ansible_become options
+    config.option.ansible_become = config.option.ansible_become or \
+        config.option.ansible_sudo or \
+        ansible.constants.DEFAULT_BECOME
+    config.option.ansible_become_user = config.option.ansible_become_user or \
+        config.option.ansible_sudo_user or \
+        ansible.constants.DEFAULT_BECOME_USER
+    #config.option.ansible_become_ask_pass = config.option.ansible_become_ask_pass or
+    #    config.option.ask_sudo_pass or config.option.ask_su_pass or
+    #    ansible.constants.DEFAULT_BECOME_ASK_PASS
 
     # Sanitize ansible_hostname
     ansible_hostname = config.getvalue('ansible_host_pattern')
@@ -140,15 +174,29 @@ class AnsibleModule(object):
         log.debug("[%s] %s: %s, %s" % (self.pattern, self.module_name, module_args, kwargs))
 
         # Build module runner object
-        runner = ansible.runner.Runner(
+        kwargs = dict(
             inventory=self.inventory_manager,
             pattern=self.pattern,
             module_name=self.module_name,
             module_args=module_args,
             complex_args=kwargs,
             transport=self.options.get('connection'),
-            sudo=self.options.get('sudo'),
-            sudo_user=self.options.get('sudo_user'),)
+        )
+
+        # Handle >= 1.9.0 options
+        if has_ansible_become:
+            kwargs.update(dict(
+                become=self.options.get('become'),
+                become_method=self.options.get('become_method'),
+                become_user=self.options.get('become_user'),)
+            )
+        else:
+            kwargs.update(dict(
+                sudo=self.options.get('sudo'),
+                sudo_user=self.options.get('sudo_user'),)
+            )
+
+        runner = ansible.runner.Runner(**kwargs)
 
         # Run the module
         results = runner.run()
@@ -185,8 +233,13 @@ def initialize(request):
     kwargs = dict(__request__=request)
 
     # Grab options from command-line
-    kwfields = ('ansible_inventory', 'ansible_host_pattern',
-                'ansible_connection', 'ansible_user', 'ansible_sudo', 'ansible_sudo_user')
+    kwfields = ['ansible_inventory', 'ansible_host_pattern',
+                'ansible_connection', 'ansible_user', 'ansible_sudo', 'ansible_sudo_user']
+
+    # Grab ansible-1.9 become options
+    if has_ansible_become:
+        kwfields.extend(['ansible_become', 'ansible_become_method', 'ansible_become_user'])
+
     for key in kwfields:
         short_key = key[8:]
         kwargs[short_key] = request.config.getvalue(key)
