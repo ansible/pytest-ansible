@@ -1,5 +1,9 @@
 ## Release History
 
+### 1.2.4 (2015-03-18)
+
+* Add ansible-1.9 privilege escalation support
+
 ### 1.2.3 (2015-03-03)
 
 * Resolve setuptools import failure by migrating from a module to a package
