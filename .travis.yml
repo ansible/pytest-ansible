@@ -1,10 +1,11 @@
 sudo: false
 language: python
 env:
-  - TOXENV=py26
-  - TOXENV=py27
+    - TOXENV=py26-ansible_stable
+    - TOXENV=py26-ansible_devel
+    - TOXENV=py27-ansible_stable
+    - TOXENV=py27-ansible_devel
 install:
-  - pip install tox --use-mirrors
   - pip install -r test-requirements.txt --use-mirrors
 script:
   - tox
