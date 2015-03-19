@@ -78,21 +78,8 @@ def pytest_addoption(parser):
 
 def pytest_configure(config):
     '''
-    Sanitize --ansible-* parameters.
-    Ensure --ansible-inventory references a valid file. If a remote URL is
-    used, download the file locally.
+    Validate --ansible-* parameters.
     '''
-
-    # normalize ansible.ansible_become options
-    config.option.ansible_become = config.option.ansible_become or \
-        config.option.ansible_sudo or \
-        ansible.constants.DEFAULT_BECOME
-    config.option.ansible_become_user = config.option.ansible_become_user or \
-        config.option.ansible_sudo_user or \
-        ansible.constants.DEFAULT_BECOME_USER
-    #config.option.ansible_become_ask_pass = config.option.ansible_become_ask_pass or
-    #    config.option.ask_sudo_pass or config.option.ask_su_pass or
-    #    ansible.constants.DEFAULT_BECOME_ASK_PASS
 
     # Sanitize ansible_hostname
     ansible_hostname = config.getvalue('ansible_host_pattern')
@@ -233,14 +220,16 @@ def initialize(request):
     kwargs = dict(__request__=request)
 
     # Grab options from command-line
-    kwfields = ['ansible_inventory', 'ansible_host_pattern',
-                'ansible_connection', 'ansible_user', 'ansible_sudo', 'ansible_sudo_user']
+    option_names = ['ansible_inventory', 'ansible_host_pattern',
+                    'ansible_connection', 'ansible_user', 'ansible_sudo',
+                    'ansible_sudo_user']
 
     # Grab ansible-1.9 become options
     if has_ansible_become:
-        kwfields.extend(['ansible_become', 'ansible_become_method', 'ansible_become_user'])
+        option_names.extend(['ansible_become', 'ansible_become_method',
+            'ansible_become_user'])
 
-    for key in kwfields:
+    for key in option_names:
         short_key = key[8:]
         kwargs[short_key] = request.config.getvalue(key)
 
@@ -259,7 +248,7 @@ def initialize(request):
 
     # Build kwargs to pass along to AnsibleModule
     if ansible_args:
-        for key in kwfields:
+        for key in option_names:
             short_key = key[8:]
             if short_key not in ansible_args:
                 continue
@@ -271,6 +260,14 @@ def initialize(request):
         kwargs['host_pattern'] = request.getfuncargvalue('ansible_host')
     elif 'ansible_group' in request.fixturenames:
         kwargs['host_pattern'] = request.getfuncargvalue('ansible_group')
+
+    if has_ansible_become:
+        # normalize ansible.ansible_become options
+        kwargs['become'] = kwargs['become'] or kwargs['sudo'] or \
+            ansible.constants.DEFAULT_BECOME
+        kwargs['become_user'] = kwargs['become_user'] or kwargs['sudo_user'] or \
+            ansible.constants.DEFAULT_BECOME_USER
+        #kwargs['become_ask_pass'] = kwargs.get('become_ask_pass', kwargs.get('ask_sudo_pass', kwargs.get('ask_su_pass', ansible.constants.DEFAULT_BECOME_ASK_PASS)))
 
     return AnsibleModule(**kwargs)
 
