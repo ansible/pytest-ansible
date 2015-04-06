@@ -12,3 +12,5 @@ script:
 addons:
   apt_packages:
       - pandoc
+after_success:
+  coveralls

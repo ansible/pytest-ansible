@@ -4,6 +4,7 @@
 [![Supported Python versions](https://pypip.in/py_versions/pytest-ansible/badge.svg)](https://pypi.python.org/pypi/pytest-ansible/)
 [![Downloads](https://pypip.in/d/pytest-ansible/badge.svg)](https://pypi.python.org/pypi/pytest-ansible/)
 [![Build Status](https://travis-ci.org/jlaska/pytest-ansible.svg?branch=master)](https://travis-ci.org/jlaska/pytest-ansible)
+[![Coverage Status](https://coveralls.io/repos/jlaska/pytest-ansible/badge.svg?branch=master)](https://coveralls.io/r/jlaska/pytest-ansible?branch=master)
 [![License](https://pypip.in/license/pytest-ansible/badge.svg)](https://pypi.python.org/pypi/pytest-ansible/)
 
 This repository contains a plugin for ``py.test`` which adds several fixtures

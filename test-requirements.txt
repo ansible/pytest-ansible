@@ -1,3 +1,6 @@
 tox
 pytest
 pypandoc
+pytest-cov
+coverage
+coveralls
