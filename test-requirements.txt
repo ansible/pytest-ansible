@@ -1,6 +1,6 @@
 tox
-pytest
 pypandoc
+pytest
 pytest-cov
 coverage
 coveralls
