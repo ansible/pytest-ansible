@@ -160,6 +160,9 @@ class AnsibleModule(object):
         # Log the module and parameters
         log.debug("[%s] %s: %s, %s" % (self.pattern, self.module_name, module_args, kwargs))
 
+        # Pull out extra arguments for the Runner
+        extra_runner_kwargs = kwargs.pop('_runner_kwargs', {})
+
         # Build module runner object
         kwargs = dict(
             inventory=self.inventory_manager,
@@ -182,6 +185,9 @@ class AnsibleModule(object):
                 sudo=self.options.get('sudo'),
                 sudo_user=self.options.get('sudo_user'),)
             )
+
+        # Fold in extra arguments
+        kwargs.update(extra_runner_kwargs)
 
         runner = ansible.runner.Runner(**kwargs)
 

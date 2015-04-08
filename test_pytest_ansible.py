@@ -193,3 +193,20 @@ class Test_Fixture_Scope(object):
         # assert a single contacted host ...
         assert contacted and len(contacted) == 1
         assert 'localhost' in contacted
+
+
+@pytest.mark.ansible(host_pattern='localhost', connection='local')
+def test_extra_runner_kwargs(ansible_module, tmpdir):
+    '''Extra arguments in _runner_kwargs are passed along to the Runner
+    '''
+    contacted = ansible_module.file(
+        path=tmpdir.strpath, state='absent',
+        _runner_kwargs={
+            'check': True,
+        })
+
+    # Since this was run in check mode, the tmpdir will still exist.
+    assert tmpdir.exists()
+    localhost = contacted['localhost']
+    assert not localhost.get('failed')
+    assert localhost.get('changed')
