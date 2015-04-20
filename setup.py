@@ -1,4 +1,5 @@
 import os
+import sys
 import glob
 import shutil
 from ConfigParser import ConfigParser
@@ -8,28 +9,28 @@ from pytest_ansible import __version__, __author__, __author_email__
 
 
 class PyTest(TestCommand):
+    user_options = [('pytest-args=', 'a', "Arguments to pass to py.test")]
+
+    def initialize_options(self):
+        TestCommand.initialize_options(self)
+        self.pytest_args = []
+
     def finalize_options(self):
         TestCommand.finalize_options(self)
+        self.test_args = []
         self.test_suite = True
 
         # read pytest.addopts from setup.cfg
-        cp = ConfigParser()
-        cp.read('setup.cfg')
-        self.test_args = cp.get('pytest', 'addopts')
-
-        # optionally enable verbosity
-        if self.verbose:
-            self.test_args += ' -v'
-
-        # load additional arguments from PYTEST_ARGS
-        if 'PYTEST_ARGS' in os.environ:
-            self.test_args += ' ' + os.environ.get('PYTEST_ARGS')
+        if not self.pytest_args:
+            cp = ConfigParser()
+            cp.read('setup.cfg')
+            self.pytest_args = cp.get('pytest', 'addopts')
 
     def run_tests(self):
-        # import here, cause outside the eggs aren't loaded elsewhere
+        # import here, cause outside the eggs aren't loaded
         import pytest
-        print "Running: py.test %s" % self.test_args
-        pytest.main(self.test_args)
+        errno = pytest.main(self.pytest_args)
+        sys.exit(errno)
 
 
 class CleanCommand(Command):
@@ -113,8 +114,8 @@ setup(
         ],
     },
     zip_safe=False,
-    tests_requires=['ansible<2.0', 'pytest'],
-    install_requires=['ansible<2.0', 'pytest'],
+    tests_requires=['ansible', 'pytest'],
+    install_requires=['ansible', 'pytest'],
     cmdclass={
         'test': PyTest,
         'clean': CleanCommand,
