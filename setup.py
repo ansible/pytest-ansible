@@ -81,7 +81,7 @@ def long_description(*paths):
     # attempt to import pandoc
     try:
         import pypandoc
-    except ImportError:
+    except ImportError, OSError:
         return result
 
     # attempt md -> rst conversion
