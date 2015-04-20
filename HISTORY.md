@@ -1,5 +1,11 @@
 ## Release History
 
+### 1.2.5 (2015-04-20)
+
+* Add support for ansible-2.0
+* Only validate --ansible-* parameters when using pytest-ansible fixture
+* Include --ansible-user when running module
+
 ### 1.2.4 (2015-03-18)
 
 * Add ansible-1.9 privilege escalation support
