@@ -1,11 +1,12 @@
 # pytest-ansible
 
-[![Current Version](https://pypip.in/v/pytest-ansible/badge.svg)](https://pypi.python.org/pypi/pytest-ansible/)
-[![Supported Python versions](https://pypip.in/py_versions/pytest-ansible/badge.svg)](https://pypi.python.org/pypi/pytest-ansible/)
-[![Downloads](https://pypip.in/d/pytest-ansible/badge.svg)](https://pypi.python.org/pypi/pytest-ansible/)
-[![Build Status](https://travis-ci.org/jlaska/pytest-ansible.svg?branch=master)](https://travis-ci.org/jlaska/pytest-ansible)
-[![Coverage Status](https://coveralls.io/repos/jlaska/pytest-ansible/badge.svg?branch=master)](https://coveralls.io/r/jlaska/pytest-ansible?branch=master)
-[![License](https://pypip.in/license/pytest-ansible/badge.svg)](https://pypi.python.org/pypi/pytest-ansible/)
+[![Build Status](https://img.shields.io/travis/jlaska/pytest-ansible.svg)](https://travis-ci.org/jlaska/pytest-ansible)
+[![Coverage Status](https://img.shields.io/coveralls/jlaska/pytest-ansible.svg)](https://coveralls.io/r/jlaska/pytest-ansible)
+[![Version](https://img.shields.io/pypi/v/pytest-ansible.svg)](https://pypi.python.org/pypi/pytest-ansible/)
+[![Downloads](https://img.shields.io/pypi/dm/pytest-ansible.svg)](https://pypi.python.org/pypi/pytest-ansible/)
+[![License](https://img.shields.io/pypi/l/pytest-ansible.svg)](https://pypi.python.org/pypi/pytest-ansible/)
+[![Supported Python Versions](https://img.shields.io/pypi/pyversions/pytest-ansible.svg)](https://pypi.python.org/pypi/pytest-ansible/)
+
 
 This repository contains a plugin for ``py.test`` which adds several fixtures
 for running ``ansible`` modules, or inspecting ``ansible_facts``.  While one
