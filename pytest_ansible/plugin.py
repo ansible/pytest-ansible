@@ -1,10 +1,12 @@
 import os
 import pytest
 import logging
+import ansible
 import ansible.runner
 import ansible.constants
 import ansible.inventory
 import ansible.utils
+import ansible.errors
 from pytest_ansible.errors import AnsibleNoHostsMatch, AnsibleHostUnreachable
 from pkg_resources import parse_version
 
@@ -13,14 +15,10 @@ has_ansible_become = parse_version(ansible.__version__) >= parse_version('1.9.0'
 
 
 log = logging.getLogger(__name__)
-# ansible.utils.VERBOSITY = 4
 
 
 def pytest_addoption(parser):
     '''Add options to control ansible.'''
-
-    def increment_debug(option, opt, value, parser):
-        ansible.utils.VERBOSITY += 1
 
     group = parser.getgroup('pytest-ansible')
     group.addoption('--ansible-inventory',
@@ -45,6 +43,12 @@ def pytest_addoption(parser):
                     dest='ansible_user',
                     default=ansible.constants.DEFAULT_REMOTE_USER,
                     help='connect as this user (default: %default)')
+    group.addoption('--ansible-debug',
+                    action='store_true',
+                    dest='ansible_debug',
+                    default=False,
+                    help='enable ansible connection debugging')
+
     # classic privilege escalation
     group.addoption('--ansible-sudo',
                     action='store_true',
@@ -76,31 +80,63 @@ def pytest_addoption(parser):
                         help='run operations as this user (default: %default)')
 
 
+def assert_required_ansible_parameters(config):
+    '''Helper method to assert whether the required --ansible-* parameters were
+    provided.
+    '''
+
+    errors = []
+
+    # Verify --ansible-host-pattern was provided
+    ansible_hostname = config.getvalue('ansible_host_pattern')
+    if ansible_hostname is None or ansible_hostname == '':
+        errors.append("Missing required parameter --ansible-host-pattern")
+
+    # NOTE: I don't think this will ever catch issues since ansible_inventory
+    # defaults to '/etc/ansible/hosts'
+    # Verify --ansible-inventory was provided
+    ansible_inventory = config.getvalue('ansible_inventory')
+    if ansible_inventory is None or ansible_inventory == "":
+        errors.append("Unable to find an inventory file, specify one with the --ansible-inventory parameter.")
+
+    if errors:
+        raise pytest.UsageError(*errors)
+
+
+def pytest_collection_modifyitems(session, config, items):
+    '''
+    Validate --ansible-* parameters.
+    '''
+
+    uses_ansible_fixtures = False
+    for item in items:
+        if not hasattr(item, 'fixturenames'):
+            continue
+        if any([fixture.startswith('ansible_') for fixture in item.fixturenames]):
+            # TODO - ignore if they are using a marker
+            marker = item.get_marker('ansible')
+            # if marker and 'inventory' in marker.kwargs:
+            uses_ansible_fixtures = True
+            break
+
+    if uses_ansible_fixtures:
+        # assert required --ansible-* parameters were used
+        assert_required_ansible_parameters(config)
+
+
 def pytest_configure(config):
     '''
     Validate --ansible-* parameters.
     '''
 
-    # Sanitize ansible_hostname
-    ansible_hostname = config.getvalue('ansible_host_pattern')
+    # Enable connection debugging
+    if config.getvalue('ansible_debug'):
+        ansible.utils.VERBOSITY = 5
 
-    # Verify --ansible-host-pattern was provided
-    if not (config.option.help or config.option.showfixtures):
-        if ansible_hostname is None or ansible_hostname == '':
-            msg = "ERROR: Missing required parameter --ansible-host-pattern"
-            print(msg)
-            pytest.exit(msg)
 
-    # Verify --ansible-inventory was provided
-    ansible_inventory = config.getvalue('ansible_inventory')
-    if not (config.option.collectonly or config.option.help):
-        '''
-        Do some validation with the host_pattern?
-        '''
-        if not os.path.exists(ansible_inventory):
-            msg = "ERROR: Unable to find an inventory file, specify one with --ansible-inventory ?"
-            print(msg)
-            pytest.exit(msg)
+#def pytest_collection_modifyitems(session, config, items):
+#    reporter = config.pluginmanager.getplugin("terminalreporter")
+#    reporter.write("ansible: %s\n" % ansible.__version__)
 
 
 class AnsibleModule(object):
@@ -131,7 +167,12 @@ class AnsibleModule(object):
         self.pattern = self.options.get('host_pattern')
 
         # Initialize inventory_manager with the provided inventory and host_pattern
-        self.inventory_manager = ansible.inventory.Inventory(self.inventory)
+        try:
+            self.inventory_manager = ansible.inventory.Inventory(self.inventory)
+        except ansible.errors.AnsibleError, e:
+            # raise
+            # pytest.fail(e)
+            raise pytest.UsageError(e)
         self.inventory_manager.subset(self.pattern)
 
     def __getattr__(self, name):
@@ -171,6 +212,7 @@ class AnsibleModule(object):
             module_args=module_args,
             complex_args=kwargs,
             transport=self.options.get('connection'),
+            remote_user=self.options.get('user'),
         )
 
         # Handle >= 1.9.0 options
@@ -194,7 +236,7 @@ class AnsibleModule(object):
         # Run the module
         results = runner.run()
 
-        # FIXME - improve result output logging
+        # Log the results
         log.debug(results)
 
         # FIXME - should command failures raise an exception, or return?
@@ -207,6 +249,7 @@ class AnsibleModule(object):
         # Raise exception if host(s) unreachable
         # FIXME - if multiple hosts were involved, should an exception be raised?
         if results['dark']:
+            print results['dark']
             raise AnsibleHostUnreachable("Host unreachable", dark=results['dark'], contacted=results['contacted'])
 
         # No hosts contacted
@@ -322,10 +365,26 @@ def ansible_facts(ansible_module):
 
 def pytest_generate_tests(metafunc):
     if 'ansible_host' in metafunc.fixturenames:
-        # this doesn't support function/cls fixture overrides
-        inventory_manager = ansible.inventory.Inventory(metafunc.config.getvalue('ansible_inventory'))
+        # assert required --ansible-* parameters were used
+        assert_required_ansible_parameters(metafunc.config)
+        # TODO: this doesn't support function/cls fixture overrides
+        try:
+            inventory_manager = ansible.inventory.Inventory(metafunc.config.getvalue('ansible_inventory'))
+        except ansible.errors.AnsibleError, e:
+            raise pytest.UsageError(e)
         pattern = metafunc.config.getvalue('ansible_host_pattern')
         metafunc.parametrize("ansible_host", inventory_manager.list_hosts(pattern))
     if 'ansible_group' in metafunc.fixturenames:
-        inventory_manager = ansible.inventory.Inventory(metafunc.config.getvalue('ansible_inventory'))
+        # assert required --ansible-* parameters were used
+        assert_required_ansible_parameters(metafunc.config)
+        try:
+            inventory_manager = ansible.inventory.Inventory(metafunc.config.getvalue('ansible_inventory'))
+        except ansible.errors.AnsibleError, e:
+            raise pytest.UsageError(e)
         metafunc.parametrize("ansible_group", inventory_manager.list_groups())
+
+
+def pytest_report_header(config):
+    '''Include the version of ansible in the report header
+    '''
+    return 'ansible: %s' % ansible.__version__
