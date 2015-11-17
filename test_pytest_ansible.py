@@ -1,6 +1,7 @@
 import pytest
 import ansible
-from _pytest.main import EXIT_OK, EXIT_TESTSFAILED, EXIT_USAGEERROR
+from pkg_resources import parse_version
+from _pytest.main import EXIT_OK, EXIT_TESTSFAILED, EXIT_USAGEERROR, EXIT_NOTESTSCOLLECTED
 
 
 pytest_plugins = 'pytester'
@@ -48,7 +49,7 @@ def test_report_header(testdir, option):
     '''
 
     result = testdir.runpytest(*option.args)
-    assert result.ret == EXIT_OK
+    assert result.ret == EXIT_NOTESTSCOLLECTED
     result.stdout.fnmatch_lines([
         'ansible: %s' % ansible.__version__,
     ])
