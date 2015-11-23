@@ -367,3 +367,28 @@ def test_dark_with_debug_enabled(testdir, option):
         '*REMOTE_MODULE ping',
         '*EXEC ssh *',
     ])
+
+
+def test_extra_runner_kwargs(testdir, option):
+    '''Extra arguments in _runner_kwargs are passed along to the Runner
+    '''
+    src = '''
+        import pytest
+        def test_func(ansible_module, tmpdir):
+            contacted = ansible_module.file(
+                path=tmpdir.strpath, state='absent',
+                _runner_kwargs={
+                    'check': True,
+                })
+
+            # Since this was run in check mode, the tmpdir will still exist.
+            assert tmpdir.exists()
+            localhost = contacted['localhost']
+            assert not localhost.get('failed')
+            assert localhost.get('changed')
+    '''
+    testdir.makepyfile(src)
+    result = testdir.runpytest(*option.args + ['--ansible-inventory', str(option.inventory),
+                                               '--ansible-host-pattern', 'local'])
+    assert result.ret == EXIT_OK
+    assert result.parseoutcomes()['passed'] == 1
