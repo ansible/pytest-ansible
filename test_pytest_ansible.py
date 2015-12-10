@@ -1,10 +1,15 @@
 import pytest
-import ansible
 from pkg_resources import parse_version
 from _pytest.main import EXIT_OK, EXIT_TESTSFAILED, EXIT_USAGEERROR, EXIT_NOTESTSCOLLECTED
 
+# Indicate whether ansible-2.* is available
+import ansible
+requires_ansible_v1 = pytest.mark.skipif(parse_version(ansible.__version__) >= parse_version('2.0.0'),
+                                         reason="requires ansible-1.*")
+requires_ansible_v2 = pytest.mark.skipif(parse_version(ansible.__version__) < parse_version('2.0.0'),
+                                         reason="requires ansible-2.*")
 
-pytest_plugins = 'pytester'
+pytest_plugins = 'pytester',
 
 
 class PyTestOption(object):
@@ -50,6 +55,9 @@ def test_report_header(testdir, option):
 
     result = testdir.runpytest(*option.args)
     assert result.ret == EXIT_NOTESTSCOLLECTED
+    print '\n'.join(result.stdout.lines)
+    print '\n'.join(result.stderr.lines)
+    print result.stderr.lines
     result.stdout.fnmatch_lines([
         'ansible: %s' % ansible.__version__,
     ])
@@ -136,7 +144,8 @@ def test_params_required_with_inventory_without_host_pattern(testdir, option):
     ])
 
 
-def test_params_required_with_bogus_inventory(testdir, option):
+@requires_ansible_v1
+def test_params_required_with_bogus_inventory_v1(testdir, option):
     src = '''
         import pytest
         def test_func(ansible_module):
@@ -147,10 +156,27 @@ def test_params_required_with_bogus_inventory(testdir, option):
     assert result.ret == EXIT_TESTSFAILED
     result.stdout.fnmatch_lines([
         'UsageError: Unable to find an inventory file, specify one with -i ?',
+        # 'UsageError: ERROR! Unable to find an inventory file (no such file), specify one with -i ?',]
     ])
 
 
-def test_params_required_without_inventory_with_host_pattern(testdir, option):
+@requires_ansible_v2
+def test_params_required_with_bogus_inventory_v2(testdir, option):
+    src = '''
+        import pytest
+        def test_func(ansible_module):
+            assert True
+    '''
+    testdir.makepyfile(src)
+    result = testdir.runpytest(*option.args + ['--ansible-inventory', 'no such file', '--ansible-host-pattern', 'all'])
+    assert result.ret == EXIT_TESTSFAILED
+    result.stdout.fnmatch_lines([
+        'UsageError: ERROR! Unable to find an inventory file (no such file), specify one with -i ?',
+    ])
+
+
+@requires_ansible_v1
+def test_params_required_without_inventory_with_host_pattern_v1(testdir, option):
     src = '''
         import pytest
         def test_func(ansible_module):
@@ -161,6 +187,21 @@ def test_params_required_without_inventory_with_host_pattern(testdir, option):
     assert result.ret == EXIT_TESTSFAILED
     result.stdout.fnmatch_lines([
         'UsageError: Unable to find an inventory file, specify one with -i ?',
+    ])
+
+
+@requires_ansible_v2
+def test_params_required_without_inventory_with_host_pattern_v2(testdir, option):
+    src = '''
+        import pytest
+        def test_func(ansible_module):
+            assert True
+    '''
+    testdir.makepyfile(src)
+    result = testdir.runpytest(*option.args + ['--ansible-host-pattern', 'all'])
+    assert result.ret == EXIT_TESTSFAILED
+    result.stdout.fnmatch_lines([
+        'UsageError: ERROR! Unable to find an inventory file (/etc/ansible/hosts), specify one with -i ?',
     ])
 
 
