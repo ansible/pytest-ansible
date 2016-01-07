@@ -13,8 +13,10 @@ has_ansible_become = parse_version(ansible.__version__) >= parse_version('1.9.0'
 has_ansible_v2 = parse_version(ansible.__version__) >= parse_version('2.0.0')
 
 if has_ansible_v2:
+    from ansible.cli.adhoc import AdHocCLI
+    from ansible.plugins.callback import CallbackBase
     from ansible.executor.task_queue_manager import TaskQueueManager
-    from ansible.parsing import DataLoader
+    from ansible.parsing.dataloader import DataLoader
     from ansible.playbook.play import Play
     from ansible.vars import VariableManager
     from ansible.cli import CLI
@@ -365,6 +367,24 @@ class AnsibleV1Module(object):
         return results['contacted']
 
 
+if has_ansible_v2:
+    class ResultAccumulator(CallbackBase):
+        def __init__(self, *args, **kwargs):
+            super(ResultAccumulator, self).__init__(*args, **kwargs)
+            self.results = []
+            self.contacted = []
+            self.unreachable = set()
+
+        def v2_runner_on_failed(self, result, *args, **kwargs):
+            self.contacted.append(result._host.get_name())
+            self.results.append(result)
+
+        v2_runner_on_ok = v2_runner_on_failed
+
+        def v2_runner_on_unreachable(self, result):
+            self.unreachable.append(result._host.get_name())
+
+
 class AnsibleV2Module(AnsibleV1Module):
 
     def __init__(self, **kwargs):
@@ -386,7 +406,7 @@ class AnsibleV2Module(AnsibleV1Module):
 
     def initialize_inventory(self):
         # Initialize inventory_manager with the provided inventory and host_pattern
-        self.loader = DataLoader(vault_password=None)
+        self.loader = DataLoader()
         self.variable_manager = VariableManager()
 
         try:
@@ -399,6 +419,8 @@ class AnsibleV2Module(AnsibleV1Module):
         '''
         The API provided by ansible is not intended as a public API.
         '''
+
+        """
         # Assemble module argument string
         module_args = list()
         if args:
@@ -442,13 +464,15 @@ class AnsibleV2Module(AnsibleV1Module):
         )
         (options, args) = parser.parse_args([])
 
+        cb = ResultAccumulator()
+
         kwargs = dict(
             inventory=self.inventory_manager,
             variable_manager=self.variable_manager,
             loader=self.loader,
-            display=Display(),
+            #display=Display(),
             options=options,
-            stdout_callback='minimal',
+            stdout_callback=cb,
             passwords={'conn_pass': None, 'become_pass': None},
         )
 
@@ -469,7 +493,15 @@ class AnsibleV2Module(AnsibleV1Module):
         finally:
             if tqm:
                 tqm.cleanup()
-
+        """
+        params = ['pytest-ansible', self.pattern]
+        params.extend(['-m', self.module_name])
+        if args:
+            params.extend(['-a', ' '.join(args)])
+        cb = ResultAccumulator()
+        cli = AdHocCLI(params, callback=cb)
+        cli.parse()
+        cli.run()
         # TODO - inspect tqm._stats (look at default.py)
 
         # TODO - Loop over host list manually, and use TaskExecutor()
@@ -481,7 +513,7 @@ class AnsibleV2Module(AnsibleV1Module):
         # > hosts_left = [host for host in self._inventory.get_hosts(iterator._play.hosts) if host.name not in self._tqm._unreachable_hosts]
 
         # Log the results
-        log.debug(results)
+        log.debug(cb.results)
 
         # FIXME - should command failures raise an exception, or return?
         # If we choose to raise, callers will need to adapt accordingly
@@ -492,17 +524,17 @@ class AnsibleV2Module(AnsibleV1Module):
 
         # Raise exception if host(s) unreachable
         # FIXME - if multiple hosts were involved, should an exception be raised?
-        if results['dark']:
-            print results['dark']
-            raise AnsibleHostUnreachable("Host unreachable", dark=results['dark'], contacted=results['contacted'])
+        if cb.unreachable:
+            print(cb.unreachable)
+            raise AnsibleError("Host(s) unreachable: %s, contacted: %s" % (cb.unreachable, cb.contacted))
 
         # No hosts contacted
-        # if not results['contacted']:
+        # if not cb.contacted:
         #     raise ansible.errors.AnsibleConnectionFailed("Provided hosts list is empty")
 
         # Success!
         # return results
-        return results['contacted']
+        return cb.results
 
 
 @pytest.fixture(scope='class')
