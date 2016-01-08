@@ -116,7 +116,7 @@ setup(
         ],
     },
     zip_safe=False,
-    tests_require=['ansible', 'tox', 'pytest', 'pytest-cov', 'setuptools'],
+    tests_require=['ansible', 'tox', 'pytest', 'pytest-cov'],
     install_requires=['ansible', 'pytest'],
     cmdclass={
         'test': PyTest,

@@ -245,6 +245,7 @@ class PyTestAnsiblePlugin:
                 ansible.constants.DEFAULT_BECOME_USER
             #kwargs['become_ask_pass'] = kwargs.get('become_ask_pass', kwargs.get('ask_sudo_pass', kwargs.get('ask_su_pass', ansible.constants.DEFAULT_BECOME_ASK_PASS)))
 
+        log.debug("kwargs: %s" % kwargs)
         if has_ansible_v2:
             return AnsibleV2Module(**kwargs)
         else:

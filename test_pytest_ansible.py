@@ -18,7 +18,7 @@ class PyTestOption(object):
         self.config = config
 
         # Create inventory file
-        self.inventory = testdir.makefile('.ini', '''
+        self.inventory = testdir.makefile('.ini', inventory='''
             [local]
             localhost ansible_connection=local ansible_python_interpreter='/usr/bin/env python'
             127.0.0.2 ansible_connection=local ansible_python_interpreter='/usr/bin/env python'
@@ -32,6 +32,8 @@ class PyTestOption(object):
             unreachable-host-3.example.com
         ''')
 
+        # Create ansible.cfg file
+        # self.ansible_cfg = testdir.makefile('.cfg', ansible='''[ssh_connection]\ncontrol_path = %(directory)s/%%h-%%r''')
 
     @property
     def args(self):
@@ -224,6 +226,7 @@ def test_contacted_with_params(testdir, option):
 
     '''
     testdir.makepyfile(src)
+    print(option.args + ['--ansible-inventory', str(option.inventory), '--ansible-host-pattern', 'local'])
     result = testdir.runpytest(*option.args + ['--ansible-inventory', str(option.inventory), '--ansible-host-pattern', 'local'])
     assert result.ret == EXIT_OK
     assert result.parseoutcomes()['passed'] == 1
