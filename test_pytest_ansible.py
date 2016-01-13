@@ -385,7 +385,6 @@ def test_dark_with_params_and_host_pattern_marker(testdir, option):
             for result in dark.values():
                 assert 'failed' in result or 'unreachable' in result
                 assert result.get('failed', False) or result.get('unreachable', False)
-                print result['msg']
                 if ansible.__version__.startswith('2'):
                     assert result['msg'].startswith('ERROR! SSH encountered an unknown error')
                 else:
