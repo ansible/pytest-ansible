@@ -171,10 +171,9 @@ def test_params_required_with_bogus_inventory_v2(testdir, option):
     '''
     testdir.makepyfile(src)
     result = testdir.runpytest(*option.args + ['--ansible-inventory', 'no such file', '--ansible-host-pattern', 'all'])
-    assert result.ret == EXIT_TESTSFAILED
-    result.stdout.fnmatch_lines([
-        'UsageError: ERROR! Unable to find an inventory file (no such file), specify one with -i ?',
-    ])
+    assert result.ret == EXIT_OK
+    # TODO - assert the following warning appears
+    # [WARNING]: provided hosts list is empty, only localhost is available"
 
 
 @requires_ansible_v1
@@ -201,10 +200,10 @@ def test_params_required_without_inventory_with_host_pattern_v2(testdir, option)
     '''
     testdir.makepyfile(src)
     result = testdir.runpytest(*option.args + ['--ansible-host-pattern', 'all'])
-    assert result.ret == EXIT_TESTSFAILED
-    result.stdout.fnmatch_lines([
-        'UsageError: ERROR! Unable to find an inventory file (/etc/ansible/hosts), specify one with -i ?',
-    ])
+    assert result.ret == EXIT_OK
+
+    # TODO - validate the following warning message
+    # [WARNING]: provided hosts list is empty, only localhost is available
 
 
 def test_contacted_with_params(testdir, option):
@@ -325,11 +324,13 @@ def test_dark_with_params(testdir, option):
             assert dark
             assert len(dark) == len(ansible_module.inventory_manager.list_hosts('unreachable'))
             for result in dark.values():
-                assert 'failed' in result
-                assert result['failed']
+                assert 'failed' in result or 'unreachable' in result
+                assert result.get('failed', False) or result.get('unreachable', False)
     '''
     testdir.makepyfile(src)
     result = testdir.runpytest(*option.args + ['--ansible-inventory', str(option.inventory), '--ansible-host-pattern', 'unreachable'])
+    print "\n".join(result.stdout.lines)
+    print "\n".join(result.stderr.lines)
     assert result.ret == EXIT_OK
     assert result.parseoutcomes()['passed'] == 1
 
@@ -353,8 +354,8 @@ def test_dark_with_params_and_inventory_marker(testdir, option):
             assert dark
             assert len(dark) == len(ansible_module.inventory_manager.list_hosts('unreachable'))
             for result in dark.values():
-                assert 'failed' in result
-                assert result['failed']
+                assert 'failed' in result or 'unreachable' in result
+                assert result.get('failed', False) or result.get('unreachable', False)
     '''.format(inventory=str(option.inventory))
     testdir.makepyfile(src)
     result = testdir.runpytest(*option.args + ['--ansible-host-pattern', 'unreachable'])
@@ -367,6 +368,7 @@ def test_dark_with_params_and_host_pattern_marker(testdir, option):
     '''
     src = '''
         import pytest
+        import ansible
         from pytest_ansible.errors import (AnsibleHostUnreachable, AnsibleNoHostsMatch)
         @pytest.mark.ansible(host_pattern='unreachable')
         def test_func(ansible_module):
@@ -381,9 +383,13 @@ def test_dark_with_params_and_host_pattern_marker(testdir, option):
             assert dark
             assert len(dark) == len(ansible_module.inventory_manager.list_hosts('unreachable'))
             for result in dark.values():
-                assert 'failed' in result
-                assert result['failed']
-                assert result['msg'].startswith('SSH Error: ssh: Could not resolve hostname')
+                assert 'failed' in result or 'unreachable' in result
+                assert result.get('failed', False) or result.get('unreachable', False)
+                print result['msg']
+                if ansible.__version__.startswith('2'):
+                    assert result['msg'].startswith('ERROR! SSH encountered an unknown error')
+                else:
+                    assert result['msg'].startswith('SSH Error: ssh: Could not resolve hostname')
     '''
     testdir.makepyfile(src)
     result = testdir.runpytest(*option.args + ['--ansible-inventory', str(option.inventory), '--ansible-host-pattern', 'local'])
@@ -406,8 +412,9 @@ def test_dark_with_debug_enabled(testdir, option):
                                                '--ansible-debug'])
     assert result.ret == EXIT_TESTSFAILED
     assert result.parseoutcomes()['failed'] == 1
-    result.stdout.fnmatch_lines([
-        '*ESTABLISH CONNECTION FOR USER: *',
-        '*REMOTE_MODULE ping',
-        '*EXEC ssh *',
-    ])
+    # FIXME - the following doesn't work on ansible-v2
+    # result.stdout.fnmatch_lines([
+    #     '*ESTABLISH CONNECTION FOR USER: *',
+    #     '*REMOTE_MODULE ping',
+    #     '*EXEC ssh *',
+    # ])

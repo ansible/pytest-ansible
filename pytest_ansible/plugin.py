@@ -23,6 +23,7 @@ if has_ansible_v2:
     from ansible.inventory import Inventory
     from ansible.parsing.splitter import parse_kv
     from ansible.utils.display import Display
+    display = Display()
 else:
     from ansible.runner import Runner
     from ansible.inventory import Inventory
@@ -109,7 +110,10 @@ def pytest_configure(config):
 
     # Enable connection debugging
     if config.getvalue('ansible_debug'):
-        ansible.utils.VERBOSITY = 5
+        if has_ansible_v2:
+            display.verbosity = 5
+        else:
+            ansible.utils.VERBOSITY = 5
 
     assert config.pluginmanager.register(PyTestAnsiblePlugin(config), "ansible")
 
@@ -356,7 +360,6 @@ class AnsibleV1Module(object):
         # Raise exception if host(s) unreachable
         # FIXME - if multiple hosts were involved, should an exception be raised?
         if results['dark']:
-            print results['dark']
             raise AnsibleHostUnreachable("Host unreachable", dark=results['dark'], contacted=results['contacted'])
 
         # No hosts contacted
@@ -372,18 +375,22 @@ if has_ansible_v2:
     class ResultAccumulator(CallbackBase):
         def __init__(self, *args, **kwargs):
             super(ResultAccumulator, self).__init__(*args, **kwargs)
-            self.results = []
-            self.contacted = []
-            self.unreachable = set()
+            self.contacted = {}
+            self.unreachable = {}
 
         def v2_runner_on_failed(self, result, *args, **kwargs):
-            self.contacted.append(result._host.get_name())
-            self.results.append(result)
+            self.contacted[result._host.get_name()] = result._result
+            print dir(result._result)
+            print result._result
 
         v2_runner_on_ok = v2_runner_on_failed
 
         def v2_runner_on_unreachable(self, result):
-            self.unreachable.append(result._host.get_name())
+            self.unreachable[result._host.get_name()] = result._result
+
+        @property
+        def results(self):
+            return dict(contacted=self.contacted, unreachable=self.unreachable)
 
 
 class AnsibleV2Module(AnsibleV1Module):
@@ -421,7 +428,6 @@ class AnsibleV2Module(AnsibleV1Module):
         The API provided by ansible is not intended as a public API.
         '''
 
-        """
         # Assemble module argument string
         module_args = list()
         if args:
@@ -436,6 +442,7 @@ class AnsibleV2Module(AnsibleV1Module):
         # Log the module and parameters
         log.debug("[%s] %s: %s, %s" % (self.pattern, self.module_name, module_args, kwargs))
 
+        """
         # Build module runner object
         kwargs = dict(
             inventory=self.inventory_manager,
@@ -452,6 +459,7 @@ class AnsibleV2Module(AnsibleV1Module):
             become_method=self.options.get('become_method'),
             become_user=self.options.get('become_user'),
         )
+        """
 
         parser = CLI.base_parser(
             runas_opts=True,
@@ -462,8 +470,10 @@ class AnsibleV2Module(AnsibleV1Module):
             runtask_opts=True,
             vault_opts=True,
             fork_opts=True,
+            module_opts=True,
         )
         (options, args) = parser.parse_args([])
+        options.verbosity = 5
 
         cb = ResultAccumulator()
 
@@ -471,7 +481,6 @@ class AnsibleV2Module(AnsibleV1Module):
             inventory=self.inventory_manager,
             variable_manager=self.variable_manager,
             loader=self.loader,
-            #display=Display(),
             options=options,
             stdout_callback=cb,
             passwords={'conn_pass': None, 'become_pass': None},
@@ -494,24 +503,6 @@ class AnsibleV2Module(AnsibleV1Module):
         finally:
             if tqm:
                 tqm.cleanup()
-        """
-        params = ['pytest-ansible', self.pattern]
-        params.extend(['-m', self.module_name])
-        if args:
-            params.extend(['-a', ' '.join(args)])
-        cb = ResultAccumulator()
-        cli = AdHocCLI(params, callback=cb)
-        cli.parse()
-        cli.run()
-        # TODO - inspect tqm._stats (look at default.py)
-
-        # TODO - Loop over host list manually, and use TaskExecutor()
-
-        # TODO - look into using a callback - to get individual results
-        #      - thanks Toshio! https://gist.github.com/abadger/264652cf1fd437b053dd
-
-        # TODO - to get the contacted hosts, look at the linear.py strategy
-        # > hosts_left = [host for host in self._inventory.get_hosts(iterator._play.hosts) if host.name not in self._tqm._unreachable_hosts]
 
         # Log the results
         log.debug(cb.results)
@@ -526,8 +517,7 @@ class AnsibleV2Module(AnsibleV1Module):
         # Raise exception if host(s) unreachable
         # FIXME - if multiple hosts were involved, should an exception be raised?
         if cb.unreachable:
-            print(cb.unreachable)
-            raise AnsibleError("Host(s) unreachable: %s, contacted: %s" % (cb.unreachable, cb.contacted))
+            raise AnsibleHostUnreachable("Host unreachable", dark=cb.unreachable, contacted=cb.contacted)
 
         # No hosts contacted
         # if not cb.contacted:
@@ -535,7 +525,7 @@ class AnsibleV2Module(AnsibleV1Module):
 
         # Success!
         # return results
-        return cb.results
+        return cb.contacted
 
 
 @pytest.fixture(scope='class')
