@@ -1,2 +1,2 @@
-include *.py inventory README* LICENSE
+include *.py inventory README* LICENSE setup.cfg
 exclude test_*
