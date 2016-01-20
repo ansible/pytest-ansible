@@ -380,8 +380,6 @@ if has_ansible_v2:
 
         def v2_runner_on_failed(self, result, *args, **kwargs):
             self.contacted[result._host.get_name()] = result._result
-            print dir(result._result)
-            print result._result
 
         v2_runner_on_ok = v2_runner_on_failed
 
@@ -423,16 +421,14 @@ class AnsibleV2Module(AnsibleV1Module):
             raise pytest.UsageError(e)
         self.variable_manager.set_inventory(self.inventory_manager)
 
-    def __run(self, *args, **kwargs):
+    def __run(self, *module_args, **complex_args):
         '''
         The API provided by ansible is not intended as a public API.
         '''
 
         # Assemble module argument string
-        module_args = list()
-        if args:
-            module_args += list(args)
-        module_args = ' '.join(module_args)
+        if module_args:
+            complex_args.update(dict(_raw_params=' '.join(module_args)))
 
         # Assert hosts matching the provided pattern exist
         hosts = self.inventory_manager.list_hosts(self.pattern)
@@ -440,7 +436,7 @@ class AnsibleV2Module(AnsibleV1Module):
             raise AnsibleNoHostsMatch("No hosts match:'%s'" % self.pattern)
 
         # Log the module and parameters
-        log.debug("[%s] %s: %s, %s" % (self.pattern, self.module_name, module_args, kwargs))
+        log.debug("[%s] %s: %s" % (self.pattern, self.module_name, complex_args))
 
         """
         # Build module runner object
@@ -460,7 +456,6 @@ class AnsibleV2Module(AnsibleV1Module):
             become_user=self.options.get('become_user'),
         )
         """
-
         parser = CLI.base_parser(
             runas_opts=True,
             async_opts=True,
@@ -491,7 +486,7 @@ class AnsibleV2Module(AnsibleV1Module):
             name="Ansible Ad-Hoc",
             hosts=self.pattern,
             gather_facts='no',
-            tasks=[ dict(action=dict(module=self.module_name, args=parse_kv(module_args))), ]
+            tasks=[ dict(action=dict(module=self.module_name, args=complex_args)), ]
         )
         play = Play().load(play_ds, variable_manager=self.variable_manager, loader=self.loader)
 
