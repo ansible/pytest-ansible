@@ -1,6 +1,6 @@
 ## Release History
 
-### 1.3.0 (pending)
+### 1.3.0 (2016-01-20)
 
 * Add support for ansible-2.0
 
