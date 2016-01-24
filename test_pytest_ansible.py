@@ -307,7 +307,9 @@ def test_contacted_with_params_and_inventory_host_pattern_marker(testdir, option
 
 
 def test_become(testdir, option):
-    '''FIXME
+    '''Test --ansible-become* parameters.  This test doesn't actually 'sudo',
+    but verifies that 'sudo' was attempted by asserting
+    '--ansible-become-user=<bogus_username>' fails as expected.
     '''
     src = '''
         import pytest
@@ -322,22 +324,28 @@ def test_become(testdir, option):
             assert contacted
             assert len(contacted) == len(ansible_module.inventory_manager.list_hosts('localhost'))
             for result in contacted.values():
-                print result
-                print os.environ
-                assert 'failed' in result
-                assert result['failed']
+                assert 'failed' in result, "Missing expected field in JSON response: failed"
+                assert result['failed'], "Test did not fail as expected"
                 if ansible.__version__.startswith('2'):
                     assert 'module_stderr' in result
-                    assert 'sudo: a password is required' in result['module_stderr']
+                    assert 'sudo: unknown user: asdfasdf' in result['module_stderr']
+                    # assert 'sudo: a password is required' in result['module_stderr']
                 else:
-                    assert 'msg' in result
-                    assert re.match('\[sudo via ansible, [^\]]*\] password:', result['msg']) is not None
+                    assert 'msg' in result, "Missing expected field in JSON response: msg"
+                    assert 'sudo: unknown user: asdfasdf' in result['msg']
+                    # assert re.match('\[sudo via ansible, [^\]]*\] password:', result['msg']) is not None
                     # "sudo: must be setuid root"
 
     ''' % str(option.inventory)
     testdir.makepyfile(src)
-    result = testdir.runpytest(*option.args + ['--ansible-inventory', str(option.inventory),
-        '--ansible-host-pattern', 'localhost', '--ansible-become'])
+    result = testdir.runpytest(
+        *option.args + [
+            '--ansible-inventory', str(option.inventory),
+            '--ansible-host-pattern', 'localhost', # run against a single host
+            '--ansible-become', # Enable become support
+            '--ansible-become-user', 'asdfasdf' # Connect using a bogus username
+        ]
+    )
     assert result.ret == EXIT_OK
     assert result.parseoutcomes()['passed'] == 1
 
