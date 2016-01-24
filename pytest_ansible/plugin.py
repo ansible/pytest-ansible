@@ -438,24 +438,6 @@ class AnsibleV2Module(AnsibleV1Module):
         # Log the module and parameters
         log.debug("[%s] %s: %s" % (self.pattern, self.module_name, complex_args))
 
-        """
-        # Build module runner object
-        kwargs = dict(
-            inventory=self.inventory_manager,
-            variable_manager=self.variable_manager,
-            loader=self.loader,
-            pattern=self.pattern,
-            module_name=self.module_name,
-            module_args=module_args,
-            complex_args=kwargs,
-            options=self.options,
-            transport=self.options.get('connection'),
-            remote_user=self.options.get('user'),
-            become=self.options.get('become'),
-            become_method=self.options.get('become_method'),
-            become_user=self.options.get('become_user'),
-        )
-        """
         parser = CLI.base_parser(
             runas_opts=True,
             async_opts=True,
@@ -468,8 +450,16 @@ class AnsibleV2Module(AnsibleV1Module):
             module_opts=True,
         )
         (options, args) = parser.parse_args([])
-        options.verbosity = 5
 
+        # Pass along cli options
+        options.verbosity = 5
+        options.connection = self.options.get('connection')
+        options.remote_user = self.options.get('user')
+        options.become = self.options.get('become')
+        options.become_method = self.options.get('become_method')
+        options.become_user = self.options.get('become_user')
+
+        # Initialize callback to capture module JSON responses
         cb = ResultAccumulator()
 
         kwargs = dict(
@@ -478,7 +468,7 @@ class AnsibleV2Module(AnsibleV1Module):
             loader=self.loader,
             options=options,
             stdout_callback=cb,
-            passwords={'conn_pass': None, 'become_pass': None},
+            passwords=dict(conn_pass=None, become_pass=None),
         )
 
         # create a pseudo-play to execute the specified module via a single task
@@ -486,7 +476,13 @@ class AnsibleV2Module(AnsibleV1Module):
             name="Ansible Ad-Hoc",
             hosts=self.pattern,
             gather_facts='no',
-            tasks=[ dict(action=dict(module=self.module_name, args=complex_args)), ]
+            tasks=[
+                dict(
+                    action=dict(
+                        module=self.module_name, args=complex_args
+                    )
+                ),
+            ]
         )
         play = Play().load(play_ds, variable_manager=self.variable_manager, loader=self.loader)
 
