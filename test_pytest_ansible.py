@@ -313,6 +313,7 @@ def test_become(testdir, option):
         import pytest
         import ansible
         import re
+        import os
         @pytest.mark.ansible(inventory='%s', host_pattern='localhost')
         def test_func(ansible_module):
             contacted = ansible_module.ping()
@@ -321,6 +322,8 @@ def test_become(testdir, option):
             assert contacted
             assert len(contacted) == len(ansible_module.inventory_manager.list_hosts('localhost'))
             for result in contacted.values():
+                print result
+                print os.environ
                 assert 'failed' in result
                 assert result['failed']
                 if ansible.__version__.startswith('2'):
@@ -328,7 +331,8 @@ def test_become(testdir, option):
                     assert 'sudo: a password is required' in result['module_stderr']
                 else:
                     assert 'msg' in result
-                    assert re.match('\[sudo via ansible, [^\]]*\] password:', result['msg'])
+                    assert re.match('\[sudo via ansible, [^\]]*\] password:', result['msg']) is not None
+                    # "sudo: must be setuid root"
 
     ''' % str(option.inventory)
     testdir.makepyfile(src)
