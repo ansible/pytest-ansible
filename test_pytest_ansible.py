@@ -306,6 +306,38 @@ def test_contacted_with_params_and_inventory_host_pattern_marker(testdir, option
     assert result.parseoutcomes()['passed'] == 1
 
 
+def test_become(testdir, option):
+    '''FIXME
+    '''
+    src = '''
+        import pytest
+        import ansible
+        import re
+        @pytest.mark.ansible(inventory='%s', host_pattern='localhost')
+        def test_func(ansible_module):
+            contacted = ansible_module.ping()
+
+            # assert contacted hosts ...
+            assert contacted
+            assert len(contacted) == len(ansible_module.inventory_manager.list_hosts('localhost'))
+            for result in contacted.values():
+                assert 'failed' in result
+                assert result['failed']
+                if ansible.__version__.startswith('2'):
+                    assert 'module_stderr' in result
+                    assert 'sudo: a password is required' in result['module_stderr']
+                else:
+                    assert 'msg' in result
+                    assert re.match('\[sudo via ansible, [^\]]*\] password:', result['msg'])
+
+    ''' % str(option.inventory)
+    testdir.makepyfile(src)
+    result = testdir.runpytest(*option.args + ['--ansible-inventory', str(option.inventory),
+        '--ansible-host-pattern', 'localhost', '--ansible-become'])
+    assert result.ret == EXIT_OK
+    assert result.parseoutcomes()['passed'] == 1
+
+
 def test_dark_with_params(testdir, option):
     '''FIXME
     '''
