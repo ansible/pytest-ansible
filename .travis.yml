@@ -1,5 +1,6 @@
 sudo: false
 language: python
+sudo: required # needed for test_become
 env:
     - TOXENV=py26-ansible_v19
     - TOXENV=py27-ansible_v19
