@@ -9,11 +9,10 @@ env:
     - TOXENV=py26-ansible_devel
     - TOXENV=py27-ansible_devel
 install:
-  - pip install -r test-requirements.txt --use-mirrors
+	- pip install -r test-requirements.txt
 script:
-  - tox
-addons:
-  apt_packages:
-      - pandoc
+	- tox
+before_script:
+    - TOXENV=lint tox
 after_success:
-  coveralls
+    - TOXENV=coveralls tox
