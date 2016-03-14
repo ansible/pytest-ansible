@@ -9,9 +9,9 @@ env:
     - TOXENV=py26-ansible_devel
     - TOXENV=py27-ansible_devel
 install:
-	- pip install -r test-requirements.txt
+    - pip install -r test-requirements.txt
 script:
-	- tox
+    - tox
 before_script:
     - TOXENV=lint tox
 after_success:
