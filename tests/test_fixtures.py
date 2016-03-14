@@ -1,54 +1,5 @@
 import pytest
-from pkg_resources import parse_version
 from _pytest.main import EXIT_OK, EXIT_TESTSFAILED, EXIT_USAGEERROR, EXIT_NOTESTSCOLLECTED
-
-# Indicate whether ansible-2.* is available
-import ansible
-requires_ansible_v1 = pytest.mark.skipif(parse_version(ansible.__version__) >= parse_version('2.0.0'),
-                                         reason="requires ansible-1.*")
-requires_ansible_v2 = pytest.mark.skipif(parse_version(ansible.__version__) < parse_version('2.0.0'),
-                                         reason="requires ansible-2.*")
-
-pytest_plugins = 'pytester',
-
-
-class PyTestOption(object):
-
-    def __init__(self, config, testdir):
-        self.config = config
-
-        # Create inventory file
-        self.inventory = testdir.makefile('.ini', inventory='''
-            [local]
-            localhost ansible_connection=local ansible_python_interpreter='/usr/bin/env python'
-            127.0.0.2 ansible_connection=local ansible_python_interpreter='/usr/bin/env python'
-            127.0.0.3 ansible_connection=local ansible_python_interpreter='/usr/bin/env python'
-            127.0.0.4 ansible_connection=local ansible_python_interpreter='/usr/bin/env python'
-            127.0.0.5 ansible_connection=local ansible_python_interpreter='/usr/bin/env python'
-
-            [unreachable]
-            unreachable-host-1.example.com
-            unreachable-host-2.example.com
-            unreachable-host-3.example.com
-        ''')
-
-        # Create ansible.cfg file
-        # self.ansible_cfg = testdir.makefile('.cfg', ansible='''[ssh_connection]\ncontrol_path = %(directory)s/%%h-%%r''')
-
-    @property
-    def args(self):
-        args = list()
-        args.append('--tb')
-        args.append('native')
-        return args
-
-
-@pytest.fixture()
-def option(request, testdir):
-    '''Returns an instance of PyTestOption to help tests pass parameters and
-    use a common inventory file.
-    '''
-    return PyTestOption(request.config, testdir)
 
 
 def test_report_header(testdir, option):
