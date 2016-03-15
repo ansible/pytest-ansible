@@ -34,6 +34,7 @@ py.test \
     [--ansible-inventory <path_to_inventory>] \
     [--ansible-host-pattern <host-pattern>] \
     [--ansible-connection <plugin>] \
+    [--ansible-module-path <path_to_modules] \
     [--ansible-user <username>] \
     [--ansible-sudo] \
     [--ansible-sudo-user <username>]
