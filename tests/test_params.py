@@ -3,6 +3,38 @@ import ansible
 from _pytest.main import EXIT_OK, EXIT_TESTSFAILED, EXIT_USAGEERROR, EXIT_NOTESTSCOLLECTED
 
 
+def test_plugin_help(testdir):
+    '''Verifies expected output from of py.test --help'''
+
+    result = testdir.runpytest('--help')
+    result.stdout.fnmatch_lines([
+        # Check for the github args section header
+        'pytest-ansible:',
+        # Check for the specific args
+        '  --ansible-inventory=ANSIBLE_INVENTORY',
+        '  --ansible-host-pattern=ANSIBLE_HOST_PATTERN',
+        '  --ansible-connection=ANSIBLE_CONNECTION',
+        '  --ansible-user=ANSIBLE_USER',
+        '  --ansible-debug *',
+        '  --ansible-sudo *',
+        '  --ansible-sudo-user=ANSIBLE_SUDO_USER',
+        '  --ansible-become *',
+        '  --ansible-become-method=ANSIBLE_BECOME_METHOD',
+        '  --ansible-become-user=ANSIBLE_BECOME_USER',
+        # Check for the marker in --help
+        '  ansible (args) * Ansible integration',
+    ])
+
+
+def test_plugin_markers(testdir):
+    '''Verifies expected output from of py.test --markers'''
+
+    result = testdir.runpytest('--markers')
+    result.stdout.fnmatch_lines([
+        '@pytest.mark.ansible(*args): Ansible integration',
+    ])
+
+
 def test_report_header(testdir, option):
     '''Verify the expected ansible version in the pytest report header.
     '''
@@ -95,7 +127,7 @@ def test_params_required_with_inventory_without_host_pattern(testdir, option):
     ])
 
 
-@requires_ansible_v1
+@pytest.mark.requires_ansible_v1
 def test_params_required_with_bogus_inventory_v1(testdir, option):
     src = '''
         import pytest
@@ -111,7 +143,7 @@ def test_params_required_with_bogus_inventory_v1(testdir, option):
     ])
 
 
-@requires_ansible_v2
+@pytest.mark.requires_ansible_v2
 def test_params_required_with_bogus_inventory_v2(testdir, option):
     src = '''
         import pytest
@@ -125,7 +157,7 @@ def test_params_required_with_bogus_inventory_v2(testdir, option):
     # [WARNING]: provided hosts list is empty, only localhost is available"
 
 
-@requires_ansible_v1
+@pytest.mark.requires_ansible_v1
 def test_params_required_without_inventory_with_host_pattern_v1(testdir, option):
     src = '''
         import pytest
@@ -140,7 +172,7 @@ def test_params_required_without_inventory_with_host_pattern_v1(testdir, option)
     ])
 
 
-@requires_ansible_v2
+@pytest.mark.requires_ansible_v2
 def test_params_required_without_inventory_with_host_pattern_v2(testdir, option):
     src = '''
         import pytest
@@ -290,9 +322,9 @@ def test_become(testdir, option):
     result = testdir.runpytest(
         *option.args + [
             '--ansible-inventory', str(option.inventory),
-            '--ansible-host-pattern', 'localhost', # run against a single host
-            '--ansible-become', # Enable become support
-            '--ansible-become-user', 'asdfasdf' # Connect using a bogus username
+            '--ansible-host-pattern', 'localhost',  # run against a single host
+            '--ansible-become',  # Enable become support
+            '--ansible-become-user', 'asdfasdf'  # Connect using a bogus username
         ]
     )
     assert result.ret == EXIT_OK

@@ -1,4 +1,3 @@
-import os
 import pytest
 import logging
 from pkg_resources import parse_version
@@ -32,6 +31,7 @@ try:
     from logging import NullHandler
 except ImportError:
     from logging import Handler
+
     class NullHandler(Handler):
         def emit(self, record):
             pass
@@ -43,7 +43,7 @@ log.addHandler(NullHandler())
 def pytest_addoption(parser):
     '''Add options to control ansible.'''
 
-    group = parser.getgroup('ansible')
+    group = parser.getgroup('pytest-ansible')
     group.addoption('--ansible-inventory',
                     action='store',
                     dest='ansible_inventory',
@@ -109,11 +109,16 @@ def pytest_addoption(parser):
                         default=ansible.constants.DEFAULT_BECOME_USER,
                         help='run operations as this user (default: %default)')
 
+    # Add github marker to --help
+    parser.addini("ansible", "Ansible integration", "args")
+
 
 def pytest_configure(config):
     '''
     Validate --ansible-* parameters.
     '''
+
+    config.addinivalue_line("markers", "ansible(**kwargs): Ansible integration")
 
     # Enable connection debugging
     if config.getvalue('ansible_debug'):

@@ -6,10 +6,20 @@ from pkg_resources import parse_version
 pytest_plugins = 'pytester',
 
 # Indicate whether ansible-2.* is available
-requires_ansible_v1 = pytest.mark.skipif(parse_version(ansible.__version__) >= parse_version('2.0.0'),
-                                         reason="requires ansible-1.*")
-requires_ansible_v2 = pytest.mark.skipif(parse_version(ansible.__version__) < parse_version('2.0.0'),
-                                         reason="requires ansible-2.*")
+# requires_ansible_v1 = pytest.mark.skipif(parse_version(ansible.__version__) >= parse_version('2.0.0'),
+#                                          reason="requires ansible-1.*")
+# requires_ansible_v2 = pytest.mark.skipif(parse_version(ansible.__version__) < parse_version('2.0.0'),
+#                                          reason="requires ansible-2.*")
+
+
+def pytest_runtest_setup(item):
+    # Conditionally skip tests that are pinned to a specific ansible version
+    if isinstance(item, item.Function):
+        has_ansible_v1 = parse_version(ansible.__version__) < parse_version('2.0.0')
+        if item.get_marker('requires_ansible_v1') and not has_ansible_v1:
+            pytest.skip("requires < ansible-2.*")
+        if item.get_marker('requires_ansible_v2') and has_ansible_v1:
+            pytest.skip("requires >= ansible-2.*")
 
 
 class PyTestOption(object):
