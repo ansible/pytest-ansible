@@ -84,6 +84,13 @@ def pytest_addoption(parser):
                     default='root',
                     help='desired sudo user (default: %default) (deprecated, use become)')
 
+    group.addoption('--ansible-module-path',
+                    action='store',
+                    dest='ansible_module_path',
+                    default=None,
+                    help='specify path(s) to module library (default=None)')
+
+
     if has_ansible_become:
         # consolidated privilege escalation
         group.addoption('--ansible-become',
@@ -202,7 +209,7 @@ class PyTestAnsiblePlugin:
         # Grab options from command-line
         option_names = ['ansible_inventory', 'ansible_host_pattern',
                         'ansible_connection', 'ansible_user', 'ansible_sudo',
-                        'ansible_sudo_user']
+                        'ansible_sudo_user', 'ansible_module_path']
 
         # Grab ansible-1.9 become options
         if has_ansible_become:
@@ -327,6 +334,7 @@ class AnsibleV1Module(object):
             complex_args=kwargs,
             transport=self.options.get('connection'),
             remote_user=self.options.get('user'),
+            module_path=self.options.get('module_path'),
         )
 
         # Handle >= 1.9.0 options
@@ -458,6 +466,7 @@ class AnsibleV2Module(AnsibleV1Module):
         options.become = self.options.get('become')
         options.become_method = self.options.get('become_method')
         options.become_user = self.options.get('become_user')
+        options.module_path = self.options.get('module_path')
 
         # Initialize callback to capture module JSON responses
         cb = ResultAccumulator()
