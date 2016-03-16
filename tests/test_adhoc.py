@@ -1,9 +1,23 @@
+import logging
 from _pytest.main import EXIT_OK, EXIT_TESTSFAILED, EXIT_USAGEERROR, EXIT_NOTESTSCOLLECTED, EXIT_INTERRUPTED  # NOQA
 
 
 def test_contacted_with_params(testdir, option):
     """FIXME
     """
+
+    # setup logging
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
+    # create stderr StreamHandler
+    sh = logging.StreamHandler()
+    sh.setLevel(logging.DEBUG)
+    # create formatter and add it to the handlers
+    formatter = logging.Formatter('%(levelname)s - %(message)s')
+    sh.setFormatter(formatter)
+    # add handler to logger
+    logger.addHandler(sh)
+
     src = """
         import pytest
         def test_func(ansible_module):
