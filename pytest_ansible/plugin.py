@@ -41,6 +41,7 @@ log.addHandler(NullHandler())
 
 def pytest_addoption(parser):
     '''Add options to control ansible.'''
+    log.debug("pytest_addoption() called")
 
     group = parser.getgroup('pytest-ansible')
     group.addoption('--ansible-inventory',
@@ -116,6 +117,7 @@ def pytest_configure(config):
     '''
     Validate --ansible-* parameters.
     '''
+    log.debug("pytest_configure() called")
 
     config.addinivalue_line("markers", "ansible(**kwargs): Ansible integration")
 
@@ -158,6 +160,8 @@ class PyTestAnsiblePlugin:
             raise pytest.UsageError(*errors)
 
     def pytest_generate_tests(self, metafunc):
+        log.debug("pytest_generate_tests() called")
+
         if 'ansible_host' in metafunc.fixturenames:
             # assert required --ansible-* parameters were used
             self.assert_required_ansible_parameters()
@@ -178,12 +182,15 @@ class PyTestAnsiblePlugin:
             metafunc.parametrize("ansible_group", inventory_manager.list_groups())
 
     def pytest_report_header(self, config, startdir):
+        log.debug("pytest_report_header() called")
+
         return 'ansible: %s' % ansible.__version__
 
     def pytest_collection_modifyitems(self, session, config, items):
         '''
         Validate --ansible-* parameters.
         '''
+        log.debug("pytest_collection_modifyitems() called")
 
         uses_ansible_fixtures = False
         for item in items:
