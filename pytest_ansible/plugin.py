@@ -12,7 +12,6 @@ has_ansible_become = parse_version(ansible.__version__) >= parse_version('1.9.0'
 has_ansible_v2 = parse_version(ansible.__version__) >= parse_version('2.0.0')
 
 if has_ansible_v2:
-    from ansible.cli.adhoc import AdHocCLI
     from ansible.plugins.callback import CallbackBase
     from ansible.executor.task_queue_manager import TaskQueueManager
     from ansible.parsing.dataloader import DataLoader
@@ -20,7 +19,6 @@ if has_ansible_v2:
     from ansible.vars import VariableManager
     from ansible.cli import CLI
     from ansible.inventory import Inventory
-    from ansible.parsing.splitter import parse_kv
     from ansible.utils.display import Display
     display = Display()
 else:
@@ -33,6 +31,7 @@ except ImportError:
     from logging import Handler
 
     class NullHandler(Handler):
+
         def emit(self, record):
             pass
 
@@ -131,6 +130,7 @@ def pytest_configure(config):
 
 
 class PyTestAnsiblePlugin:
+
     def __init__(self, config):
         log.debug("PyTestAnsiblePlugin initialized")
         self.config = config
@@ -163,7 +163,7 @@ class PyTestAnsiblePlugin:
             self.assert_required_ansible_parameters()
             # TODO: this doesn't support function/cls fixture overrides
             try:
-                inventory_manager = Inventory(config.getvalue('ansible_inventory'))
+                inventory_manager = Inventory(self.config.getvalue('ansible_inventory'))
             except ansible.errors.AnsibleError, e:
                 raise pytest.UsageError(e)
             pattern = self.config.getvalue('ansible_host_pattern')
@@ -200,9 +200,9 @@ class PyTestAnsiblePlugin:
             # assert required --ansible-* parameters were used
             self.assert_required_ansible_parameters()
 
-    #def pytest_collection_modifyitems(session, config, items):
-    #    reporter = config.pluginmanager.getplugin("terminalreporter")
-    #    reporter.write("ansible: %s\n" % ansible.__version__)
+    # def pytest_collection_modifyitems(session, config, items):
+    #     reporter = config.pluginmanager.getplugin("terminalreporter")
+    #     reporter.write("ansible: %s\n" % ansible.__version__)
 
     def initialize(self, request):
         '''Returns an initialized AnsibleV1Module instance
@@ -218,8 +218,7 @@ class PyTestAnsiblePlugin:
 
         # Grab ansible-1.9 become options
         if has_ansible_become:
-            option_names.extend(['ansible_become', 'ansible_become_method',
-                'ansible_become_user'])
+            option_names.extend(['ansible_become', 'ansible_become_method', 'ansible_become_user'])
 
         for key in option_names:
             short_key = key[8:]
@@ -259,7 +258,7 @@ class PyTestAnsiblePlugin:
                 ansible.constants.DEFAULT_BECOME
             kwargs['become_user'] = kwargs['become_user'] or kwargs['sudo_user'] or \
                 ansible.constants.DEFAULT_BECOME_USER
-            #kwargs['become_ask_pass'] = kwargs.get('become_ask_pass', kwargs.get('ask_sudo_pass', kwargs.get('ask_su_pass', ansible.constants.DEFAULT_BECOME_ASK_PASS)))
+            # kwargs['become_ask_pass'] = kwargs.get('become_ask_pass', kwargs.get('ask_sudo_pass', kwargs.get('ask_su_pass', ansible.constants.DEFAULT_BECOME_ASK_PASS)))  # NOQA
 
         log.debug("kwargs: %s" % kwargs)
         if has_ansible_v2:
@@ -269,6 +268,7 @@ class PyTestAnsiblePlugin:
 
 
 class AnsibleV1Module(object):
+
     '''
     Wrapper around ansible.runner.Runner()
 
@@ -386,6 +386,7 @@ class AnsibleV1Module(object):
 
 if has_ansible_v2:
     class ResultAccumulator(CallbackBase):
+
         def __init__(self, *args, **kwargs):
             super(ResultAccumulator, self).__init__(*args, **kwargs)
             self.contacted = {}
@@ -504,7 +505,7 @@ class AnsibleV2Module(AnsibleV1Module):
         tqm = None
         try:
             tqm = TaskQueueManager(**kwargs)
-            results = tqm.run(play)
+            tqm.run(play)
         finally:
             if tqm:
                 tqm.cleanup()
