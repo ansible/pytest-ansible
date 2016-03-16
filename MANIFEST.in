@@ -1,2 +1,4 @@
-include *.py inventory README* LICENSE setup.cfg
-exclude test_*
+include LICENSE
+include *.md
+include setup.py
+# recursive-include pytest_ansible *.py
