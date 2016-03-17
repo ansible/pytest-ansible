@@ -237,12 +237,12 @@ def test_params_required_without_inventory_with_host_pattern_v2(testdir, option)
 def test_param_override_with_marker(testdir):
     src = """
         import pytest
-        @pytest.mark.ansible(ansible_inventory='local,', ansible_connection='local',
+        @pytest.mark.ansible(ansible_inventory='local,', ansible_connection='local', ansible_host_pattern='all')
         def test_func(ansible_module):
             assert True
     """
     testdir.makepyfile(src)
-    result = testdir.runpytest(*['--ansible-inventory', 'garbage', '--ansible-host-pattern', 'garbage'])
+    result = testdir.runpytest(*['--ansible-inventory', 'garbage', '--ansible-host-pattern', 'garbage', '--ansible-connection', 'garbage'])
     assert result.ret == EXIT_OK
 
     # Mock assert the correct variables are set
