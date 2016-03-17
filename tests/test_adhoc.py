@@ -34,7 +34,6 @@ def test_contacted_with_params(testdir, option):
 
     """
     testdir.makepyfile(src)
-    print(option.args + ['--ansible-inventory', str(option.inventory), '--ansible-host-pattern', 'local'])
     result = testdir.runpytest(*option.args + ['--ansible-inventory', str(option.inventory), '--ansible-host-pattern', 'local'])
     assert result.ret == EXIT_OK
     assert result.parseoutcomes()['passed'] == 1
@@ -43,6 +42,18 @@ def test_contacted_with_params(testdir, option):
 def test_contacted_with_params_and_inventory_marker(testdir, option):
     """FIXME
     """
+    # setup logging
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
+    # create stderr StreamHandler
+    sh = logging.StreamHandler()
+    sh.setLevel(logging.DEBUG)
+    # create formatter and add it to the handlers
+    formatter = logging.Formatter('%(levelname)s - %(message)s')
+    sh.setFormatter(formatter)
+    # add handler to logger
+    logger.addHandler(sh)
+
     src = """
         import pytest
         @pytest.mark.ansible(inventory='%s')
@@ -60,7 +71,7 @@ def test_contacted_with_params_and_inventory_marker(testdir, option):
 
     """ % str(option.inventory)
     testdir.makepyfile(src)
-    result = testdir.runpytest(*option.args + ['--ansible-host-pattern', 'local'])
+    result = testdir.runpytest(*option.args + ['--ansible-host-pattern', 'local', '-vs'])
     assert result.ret == EXIT_OK
     assert result.parseoutcomes()['passed'] == 1
 
