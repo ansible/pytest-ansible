@@ -1,7 +1,13 @@
+import sys
 import pytest
 import ansible
 import mock
 from _pytest.main import EXIT_OK, EXIT_TESTSFAILED, EXIT_USAGEERROR, EXIT_NOTESTSCOLLECTED, EXIT_INTERRUPTED
+
+if sys.version_info.major == 2:
+    import __builtin__ as builtins  # NOQA
+else:
+    import builtins  # NOQA
 
 
 def test_plugin_help(testdir):
@@ -158,17 +164,19 @@ def test_params_required_with_bogus_inventory_v1(testdir, option):
             assert True
     """
     testdir.makepyfile(src)
-    with mock.patch('os.path.isfile', return_value=False) as mock_isfile:
-        result = testdir.runpytest(*option.args + ['--ansible-inventory', 'bogus', '--ansible-host-pattern', 'all'])
+    with mock.patch('os.path.exists', return_value=False) as mock_exists:
+        result = testdir.runpytest(*['--ansible-inventory', 'bogus', '--ansible-host-pattern', 'all'])
 
     # Assert py.test exit code
     assert result.ret == EXIT_TESTSFAILED
+
+    # Assert expected error output
     result.stdout.fnmatch_lines([
-        'UsageError: Unable to find an inventory file, specify one with -i ?',
+        '*UsageError: Unable to find an inventory file, specify one with -i ?',
     ])
 
     # Assert mock open called on provided file
-    mock_isfile.assert_called_with('bogus')
+    mock_exists.assert_any_call('bogus')
 
 
 @pytest.mark.requires_ansible_v2
@@ -176,17 +184,17 @@ def test_params_required_with_bogus_inventory_v2(testdir, option, recwarn):
     src = """
         import pytest
         def test_func(ansible_module):
-            assert True
+            ansible_module.ping()
     """
     testdir.makepyfile(src)
-    with mock.patch('os.path.isfile', return_value=False) as mock_isfile:
-        result = testdir.runpytest(*['-vs', '--ansible-inventory', 'bogus', '--ansible-host-pattern', 'all'])
+
+    with mock.patch('ansible.parsing.dataloader.DataLoader.path_exists', return_value=False) as mock_exists:
+        # with mock.patch('ansible.parsing.dataloader.DataLoader.is_file', return_value=False) as mock_isfile:
+        result = testdir.runpytest(*['-vvvvvs', '--ansible-inventory', 'bogus', '--ansible-host-pattern', 'all'])
 
     # Assert py.test exit code
-    assert result.ret == EXIT_OK
-
-    # Assert mock open called on provided file
-    mock_isfile.assert_called_with('bogus')
+    # assert result.ret == EXIT_OK
+    assert result.ret == EXIT_TESTSFAILED
 
     # TODO - assert the following warning appears
     # [WARNING]: provided hosts list is empty, only localhost is available"
@@ -196,6 +204,9 @@ def test_params_required_with_bogus_inventory_v2(testdir, option, recwarn):
                 "*provided hosts list is empty, only localhost is available",
             ]
         )
+
+    # Assert mock open called on provided file
+    mock_exists.assert_any_call('bogus')
 
 
 @pytest.mark.requires_ansible_v1
@@ -237,12 +248,28 @@ def test_params_required_without_inventory_with_host_pattern_v2(testdir, option)
 def test_param_override_with_marker(testdir):
     src = """
         import pytest
-        @pytest.mark.ansible(ansible_inventory='local,', ansible_connection='local', ansible_host_pattern='all')
+        @pytest.mark.ansible(inventory='local,', connection='local', host_pattern='all')
         def test_func(ansible_module):
-            assert True
+            ansible_module.ping()
     """
     testdir.makepyfile(src)
-    result = testdir.runpytest(*['--ansible-inventory', 'garbage', '--ansible-host-pattern', 'garbage', '--ansible-connection', 'garbage'])
+    result = testdir.runpytest(*['-vvvvvs', '--tb', 'native', '--ansible-inventory', 'garbage,', '--ansible-host-pattern',
+                                 'garbage', '--ansible-connection', 'garbage'])
+    assert result.ret == EXIT_OK
+
+    # Mock assert the correct variables are set
+
+
+def test_param_override_with_marker_2(testdir):
+    src = """
+        import pytest
+        @pytest.mark.ansible(inventory='local,', connection='local', host_pattern='all')
+        def test_func(ansible_module):
+            ansible_module.ping()
+    """
+    testdir.makepyfile(src)
+    result = testdir.runpytest(*['-vvvvvs', '--tb', 'native', '--ansible-inventory', 'garbage,', '--ansible-host-pattern',
+                                 'garbage', '--ansible-connection', 'garbage'])
     assert result.ret == EXIT_OK
 
     # Mock assert the correct variables are set

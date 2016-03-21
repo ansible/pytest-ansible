@@ -198,7 +198,7 @@ class PyTestAnsiblePlugin:
                 continue
             if any([fixture.startswith('ansible_') for fixture in item.fixturenames]):
                 # TODO - ignore if they are using a marker
-                marker = item.get_marker('ansible')
+                # marker = item.get_marker('ansible')
                 # if marker and 'inventory' in marker.kwargs:
                 uses_ansible_fixtures = True
                 break
@@ -433,10 +433,13 @@ class AnsibleV2Module(AnsibleV1Module):
 
     def initialize_inventory(self):
         # Initialize inventory_manager with the provided inventory and host_pattern
+        log.debug("initialize_inventory - DataLoader()")
         self.loader = DataLoader()
+        log.debug("initialize_inventory - VariableManager()")
         self.variable_manager = VariableManager()
 
         try:
+            log.debug("initialize_inventory - Inventory(host_list=%s)" % self.inventory)
             self.inventory_manager = Inventory(loader=self.loader, variable_manager=self.variable_manager, host_list=self.inventory)
         except ansible.errors.AnsibleError, e:
             raise pytest.UsageError(e)
@@ -506,11 +509,13 @@ class AnsibleV2Module(AnsibleV1Module):
                 ),
             ]
         )
+        log.debug("__run - Building Play() object - %s" % play_ds)
         play = Play().load(play_ds, variable_manager=self.variable_manager, loader=self.loader)
 
         # now create a task queue manager to execute the play
         tqm = None
         try:
+            log.debug("__run - TaskQueueManager(%s)" % kwargs)
             tqm = TaskQueueManager(**kwargs)
             tqm.run(play)
         finally:
