@@ -1,5 +1,6 @@
 import pytest
 import logging
+import warnings
 from pkg_resources import parse_version
 from pytest_ansible.errors import AnsibleNoHostsMatch, AnsibleHostUnreachable
 
@@ -535,6 +536,7 @@ class AnsibleV2Module(AnsibleV1Module):
         # Raise exception if host(s) unreachable
         # FIXME - if multiple hosts were involved, should an exception be raised?
         if cb.unreachable:
+            # FIXME - unreachable hosts should be included in the exception message
             raise AnsibleHostUnreachable("Host unreachable", dark=cb.unreachable, contacted=cb.contacted)
 
         # No hosts contacted
@@ -542,7 +544,6 @@ class AnsibleV2Module(AnsibleV1Module):
         #     raise ansible.errors.AnsibleConnectionFailed("Provided hosts list is empty")
 
         # Success!
-        # return results
         return cb.contacted
 
 
@@ -551,6 +552,7 @@ def ansible_module_cls(request):
     '''
     Return AnsibleV1Module instance with class scope.
     '''
+    warnings.warn("Use of ansible_facts_cls is deprecated and will be removed in a future release", DeprecationWarning)
     ansible_helper = request.config.pluginmanager.getplugin("ansible")
     return ansible_helper.initialize(request)
 
@@ -569,6 +571,7 @@ def ansible_facts_cls(ansible_module_cls):
     '''
     Return ansible_facts dictionary
     '''
+    warnings.warn("Use of ansible_facts_cls is deprecated and will be removed in a future release", DeprecationWarning)
     try:
         return ansible_module_cls.setup()
     except AnsibleHostUnreachable, e:
