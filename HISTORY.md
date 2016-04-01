@@ -1,5 +1,10 @@
 ## Release History
 
+### 1.4.0 (2016-MM-DD)
+
+* Add parameter --ansible-module-path (thanks David Barroso)
+* Raise DeprecationWarnings for scope=class fixtures
+
 ### 1.3.1 (2016-01-22)
 
 * Correctly handle ansible become options
