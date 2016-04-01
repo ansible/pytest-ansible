@@ -72,7 +72,7 @@ def pytest_addoption(parser):
     group.addoption('--ansible-debug',
                     action='store_true',
                     dest='ansible_debug',
-                    default=ansible.constants.DEFAULT_DEBUG,
+                    default=getattr(ansible.constants, 'DEFAULT_DEBUG', False),
                     help='enable ansible connection debugging')
     group.addoption('--ansible-module-path',
                     action='store',
