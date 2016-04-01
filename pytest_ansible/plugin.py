@@ -74,6 +74,11 @@ def pytest_addoption(parser):
                     dest='ansible_debug',
                     default=ansible.constants.DEFAULT_DEBUG,
                     help='enable ansible connection debugging')
+    group.addoption('--ansible-module-path',
+                    action='store',
+                    dest='ansible_module_path',
+                    default=ansible.constants.DEFAULT_MODULE_PATH,
+                    help='specify path(s) to module library (default: %default)')
 
     # classic privilege escalation
     group.addoption('--ansible-sudo',
@@ -86,13 +91,6 @@ def pytest_addoption(parser):
                     dest='ansible_sudo_user',
                     default='root',
                     help='desired sudo user (default: %default) (deprecated, use become)')
-
-    group.addoption('--ansible-module-path',
-                    action='store',
-                    dest='ansible_module_path',
-                    default=None,
-                    help='specify path(s) to module library (default=None)')
-
 
     if has_ansible_become:
         # consolidated privilege escalation
@@ -216,6 +214,7 @@ class PyTestAnsiblePlugin:
 
     def _get_marker_kwargs(self, request):
         '''Returns a dictionary of the ansible parameters supplied to the ansible marker.'''
+
         if request.scope == 'function':
             if hasattr(request.function, 'ansible'):
                 return request.function.ansible.kwargs
@@ -255,10 +254,9 @@ class PyTestAnsiblePlugin:
         # Merge marker_kwargs with kwargs
         if marker_kwargs:
             for short_key in kwargs.keys():
-                if short_key not in marker_kwargs:
-                    continue
-                kwargs[short_key] = marker_kwargs[short_key]
-                log.debug("Override %s:%s" % (short_key, kwargs[short_key]))
+                if short_key in marker_kwargs:
+                    kwargs[short_key] = marker_kwargs[short_key]
+                    log.debug("ansible marker override %s:%s" % (short_key, kwargs[short_key]))
 
         # Was this fixture called in conjunction with a parametrized fixture
         if 'ansible_host' in request.fixturenames:
