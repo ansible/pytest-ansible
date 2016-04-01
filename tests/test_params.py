@@ -4,7 +4,7 @@ import ansible
 import mock
 from _pytest.main import EXIT_OK, EXIT_TESTSFAILED, EXIT_USAGEERROR, EXIT_NOTESTSCOLLECTED, EXIT_INTERRUPTED
 
-if sys.version_info.major == 2:
+if sys.version_info[0] == 2:
     import __builtin__ as builtins  # NOQA
 else:
     import builtins  # NOQA
