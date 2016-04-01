@@ -258,18 +258,3 @@ def test_param_override_with_marker(testdir):
     assert result.ret == EXIT_OK
 
     # Mock assert the correct variables are set
-
-
-def test_param_override_with_marker_2(testdir):
-    src = """
-        import pytest
-        @pytest.mark.ansible(inventory='local,', connection='local', host_pattern='all')
-        def test_func(ansible_module):
-            ansible_module.ping()
-    """
-    testdir.makepyfile(src)
-    result = testdir.runpytest(*['-vvvvvs', '--tb', 'native', '--ansible-inventory', 'garbage,', '--ansible-host-pattern',
-                                 'garbage', '--ansible-connection', 'garbage'])
-    assert result.ret == EXIT_OK
-
-    # Mock assert the correct variables are set

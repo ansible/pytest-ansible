@@ -35,12 +35,11 @@ except ImportError:
 
         def emit(self, record):
             pass
+log = logging.getLogger(__name__)
+log.addHandler(NullHandler())
 
 # Silence linters for imported fixtures
 (ansible_module_cls, ansible_module, ansible_facts_cls, ansible_facts)
-
-log = logging.getLogger(__name__)
-log.addHandler(NullHandler())
 
 
 def pytest_addoption(parser):
@@ -73,7 +72,7 @@ def pytest_addoption(parser):
     group.addoption('--ansible-debug',
                     action='store_true',
                     dest='ansible_debug',
-                    default=False,
+                    default=ansible.constants.DEFAULT_DEBUG,
                     help='enable ansible connection debugging')
 
     # classic privilege escalation
@@ -215,46 +214,50 @@ class PyTestAnsiblePlugin:
     #     reporter = config.pluginmanager.getplugin("terminalreporter")
     #     reporter.write("ansible: %s\n" % ansible.__version__)
 
+    def _get_marker_kwargs(self, request):
+        '''Returns a dictionary of the ansible parameters supplied to the ansible marker.'''
+        if request.scope == 'function':
+            if hasattr(request.function, 'ansible'):
+                return request.function.ansible.kwargs
+        elif request.scope == 'class':
+            if hasattr(request.cls, 'pytestmark'):
+                for pytestmark in request.cls.pytestmark:
+                    if pytestmark.name == 'ansible':
+                        return pytestmark.kwargs
+                    else:
+                        continue
+        return {}
+
     def initialize(self, request):
-        '''Returns an initialized AnsibleV1Module instance
+        '''Returns an initialized Ansible Module Wrapper instance
         '''
 
-        # Remember the pytest request attr
-        kwargs = dict(__request__=request)
-
-        # Grab options from command-line
+        # List of config parameter names
         option_names = ['ansible_inventory', 'ansible_host_pattern',
                         'ansible_connection', 'ansible_user', 'ansible_sudo',
                         'ansible_sudo_user', 'ansible_module_path']
 
-        # Grab ansible-1.9 become options
+        # Add ansible-1.9 become options
         if has_ansible_become:
             option_names.extend(['ansible_become', 'ansible_become_method', 'ansible_become_user'])
 
+        # Remember the pytest request attr
+        kwargs = dict(__request__=request)
+
+        # Load command-line supplied values
         for key in option_names:
             short_key = key[8:]
             kwargs[short_key] = request.config.getvalue(key)
 
         # Override options from @pytest.mark.ansible
-        ansible_args = dict()
-        if request.scope == 'function':
-            if hasattr(request.function, 'ansible'):
-                ansible_args = request.function.ansible.kwargs
-        elif request.scope == 'class':
-            if hasattr(request.cls, 'pytestmark'):
-                for pytestmark in request.cls.pytestmark:
-                    if pytestmark.name == 'ansible':
-                        ansible_args = pytestmark.kwargs
-                    else:
-                        continue
+        marker_kwargs = self._get_marker_kwargs(request)
 
-        # Build kwargs to pass along to AnsibleV1Module
-        if ansible_args:
-            for key in option_names:
-                short_key = key[8:]
-                if short_key not in ansible_args:
+        # Merge marker_kwargs with kwargs
+        if marker_kwargs:
+            for short_key in kwargs.keys():
+                if short_key not in marker_kwargs:
                     continue
-                kwargs[short_key] = ansible_args[short_key]
+                kwargs[short_key] = marker_kwargs[short_key]
                 log.debug("Override %s:%s" % (short_key, kwargs[short_key]))
 
         # Was this fixture called in conjunction with a parametrized fixture
@@ -262,7 +265,6 @@ class PyTestAnsiblePlugin:
             kwargs['host_pattern'] = request.getfuncargvalue('ansible_host')
         elif 'ansible_group' in request.fixturenames:
             kwargs['host_pattern'] = request.getfuncargvalue('ansible_group')
-
         if has_ansible_become:
             # normalize ansible.ansible_become options
             kwargs['become'] = kwargs['become'] or kwargs['sudo'] or \

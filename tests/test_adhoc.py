@@ -3,6 +3,7 @@ import logging
 from _pytest.main import EXIT_OK, EXIT_TESTSFAILED, EXIT_USAGEERROR, EXIT_NOTESTSCOLLECTED, EXIT_INTERRUPTED  # NOQA
 
 
+@pytest.mark.integration
 def test_contacted_with_params(testdir, option):
     """FIXME
     """
@@ -40,7 +41,7 @@ def test_contacted_with_params(testdir, option):
     assert result.parseoutcomes()['passed'] == 1
 
 
-@pytest.mark.skip(reason="because")
+@pytest.mark.integration
 def test_contacted_with_params_and_inventory_marker(testdir, option):
     """FIXME
     """
@@ -78,7 +79,7 @@ def test_contacted_with_params_and_inventory_marker(testdir, option):
     assert result.parseoutcomes()['passed'] == 1
 
 
-@pytest.mark.skip(reason="because")
+@pytest.mark.integration
 def test_contacted_with_params_and_host_pattern_marker(testdir, option):
     """FIXME
     """
@@ -104,7 +105,7 @@ def test_contacted_with_params_and_host_pattern_marker(testdir, option):
     assert result.parseoutcomes()['passed'] == 1
 
 
-@pytest.mark.skip(reason="because")
+@pytest.mark.integration
 def test_contacted_with_params_and_inventory_host_pattern_marker(testdir, option):
     """FIXME
     """
@@ -130,7 +131,7 @@ def test_contacted_with_params_and_inventory_host_pattern_marker(testdir, option
     assert result.parseoutcomes()['passed'] == 1
 
 
-@pytest.mark.skip(reason="because")
+@pytest.mark.integration
 def test_become(testdir, option):
     """Test --ansible-become* parameters.  This test doesn't actually 'sudo',
     but verifies that 'sudo' was attempted by asserting
@@ -175,7 +176,7 @@ def test_become(testdir, option):
     assert result.parseoutcomes()['passed'] == 1
 
 
-@pytest.mark.skip(reason="because")
+@pytest.mark.integration
 def test_dark_with_params(testdir, option):
     """FIXME
     """
@@ -205,7 +206,7 @@ def test_dark_with_params(testdir, option):
     assert result.parseoutcomes()['passed'] == 1
 
 
-@pytest.mark.skip(reason="because")
+@pytest.mark.integration
 def test_dark_with_params_and_inventory_marker(testdir, option):
     """FIXME
     """
@@ -234,7 +235,7 @@ def test_dark_with_params_and_inventory_marker(testdir, option):
     assert result.parseoutcomes()['passed'] == 1
 
 
-@pytest.mark.skip(reason="because")
+@pytest.mark.integration
 def test_dark_with_params_and_host_pattern_marker(testdir, option):
     """FIXME
     """
@@ -268,7 +269,7 @@ def test_dark_with_params_and_host_pattern_marker(testdir, option):
     assert result.parseoutcomes()['passed'] == 1
 
 
-@pytest.mark.skip(reason="because")
+@pytest.mark.integration
 def test_dark_with_debug_enabled(testdir, option):
     """Verify that when --ansible-debug is provide, additional output is provided upon host failure.
     """
