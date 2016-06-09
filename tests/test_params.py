@@ -219,9 +219,11 @@ def test_params_required_without_inventory_with_host_pattern_v1(testdir, option)
     testdir.makepyfile(src)
     result = testdir.runpytest(*option.args + ['--ansible-host-pattern', 'all'])
     assert result.ret == EXIT_TESTSFAILED
-    result.stdout.fnmatch_lines([
-        'UsageError: Unable to find an inventory file, specify one with -i ?',
-    ])
+    result.stdout.fnmatch_lines(
+        [
+            'UsageError: Unable to find an inventory file, specify one with -i ?',
+        ]
+    )
 
 
 @pytest.mark.requires_ansible_v2
@@ -240,6 +242,7 @@ def test_params_required_without_inventory_with_host_pattern_v2(testdir, option)
     if False:
         result.stderr.fnmatch_lines(
             [
+                "*[WARNING]: Host file not found: /etc/ansible/hosts*",
                 "*provided hosts list is empty, only localhost is available",
             ]
         )
