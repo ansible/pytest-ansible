@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import pytest
 import logging
 from _pytest.main import EXIT_OK, EXIT_NOTESTSCOLLECTED, EXIT_INTERRUPTED  # NOQA
 
@@ -13,6 +14,7 @@ def assert_fnmatch_lines(output, matches):
     assert len(missing) == 0, "The following matches were not found:\n - %s" % '\n - '.join(missing)
 
 
+@pytest.mark.old
 def test_debug_logging(testdir, capsys):
     '''verifies pytest-github loads configuration from the default configuration file'''
 
