@@ -59,3 +59,9 @@ def option(request, testdir):
     use a common inventory file.
     '''
     return PyTestOption(request.config, testdir)
+
+
+@pytest.fixture()
+def hosts():
+    from pytest_ansible.host_manager import get_host_manager
+    return get_host_manager(inventory='localhost,another_host', connection='local')
