@@ -1,9 +1,4 @@
 import logging
-
-import ansible
-import ansible.constants
-import ansible.utils
-import ansible.errors
 from ansible.parsing.dataloader import DataLoader
 from ansible.vars import VariableManager
 from ansible.inventory import Inventory
@@ -30,11 +25,7 @@ class HostManagerV2(BaseHostManager):
     _dispatcher = ModuleDispatcherV2
 
     def initialize_inventory(self):
-        self.loader = DataLoader()
-        self.variable_manager = VariableManager()
-
-        try:
-            self.inventory_manager = Inventory(loader=self.loader, variable_manager=self.variable_manager, host_list=self.inventory)
-        except ansible.errors.AnsibleError, e:
-            raise Exception(e)
-        self.variable_manager.set_inventory(self.inventory_manager)
+        self.options['loader'] = DataLoader()
+        self.options['variable_manager'] = VariableManager()
+        self.options['inventory_manager'] = Inventory(loader=self.options['loader'], variable_manager=self.options['variable_manager'], host_list=self.options['inventory'])
+        self.options['variable_manager'].set_inventory(self.options['inventory_manager'])

@@ -1,4 +1,5 @@
 import logging
+import warnings
 
 # conditionally import ansible libraries
 import ansible
@@ -17,8 +18,9 @@ from ansible.executor.task_queue_manager import TaskQueueManager  # NOQA
 from ansible.playbook.play import Play  # NOQA
 from ansible.cli import CLI  # NOQA
 
-from pytest_ansible.module_dispatcher import BaseModuleDispatcher  # NOQA
-from pytest_ansible.results import AdHocResult  # NOQA
+from pytest_ansible.module_dispatcher import BaseModuleDispatcher
+from pytest_ansible.results import AdHocResult
+from pytest_ansible.errors import AnsibleConnectionFailure
 
 try:
     from logging import NullHandler
@@ -57,6 +59,10 @@ class ResultAccumulator(CallbackBase):
 class ModuleDispatcherV2(BaseModuleDispatcher):
 
     '''Pass.'''
+    required_kwargs = ('inventory', 'inventory_manager', 'variable_manager', 'host_pattern', 'loader')
+
+    def has_module(self, name):
+        return ansible.plugins.module_loader.has_plugin(name)
 
     def _run(self, *module_args, **complex_args):
         '''
@@ -68,12 +74,19 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
             complex_args.update(dict(_raw_params=' '.join(module_args)))
 
         # Assert hosts matching the provided pattern exist
-        hosts = self.inventory_manager.list_hosts(self.host_pattern)
+        hosts = self.options['inventory_manager'].list_hosts()
+        no_hosts = False
         if len(hosts) == 0:
-            raise Exception("No hosts match:'%s'" % self.host_pattern)
+            no_hosts = True
+            warnings.warn("provided hosts list is empty, only localhost is available")
+
+        hosts = self.options['inventory_manager'].list_hosts(self.options['host_pattern'])
+        if len(hosts) == 0 and not no_hosts:
+            raise ansible.errors.AnsibleError("Specified hosts and/or --limit does not match any hosts")
+            raise Exception("No hosts match:'%s'" % self.options['host_pattern'])
 
         # Log the module and parameters
-        log.debug("[%s] %s: %s" % (self.host_pattern, self.module_name, complex_args))
+        log.debug("[%s] %s: %s" % (self.options['host_pattern'], self.options['module_name'], complex_args))
 
         parser = CLI.base_parser(
             runas_opts=True,
@@ -101,9 +114,9 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
         cb = ResultAccumulator()
 
         kwargs = dict(
-            inventory=self.inventory_manager,
-            variable_manager=self.variable_manager,
-            loader=self.loader,
+            inventory=self.options['inventory_manager'],
+            variable_manager=self.options['variable_manager'],
+            loader=self.options['loader'],
             options=options,
             stdout_callback=cb,
             passwords=dict(conn_pass=None, become_pass=None),
@@ -112,18 +125,18 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
         # create a pseudo-play to execute the specified module via a single task
         play_ds = dict(
             name="pytest-ansible",
-            hosts=self.host_pattern,
+            hosts=self.options['host_pattern'],
             gather_facts='no',
             tasks=[
                 dict(
                     action=dict(
-                        module=self.module_name, args=complex_args
+                        module=self.options['module_name'], args=complex_args
                     )
                 ),
             ]
         )
         log.debug("__run - Building Play() object - %s", play_ds)
-        play = Play().load(play_ds, variable_manager=self.variable_manager, loader=self.loader)
+        play = Play().load(play_ds, variable_manager=self.options['variable_manager'], loader=self.options['loader'])
 
         # now create a task queue manager to execute the play
         tqm = None
@@ -148,8 +161,7 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
         # Raise exception if host(s) unreachable
         # FIXME - if multiple hosts were involved, should an exception be raised?
         if cb.unreachable:
-            # FIXME - unreachable hosts should be included in the exception message
-            raise Exception("Host unreachable", dark=cb.unreachable, contacted=cb.contacted)
+            raise AnsibleConnectionFailure("Host unreachable", dark=cb.unreachable, contacted=cb.contacted)
 
         # No hosts contacted
         # if not cb.contacted:

@@ -1,7 +1,7 @@
 import pytest
 import logging
 from pkg_resources import parse_version
-from .fixtures import (ansible_module, ansible_facts)
+from .fixtures import (host_manager, ansible_module, ansible_facts)
 from .host_manager import get_host_manager
 
 import ansible
@@ -26,7 +26,7 @@ log = logging.getLogger(__name__)
 log.addHandler(NullHandler())
 
 # Silence linters for imported fixtures
-(ansible_module, ansible_facts)
+(host_manager, ansible_module, ansible_facts)
 
 
 def pytest_addoption(parser):
@@ -257,9 +257,9 @@ class PyTestAnsiblePlugin:
                         continue
         return {}
 
-    def initialize(self, request):
-        '''Returns an initialized Ansible Module Wrapper instance
+    def initialize(self, request, **kwargs):
+        '''Returns an initialized Ansible Host Manager instance
         '''
-
-        kwargs = self._load_ansible_config(request)
-        return get_host_manager(**kwargs)
+        ansible_cfg = self._load_ansible_config(request)
+        ansible_cfg.update(kwargs)
+        return get_host_manager(**ansible_cfg)

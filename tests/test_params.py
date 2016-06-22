@@ -193,8 +193,8 @@ def test_params_required_with_bogus_inventory_v2(testdir, option, recwarn):
         result = testdir.runpytest(*['-vvvvvs', '--ansible-inventory', 'bogus', '--ansible-host-pattern', 'all'])
 
     # Assert py.test exit code
-    # assert result.ret == EXIT_OK
-    assert result.ret == EXIT_TESTSFAILED
+    assert result.ret == EXIT_OK
+    # assert result.ret == EXIT_TESTSFAILED
 
     # TODO - assert the following warning appears
     # [WARNING]: provided hosts list is empty, only localhost is available"

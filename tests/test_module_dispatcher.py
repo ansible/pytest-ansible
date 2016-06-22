@@ -39,7 +39,7 @@ def test_not_contains(host_pattern, hosts):
 
 def test_ansible_module_error(hosts):
     '''Verify that AnsibleModuleError is raised when no such module exists.'''
-    from ansible.errors import AnsibleModuleError
+    from pytest_ansible.errors import AnsibleModuleError
     with pytest.raises(AnsibleModuleError):
         # The following allows us to introspect the exception object
         try:
