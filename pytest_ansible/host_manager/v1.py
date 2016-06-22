@@ -1,12 +1,5 @@
 import logging
-import pytest
-
-import ansible
-import ansible.constants
-import ansible.utils
-import ansible.errors
 from ansible.inventory import Inventory
-
 from pytest_ansible.host_manager import BaseHostManager
 from pytest_ansible.module_dispatcher.v1 import ModuleDispatcherV1
 
@@ -28,11 +21,11 @@ class HostManagerV1(BaseHostManager):
 
     '''FIXME'''
 
-    _dispatch_cls = ModuleDispatcherV1
+    _dispatcher = ModuleDispatcherV1
+
+    def keys(self):
+        return [h for h in self.options['inventory_manager'].list_hosts()]
 
     def initialize_inventory(self):
-        try:
-            self.inventory_manager = Inventory(self.inventory)
-        except ansible.errors.AnsibleError, e:
-            raise pytest.UsageError(e)
-        self.inventory_manager.subset(self.pattern)
+        self.options['inventory_manager'] = Inventory(self.options['inventory'])
+        # self.options['inventory_manager'].subset(self.pattern)

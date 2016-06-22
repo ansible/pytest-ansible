@@ -1,55 +1,5 @@
 import pytest
-import ansible.errors
-
-# class AdHocResult(object):
-#
-#     '''Pass.'''
-#
-#     def __init__(self, **kwargs):
-#         self.__dict__.update(kwargs)
-#
-#         required_kwargs = ('contacted',)
-#         for kwarg in required_kwargs:
-#             assert kwarg in kwargs, "Missing required keyword argument '%s'" % kwarg
-#             setattr(self, kwarg, kwargs.get(kwarg))
-#
-#     def __getitem__(self, item):
-#         if item in self.__dict__:
-#             return self.__dict__[item]
-#         else:
-#             if item in self.contacted:
-#                 return ModuleResult(**self.contacted[item])
-#             else:
-#                 raise KeyError(item)
-#
-#     def __getattr__(self, attr):
-#         """Maps values to attributes.
-#         Only called if there *isn't* an attribute with this name
-#         """
-#         # if attr in self.__dict__:
-#         #     return self.__dict__[attr]
-#         # else:
-#         if attr in self.contacted:
-#             return ModuleResult(**self.contacted[attr])
-#         else:
-#             raise AttributeError("type AdHocResult has no attribute '%s'" % attr)
-#
-#     def __len__(self):
-#         return len(self.contacted)
-#
-#     def __contains__(self, item):
-#         return item in self.contacted
-#
-#     def keys(self):
-#         return self.contacted.keys()
-#
-#     def items(self):
-#         for k in self.contacted.keys():
-#             yield (k, getattr(self, k))
-#
-#     def values(self):
-#         for k in self.contacted.keys():
-#             yield getattr(self, k)
+from pytest_ansible.results import ModuleResult
 
 
 positive_host_patterns = {
@@ -70,26 +20,98 @@ negative_host_patterns = {
 }
 
 valid_hosts = ('localhost', 'another_host')
-invalid_hosts = ('none',)
+invalid_hosts = ('none', 'all', '*', 'local*')
 
 
-def test_keys(hosts):
-    result = hosts.all.ping()
-    sorted_keys = result.keys()
+@pytest.fixture()
+def adhoc_result(hosts):
+    return hosts.all.ping()
+
+
+def test_len(adhoc_result):
+    assert len(adhoc_result) == 2
+
+
+def test_keys(adhoc_result):
+    sorted_keys = adhoc_result.keys()
     sorted_keys.sort()
     assert sorted_keys == ['another_host', 'localhost']
 
 
 @pytest.mark.parametrize("host", valid_hosts)
-def test_contains(hosts, host):
-    result = hosts.all.ping()
-    assert host in result
+def test_contains(adhoc_result, host):
+    assert host in adhoc_result
 
 
 @pytest.mark.parametrize("host", invalid_hosts)
-def test_not_contains(hosts, host):
-    result = hosts.all.ping()
-    assert host not in result
+def test_not_contains(adhoc_result, host):
+    assert host not in adhoc_result
+
+
+@pytest.mark.parametrize("host_pattern", valid_hosts)
+def test_getitem(adhoc_result, host_pattern):
+    assert adhoc_result[host_pattern]
+    assert isinstance(adhoc_result[host_pattern], ModuleResult)
+
+
+@pytest.mark.parametrize("host_pattern", invalid_hosts)
+def test_not_getitem(adhoc_result, host_pattern):
+    with pytest.raises(KeyError):
+        assert adhoc_result[host_pattern]
+
+
+@pytest.mark.parametrize("host_pattern", valid_hosts)
+def test_getattr(adhoc_result, host_pattern):
+    assert hasattr(adhoc_result, host_pattern)
+    assert isinstance(adhoc_result[host_pattern], ModuleResult)
+
+
+@pytest.mark.parametrize("host_pattern", invalid_hosts)
+def test_not_getattr(adhoc_result, host_pattern):
+    assert not hasattr(adhoc_result, host_pattern)
+    with pytest.raises(AttributeError):
+        getattr(adhoc_result, host_pattern)
+
+
+@pytest.mark.requires_ansible_v1
+def test_connection_failure_v1():
+    from pytest_ansible.host_manager import get_host_manager
+    from pytest_ansible.errors import AnsibleConnectionFailure
+    hosts = get_host_manager(inventory='unknown.example.com,', connection='smart')
+    exc_info = pytest.raises(AnsibleConnectionFailure, hosts.all.ping)
+    # Assert message
+    assert exc_info.value.message == "Host unreachable"
+    # Assert contacted
+    assert exc_info.value.contacted == {}
+    # Assert dark
+    assert 'unknown.example.com' in exc_info.value.dark
+    # Assert unreachable
+    assert 'failed' in exc_info.value.dark['unknown.example.com']
+    assert exc_info.value.dark['unknown.example.com']['failed']
+    # Assert msg
+    assert 'msg' in exc_info.value.dark['unknown.example.com']
+    assert exc_info.value.dark['unknown.example.com']['msg'].startswith(u'SSH Error: ssh: Could not resolve hostname'
+                                                                        ' unknown.example.com:')
+
+
+@pytest.mark.requires_ansible_v2
+def test_connection_failure_v2():
+    from pytest_ansible.host_manager import get_host_manager
+    from pytest_ansible.errors import AnsibleConnectionFailure
+    hosts = get_host_manager(inventory='unknown.example.com,', connection='smart')
+    exc_info = pytest.raises(AnsibleConnectionFailure, hosts.all.ping)
+    # Assert message
+    assert exc_info.value.message == "Host unreachable"
+    # Assert contacted
+    assert exc_info.value.contacted == {}
+    # Assert dark
+    assert 'unknown.example.com' in exc_info.value.dark
+    # Assert unreachable
+    assert 'unreachable' in exc_info.value.dark['unknown.example.com'], exc_info.value.dark.keys()
+    assert exc_info.value.dark['unknown.example.com']['unreachable']
+    # Assert msg
+    assert 'msg' in exc_info.value.dark['unknown.example.com']
+    assert exc_info.value.dark['unknown.example.com']['msg'] == u'Failed to connect to the host via ssh.'
 
 
 def Foo(hosts):

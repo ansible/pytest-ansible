@@ -16,10 +16,23 @@ def pytest_runtest_setup(item):
     # Conditionally skip tests that are pinned to a specific ansible version
     if isinstance(item, item.Function):
         has_ansible_v1 = parse_version(ansible.__version__) < parse_version('2.0.0')
+
+        # conditionally skip
         if item.get_marker('requires_ansible_v1') and not has_ansible_v1:
             pytest.skip("requires < ansible-2.*")
         if item.get_marker('requires_ansible_v2') and has_ansible_v1:
             pytest.skip("requires >= ansible-2.*")
+
+        # conditionally xfail
+        mark = item.get_marker('ansible_v1_xfail')
+        if mark and has_ansible_v1:
+            item.add_marker(pytest.mark.xfail(reason="expected failure on < ansible-2.*",
+                                              raises=mark.kwargs.get('raises')))
+
+        mark = item.get_marker('ansible_v2_xfail')
+        if mark and not has_ansible_v1:
+            item.add_marker(pytest.xfail(reason="expected failure on >= ansible-2.*",
+                                         raises=mark.kwargs.get('raises')))
 
 
 class PyTestOption(object):
