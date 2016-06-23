@@ -17,7 +17,6 @@ class BaseModuleDispatcher(object):
 
     def __contains__(self, item):
         return len(self.options['inventory_manager'].list_hosts(item)) > 0
-        # return self.inventory_manager.get_host(item) is not None
 
     def __getattr__(self, name):
         if not self.has_module(name):
