@@ -5,6 +5,28 @@ from pkg_resources import parse_version
 
 pytest_plugins = 'pytester',
 
+
+POSITIVE_HOST_PATTERNS = [
+    ('all', 2),
+    ('*', 2),
+    ('localhost', 1),
+    ('local*', 1),
+    ('local*,&*host', 1),
+    ('!localhost', 1),
+    ('all[0]', 1),
+    ('all[-1]', 1),
+    pytest.mark.requires_ansible_v1(('*[0-1]', 1)),
+    pytest.mark.requires_ansible_v2(('*[0-1]', 2)),
+    pytest.mark.requires_ansible_v2(('*[0:1]', 2)),  # this is confusing, but how host slicing works on v2
+    pytest.mark.requires_ansible_v2(('*[0:]', 2)),
+]
+
+NEGATIVE_HOST_PATTERNS = [
+    ('none', 0),
+    ('all[8:]', 0),
+]
+
+
 # Indicate whether ansible-2.* is available
 # requires_ansible_v1 = pytest.mark.skipif(parse_version(ansible.__version__) >= parse_version('2.0.0'),
 #                                          reason="requires ansible-1.*")

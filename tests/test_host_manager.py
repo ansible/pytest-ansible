@@ -1,27 +1,9 @@
 import pytest
 from ansible.errors import AnsibleError
+from conftest import (POSITIVE_HOST_PATTERNS, NEGATIVE_HOST_PATTERNS)
 
 pytestmark = [
     pytest.mark.unit,
-]
-
-positive_host_patterns = [
-    ('all', 2),
-    ('*', 2),
-    ('localhost', 1),
-    ('local*', 1),
-    ('local*,&*host', 1),
-    ('!localhost', 1),
-    ('all[0]', 1),
-    ('all[-1]', 1),
-    ('*[0-1]', 2),
-    pytest.mark.requires_ansible_v2(('*[0:1]', 2)),  # this is confusing, but how host slicing works on v2
-    pytest.mark.requires_ansible_v2(('*[0:]', 2)),
-]
-
-negative_host_patterns = [
-    ('none', 0),
-    ('all[8:]', 0),
 ]
 
 
@@ -35,33 +17,33 @@ def test_keys(hosts):
     assert sorted_keys == ['another_host', 'localhost']
 
 
-@pytest.mark.parametrize("host_pattern, num_hosts", positive_host_patterns)
+@pytest.mark.parametrize("host_pattern, num_hosts", POSITIVE_HOST_PATTERNS)
 def test_contains(host_pattern, num_hosts, hosts):
     assert host_pattern in hosts, "{0} not in hosts".format(host_pattern)
 
 
-@pytest.mark.parametrize("host_pattern, num_hosts", negative_host_patterns)
+@pytest.mark.parametrize("host_pattern, num_hosts", NEGATIVE_HOST_PATTERNS)
 def test_not_contains(host_pattern, num_hosts, hosts):
     assert host_pattern not in hosts
 
 
-@pytest.mark.parametrize("host_pattern, num_hosts", positive_host_patterns)
+@pytest.mark.parametrize("host_pattern, num_hosts", POSITIVE_HOST_PATTERNS)
 def test_getitem(host_pattern, num_hosts, hosts):
     assert hosts[host_pattern]
 
 
-@pytest.mark.parametrize("host_pattern, num_hosts", negative_host_patterns)
+@pytest.mark.parametrize("host_pattern, num_hosts", NEGATIVE_HOST_PATTERNS)
 def test_not_getitem(host_pattern, num_hosts, hosts):
     with pytest.raises(KeyError):
         assert hosts[host_pattern]
 
 
-@pytest.mark.parametrize("host_pattern, num_hosts", positive_host_patterns)
+@pytest.mark.parametrize("host_pattern, num_hosts", POSITIVE_HOST_PATTERNS)
 def test_getattr(host_pattern, num_hosts, hosts):
     assert hasattr(hosts, host_pattern)
 
 
-@pytest.mark.parametrize("host_pattern, num_hosts", negative_host_patterns)
+@pytest.mark.parametrize("host_pattern, num_hosts", NEGATIVE_HOST_PATTERNS)
 def test_not_getattr(host_pattern, num_hosts, hosts):
     assert not hasattr(hosts, host_pattern)
     with pytest.raises(AttributeError):
