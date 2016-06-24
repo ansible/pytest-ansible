@@ -151,9 +151,11 @@ def test_params_required_with_inventory_without_host_pattern(testdir, option):
     testdir.makepyfile(src)
     result = testdir.runpytest(*option.args + ['--ansible-inventory', 'local,'])
     assert result.ret == EXIT_USAGEERROR
-    result.stderr.fnmatch_lines([
-        'ERROR: Missing required parameter --ansible-host-pattern',
-    ])
+    result.stderr.fnmatch_lines(
+        [
+            'ERROR: Missing required parameter --ansible-host-pattern',
+        ]
+    )
 
 
 @pytest.mark.requires_ansible_v1
@@ -172,7 +174,7 @@ def test_params_required_with_bogus_inventory_v1(testdir, option):
 
     # Assert expected error output
     result.stdout.fnmatch_lines([
-        '*UsageError: Unable to find an inventory file, specify one with -i ?',
+        '*Unable to find an inventory file, specify one with -i ?',
     ])
 
     # Assert mock open called on provided file
@@ -221,7 +223,7 @@ def test_params_required_without_inventory_with_host_pattern_v1(testdir, option)
     assert result.ret == EXIT_TESTSFAILED
     result.stdout.fnmatch_lines(
         [
-            'UsageError: Unable to find an inventory file, specify one with -i ?',
+            '*Unable to find an inventory file, specify one with -i ?',
         ]
     )
 
