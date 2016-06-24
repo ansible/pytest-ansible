@@ -18,6 +18,7 @@ log = logging.getLogger(__name__)
 log.addHandler(NullHandler())
 
 
+# FIXME - consider ansible_adhoc name instead
 @pytest.fixture(scope='function')
 def host_manager(request):
     plugin = request.config.pluginmanager.getplugin("ansible")
