@@ -54,7 +54,8 @@ class CleanCommand(Command):
             for fname in files:
                 if fname.endswith('.pyc') and os.path.isfile(os.path.join(root, fname)):
                     rm_list.append(os.path.join(root, fname))
-            if root.endswith('__pycache__'):
+            if root.endswith('__pycache__') or root.endswith('.cache') or root.endswith('.ansible') or \
+               root.endswith('.eggs') or root.endswith('.tox'):
                 rm_list.append(root)
 
         # Find egg's
