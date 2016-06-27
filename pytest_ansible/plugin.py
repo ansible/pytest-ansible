@@ -113,55 +113,35 @@ def pytest_configure(config):
     assert config.pluginmanager.register(PyTestAnsiblePlugin(config), "ansible")
 
 
+def pytest_generate_tests(metafunc):
+    log.debug("pytest_generate_tests() called")
+
+    if 'ansible_host' in metafunc.fixturenames:
+        # assert required --ansible-* parameters were used
+        PyTestAnsiblePlugin.assert_required_ansible_parameters(metafunc.config)
+        # TODO: figure out how to use PyTestAnsiblePlugin.initialize() instead
+        try:
+            inventory_manager = Inventory(metafunc.config.getvalue('ansible_inventory'))
+        except ansible.errors.AnsibleError, e:
+            raise pytest.UsageError(e)
+        pattern = metafunc.config.getvalue('ansible_host_pattern')
+        metafunc.parametrize("ansible_host", inventory_manager.list_hosts(pattern))
+    if 'ansible_group' in metafunc.fixturenames:
+        # assert required --ansible-* parameters were used
+        PyTestAnsiblePlugin.assert_required_ansible_parameters(metafunc.config)
+        # TODO: figure out how to use PyTestAnsiblePlugin.initialize() instead
+        try:
+            inventory_manager = Inventory(metafunc.config.getvalue('ansible_inventory'))
+        except ansible.errors.AnsibleError, e:
+            raise pytest.UsageError(e)
+        metafunc.parametrize("ansible_group", inventory_manager.list_groups())
+
+
 class PyTestAnsiblePlugin:
 
     def __init__(self, config):
         log.debug("PyTestAnsiblePlugin initialized")
         self.config = config
-
-    def assert_required_ansible_parameters(self):
-        '''Helper method to assert whether the required --ansible-* parameters were
-        provided.
-        '''
-
-        errors = []
-
-        # Verify --ansible-host-pattern was provided
-        ansible_hostname = self.config.getvalue('ansible_host_pattern')
-        if ansible_hostname is None or ansible_hostname == '':
-            errors.append("Missing required parameter --ansible-host-pattern")
-
-        # NOTE: I don't think this will ever catch issues since ansible_inventory
-        # defaults to '/etc/ansible/hosts'
-        # Verify --ansible-inventory was provided
-        ansible_inventory = self.config.getvalue('ansible_inventory')
-        if ansible_inventory is None or ansible_inventory == "":
-            errors.append("Unable to find an inventory file, specify one with the --ansible-inventory parameter.")
-
-        if errors:
-            raise pytest.UsageError(*errors)
-
-    def pytest_generate_tests(self, metafunc):
-        log.debug("pytest_generate_tests() called")
-
-        if 'ansible_host' in metafunc.fixturenames:
-            # assert required --ansible-* parameters were used
-            self.assert_required_ansible_parameters()
-            # TODO: this doesn't support function/cls fixture overrides
-            try:
-                inventory_manager = Inventory(self.config.getvalue('ansible_inventory'))
-            except ansible.errors.AnsibleError, e:
-                raise pytest.UsageError(e)
-            pattern = self.config.getvalue('ansible_host_pattern')
-            metafunc.parametrize("ansible_host", inventory_manager.list_hosts(pattern))
-        if 'ansible_group' in metafunc.fixturenames:
-            # assert required --ansible-* parameters were used
-            self.assert_required_ansible_parameters()
-            try:
-                inventory_manager = Inventory(self.config.getvalue('ansible_inventory'))
-            except ansible.errors.AnsibleError, e:
-                raise pytest.UsageError(e)
-            metafunc.parametrize("ansible_group", inventory_manager.list_groups())
 
     def pytest_report_header(self, config, startdir):
         log.debug("pytest_report_header() called")
@@ -187,7 +167,7 @@ class PyTestAnsiblePlugin:
 
         if uses_ansible_fixtures:
             # assert required --ansible-* parameters were used
-            self.assert_required_ansible_parameters()
+            self.assert_required_ansible_parameters(config)
 
     # def pytest_collection_modifyitems(session, config, items):
     #     reporter = config.pluginmanager.getplugin("terminalreporter")
@@ -254,3 +234,26 @@ class PyTestAnsiblePlugin:
         ansible_cfg = self._load_ansible_config(request)
         ansible_cfg.update(kwargs)
         return get_host_manager(**ansible_cfg)
+
+    @staticmethod
+    def assert_required_ansible_parameters(config):
+        '''Helper method to assert whether the required --ansible-* parameters were
+        provided.
+        '''
+
+        errors = []
+
+        # Verify --ansible-host-pattern was provided
+        ansible_hostname = config.getvalue('ansible_host_pattern')
+        if ansible_hostname is None or ansible_hostname == '':
+            errors.append("Missing required parameter --ansible-host-pattern")
+
+        # NOTE: I don't think this will ever catch issues since ansible_inventory
+        # defaults to '/etc/ansible/hosts'
+        # Verify --ansible-inventory was provided
+        ansible_inventory = config.getvalue('ansible_inventory')
+        if ansible_inventory is None or ansible_inventory == "":
+            errors.append("Unable to find an inventory file, specify one with the --ansible-inventory parameter.")
+
+        if errors:
+            raise pytest.UsageError(*errors)
