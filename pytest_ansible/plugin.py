@@ -1,7 +1,7 @@
 import pytest
 import logging
 from pkg_resources import parse_version
-from .fixtures import (host_manager, ansible_module, ansible_facts)
+from .fixtures import (ansible_adhoc, ansible_module, ansible_facts)
 from .host_manager import get_host_manager
 # from .errors import AnsibleNoHostsMatch, AnsibleHostUnreachable
 
@@ -27,7 +27,7 @@ log = logging.getLogger(__name__)
 log.addHandler(NullHandler())
 
 # Silence linters for imported fixtures
-(host_manager, ansible_module, ansible_facts)
+(ansible_adhoc, ansible_module, ansible_facts)
 
 
 def pytest_addoption(parser):
