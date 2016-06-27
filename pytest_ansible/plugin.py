@@ -68,18 +68,6 @@ def pytest_addoption(parser):
                     default=ansible.constants.DEFAULT_MODULE_PATH,
                     help='specify path(s) to module library (default: %default)')
 
-    # classic privilege escalation
-    group.addoption('--ansible-sudo',
-                    action='store_true',
-                    dest='ansible_sudo',
-                    default=ansible.constants.DEFAULT_SUDO,
-                    help='run operations with sudo [nopasswd] (default: %default) (deprecated, use become)')
-    group.addoption('--ansible-sudo-user',
-                    action='store',
-                    dest='ansible_sudo_user',
-                    default='root',
-                    help='desired sudo user (default: %default) (deprecated, use become)')
-
     # become privilege escalation
     group.addoption('--ansible-become',
                     action='store_true',
@@ -96,6 +84,11 @@ def pytest_addoption(parser):
                     dest='ansible_become_user',
                     default=ansible.constants.DEFAULT_BECOME_USER,
                     help='run operations as this user (default: %default)')
+    group.addoption('--ansible-ask-become-pass',
+                    action='store',
+                    dest='ansible_ask_become_pass',
+                    default=ansible.constants.DEFAULT_BECOME_ASK_PASS,
+                    help='ask for privilege escalation password (default: %default)')
 
     # Add github marker to --help
     parser.addini("ansible", "Ansible integration", "args")
@@ -206,8 +199,8 @@ class PyTestAnsiblePlugin:
 
         # List of config parameter names
         option_names = ['ansible_inventory', 'ansible_host_pattern', 'ansible_connection', 'ansible_user',
-                        'ansible_sudo', 'ansible_sudo_user', 'ansible_module_path', 'ansible_become',
-                        'ansible_become_method', 'ansible_become_user']
+                        'ansible_module_path', 'ansible_become', 'ansible_become_method', 'ansible_become_user',
+                        'ansible_ask_become_pass']
 
         # Remember the pytest request attr
         kwargs = dict(__request__=request)
@@ -234,11 +227,9 @@ class PyTestAnsiblePlugin:
             kwargs['host_pattern'] = request.getfuncargvalue('ansible_group')
 
         # normalize ansible.ansible_become options
-        kwargs['become'] = kwargs['become'] or kwargs['sudo'] or \
-            ansible.constants.DEFAULT_BECOME
-        kwargs['become_user'] = kwargs['become_user'] or kwargs['sudo_user'] or \
-            ansible.constants.DEFAULT_BECOME_USER
-        # kwargs['become_ask_pass'] = kwargs.get('become_ask_pass', kwargs.get('ask_sudo_pass', kwargs.get('ask_su_pass', ansible.constants.DEFAULT_BECOME_ASK_PASS)))  # NOQA
+        kwargs['become'] = kwargs['become'] or ansible.constants.DEFAULT_BECOME
+        kwargs['become_user'] = kwargs['become_user'] or ansible.constants.DEFAULT_BECOME_USER
+        kwargs['ask_become_pass'] = kwargs['ask_become_pass'] or ansible.constants.DEFAULT_BECOME_ASK_PASS
 
         log.debug("kwargs: %s" % kwargs)
         return kwargs
