@@ -3,20 +3,6 @@ import pytest  # NOQA
 from _pytest.main import EXIT_OK, EXIT_TESTSFAILED, EXIT_USAGEERROR, EXIT_NOTESTSCOLLECTED  # NOQA
 
 
-def test_report_header(testdir, option):
-    '''Verify the expected ansible version in the pytest report header.
-    '''
-
-    result = testdir.runpytest(*option.args)
-    assert result.ret == EXIT_NOTESTSCOLLECTED
-    print '\n'.join(result.stdout.lines)
-    print '\n'.join(result.stderr.lines)
-    print result.stderr.lines
-    result.stdout.fnmatch_lines([
-        'ansible: %s' % ansible.__version__,
-    ])
-
-
 # def test_params_not_required(testdir, option):
 #     '''Verify the ansible parameters are not required if the fixture is not used.
 #     '''
