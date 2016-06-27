@@ -66,15 +66,23 @@ def test_params_not_required_when_not_using_fixture(testdir, option):
     assert result.ret == EXIT_OK
 
 
-def test_params_required_when_using_fixture(testdir, option):
+@pytest.mark.parametrize(
+    "fixture_name",
+    [
+        'ansible_adhoc',
+        'ansible_module',
+        'ansible_facts',
+    ],
+)
+def test_params_required_when_using_fixture(testdir, option, fixture_name):
     """Verify the ansible parameters are required if the fixture is used.
     """
 
     src = """
         import pytest
-        def test_func(ansible_module):
+        def test_func({0}):
             assert True
-    """
+    """.format(fixture_name)
     testdir.makepyfile(src)
     result = testdir.runpytest(*option.args)
     assert result.ret == EXIT_USAGEERROR
@@ -83,33 +91,22 @@ def test_params_required_when_using_fixture(testdir, option):
     ])
 
 
-def test_params_required_with_host_generator(testdir, option):
-    """Verify the ansible parameters are required if the fixture is used.
+@pytest.mark.parametrize(
+    "fixture_name",
+    [
+        'ansible_host',
+        'ansible_group',
+    ],
+)
+def test_params_required_when_using_generator(testdir, option, fixture_name):
+    """Verify the ansible parameters are required when using a fixture generator.
     """
 
     src = """
         import pytest
-        def test_func(ansible_host):
+        def test_func({0}):
             assert True
-    """
-    testdir.makepyfile(src)
-    result = testdir.runpytest(*option.args)
-    assert result.ret == EXIT_TESTSFAILED
-    result.stdout.fnmatch_lines([
-        'collected 0 items / 1 errors',
-        'E   UsageError: Missing required parameter --ansible-host-pattern',
-    ])
-
-
-def test_params_required_with_group_generator(testdir, option):
-    """Verify the ansible parameters are required if the fixture is used.
-    """
-
-    src = """
-        import pytest
-        def test_func(ansible_group):
-            assert True
-    """
+    """.format(fixture_name)
     testdir.makepyfile(src)
     result = testdir.runpytest(*option.args)
     assert result.ret == EXIT_TESTSFAILED
