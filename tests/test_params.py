@@ -23,11 +23,10 @@ def test_plugin_help(testdir):
         '  --ansible-connection=ANSIBLE_CONNECTION',
         '  --ansible-user=ANSIBLE_USER',
         '  --ansible-debug *',
-        '  --ansible-sudo *',
-        '  --ansible-sudo-user=ANSIBLE_SUDO_USER',
         '  --ansible-become *',
         '  --ansible-become-method=ANSIBLE_BECOME_METHOD',
         '  --ansible-become-user=ANSIBLE_BECOME_USER',
+        '  --ansible-ask-become-pass=ANSIBLE_ASK_BECOME_PASS',
         # Check for the marker in --help
         '  ansible (args) * Ansible integration',
     ])
@@ -127,7 +126,6 @@ def test_params_required_with_group_generator(testdir, option):
         '--ansible-host-pattern',
         '--ansible-connection',
         '--ansible-user',
-        '--ansible-sudo-user',
         '--ansible-become-method',
         '--ansible-become-user',
     ],
