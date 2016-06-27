@@ -12,15 +12,14 @@ except ImportError:
         def emit(self, record):
             pass
 
-__all__ = ['ansible_module', 'ansible_facts', 'host_manager']
+__all__ = ['ansible_module', 'ansible_facts', 'ansible_adhoc']
 
 log = logging.getLogger(__name__)
 log.addHandler(NullHandler())
 
 
-# FIXME - consider ansible_adhoc name instead
 @pytest.fixture(scope='function')
-def host_manager(request):
+def ansible_adhoc(request):
     plugin = request.config.pluginmanager.getplugin("ansible")
 
     def init_host_mgr(**kwargs):
@@ -29,11 +28,11 @@ def host_manager(request):
 
 
 @pytest.fixture(scope='function')
-def ansible_module(host_manager):
+def ansible_module(ansible_adhoc):
     '''
     Return AnsibleV1Module instance with function scope.
     '''
-    return host_manager().all
+    return ansible_adhoc().all
 
 
 @pytest.fixture(scope='function')
