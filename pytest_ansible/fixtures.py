@@ -22,7 +22,7 @@ def ansible_module_cls(request):
     '''
     Return AnsibleV1Module instance with class scope.
     '''
-    warnings.warn("Use of ansible_facts_cls is deprecated and will be removed in a future release", DeprecationWarning)
+    warnings.warn("Use of ansible_module_cls is deprecated and will be removed in a future release", DeprecationWarning)
     ansible_helper = request.config.pluginmanager.getplugin("ansible")
     return ansible_helper.initialize(request)
 
