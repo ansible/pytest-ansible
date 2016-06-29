@@ -83,7 +83,6 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
         hosts = self.options['inventory_manager'].list_hosts(self.options['host_pattern'])
         if len(hosts) == 0 and not no_hosts:
             raise ansible.errors.AnsibleError("Specified hosts and/or --limit does not match any hosts")
-            raise Exception("No hosts match:'%s'" % self.options['host_pattern'])
 
         # Log the module and parameters
         log.debug("[%s] %s: %s" % (self.options['host_pattern'], self.options['module_name'], complex_args))
@@ -135,13 +134,13 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
                 ),
             ]
         )
-        log.debug("__run - Building Play() object - %s", play_ds)
+        log.debug("_run - Building Play() object - %s", play_ds)
         play = Play().load(play_ds, variable_manager=self.options['variable_manager'], loader=self.options['loader'])
 
         # now create a task queue manager to execute the play
         tqm = None
         try:
-            log.debug("__run - TaskQueueManager(%s)", kwargs)
+            log.debug("_run - TaskQueueManager(%s)", kwargs)
             tqm = TaskQueueManager(**kwargs)
             tqm.run(play)
         finally:
@@ -151,21 +150,10 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
         # Log the results
         log.debug(cb.results)
 
-        # FIXME - should command failures raise an exception, or return?
-        # If we choose to raise, callers will need to adapt accordingly
-        # Catch any failures in the response
-        # for host in results['contacted'].values():
-        #     if 'failed' in host or host.get('rc', 0) != 0:
-        #         raise Exception("Command failed: %s" % self.module_name, results)
-
         # Raise exception if host(s) unreachable
         # FIXME - if multiple hosts were involved, should an exception be raised?
         if cb.unreachable:
             raise AnsibleConnectionFailure("Host unreachable", dark=cb.unreachable, contacted=cb.contacted)
-
-        # No hosts contacted
-        # if not cb.contacted:
-        #     raise ansible.errors.AnsibleConnectionFailed("Provided hosts list is empty")
 
         # Success!
         return AdHocResult(contacted=cb.contacted)

@@ -30,4 +30,4 @@ def test_ansible_module_error(hosts):
             assert e.message == "The module {0} was not found in configured module paths.".format("a_module_that_most_certainly_does_not_exist")
             raise
         else:
-            pytest.fail("ansible.errors.AnsibleModuleError was not raised as expected")
+            pytest.fail("pytest_ansible.errors.AnsibleModuleError was not raised as expected")
