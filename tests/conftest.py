@@ -30,19 +30,19 @@ NEGATIVE_HOST_PATTERNS = [
 
 POSITIVE_HOST_SLICES = [
     (slice(0, 0), 1),
-    (slice(0, 1), 2),
-    (slice(0, 2), 3),
-    # pytest.mark.requires_ansible_v1((slice(0, 1), 1)),
-    # pytest.mark.requires_ansible_v2((slice(0, 1), 2)),
+    pytest.mark.requires_ansible_v1((slice(0, 1), 1)),
+    pytest.mark.requires_ansible_v2((slice(0, 1), 2)),
+    pytest.mark.requires_ansible_v1((slice(0, 2), 2)),
+    pytest.mark.requires_ansible_v2((slice(0, 2), 3)),
+    (slice(0), 1),
+    (slice(1), 1),
+    (slice(2), 1),
+    (slice(3), 1),
 ]
 
 NEGATIVE_HOST_SLICES = [
     slice(None),
     slice(-1),
-    slice(0),
-    slice(1),
-    slice(2),
-    slice(3),
 ]
 
 

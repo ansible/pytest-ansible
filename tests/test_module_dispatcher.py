@@ -2,6 +2,28 @@ import pytest
 from conftest import (POSITIVE_HOST_PATTERNS, NEGATIVE_HOST_PATTERNS)
 
 
+def test_runtime_error():
+    from pytest_ansible.module_dispatcher import BaseModuleDispatcher
+    bmd = BaseModuleDispatcher(inventory='localhost,')
+    with pytest.raises(RuntimeError):
+        bmd.has_module('foo')
+
+    with pytest.raises(RuntimeError):
+        bmd._run('foo')
+
+
+@pytest.mark.requires_ansible_v1
+def test_importerror_requires_v2():
+    with pytest.raises(ImportError):
+        import pytest_ansible.module_dispatcher.v2  # NOQA
+
+
+@pytest.mark.requires_ansible_v2
+def test_importerror_requires_v1():
+    with pytest.raises(ImportError):
+        import pytest_ansible.module_dispatcher.v1  # NOQA
+
+
 @pytest.mark.parametrize("host_pattern, num_hosts", POSITIVE_HOST_PATTERNS)
 def test_len(host_pattern, num_hosts, hosts):
     assert len(getattr(hosts, host_pattern)) == num_hosts

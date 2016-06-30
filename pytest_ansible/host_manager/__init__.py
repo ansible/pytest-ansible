@@ -54,7 +54,7 @@ class BaseHostManager(object):
             new_item = "all["
             if item.start is not None:
                 new_item += str(item.start)
-            new_item += ':'
+            new_item += '-'
             if item.stop is not None:
                 new_item += str(item.stop)
             item = new_item + ']'
