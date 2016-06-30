@@ -3,7 +3,6 @@ import logging
 from pkg_resources import parse_version
 from .fixtures import (ansible_adhoc, ansible_module, ansible_facts)
 from .host_manager import get_host_manager
-# from .errors import AnsibleNoHostsMatch, AnsibleHostUnreachable
 
 import ansible
 import ansible.constants
