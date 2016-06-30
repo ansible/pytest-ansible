@@ -1,6 +1,5 @@
 import pytest
 import logging
-from .errors import AnsibleHostUnreachable
 
 try:
     from logging import NullHandler
@@ -40,8 +39,4 @@ def ansible_facts(ansible_module):
     '''
     Return ansible_facts dictionary
     '''
-    try:
-        return ansible_module.all.setup()
-    except AnsibleHostUnreachable, e:
-        log.warning("Hosts unreachable: %s" % e.dark.keys())
-        return e.contacted
+    return ansible_module.all.setup()
