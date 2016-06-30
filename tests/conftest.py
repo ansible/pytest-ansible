@@ -6,19 +6,21 @@ from pkg_resources import parse_version
 pytest_plugins = 'pytester',
 
 
+ALL_HOSTS = ['another_host', 'localhost', 'yet_another_host']
+
 POSITIVE_HOST_PATTERNS = [
-    ('all', 2),
-    ('*', 2),
+    ('all', 3),
+    ('*', 3),
     ('localhost', 1),
     ('local*', 1),
     ('local*,&*host', 1),
-    ('!localhost', 1),
+    ('!localhost', 2),
     ('all[0]', 1),
     ('all[-1]', 1),
     pytest.mark.requires_ansible_v1(('*[0-1]', 1)),
     pytest.mark.requires_ansible_v2(('*[0-1]', 2)),
     pytest.mark.requires_ansible_v2(('*[0:1]', 2)),  # this is confusing, but how host slicing works on v2
-    pytest.mark.requires_ansible_v2(('*[0:]', 2)),
+    pytest.mark.requires_ansible_v2(('*[0:]', 3)),
 ]
 
 NEGATIVE_HOST_PATTERNS = [
@@ -26,12 +28,22 @@ NEGATIVE_HOST_PATTERNS = [
     ('all[8:]', 0),
 ]
 
+POSITIVE_HOST_SLICES = [
+    (slice(0, 0), 1),
+    (slice(0, 1), 2),
+    (slice(0, 2), 3),
+    # pytest.mark.requires_ansible_v1((slice(0, 1), 1)),
+    # pytest.mark.requires_ansible_v2((slice(0, 1), 2)),
+]
 
-# Indicate whether ansible-2.* is available
-# requires_ansible_v1 = pytest.mark.skipif(parse_version(ansible.__version__) >= parse_version('2.0.0'),
-#                                          reason="requires ansible-1.*")
-# requires_ansible_v2 = pytest.mark.skipif(parse_version(ansible.__version__) < parse_version('2.0.0'),
-#                                          reason="requires ansible-2.*")
+NEGATIVE_HOST_SLICES = [
+    slice(None),
+    slice(-1),
+    slice(0),
+    slice(1),
+    slice(2),
+    slice(3),
+]
 
 
 def pytest_runtest_setup(item):
@@ -99,4 +111,4 @@ def option(request, testdir):
 @pytest.fixture()
 def hosts():
     from pytest_ansible.host_manager import get_host_manager
-    return get_host_manager(inventory='localhost,another_host', connection='local')
+    return get_host_manager(inventory=','.join(ALL_HOSTS), connection='local')

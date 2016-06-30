@@ -1,6 +1,7 @@
 import pytest
 from ansible.errors import AnsibleError
-from conftest import (POSITIVE_HOST_PATTERNS, NEGATIVE_HOST_PATTERNS)
+from conftest import (ALL_HOSTS, POSITIVE_HOST_PATTERNS, NEGATIVE_HOST_PATTERNS, POSITIVE_HOST_SLICES,
+                      NEGATIVE_HOST_SLICES)
 
 pytestmark = [
     pytest.mark.unit,
@@ -8,13 +9,13 @@ pytestmark = [
 
 
 def test_len(hosts):
-    assert len(hosts) == 2
+    assert len(hosts) == len(ALL_HOSTS)
 
 
 def test_keys(hosts):
     sorted_keys = hosts.keys()
     sorted_keys.sort()
-    assert sorted_keys == ['another_host', 'localhost']
+    assert sorted_keys == ALL_HOSTS
 
 
 @pytest.mark.parametrize("host_pattern, num_hosts", POSITIVE_HOST_PATTERNS)
@@ -41,6 +42,17 @@ def test_not_getitem(host_pattern, num_hosts, hosts):
 @pytest.mark.parametrize("host_pattern, num_hosts", POSITIVE_HOST_PATTERNS)
 def test_getattr(host_pattern, num_hosts, hosts):
     assert hasattr(hosts, host_pattern)
+
+
+@pytest.mark.parametrize("host_slice, num_hosts", POSITIVE_HOST_SLICES)
+def test_slice(host_slice, num_hosts, hosts):
+    assert len(hosts[host_slice]) == num_hosts, "%s != %s for %s" % (len(hosts[host_slice]), num_hosts, host_slice)
+
+
+@pytest.mark.parametrize("host_slice", NEGATIVE_HOST_SLICES)
+def test_not_slice(host_slice, hosts):
+    with pytest.raises(KeyError):
+        hosts[host_slice]
 
 
 @pytest.mark.parametrize("host_pattern, num_hosts", NEGATIVE_HOST_PATTERNS)
