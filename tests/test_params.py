@@ -81,7 +81,7 @@ def test_params_required_when_using_fixture(testdir, option, fixture_name):
     src = """
         import pytest
         def test_func({0}):
-            assert True
+            {0}
     """.format(fixture_name)
     testdir.makepyfile(src)
     result = testdir.runpytest(*option.args)
