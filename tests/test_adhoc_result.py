@@ -26,7 +26,17 @@ def test_items(adhoc_result):
     items = adhoc_result.items()
     assert isinstance(items, GeneratorType)
     for count, item in enumerate(items, 1):
-        pass
+        assert isinstance(item, tuple)
+        assert isinstance(item[0], str)
+        assert isinstance(item[1], ModuleResult)
+    assert count == len(ALL_HOSTS)
+
+
+def test_values(adhoc_result):
+    values = adhoc_result.values()
+    assert isinstance(values, GeneratorType)
+    for count, val in enumerate(values, 1):
+        assert isinstance(val, ModuleResult)
     assert count == len(ALL_HOSTS)
 
 
