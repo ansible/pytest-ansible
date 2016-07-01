@@ -88,7 +88,7 @@ def test_params_required_when_using_fixture(testdir, option, fixture_name):
     result = testdir.runpytest(*option.args)
     assert result.ret == EXIT_USAGEERROR
     result.stderr.fnmatch_lines([
-        'ERROR: Missing required parameter --ansible-host-pattern',
+        'ERROR: Missing required parameter --ansible-host-pattern/--host-pattern',
     ])
 
 
@@ -113,7 +113,7 @@ def test_params_required_when_using_generator(testdir, option, fixture_name):
     assert result.ret == EXIT_TESTSFAILED
     result.stdout.fnmatch_lines([
         'collected 0 items / 1 errors',
-        'E   UsageError: Missing required parameter --ansible-host-pattern',
+        'E   UsageError: Missing required parameter --ansible-host-pattern/--host-pattern',
     ])
 
 
@@ -126,6 +126,7 @@ def test_params_required_when_using_generator(testdir, option, fixture_name):
         '--ansible-user', '--user',
         '--ansible-become-method', '--become-method',
         '--ansible-become-user', '--become-user',
+        '--ansible-module-path', '--module-path',
     ],
 )
 def test_param_requires_value(testdir, required_value_parameter):
@@ -139,6 +140,7 @@ def test_param_requires_value(testdir, required_value_parameter):
 
 
 def test_params_required_with_inventory_without_host_pattern(testdir, option):
+    '''Verify that a host pattern is required when an inventory is supplied.'''
     src = """
         import pytest
         def test_func(ansible_module):
@@ -149,7 +151,7 @@ def test_params_required_with_inventory_without_host_pattern(testdir, option):
     assert result.ret == EXIT_USAGEERROR
     result.stderr.fnmatch_lines(
         [
-            'ERROR: Missing required parameter --ansible-host-pattern',
+            'ERROR: Missing required parameter --ansible-host-pattern/--host-pattern',
         ]
     )
 
