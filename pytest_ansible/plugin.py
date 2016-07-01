@@ -121,17 +121,17 @@ def pytest_generate_tests(metafunc):
         PyTestAnsiblePlugin.assert_required_ansible_parameters(metafunc.config)
         # TODO: figure out how to use PyTestAnsiblePlugin.initialize() instead
         try:
-            inventory_manager = Inventory(metafunc.config.getvalue('ansible_inventory'))
+            inventory_manager = Inventory(metafunc.config.getoption('ansible_inventory'))
         except ansible.errors.AnsibleError, e:
             raise pytest.UsageError(e)
-        pattern = metafunc.config.getvalue('ansible_host_pattern')
+        pattern = metafunc.config.getoption('ansible_host_pattern')
         metafunc.parametrize("ansible_host", inventory_manager.list_hosts(pattern))
     if 'ansible_group' in metafunc.fixturenames:
         # assert required --ansible-* parameters were used
         PyTestAnsiblePlugin.assert_required_ansible_parameters(metafunc.config)
         # TODO: figure out how to use PyTestAnsiblePlugin.initialize() instead
         try:
-            inventory_manager = Inventory(metafunc.config.getvalue('ansible_inventory'))
+            inventory_manager = Inventory(metafunc.config.getoption('ansible_inventory'))
         except ansible.errors.AnsibleError, e:
             raise pytest.UsageError(e)
         metafunc.parametrize("ansible_group", inventory_manager.list_groups())
@@ -187,7 +187,7 @@ class PyTestAnsiblePlugin:
         # Load command-line supplied values
         for key in option_names:
             short_key = key[8:]
-            kwargs[short_key] = request.config.getvalue(key)
+            kwargs[short_key] = request.config.getoption(key)
 
         # Override options from @pytest.mark.ansible
         marker_kwargs = self._get_marker_kwargs(request)
@@ -244,16 +244,17 @@ class PyTestAnsiblePlugin:
         errors = []
 
         # Verify --ansible-host-pattern was provided
-        ansible_hostname = config.getvalue('ansible_host_pattern')
+        ansible_hostname = config.getoption('ansible_host_pattern')
         if ansible_hostname is None or ansible_hostname == '':
-            errors.append("Missing required parameter --ansible-host-pattern")
+            errors.append("Missing required parameter --ansible-host-pattern/--host-pattern")
 
         # NOTE: I don't think this will ever catch issues since ansible_inventory
         # defaults to '/etc/ansible/hosts'
         # Verify --ansible-inventory was provided
-        ansible_inventory = config.getvalue('ansible_inventory')
+        ansible_inventory = config.getoption('ansible_inventory')
         if ansible_inventory is None or ansible_inventory == "":
-            errors.append("Unable to find an inventory file, specify one with the --ansible-inventory parameter.")
+            errors.append("Unable to find an inventory file, specify one with the --ansible-inventory/--inventory "
+                          "parameter.")
 
         if errors:
             raise pytest.UsageError(*errors)
