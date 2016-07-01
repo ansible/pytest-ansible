@@ -1,4 +1,5 @@
 import pytest
+from types import GeneratorType
 from pytest_ansible.results import ModuleResult
 from conftest import ALL_HOSTS
 
@@ -19,6 +20,14 @@ def test_keys(adhoc_result):
     sorted_keys = adhoc_result.keys()
     sorted_keys.sort()
     assert sorted_keys == ALL_HOSTS
+
+
+def test_items(adhoc_result):
+    items = adhoc_result.items()
+    assert isinstance(items, GeneratorType)
+    for count, item in enumerate(items, 1):
+        pass
+    assert count == len(ALL_HOSTS)
 
 
 @pytest.mark.parametrize("host", ALL_HOSTS)

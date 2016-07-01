@@ -78,9 +78,6 @@ class AdHocResult(object):
         """Maps values to attributes.
         Only called if there *isn't* an attribute with this name
         """
-        # if attr in self.__dict__:
-        #     return self.__dict__[attr]
-        # else:
         if attr in self.contacted:
             return ModuleResult(**self.contacted[attr])
         else:
