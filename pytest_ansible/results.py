@@ -23,14 +23,14 @@ class ModuleResult(dict):
     '''Pass.'''
 
     def _check_key(self, key):
-        if 'results' in self:
-            flag = False
-            for res in self.get('results', []):
-                if isinstance(res, dict):
-                    flag |= res.get(key, False)
-            return flag
-        else:
-            return self.get(key, False)
+        # if 'results' in self:
+        #     flag = False
+        #     for res in self.get('results', []):
+        #         if isinstance(res, dict):
+        #             flag |= res.get(key, False)
+        #     return flag
+        # else:
+        return self.get(key, False)
 
     @property
     def is_ok(self):
