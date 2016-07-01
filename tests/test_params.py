@@ -22,6 +22,8 @@ def test_plugin_help(testdir):
         '  --ansible-host-pattern=ANSIBLE_HOST_PATTERN, --host-pattern=ANSIBLE_HOST_PATTERN',
         '  --ansible-connection=ANSIBLE_CONNECTION, --connection=ANSIBLE_CONNECTION',
         '  --ansible-user=ANSIBLE_USER, --user=ANSIBLE_USER',
+        '  --ansible-check, --check',
+        '  --ansible-module-path=ANSIBLE_MODULE_PATH, --module-path=ANSIBLE_MODULE_PATH',
         '  --ansible-become, --become',
         '  --ansible-become-method=ANSIBLE_BECOME_METHOD, --become-method=ANSIBLE_BECOME_METHOD',
         '  --ansible-become-user=ANSIBLE_BECOME_USER, --become-user=ANSIBLE_BECOME_USER',
