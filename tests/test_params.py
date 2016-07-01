@@ -18,15 +18,14 @@ def test_plugin_help(testdir):
         # Check for the github args section header
         'pytest-ansible:',
         # Check for the specific args
-        '  --ansible-inventory=ANSIBLE_INVENTORY',
-        '  --ansible-host-pattern=ANSIBLE_HOST_PATTERN',
-        '  --ansible-connection=ANSIBLE_CONNECTION',
-        '  --ansible-user=ANSIBLE_USER',
-        '  --ansible-debug *',
-        '  --ansible-become *',
-        '  --ansible-become-method=ANSIBLE_BECOME_METHOD',
-        '  --ansible-become-user=ANSIBLE_BECOME_USER',
-        '  --ansible-ask-become-pass=ANSIBLE_ASK_BECOME_PASS',
+        '  --ansible-inventory=ANSIBLE_INVENTORY, --inventory=ANSIBLE_INVENTORY',
+        '  --ansible-host-pattern=ANSIBLE_HOST_PATTERN, --host-pattern=ANSIBLE_HOST_PATTERN',
+        '  --ansible-connection=ANSIBLE_CONNECTION, --connection=ANSIBLE_CONNECTION',
+        '  --ansible-user=ANSIBLE_USER, --user=ANSIBLE_USER',
+        '  --ansible-become, --become',
+        '  --ansible-become-method=ANSIBLE_BECOME_METHOD, --become-method=ANSIBLE_BECOME_METHOD',
+        '  --ansible-become-user=ANSIBLE_BECOME_USER, --become-user=ANSIBLE_BECOME_USER',
+        '  --ansible-ask-become-pass=ANSIBLE_ASK_BECOME_PASS, --ask-become-pass=ANSIBLE_ASK_BECOME_PASS',
         # Check for the marker in --help
         '  ansible (args) * Ansible integration',
     ])
@@ -119,12 +118,12 @@ def test_params_required_when_using_generator(testdir, option, fixture_name):
 @pytest.mark.parametrize(
     "required_value_parameter",
     [
-        '--ansible-inventory',
-        '--ansible-host-pattern',
-        '--ansible-connection',
-        '--ansible-user',
-        '--ansible-become-method',
-        '--ansible-become-user',
+        '--ansible-inventory', '--inventory',
+        '--ansible-host-pattern', '--host-pattern',
+        '--ansible-connection', '--connection',
+        '--ansible-user', '--user',
+        '--ansible-become-method', '--become-method',
+        '--ansible-become-user', '--become-user',
     ],
 )
 def test_param_requires_value(testdir, required_value_parameter):
@@ -133,7 +132,7 @@ def test_param_requires_value(testdir, required_value_parameter):
     result = testdir.runpytest(*[required_value_parameter])
     assert result.ret == EXIT_INTERRUPTED
     result.stderr.fnmatch_lines([
-        '*: error: argument %s: expected one argument' % required_value_parameter,
+        '*: error: argument *%s*: expected one argument' % required_value_parameter,
     ])
 
 

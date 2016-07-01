@@ -34,56 +34,56 @@ def pytest_addoption(parser):
     log.debug("pytest_addoption() called")
 
     group = parser.getgroup('pytest-ansible')
-    group.addoption('--ansible-inventory',
+    group.addoption('--ansible-inventory', '--inventory',
                     action='store',
                     dest='ansible_inventory',
                     default=ansible.constants.DEFAULT_HOST_LIST,
                     metavar='ANSIBLE_INVENTORY',
                     help='ansible inventory file URI (default: %default)')
-    group.addoption('--ansible-host-pattern',
+    group.addoption('--ansible-host-pattern', '--host-pattern',
                     action='store',
                     dest='ansible_host_pattern',
                     default=None,
                     metavar='ANSIBLE_HOST_PATTERN',
                     help='ansible host pattern (default: %default)')
-    group.addoption('--ansible-connection',
+    group.addoption('--ansible-connection', '--connection',
                     action='store',
                     dest='ansible_connection',
                     default=ansible.constants.DEFAULT_TRANSPORT,
                     help="connection type to use (default: %default)")
-    group.addoption('--ansible-user',
+    group.addoption('--ansible-user', '--user',
                     action='store',
                     dest='ansible_user',
                     default=ansible.constants.DEFAULT_REMOTE_USER,
                     help='connect as this user (default: %default)')
-    group.addoption('--ansible-debug',
+    group.addoption('--ansible-check', '--check',
                     action='store_true',
-                    dest='ansible_debug',
-                    default=getattr(ansible.constants, 'DEFAULT_DEBUG', False),
-                    help='enable ansible connection debugging')
-    group.addoption('--ansible-module-path',
+                    dest='ansible_check',
+                    default=False,
+                    help='don\'t make any changes; instead, try to predict some of the changes that may occur')
+    group.addoption('--ansible-module-path', '--module-path',
                     action='store',
                     dest='ansible_module_path',
                     default=ansible.constants.DEFAULT_MODULE_PATH,
                     help='specify path(s) to module library (default: %default)')
 
     # become privilege escalation
-    group.addoption('--ansible-become',
+    group.addoption('--ansible-become', '--become',
                     action='store_true',
                     dest='ansible_become',
                     default=ansible.constants.DEFAULT_BECOME,
                     help='run operations with become, nopasswd implied (default: %default)')
-    group.addoption('--ansible-become-method',
+    group.addoption('--ansible-become-method', '--become-method',
                     action='store',
                     dest='ansible_become_method',
                     default=ansible.constants.DEFAULT_BECOME_METHOD,
                     help="privilege escalation method to use (default: %%default), valid choices: [ %s ]" % (' | '.join(ansible.constants.BECOME_METHODS)))
-    group.addoption('--ansible-become-user',
+    group.addoption('--ansible-become-user', '--become-user',
                     action='store',
                     dest='ansible_become_user',
                     default=ansible.constants.DEFAULT_BECOME_USER,
                     help='run operations as this user (default: %default)')
-    group.addoption('--ansible-ask-become-pass',
+    group.addoption('--ansible-ask-become-pass', '--ask-become-pass',
                     action='store',
                     dest='ansible_ask_become_pass',
                     default=ansible.constants.DEFAULT_BECOME_ASK_PASS,
@@ -102,13 +102,13 @@ def pytest_configure(config):
     config.addinivalue_line("markers", "ansible(**kwargs): Ansible integration")
 
     # Enable connection debugging
-    if config.getvalue('ansible_debug'):
+    if config.option.verbose > 0:
         if has_ansible_v2:
             from ansible.utils.display import Display
             display = Display()
-            display.verbosity = 5
+            display.verbosity = int(config.option.verbose)
         else:
-            ansible.utils.VERBOSITY = 5
+            ansible.utils.VERBOSITY = int(config.option.verbose)
 
     assert config.pluginmanager.register(PyTestAnsiblePlugin(config), "ansible")
 
