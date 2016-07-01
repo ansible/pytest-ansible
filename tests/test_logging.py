@@ -46,6 +46,7 @@ def test_debug_logging(testdir, capsys):
         'DEBUG - PyTestAnsiblePlugin initialized',
         'DEBUG - pytest_collection_modifyitems() called',
         'DEBUG - kwargs: {*',
+        'DEBUG - pytest_report_header() called',
     ]
 
     # 'DEBUG - pytest_cmdline_main() called',
@@ -54,10 +55,10 @@ def test_debug_logging(testdir, capsys):
     # X log.debug("pytest_configure() called")
     # X log.debug("pytest_generate_tests() called")
     # X log.debug("PyTestAnsiblePlugin initialized")
-    # log.debug("pytest_report_header() called")
+    # X log.debug("pytest_report_header() called")
     # X log.debug("pytest_collection_modifyitems() called")
     # log.debug("ansible marker override %s:%s" % (short_key, kwargs[short_key]))
-    # log.debug("kwargs: %s" % kwargs)
+    # # log.debug("kwargs: %s" % kwargs)
 
     # Assert stderr logging
     assert_fnmatch_lines(stderr, fnmatch_lines)
