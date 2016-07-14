@@ -27,11 +27,15 @@ def ansible_adhoc(request):
 
 
 @pytest.fixture(scope='function')
-def ansible_module(ansible_adhoc):
+def ansible_module(request, ansible_adhoc):
     '''
     Return AnsibleV1Module instance with function scope.
     '''
-    return ansible_adhoc().all
+    # `all` returns all hosts in the inventory, regardless of the provided `host_pattern`
+    # return ansible_adhoc().all
+    plugin = request.config.pluginmanager.getplugin("ansible")
+    host_pattern = plugin.config.getvalue('ansible_host_pattern')
+    return getattr(ansible_adhoc(), host_pattern)
 
 
 @pytest.fixture(scope='function')
@@ -39,4 +43,4 @@ def ansible_facts(ansible_module):
     '''
     Return ansible_facts dictionary
     '''
-    return ansible_module.all.setup()
+    return ansible_module.setup()
