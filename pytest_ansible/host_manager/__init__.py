@@ -85,7 +85,7 @@ class BaseHostManager(object):
         return len(self.options['inventory_manager'].list_hosts())
 
     def __contains__(self, item):
-        return len(self.options['inventory_manager'].list_hosts(item)) > 0
+        return self.has_matching_inventory(item)
 
     def initialize_inventory(self):
         raise NotImplementedError("Must be implemented by sub-class")
