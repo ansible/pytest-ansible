@@ -58,21 +58,16 @@ class AdHocResult(object):
     '''Pass.'''
 
     def __init__(self, **kwargs):
-        self.__dict__.update(kwargs)
-
         required_kwargs = ('contacted',)
         for kwarg in required_kwargs:
             assert kwarg in kwargs, "Missing required keyword argument '%s'" % kwarg
             setattr(self, kwarg, kwargs.get(kwarg))
 
     def __getitem__(self, item):
-        if item in self.__dict__:
-            return self.__dict__[item]
+        if item in self.contacted:
+            return ModuleResult(**self.contacted[item])
         else:
-            if item in self.contacted:
-                return ModuleResult(**self.contacted[item])
-            else:
-                raise KeyError(item)
+            raise KeyError(item)
 
     def __getattr__(self, attr):
         """Maps values to attributes.
