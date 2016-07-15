@@ -34,7 +34,7 @@ def ansible_module(request, ansible_adhoc):
     # `all` returns all hosts in the inventory, regardless of the provided `host_pattern`
     # return ansible_adhoc().all
     plugin = request.config.pluginmanager.getplugin("ansible")
-    host_pattern = plugin.config.getvalue('ansible_host_pattern')
+    host_pattern = plugin.config.getoption('ansible_host_pattern')
     return getattr(ansible_adhoc(), host_pattern)
 
 
