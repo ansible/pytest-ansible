@@ -16,3 +16,6 @@ before_script:
     - TOXENV=lint tox
 after_success:
     - TOXENV=coveralls tox
+addons:
+  apt_packages:
+    - pandoc
