@@ -97,4 +97,5 @@ def get_host_manager(*args, **kwargs):
     else:
         from .v1 import HostManagerV1 as HostManager
 
+    # TODO - figure out how to surface the parser defaults here too
     return HostManager(*args, **kwargs)
