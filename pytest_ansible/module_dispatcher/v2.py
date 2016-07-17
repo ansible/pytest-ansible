@@ -80,6 +80,7 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
             no_hosts = True
             warnings.warn("provided hosts list is empty, only localhost is available")
 
+        self.options['inventory_manager'].subset(self.options.get('subset'))
         hosts = self.options['inventory_manager'].list_hosts(self.options['host_pattern'])
         if len(hosts) == 0 and not no_hosts:
             raise ansible.errors.AnsibleError("Specified hosts and/or --limit does not match any hosts")
