@@ -46,6 +46,12 @@ def pytest_addoption(parser):
                     default=None,
                     metavar='ANSIBLE_HOST_PATTERN',
                     help='ansible host pattern (default: %default)')
+    group.addoption('--ansible-limit', '--limit',
+                    action='store',
+                    dest='ansible_subset',
+                    default=ansible.constants.DEFAULT_SUBSET,
+                    metavar='ANSIBLE_SUBSET',
+                    help='further limit selected hosts to an additional pattern')
     group.addoption('--ansible-connection', '--connection',
                     action='store',
                     dest='ansible_connection',
@@ -169,17 +175,13 @@ class PyTestAnsiblePlugin:
             # assert required --ansible-* parameters were used
             self.assert_required_ansible_parameters(config)
 
-    # def pytest_collection_modifyitems(session, config, items):
-    #     reporter = config.pluginmanager.getplugin("terminalreporter")
-    #     reporter.write("ansible: %s\n" % ansible.__version__)
-
     def _load_ansible_config(self, request):
         '''Load ansible configuration from command-line and decorator kwargs.'''
 
         # List of config parameter names
         option_names = ['ansible_inventory', 'ansible_host_pattern', 'ansible_connection', 'ansible_user',
                         'ansible_module_path', 'ansible_become', 'ansible_become_method', 'ansible_become_user',
-                        'ansible_ask_become_pass']
+                        'ansible_ask_become_pass', 'ansible_subset']
 
         # Remember the pytest request attr
         kwargs = dict(__request__=request)
