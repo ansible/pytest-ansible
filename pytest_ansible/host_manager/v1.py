@@ -1,25 +1,14 @@
-import logging
 from ansible.inventory import Inventory
+from pytest_ansible.logger import get_logger
 from pytest_ansible.host_manager import BaseHostManager
 from pytest_ansible.module_dispatcher.v1 import ModuleDispatcherV1
 
-try:
-    from logging import NullHandler
-except ImportError:
-    from logging import Handler
-
-    class NullHandler(Handler):
-
-        def emit(self, record):
-            pass
-
-log = logging.getLogger(__name__)
-log.addHandler(NullHandler())
+log = get_logger(__name__)
 
 
 class HostManagerV1(BaseHostManager):
 
-    '''FIXME'''
+    """FIXME"""
 
     _dispatcher = ModuleDispatcherV1
 

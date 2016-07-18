@@ -1,26 +1,14 @@
-#!/usr/bin/env python
-'''Fixme.'''
+"""Fixme."""
 
-import logging
 import ansible.errors  # NOQA
+from pytest_ansible.logger import get_logger
 
-try:
-    from logging import NullHandler
-except ImportError:
-    from logging import Handler
-
-    class NullHandler(Handler):
-
-        def emit(self, record):
-            pass
-
-log = logging.getLogger(__name__)
-log.addHandler(NullHandler())
+log = get_logger(__name__)
 
 
 class ModuleResult(dict):
 
-    '''Pass.'''
+    """Pass."""
 
     def _check_key(self, key):
         # if 'results' in self:

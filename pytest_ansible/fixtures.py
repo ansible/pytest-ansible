@@ -1,20 +1,8 @@
 import pytest
-import logging
-
-try:
-    from logging import NullHandler
-except ImportError:
-    from logging import Handler
-
-    class NullHandler(Handler):
-
-        def emit(self, record):
-            pass
+from pytest_ansible.logger import get_logger
 
 __all__ = ['ansible_module', 'ansible_facts', 'ansible_adhoc']
-
-log = logging.getLogger(__name__)
-log.addHandler(NullHandler())
+log = get_logger(__name__)
 
 
 @pytest.fixture(scope='function')

@@ -1,4 +1,3 @@
-import logging
 import warnings
 
 # conditionally import ansible libraries
@@ -17,23 +16,12 @@ from ansible.plugins.callback import CallbackBase  # NOQA
 from ansible.executor.task_queue_manager import TaskQueueManager  # NOQA
 from ansible.playbook.play import Play  # NOQA
 from ansible.cli import CLI  # NOQA
-
+from pytest_ansible.logger import get_logger
 from pytest_ansible.module_dispatcher import BaseModuleDispatcher
 from pytest_ansible.results import AdHocResult
 from pytest_ansible.errors import AnsibleConnectionFailure
 
-try:
-    from logging import NullHandler
-except ImportError:
-    from logging import Handler
-
-    class NullHandler(Handler):
-
-        def emit(self, record):
-            pass
-
-log = logging.getLogger(__name__)
-log.addHandler(NullHandler())
+log = get_logger(__name__)
 
 
 class ResultAccumulator(CallbackBase):
