@@ -3,7 +3,7 @@ from pytest_ansible.errors import AnsibleModuleError
 
 class BaseModuleDispatcher(object):
 
-    '''Pass.'''
+    """Pass."""
     required_kwargs = ('inventory',)
 
     def __init__(self, **kwargs):

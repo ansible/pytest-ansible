@@ -1,4 +1,3 @@
-import logging
 import warnings
 
 # conditionally import ansible libraries
@@ -14,22 +13,12 @@ if not has_ansible_v1:
     raise ImportError("Only supported with ansible < 2.0")
 
 from ansible.runner import Runner
+from pytest_ansible.logger import get_logger
 from pytest_ansible.module_dispatcher import BaseModuleDispatcher
 from pytest_ansible.errors import AnsibleConnectionFailure
 from pytest_ansible.results import AdHocResult
 
-try:
-    from logging import NullHandler
-except ImportError:
-    from logging import Handler
-
-    class NullHandler(Handler):
-
-        def emit(self, record):
-            pass
-
-log = logging.getLogger(__name__)
-log.addHandler(NullHandler())
+log = get_logger(__name__)
 
 
 class ModuleDispatcherV1(BaseModuleDispatcher):

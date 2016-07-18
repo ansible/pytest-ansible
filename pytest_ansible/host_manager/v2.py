@@ -1,27 +1,16 @@
-import logging
 from ansible.parsing.dataloader import DataLoader
 from ansible.vars import VariableManager
 from ansible.inventory import Inventory
+from pytest_ansible.logger import get_logger
 from pytest_ansible.host_manager import BaseHostManager
 from pytest_ansible.module_dispatcher.v2 import ModuleDispatcherV2
 
-try:
-    from logging import NullHandler
-except ImportError:
-    from logging import Handler
-
-    class NullHandler(Handler):
-
-        def emit(self, record):
-            pass
-
-log = logging.getLogger(__name__)
-log.addHandler(NullHandler())
+log = get_logger(__name__)
 
 
 class HostManagerV2(BaseHostManager):
 
-    '''Pass.'''
+    """Pass."""
     _dispatcher = ModuleDispatcherV2
 
     def initialize_inventory(self):

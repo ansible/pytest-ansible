@@ -1,22 +1,11 @@
-import logging
 import ansible
 from pkg_resources import parse_version
+from pytest_ansible.logger import get_logger
 
 # conditionally import ansible libraries
 has_ansible_v2 = parse_version(ansible.__version__) >= parse_version('2.0.0')
 
-try:
-    from logging import NullHandler
-except ImportError:
-    from logging import Handler
-
-    class NullHandler(Handler):
-
-        def emit(self, record):
-            pass
-
-log = logging.getLogger(__name__)
-log.addHandler(NullHandler())
+log = get_logger(__name__)
 
 
 class BaseHostManager(object):

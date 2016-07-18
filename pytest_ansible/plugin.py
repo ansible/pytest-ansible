@@ -1,8 +1,8 @@
 import pytest
-import logging
 from pkg_resources import parse_version
-from .fixtures import (ansible_adhoc, ansible_module, ansible_facts)
-from .host_manager import get_host_manager
+from pytest_ansible.logger import get_logger
+from pytest_ansible.fixtures import (ansible_adhoc, ansible_module, ansible_facts)
+from pytest_ansible.host_manager import get_host_manager
 
 import ansible
 import ansible.constants
@@ -10,27 +10,16 @@ import ansible.utils
 import ansible.errors
 from ansible.inventory import Inventory
 
-
 has_ansible_v2 = parse_version(ansible.__version__) >= parse_version('2.0.0')
 
-try:
-    from logging import NullHandler
-except ImportError:
-    from logging import Handler
-
-    class NullHandler(Handler):
-
-        def emit(self, record):
-            pass
-log = logging.getLogger(__name__)
-log.addHandler(NullHandler())
+log = get_logger(__name__)
 
 # Silence linters for imported fixtures
 (ansible_adhoc, ansible_module, ansible_facts)
 
 
 def pytest_addoption(parser):
-    '''Add options to control ansible.'''
+    """Add options to control ansible."""
     log.debug("pytest_addoption() called")
 
     group = parser.getgroup('pytest-ansible')

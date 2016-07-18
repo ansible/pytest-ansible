@@ -7,7 +7,7 @@ class AnsibleNoHostsMatch(ansible.errors.AnsibleError):
 
 class AnsibleConnectionFailure(ansible.errors.AnsibleError):
 
-    '''FIXME'''
+    """FIXME"""
 
     def __init__(self, msg, dark=None, contacted=None):
         super(AnsibleConnectionFailure, self).__init__(msg)
