@@ -1,5 +1,4 @@
 import pytest
-import logging
 from _pytest.main import EXIT_OK, EXIT_TESTSFAILED, EXIT_USAGEERROR, EXIT_NOTESTSCOLLECTED, EXIT_INTERRUPTED  # NOQA
 
 
@@ -8,18 +7,6 @@ def test_contacted_with_params(testdir, option):
     """FIXME
     """
 
-    # setup logging
-    logger = logging.getLogger()
-    logger.setLevel(logging.DEBUG)
-    # create stderr StreamHandler
-    sh = logging.StreamHandler()
-    sh.setLevel(logging.DEBUG)
-    # create formatter and add it to the handlers
-    formatter = logging.Formatter('%(levelname)s - %(message)s')
-    sh.setFormatter(formatter)
-    # add handler to logger
-    logger.addHandler(sh)
-
     src = """
         import pytest
         def test_func(ansible_module):
@@ -27,7 +14,7 @@ def test_contacted_with_params(testdir, option):
 
             # assert contacted hosts ...
             assert contacted
-            assert len(contacted) == len(ansible_module.inventory_manager.list_hosts('local'))
+            assert len(contacted) == len(ansible_module)
             for result in contacted.values():
                 assert 'failed' not in result
                 assert 'invocation' in result
@@ -45,18 +32,6 @@ def test_contacted_with_params(testdir, option):
 def test_contacted_with_params_and_inventory_marker(testdir, option):
     """FIXME
     """
-    # setup logging
-    logger = logging.getLogger()
-    logger.setLevel(logging.DEBUG)
-    # create stderr StreamHandler
-    sh = logging.StreamHandler()
-    sh.setLevel(logging.DEBUG)
-    # create formatter and add it to the handlers
-    formatter = logging.Formatter('%(levelname)s - %(message)s')
-    sh.setFormatter(formatter)
-    # add handler to logger
-    logger.addHandler(sh)
-
     src = """
         import pytest
         @pytest.mark.ansible(inventory='%s')
@@ -65,7 +40,7 @@ def test_contacted_with_params_and_inventory_marker(testdir, option):
 
             # assert contacted hosts ...
             assert contacted
-            assert len(contacted) == len(ansible_module.inventory_manager.list_hosts('local'))
+            assert len(contacted) == len(ansible_module)
             for result in contacted.values():
                 assert 'failed' not in result
                 assert 'invocation' in result
@@ -74,7 +49,7 @@ def test_contacted_with_params_and_inventory_marker(testdir, option):
 
     """ % str(option.inventory)
     testdir.makepyfile(src)
-    result = testdir.runpytest(*option.args + ['--ansible-host-pattern', 'local', '-vs'])
+    result = testdir.runpytest(*option.args + ['--ansible-host-pattern', 'local'])
     assert result.ret == EXIT_OK
     assert result.parseoutcomes()['passed'] == 1
 
@@ -91,7 +66,7 @@ def test_contacted_with_params_and_host_pattern_marker(testdir, option):
 
             # assert contacted hosts ...
             assert contacted
-            assert len(contacted) == len(ansible_module.inventory_manager.list_hosts('local'))
+            assert len(contacted) == len(ansible_module)
             for result in contacted.values():
                 assert 'failed' not in result
                 assert 'invocation' in result
@@ -117,7 +92,7 @@ def test_contacted_with_params_and_inventory_host_pattern_marker(testdir, option
 
             # assert contacted hosts ...
             assert contacted
-            assert len(contacted) == len(ansible_module.inventory_manager.list_hosts('local'))
+            assert len(contacted) == len(ansible_module)
             for result in contacted.values():
                 assert 'failed' not in result
                 assert 'invocation' in result
@@ -148,7 +123,7 @@ def test_become(testdir, option):
 
             # assert contacted hosts ...
             assert contacted
-            assert len(contacted) == len(ansible_module.inventory_manager.list_hosts('localhost'))
+            assert len(contacted) == len(ansible_module)
             for result in contacted.values():
                 assert 'failed' in result, "Missing expected field in JSON response: failed"
                 assert result['failed'], "Test did not fail as expected"
