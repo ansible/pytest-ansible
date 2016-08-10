@@ -3,6 +3,7 @@ import logging
 from pkg_resources import parse_version
 from .fixtures import (ansible_module_cls, ansible_module, ansible_facts_cls, ansible_facts)
 from .errors import AnsibleNoHostsMatch, AnsibleHostUnreachable
+import collections
 
 # conditionally import ansible libraries
 import ansible
@@ -219,7 +220,7 @@ class PyTestAnsiblePlugin:
             if hasattr(request.function, 'ansible'):
                 return request.function.ansible.kwargs
         elif request.scope == 'class':
-            if hasattr(request.cls, 'pytestmark'):
+            if hasattr(request.cls, 'pytestmark') and isinstance(request.cls.pytestmark, collections.Iterable):
                 for pytestmark in request.cls.pytestmark:
                     if pytestmark.name == 'ansible':
                         return pytestmark.kwargs
