@@ -31,3 +31,14 @@ def ansible_facts(ansible_module):
     Return ansible_facts dictionary
     '''
     return ansible_module.setup()
+
+
+@pytest.fixture(scope='function')
+def localhost(request):
+    '''
+    Return a host manager representing localhost
+    '''
+    # NOTE: Do not use ansible_adhoc as a dependent fixture since that will assert specific command-line parameters have
+    # been supplied.  In the case of localhost, the parameters are provided as kwargs below.
+    plugin = request.config.pluginmanager.getplugin("ansible")
+    return plugin.initialize(request, inventory='localhost,', connection='local', host_pattern='localhost').localhost
