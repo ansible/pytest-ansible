@@ -1,7 +1,7 @@
 import pytest
 from pkg_resources import parse_version
 from pytest_ansible.logger import get_logger
-from pytest_ansible.fixtures import (ansible_adhoc, ansible_module, ansible_facts)
+from pytest_ansible.fixtures import (ansible_adhoc, ansible_module, ansible_facts, localhost)
 from pytest_ansible.host_manager import get_host_manager
 
 import ansible
@@ -15,7 +15,7 @@ has_ansible_v2 = parse_version(ansible.__version__) >= parse_version('2.0.0')
 log = get_logger(__name__)
 
 # Silence linters for imported fixtures
-(ansible_adhoc, ansible_module, ansible_facts)
+(ansible_adhoc, ansible_module, ansible_facts, localhost)
 
 
 def pytest_addoption(parser):

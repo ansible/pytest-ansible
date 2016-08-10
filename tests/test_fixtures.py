@@ -40,3 +40,16 @@ def test_ansible_facts(testdir, option):
     result = testdir.runpytest(*option.args + ['--ansible-inventory', str(option.inventory), '--ansible-host-pattern', 'local'])
     assert result.ret == EXIT_OK
     assert result.parseoutcomes()['passed'] == 1
+
+
+def test_localhost(testdir, option):
+    src = """
+        import pytest
+        from pytest_ansible.module_dispatcher import BaseModuleDispatcher
+        def test_func(localhost):
+            assert isinstance(localhost, BaseModuleDispatcher)
+    """
+    testdir.makepyfile(src)
+    result = testdir.runpytest(*option.args)
+    assert result.ret == EXIT_OK
+    assert result.parseoutcomes()['passed'] == 1
