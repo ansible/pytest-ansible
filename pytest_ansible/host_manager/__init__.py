@@ -20,7 +20,7 @@ class BaseHostManager(object):
         self.has_required_kwargs(**kwargs)
 
         # Initialize ansible inventory manager
-        if 'inventory_manager' not in self.options or self.options['inventory_manager'] is None:
+        if self.options.get('inventory_manager', None) is None:
             self.initialize_inventory()
 
     def has_required_kwargs(self, **kwargs):

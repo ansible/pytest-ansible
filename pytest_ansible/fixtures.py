@@ -1,7 +1,7 @@
 import pytest
 from pytest_ansible.logger import get_logger
 
-__all__ = ['ansible_module', 'ansible_facts', 'ansible_adhoc']
+__all__ = ['ansible_module', 'ansible_facts', 'ansible_adhoc', 'localhost']
 log = get_logger(__name__)
 
 
@@ -19,8 +19,6 @@ def ansible_module(request, ansible_adhoc):
     '''
     Return AnsibleV1Module instance with function scope.
     '''
-    # `all` returns all hosts in the inventory, regardless of the provided `host_pattern`
-    # return ansible_adhoc().all
     host_mgr = ansible_adhoc()
     return getattr(host_mgr, host_mgr.options['host_pattern'])
 
