@@ -110,7 +110,7 @@ def test_params_required_when_using_generator(testdir, option, fixture_name):
     """.format(fixture_name)
     testdir.makepyfile(src)
     result = testdir.runpytest(*option.args)
-    assert result.ret == EXIT_TESTSFAILED
+    assert result.ret == EXIT_INTERRUPTED
     result.stdout.fnmatch_lines([
         'collected 0 items / 1 errors',
         'E   UsageError: Missing required parameter --ansible-host-pattern/--host-pattern',
