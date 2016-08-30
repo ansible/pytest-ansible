@@ -17,7 +17,7 @@ def ansible_adhoc(request):
 @pytest.fixture(scope='function')
 def ansible_module(request, ansible_adhoc):
     '''
-    Return AnsibleV1Module instance with function scope.
+    Return a subclass of BaseModuleDispatcher.
     '''
     host_mgr = ansible_adhoc()
     return getattr(host_mgr, host_mgr.options['host_pattern'])
