@@ -2,7 +2,7 @@ import os
 import sys
 import glob
 import shutil
-from setuptools import setup, Command
+from setuptools import setup, Command, find_packages
 from setuptools.command.test import test as TestCommand
 from pytest_ansible import __version__, __author__, __author_email__
 
@@ -110,7 +110,7 @@ setup(
     author_email=__author_email__,
     url='http://github.com/jlaska/pytest-ansible',
     platforms='any',
-    packages=['pytest_ansible'],
+    packages=find_packages(),
     entry_points={
         'pytest11': [
             'pytest-ansible = pytest_ansible.plugin'
