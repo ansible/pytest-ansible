@@ -23,7 +23,8 @@ def test_contacted_with_params(testdir, option):
 
     """
     testdir.makepyfile(src)
-    result = testdir.runpytest(*option.args + ['--ansible-inventory', str(option.inventory), '--ansible-host-pattern', 'local'])
+    result = testdir.runpytest_subprocess(*option.args + ['--ansible-inventory', str(option.inventory),
+                                                          '--ansible-host-pattern', 'local'])
     assert result.ret == EXIT_OK
     assert result.parseoutcomes()['passed'] == 1
 
@@ -49,7 +50,7 @@ def test_contacted_with_params_and_inventory_marker(testdir, option):
 
     """ % str(option.inventory)
     testdir.makepyfile(src)
-    result = testdir.runpytest(*option.args + ['--ansible-host-pattern', 'local'])
+    result = testdir.runpytest_subprocess(*option.args + ['--ansible-host-pattern', 'local'])
     assert result.ret == EXIT_OK
     assert result.parseoutcomes()['passed'] == 1
 
@@ -75,7 +76,8 @@ def test_contacted_with_params_and_host_pattern_marker(testdir, option):
 
     """
     testdir.makepyfile(src)
-    result = testdir.runpytest(*option.args + ['--ansible-inventory', str(option.inventory), '--ansible-host-pattern', 'unreachable'])
+    result = testdir.runpytest_subprocess(*option.args + ['--ansible-inventory', str(option.inventory),
+                                                          '--ansible-host-pattern', 'unreachable'])
     assert result.ret == EXIT_OK
     assert result.parseoutcomes()['passed'] == 1
 
@@ -101,7 +103,8 @@ def test_contacted_with_params_and_inventory_host_pattern_marker(testdir, option
 
     """ % str(option.inventory)
     testdir.makepyfile(src)
-    result = testdir.runpytest(*option.args + ['--ansible-inventory', '/dev/null', '--ansible-host-pattern', 'unreachable'])
+    result = testdir.runpytest_subprocess(*option.args + ['--ansible-inventory', '/dev/null', '--ansible-host-pattern',
+                                                          'unreachable'])
     assert result.ret == EXIT_OK
     assert result.parseoutcomes()['passed'] == 1
 
@@ -139,7 +142,7 @@ def test_become(testdir, option):
 
     """ % str(option.inventory)
     testdir.makepyfile(src)
-    result = testdir.runpytest(
+    result = testdir.runpytest_subprocess(
         *option.args + [
             '--ansible-inventory', str(option.inventory),
             '--ansible-host-pattern', 'localhost',  # run against a single host
@@ -174,7 +177,8 @@ def test_dark_with_params(testdir, option):
                 assert result.get('failed', False) or result.get('unreachable', False)
     """
     testdir.makepyfile(src)
-    result = testdir.runpytest(*option.args + ['--ansible-inventory', str(option.inventory), '--ansible-host-pattern', 'unreachable'])
+    result = testdir.runpytest_subprocess(*option.args + ['--ansible-inventory', str(option.inventory),
+                                                          '--ansible-host-pattern', 'unreachable'])
     print "\n".join(result.stdout.lines)
     print "\n".join(result.stderr.lines)
     assert result.ret == EXIT_OK
@@ -205,7 +209,7 @@ def test_dark_with_params_and_inventory_marker(testdir, option):
                 assert result.get('failed', False) or result.get('unreachable', False)
     """.format(inventory=str(option.inventory))
     testdir.makepyfile(src)
-    result = testdir.runpytest(*option.args + ['--ansible-host-pattern', 'unreachable'])
+    result = testdir.runpytest_subprocess(*option.args + ['--ansible-host-pattern', 'unreachable'])
     assert result.ret == EXIT_OK
     assert result.parseoutcomes()['passed'] == 1
 
@@ -239,7 +243,8 @@ def test_dark_with_params_and_host_pattern_marker(testdir, option):
                     assert result['msg'].startswith('SSH Error: ssh: Could not resolve hostname')
     """
     testdir.makepyfile(src)
-    result = testdir.runpytest(*option.args + ['--ansible-inventory', str(option.inventory), '--ansible-host-pattern', 'local'])
+    result = testdir.runpytest_subprocess(*option.args + ['--ansible-inventory', str(option.inventory),
+                                                          '--ansible-host-pattern', 'local'])
     assert result.ret == EXIT_OK
     assert result.parseoutcomes()['passed'] == 1
 
@@ -255,9 +260,8 @@ def test_dark_with_debug_enabled(testdir, option):
             ansible_module.ping()
     """
     testdir.makepyfile(src)
-    result = testdir.runpytest(*option.args + ['--ansible-inventory', str(option.inventory),
-                                               '--ansible-host-pattern', 'unreachable',
-                                               '--ansible-debug'])
+    result = testdir.runpytest_subprocess(*option.args + ['--ansible-inventory', str(option.inventory),
+                                                          '--ansible-host-pattern', 'unreachable', '--ansible-debug'])
     assert result.ret == EXIT_TESTSFAILED
     assert result.parseoutcomes()['failed'] == 1
     # FIXME - the following doesn't work on ansible-v2
