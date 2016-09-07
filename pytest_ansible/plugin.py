@@ -28,13 +28,13 @@ def pytest_addoption(parser):
                     dest='ansible_inventory',
                     default=ansible.constants.DEFAULT_HOST_LIST,
                     metavar='ANSIBLE_INVENTORY',
-                    help='ansible inventory file URI (default: %default)')
+                    help='ansible inventory file URI (default: %(default)s)')
     group.addoption('--ansible-host-pattern', '--host-pattern',
                     action='store',
                     dest='ansible_host_pattern',
                     default=None,
                     metavar='ANSIBLE_HOST_PATTERN',
-                    help='ansible host pattern (default: %default)')
+                    help='ansible host pattern (default: %(default)s)')
     group.addoption('--ansible-limit', '--limit',
                     action='store',
                     dest='ansible_subset',
@@ -45,12 +45,12 @@ def pytest_addoption(parser):
                     action='store',
                     dest='ansible_connection',
                     default=ansible.constants.DEFAULT_TRANSPORT,
-                    help="connection type to use (default: %default)")
+                    help="connection type to use (default: %(default)s)")
     group.addoption('--ansible-user', '--user',
                     action='store',
                     dest='ansible_user',
                     default=ansible.constants.DEFAULT_REMOTE_USER,
-                    help='connect as this user (default: %default)')
+                    help='connect as this user (default: %(default)s)')
     group.addoption('--ansible-check', '--check',
                     action='store_true',
                     dest='ansible_check',
@@ -60,29 +60,29 @@ def pytest_addoption(parser):
                     action='store',
                     dest='ansible_module_path',
                     default=ansible.constants.DEFAULT_MODULE_PATH,
-                    help='specify path(s) to module library (default: %default)')
+                    help='specify path(s) to module library (default: %(default)s)')
 
     # become privilege escalation
     group.addoption('--ansible-become', '--become',
                     action='store_true',
                     dest='ansible_become',
                     default=ansible.constants.DEFAULT_BECOME,
-                    help='run operations with become, nopasswd implied (default: %default)')
+                    help='run operations with become, nopasswd implied (default: %(default)s)')
     group.addoption('--ansible-become-method', '--become-method',
                     action='store',
                     dest='ansible_become_method',
                     default=ansible.constants.DEFAULT_BECOME_METHOD,
-                    help="privilege escalation method to use (default: %%default), valid choices: [ %s ]" % (' | '.join(ansible.constants.BECOME_METHODS)))
+                    help="privilege escalation method to use (default: %(default)s), valid choices: [ %s ]" % (' | '.join(ansible.constants.BECOME_METHODS)))
     group.addoption('--ansible-become-user', '--become-user',
                     action='store',
                     dest='ansible_become_user',
                     default=ansible.constants.DEFAULT_BECOME_USER,
-                    help='run operations as this user (default: %default)')
+                    help='run operations as this user (default: %(default)s)')
     group.addoption('--ansible-ask-become-pass', '--ask-become-pass',
                     action='store',
                     dest='ansible_ask_become_pass',
                     default=ansible.constants.DEFAULT_BECOME_ASK_PASS,
-                    help='ask for privilege escalation password (default: %default)')
+                    help='ask for privilege escalation password (default: %(default)s)')
 
     # Add github marker to --help
     parser.addini("ansible", "Ansible integration", "args")
