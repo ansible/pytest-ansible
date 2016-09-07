@@ -72,7 +72,7 @@ def pytest_addoption(parser):
                     action='store',
                     dest='ansible_become_method',
                     default=ansible.constants.DEFAULT_BECOME_METHOD,
-                    help="privilege escalation method to use (default: %(default)s), valid choices: [ %s ]" % (' | '.join(ansible.constants.BECOME_METHODS)))
+                    help="privilege escalation method to use (default: %%(default)s), valid choices: [ %s ]" % (' | '.join(ansible.constants.BECOME_METHODS)))
     group.addoption('--ansible-become-user', '--become-user',
                     action='store',
                     dest='ansible_become_user',
