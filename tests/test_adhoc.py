@@ -133,7 +133,7 @@ def test_become(testdir, option):
                 if ansible.__version__.startswith('2'):
                     assert 'msg' in result, "Missing expected field in JSON response: msg"
                     assert result['msg'].startswith('Failed to set permissions on the temporary files Ansible needs ' \
-                        'to create when becoming an unprivileged user.')
+                        'to create when becoming an unprivileged user')
                 else:
                     assert 'msg' in result, "Missing expected field in JSON response: msg"
                     assert 'sudo: unknown user: asdfasdf' in result['msg']
