@@ -1,14 +1,16 @@
-import pytest
-from pkg_resources import parse_version
-from pytest_ansible.logger import get_logger
-from pytest_ansible.fixtures import (ansible_adhoc, ansible_module, ansible_facts, localhost)
-from pytest_ansible.host_manager import get_host_manager
+"""PyTest Ansible Plugin."""
 
+import pytest
 import ansible
 import ansible.constants
 import ansible.utils
 import ansible.errors
+
 from ansible.inventory import Inventory
+from pkg_resources import parse_version
+from pytest_ansible.logger import get_logger
+from pytest_ansible.fixtures import (ansible_adhoc, ansible_module, ansible_facts, localhost)
+from pytest_ansible.host_manager import get_host_manager
 
 has_ansible_v2 = parse_version(ansible.__version__) >= parse_version('2.0.0')
 
@@ -72,7 +74,8 @@ def pytest_addoption(parser):
                     action='store',
                     dest='ansible_become_method',
                     default=ansible.constants.DEFAULT_BECOME_METHOD,
-                    help="privilege escalation method to use (default: %%(default)s), valid choices: [ %s ]" % (' | '.join(ansible.constants.BECOME_METHODS)))
+                    help="privilege escalation method to use (default: %%(default)s), valid choices: [ %s ]" %
+                    (' | '.join(ansible.constants.BECOME_METHODS)))
     group.addoption('--ansible-become-user', '--become-user',
                     action='store',
                     dest='ansible_become_user',
@@ -89,9 +92,7 @@ def pytest_addoption(parser):
 
 
 def pytest_configure(config):
-    '''
-    Validate --ansible-* parameters.
-    '''
+    """Validate --ansible-* parameters."""
     log.debug("pytest_configure() called")
 
     config.addinivalue_line("markers", "ansible(**kwargs): Ansible integration")
@@ -109,6 +110,7 @@ def pytest_configure(config):
 
 
 def pytest_generate_tests(metafunc):
+    """Generate tests when specific `ansible_*` fixtures are used by tests."""
     log.debug("pytest_generate_tests() called")
 
     if 'ansible_host' in metafunc.fixturenames:
@@ -134,19 +136,19 @@ def pytest_generate_tests(metafunc):
 
 class PyTestAnsiblePlugin:
 
+    """Ansible PyTest Plugin Class."""
+
     def __init__(self, config):
         log.debug("PyTestAnsiblePlugin initialized")
         self.config = config
 
     def pytest_report_header(self, config, startdir):
+        """Return the version of ansible."""
         log.debug("pytest_report_header() called")
-
         return 'ansible: %s' % ansible.__version__
 
     def pytest_collection_modifyitems(self, session, config, items):
-        '''
-        Validate --ansible-* parameters.
-        '''
+        """Validate --ansible-* parameters."""
         log.debug("pytest_collection_modifyitems() called")
 
         uses_ansible_fixtures = False
@@ -165,8 +167,7 @@ class PyTestAnsiblePlugin:
             self.assert_required_ansible_parameters(config)
 
     def _load_ansible_config(self, request):
-        '''Load ansible configuration from command-line and decorator kwargs.'''
-
+        """Load ansible configuration from command-line and decorator kwargs."""
         # List of config parameter names
         option_names = ['ansible_inventory', 'ansible_host_pattern', 'ansible_connection', 'ansible_user',
                         'ansible_module_path', 'ansible_become', 'ansible_become_method', 'ansible_become_user',
@@ -205,8 +206,7 @@ class PyTestAnsiblePlugin:
         return kwargs
 
     def _get_marker_kwargs(self, request):
-        '''Returns a dictionary of the ansible parameters supplied to the ansible marker.'''
-
+        """Return a dictionary of the ansible parameters supplied to the ansible marker."""
         if request.scope == 'function':
             if hasattr(request.function, 'ansible'):
                 return request.function.ansible.kwargs
@@ -220,18 +220,14 @@ class PyTestAnsiblePlugin:
         return {}
 
     def initialize(self, request, **kwargs):
-        '''Returns an initialized Ansible Host Manager instance
-        '''
+        """Return an initialized Ansible Host Manager instance."""
         ansible_cfg = self._load_ansible_config(request)
         ansible_cfg.update(kwargs)
         return get_host_manager(**ansible_cfg)
 
     @staticmethod
     def assert_required_ansible_parameters(config):
-        '''Helper method to assert whether the required --ansible-* parameters were
-        provided.
-        '''
-
+        """Helper method to assert whether the required --ansible-* parameters were provided."""
         errors = []
 
         # Verify --ansible-host-pattern was provided

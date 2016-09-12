@@ -8,7 +8,7 @@ log = get_logger(__name__)
 
 class HostManagerV1(BaseHostManager):
 
-    """FIXME"""
+    """Fixme."""
 
     _dispatcher = ModuleDispatcherV1
 

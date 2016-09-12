@@ -4,11 +4,6 @@ import ansible.utils
 import ansible.errors
 
 from pkg_resources import parse_version
-has_ansible_v2 = parse_version(ansible.__version__) >= parse_version('2.0.0')
-
-if not has_ansible_v2:
-    raise ImportError("Only supported with ansible-2.* and newer")
-
 from ansible.plugins.callback import CallbackBase
 from ansible.executor.task_queue_manager import TaskQueueManager
 from ansible.playbook.play import Play
@@ -18,10 +13,17 @@ from pytest_ansible.module_dispatcher import BaseModuleDispatcher
 from pytest_ansible.results import AdHocResult
 from pytest_ansible.errors import AnsibleConnectionFailure
 
+has_ansible_v2 = parse_version(ansible.__version__) >= parse_version('2.0.0')
+
+if not has_ansible_v2:
+    raise ImportError("Only supported with ansible-2.* and newer")
+
 log = get_logger(__name__)
 
 
 class ResultAccumulator(CallbackBase):
+
+    """FIXME."""
 
     def __init__(self, *args, **kwargs):
         super(ResultAccumulator, self).__init__(*args, **kwargs)
@@ -43,17 +45,15 @@ class ResultAccumulator(CallbackBase):
 
 class ModuleDispatcherV2(BaseModuleDispatcher):
 
-    '''Pass.'''
+    """Pass."""
+
     required_kwargs = ('inventory', 'inventory_manager', 'variable_manager', 'host_pattern', 'loader')
 
     def has_module(self, name):
         return ansible.plugins.module_loader.has_plugin(name)
 
     def _run(self, *module_args, **complex_args):
-        '''
-        The API provided by ansible is not intended as a public API.
-        '''
-
+        """The API provided by ansible is not intended as a public API."""
         # Assemble module argument string
         if module_args:
             complex_args.update(dict(_raw_params=' '.join(module_args)))

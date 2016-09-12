@@ -8,7 +8,7 @@ log = get_logger(__name__)
 
 class ModuleResult(dict):
 
-    """Pass."""
+    """Fixme."""
 
     def _check_key(self, key):
         # if 'results' in self:
@@ -43,7 +43,7 @@ class ModuleResult(dict):
 
 class AdHocResult(object):
 
-    '''Pass.'''
+    """Fixme."""
 
     def __init__(self, **kwargs):
         required_kwargs = ('contacted',)
@@ -52,33 +52,37 @@ class AdHocResult(object):
             setattr(self, kwarg, kwargs.get(kwarg))
 
     def __getitem__(self, item):
+        """Return a ModuleResult instance matching the provided `item`."""
         if item in self.contacted:
             return ModuleResult(**self.contacted[item])
         else:
             raise KeyError(item)
 
     def __getattr__(self, attr):
-        """Maps values to attributes.
-        Only called if there *isn't* an attribute with this name
-        """
+        """Return a ModuleResult instance matching the provided `attr`."""
         if attr in self.contacted:
             return ModuleResult(**self.contacted[attr])
         else:
             raise AttributeError("type AdHocResult has no attribute '%s'" % attr)
 
     def __len__(self):
+        """Return the number of contacted hosts."""
         return len(self.contacted)
 
     def __contains__(self, item):
+        """Return whether the provided `item` was contacted."""
         return item in self.contacted
 
     def keys(self):
+        """Return a list of contacted inventory hosts."""
         return self.contacted.keys()
 
     def items(self):
+        """Return a list of tuples containing the inventory host key, and the ModuleResult instance."""
         for k in self.contacted.keys():
             yield (k, getattr(self, k))
 
     def values(self):
+        """Return a list of ModuleResult instances for each contacted inventory host."""
         for k in self.contacted.keys():
             yield getattr(self, k)

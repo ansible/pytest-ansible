@@ -1,3 +1,5 @@
+"""Fixme."""
+
 import ansible
 from pkg_resources import parse_version
 from pytest_ansible.logger import get_logger
@@ -10,7 +12,8 @@ log = get_logger(__name__)
 
 class BaseHostManager(object):
 
-    '''Pass.'''
+    """Pass."""
+
     _dispatcher = Exception
     _required_kwargs = ('inventory',)
 
@@ -24,13 +27,12 @@ class BaseHostManager(object):
             self.initialize_inventory()
 
     def has_required_kwargs(self, **kwargs):
-        '''Assert whether the required kwargs were provided during instantiation.
-        '''
+        """Return whether the required kwargs were provided during instantiation."""
         for kwarg in self._required_kwargs:
             assert kwarg in self.options, "Missing required keyword argument '%s'" % kwarg
 
     def has_matching_inventory(self, host_pattern):
-        '''Return whether any matching ansible inventory is found for the provided host_pattern.'''
+        """Return whether any matching ansible inventory is found for the provided host_pattern."""
         try:
             return len(self.options['inventory_manager'].list_hosts(host_pattern)) > 0 or \
                 host_pattern in self.options['inventory_manager'].groups
@@ -38,6 +40,7 @@ class BaseHostManager(object):
             return False
 
     def __getitem__(self, item):
+        """Return a ModuleDispatcher instance described the provided `item`."""
         # Handle slicing
         if isinstance(item, slice):
             new_item = "all["
@@ -58,9 +61,7 @@ class BaseHostManager(object):
                 return self._dispatcher(**self.options)
 
     def __getattr__(self, attr):
-        """Maps values to attributes.
-        Only called if there *isn't* an attribute with this name
-        """
+        """Return a ModuleDispatcher instance described the provided `attr`."""
         if not self.has_matching_inventory(attr):
             raise AttributeError("type HostManager has no attribute '%s'" % attr)
         else:
@@ -71,9 +72,11 @@ class BaseHostManager(object):
         return [h.name for h in self.options['inventory_manager'].list_hosts()]
 
     def __len__(self):
+        """Return the number of inventory hosts."""
         return len(self.options['inventory_manager'].list_hosts())
 
     def __contains__(self, item):
+        """Return whether there is inventory matching the provided `item`."""
         return self.has_matching_inventory(item)
 
     def initialize_inventory(self):
@@ -81,6 +84,7 @@ class BaseHostManager(object):
 
 
 def get_host_manager(*args, **kwargs):
+    """Initialize and return a HostManager instance."""
     if has_ansible_v2:
         from .v2 import HostManagerV2 as HostManager
     else:
