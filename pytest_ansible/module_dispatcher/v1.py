@@ -1,29 +1,27 @@
 import warnings
-
-# conditionally import ansible libraries
 import ansible
 import ansible.constants
 import ansible.utils
 import ansible.errors
 
 from pkg_resources import parse_version
-has_ansible_v1 = parse_version(ansible.__version__) < parse_version('2.0.0')
-
-if not has_ansible_v1:
-    raise ImportError("Only supported with ansible < 2.0")
-
 from ansible.runner import Runner
 from pytest_ansible.logger import get_logger
 from pytest_ansible.module_dispatcher import BaseModuleDispatcher
 from pytest_ansible.errors import AnsibleConnectionFailure
 from pytest_ansible.results import AdHocResult
 
+has_ansible_v1 = parse_version(ansible.__version__) < parse_version('2.0.0')
+
+if not has_ansible_v1:
+    raise ImportError("Only supported with ansible < 2.0")
+
 log = get_logger(__name__)
 
 
 class ModuleDispatcherV1(BaseModuleDispatcher):
 
-    '''Pass.'''
+    """Pass."""
 
     required_kwargs = ('inventory', 'inventory_manager', 'host_pattern')
 
@@ -31,10 +29,7 @@ class ModuleDispatcherV1(BaseModuleDispatcher):
         return ansible.utils.module_finder.has_plugin(name)
 
     def _run(self, *module_args, **complex_args):
-        '''
-        The API provided by ansible is not intended as a public API.
-        '''
-
+        """The API provided by ansible is not intended as a public API."""
         # Assemble module argument string
         if True:
             module_args = ' '.join(module_args)
