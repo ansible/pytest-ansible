@@ -40,6 +40,10 @@ class ModuleResult(dict):
     def is_failed(self):
         return self._check_key('failed') or self.get('rc', 0) != 0
 
+    @property
+    def is_successful(self):
+        return not (self.is_failed or self.is_unreachable)
+
 
 class AdHocResult(object):
 
