@@ -43,10 +43,52 @@ py.test \
 The following fixtures are available:
 
 
+### Fixture ``ansible_adhoc``
+
+The `ansible_adhoc` fixture returns a function used to initialize a `HostManager` object.
+
+```python
+def test_all_the_pings(ansible_adhoc):
+    result = ansible_adhoc().all.ping()
+    assert result.is_successful
+
+```
+
+### Fixture ``localhost``
+
+The `localhost` fixture is a convenience fixture that surfaces
+a `ModuleDispatcher` instance for ansible host running `pytest`.  This is
+convenient when using ansible modules that typically run on the local machine,
+such as cloud modules (ec2, gce etc...).
+
+```python
+def test_do_something_cloudy(localhost, ansible_adhoc):
+    """Deploy an ec2 instance using multiple fixtures."""
+    params = dict(
+        key_name='somekey',
+        instance_type='t2.micro',
+        image='ami-123456',
+        wait=True,
+        group='webserver',
+        count=1,
+        vpc_subnet_id='subnet-29e63245',
+        assign_public_ip=True,
+    )
+
+    # Deploy an ec2 instance from localhost using the `ansible_adhoc` fixture
+    result = ansible_adhoc(inventory='localhost,', connection='local').localhost.ec2(**params)
+    assert result.is_successful
+
+    # Deploy an ec2 instance from localhost using the `localhost` fixture
+    result = localhost.ec2(**params)
+    assert result.is_successful
+```
+
+
 ### Fixture ``ansible_module``
 
-The ``ansible_module`` fixture allows tests and fixtures to call ansible
-[modules](http://docs.ansible.com/modules.html).
+The ``ansible_module`` fixture allows tests and fixtures to call [ansible
+modules](http://docs.ansible.com/modules.html).
 
 A very basic example demonstrating the ansible [``ping`` module](http://docs.ansible.com/ping_module.html):
 
