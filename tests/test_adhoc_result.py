@@ -115,4 +115,4 @@ def test_connection_failure_v2():
     assert exc_info.value.dark['unknown.example.com']['unreachable']
     # Assert msg
     assert 'msg' in exc_info.value.dark['unknown.example.com']
-    assert exc_info.value.dark['unknown.example.com']['msg'] == u'Failed to connect to the host via ssh.'
+    assert exc_info.value.dark['unknown.example.com']['msg'].contains('Failed to connect to the host via ssh')
