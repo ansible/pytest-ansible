@@ -31,13 +31,16 @@ Once installed, the following ``py.test`` command-line parameters are available:
 
 ```bash
 py.test \
-    [--ansible-inventory <path_to_inventory>] \
-    [--ansible-host-pattern <host-pattern>] \
-    [--ansible-connection <plugin>] \
-    [--ansible-module-path <path_to_modules] \
-    [--ansible-user <username>] \
-    [--ansible-sudo] \
-    [--ansible-sudo-user <username>]
+    [--inventory <path_to_inventory>] \
+    [--host-pattern <host-pattern>] \
+    [--connection <plugin>] \
+    [--module-path <path_to_modules] \
+    [--user <username>] \
+    [--become] \
+    [--become-user <username>] \
+    [--become-method <method>] \
+    [--limit <limit>] \
+    [--check]
 ```
 
 The following fixtures are available:
