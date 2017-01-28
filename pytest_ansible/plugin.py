@@ -150,6 +150,7 @@ class PyTestAnsiblePlugin:
     def pytest_collection_modifyitems(self, session, config, items):
         """Validate --ansible-* parameters."""
         log.debug("pytest_collection_modifyitems() called")
+        log.debug("items: %s" % items)
 
         uses_ansible_fixtures = False
         for item in items:
