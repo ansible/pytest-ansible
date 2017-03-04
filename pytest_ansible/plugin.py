@@ -25,63 +25,63 @@ def pytest_addoption(parser):
     log.debug("pytest_addoption() called")
 
     group = parser.getgroup('pytest-ansible')
-    group.addoption('--ansible-inventory', '--inventory',
+    group.addoption('--inventory', '--ansible-inventory',
                     action='store',
                     dest='ansible_inventory',
                     default=ansible.constants.DEFAULT_HOST_LIST,
                     metavar='ANSIBLE_INVENTORY',
                     help='ansible inventory file URI (default: %(default)s)')
-    group.addoption('--ansible-host-pattern', '--host-pattern',
+    group.addoption('--host-pattern', '--ansible-host-pattern',
                     action='store',
                     dest='ansible_host_pattern',
                     default=None,
                     metavar='ANSIBLE_HOST_PATTERN',
                     help='ansible host pattern (default: %(default)s)')
-    group.addoption('--ansible-limit', '--limit',
+    group.addoption('--limit', '--ansible-limit',
                     action='store',
                     dest='ansible_subset',
                     default=ansible.constants.DEFAULT_SUBSET,
                     metavar='ANSIBLE_SUBSET',
                     help='further limit selected hosts to an additional pattern')
-    group.addoption('--ansible-connection', '--connection',
+    group.addoption('--connection', '--ansible-connection',
                     action='store',
                     dest='ansible_connection',
                     default=ansible.constants.DEFAULT_TRANSPORT,
                     help="connection type to use (default: %(default)s)")
-    group.addoption('--ansible-user', '--user',
+    group.addoption('--user', '--ansible-user',
                     action='store',
                     dest='ansible_user',
                     default=ansible.constants.DEFAULT_REMOTE_USER,
                     help='connect as this user (default: %(default)s)')
-    group.addoption('--ansible-check', '--check',
+    group.addoption('--check', '--ansible-check',
                     action='store_true',
                     dest='ansible_check',
                     default=False,
                     help='don\'t make any changes; instead, try to predict some of the changes that may occur')
-    group.addoption('--ansible-module-path', '--module-path',
+    group.addoption('--module-path', '--ansible-module-path',
                     action='store',
                     dest='ansible_module_path',
                     default=ansible.constants.DEFAULT_MODULE_PATH,
                     help='specify path(s) to module library (default: %(default)s)')
 
     # become privilege escalation
-    group.addoption('--ansible-become', '--become',
+    group.addoption('--become', '--ansible-become',
                     action='store_true',
                     dest='ansible_become',
                     default=ansible.constants.DEFAULT_BECOME,
                     help='run operations with become, nopasswd implied (default: %(default)s)')
-    group.addoption('--ansible-become-method', '--become-method',
+    group.addoption('--become-method', '--ansible-become-method',
                     action='store',
                     dest='ansible_become_method',
                     default=ansible.constants.DEFAULT_BECOME_METHOD,
                     help="privilege escalation method to use (default: %%(default)s), valid choices: [ %s ]" %
                     (' | '.join(ansible.constants.BECOME_METHODS)))
-    group.addoption('--ansible-become-user', '--become-user',
+    group.addoption('--become-user', '--ansible-become-user',
                     action='store',
                     dest='ansible_become_user',
                     default=ansible.constants.DEFAULT_BECOME_USER,
                     help='run operations as this user (default: %(default)s)')
-    group.addoption('--ansible-ask-become-pass', '--ask-become-pass',
+    group.addoption('--ask-become-pass', '--ansible-ask-become-pass',
                     action='store',
                     dest='ansible_ask_become_pass',
                     default=ansible.constants.DEFAULT_BECOME_ASK_PASS,
