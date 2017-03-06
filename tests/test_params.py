@@ -18,16 +18,16 @@ def test_plugin_help(testdir):
         # Check for the github args section header
         'pytest-ansible:',
         # Check for the specific args
-        '  ---inventory=ANSIBLE_INVENTORY, --ansible-inventory=ANSIBLE_INVENTORY',
-        '  ---host-pattern=ANSIBLE_HOST_PATTERN, --ansible-host-pattern=ANSIBLE_HOST_PATTERN',
-        '  ---connection=ANSIBLE_CONNECTION, --ansible-connection=ANSIBLE_CONNECTION',
-        '  ---user=ANSIBLE_USER, --ansible-user=ANSIBLE_USER',
-        '  ---check, --ansible-check',
-        '  ---module-path=ANSIBLE_MODULE_PATH, --ansible-module-path=ANSIBLE_MODULE_PATH',
-        '  ---become, --ansible-become',
-        '  ---become-method=ANSIBLE_BECOME_METHOD, --ansible-become-method=ANSIBLE_BECOME_METHOD',
-        '  ---become-user=ANSIBLE_BECOME_USER, --ansible-become-user=ANSIBLE_BECOME_USER',
-        '  ---ask-become-pass=ANSIBLE_ASK_BECOME_PASS, --ansible-ask-become-pass=ANSIBLE_ASK_BECOME_PASS',
+        '  --inventory=ANSIBLE_INVENTORY, --ansible-inventory=ANSIBLE_INVENTORY',
+        '  --host-pattern=ANSIBLE_HOST_PATTERN, --ansible-host-pattern=ANSIBLE_HOST_PATTERN',
+        '  --connection=ANSIBLE_CONNECTION, --ansible-connection=ANSIBLE_CONNECTION',
+        '  --user=ANSIBLE_USER, --ansible-user=ANSIBLE_USER',
+        '  --check, --ansible-check',
+        '  --module-path=ANSIBLE_MODULE_PATH, --ansible-module-path=ANSIBLE_MODULE_PATH',
+        '  --become, --ansible-become',
+        '  --become-method=ANSIBLE_BECOME_METHOD, --ansible-become-method=ANSIBLE_BECOME_METHOD',
+        '  --become-user=ANSIBLE_BECOME_USER, --ansible-become-user=ANSIBLE_BECOME_USER',
+        '  --ask-become-pass=ANSIBLE_ASK_BECOME_PASS, --ansible-ask-become-pass=ANSIBLE_ASK_BECOME_PASS',
         # Check for the marker in --help
         '  ansible (args) * Ansible integration',
     ])
