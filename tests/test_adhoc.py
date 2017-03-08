@@ -16,6 +16,7 @@ def test_contacted_with_params(testdir, option):
             assert contacted
             assert len(contacted) == len(ansible_module)
             for result in contacted.values():
+                print result
                 assert 'failed' not in result
                 assert 'invocation' in result
                 assert 'module_name' in result['invocation']
