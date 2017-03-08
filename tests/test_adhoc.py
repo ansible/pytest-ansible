@@ -16,11 +16,8 @@ def test_contacted_with_params(testdir, option):
             assert contacted
             assert len(contacted) == len(ansible_module)
             for result in contacted.values():
-                print result
-                assert 'failed' not in result
-                assert 'invocation' in result
-                assert 'module_name' in result['invocation']
-                assert 'ping' == result['invocation']['module_name']
+                assert result.is_successful
+                assert result['ping'] == 'pong'
 
     """
     testdir.makepyfile(src)
@@ -44,10 +41,8 @@ def test_contacted_with_params_and_inventory_marker(testdir, option):
             assert contacted
             assert len(contacted) == len(ansible_module)
             for result in contacted.values():
-                assert 'failed' not in result
-                assert 'invocation' in result
-                assert 'module_name' in result['invocation']
-                assert 'ping' == result['invocation']['module_name']
+                assert result.is_successful
+                assert result['ping'] == 'pong'
 
     """ % str(option.inventory)
     testdir.makepyfile(src)
@@ -70,10 +65,8 @@ def test_contacted_with_params_and_host_pattern_marker(testdir, option):
             assert contacted
             assert len(contacted) == len(ansible_module)
             for result in contacted.values():
-                assert 'failed' not in result
-                assert 'invocation' in result
-                assert 'module_name' in result['invocation']
-                assert 'ping' == result['invocation']['module_name']
+                assert result.is_successful
+                assert result['ping'] == 'pong'
 
     """
     testdir.makepyfile(src)
@@ -97,10 +90,8 @@ def test_contacted_with_params_and_inventory_host_pattern_marker(testdir, option
             assert contacted
             assert len(contacted) == len(ansible_module)
             for result in contacted.values():
-                assert 'failed' not in result
-                assert 'invocation' in result
-                assert 'module_name' in result['invocation']
-                assert 'ping' == result['invocation']['module_name']
+                assert result.is_successful
+                assert result['ping'] == 'pong'
 
     """ % str(option.inventory)
     testdir.makepyfile(src)
