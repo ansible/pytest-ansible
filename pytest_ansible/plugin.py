@@ -12,15 +12,22 @@ import ansible.utils
 import ansible.errors
 has_ansible_become = parse_version(ansible.__version__) >= parse_version('1.9.0')
 has_ansible_v2 = parse_version(ansible.__version__) >= parse_version('2.0.0')
+has_ansible_v24 = parse_version(ansible.__version__) >= parse_version('2.4.0')
 
 if has_ansible_v2:
     from ansible.plugins.callback import CallbackBase
     from ansible.executor.task_queue_manager import TaskQueueManager
     from ansible.parsing.dataloader import DataLoader
     from ansible.playbook.play import Play
-    from ansible.vars import VariableManager
+    if has_ansible_v24:
+        from ansible.vars.manager import VariableManager
+    else:
+        from ansible.vars import VariableManager
     from ansible.cli import CLI
-    from ansible.inventory import Inventory
+    if has_ansible_v24:
+        from ansible.inventory.manager import InventoryManager
+    else:
+        from ansible.inventory import Inventory
     from ansible.utils.display import Display
     display = Display()
 else:
@@ -441,11 +448,18 @@ class AnsibleV2Module(AnsibleV1Module):
         log.debug("initialize_inventory - DataLoader()")
         self.loader = DataLoader()
         log.debug("initialize_inventory - VariableManager()")
-        self.variable_manager = VariableManager()
+        if has_ansible_v24:
+            self.variable_manager = VariableManager(loader=self.loader)
+        else:
+            self.variable_manager = VariableManager()
 
         try:
             log.debug("initialize_inventory - Inventory(host_list=%s)" % self.inventory)
-            self.inventory_manager = Inventory(loader=self.loader, variable_manager=self.variable_manager, host_list=self.inventory)
+            if has_ansible_v24:
+                self.inventory_manager = InventoryManager(loader=self.loader, sources=self.inventory)
+            else:
+                self.inventory_manager = Inventory(loader=self.loader, variable_manager=self.variable_manager,
+                                                   host_list=self.inventory)
         except ansible.errors.AnsibleError, e:
             raise pytest.UsageError(e)
         self.variable_manager.set_inventory(self.inventory_manager)
