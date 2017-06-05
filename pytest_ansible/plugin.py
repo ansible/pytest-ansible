@@ -13,6 +13,7 @@ from pytest_ansible.fixtures import (ansible_adhoc, ansible_module, ansible_fact
 from pytest_ansible.host_manager import get_host_manager
 
 has_ansible_v2 = parse_version(ansible.__version__) >= parse_version('2.0.0')
+has_ansible_v24 = parse_version(ansible.__version__) >= parse_version('2.4.0')
 
 log = get_logger(__name__)
 

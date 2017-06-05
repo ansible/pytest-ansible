@@ -6,6 +6,7 @@ from pytest_ansible.logger import get_logger
 
 # conditionally import ansible libraries
 has_ansible_v2 = parse_version(ansible.__version__) >= parse_version('2.0.0')
+has_ansible_v24 = parse_version(ansible.__version__) >= parse_version('2.4.0')
 
 log = get_logger(__name__)
 
@@ -86,7 +87,10 @@ class BaseHostManager(object):
 def get_host_manager(*args, **kwargs):
     """Initialize and return a HostManager instance."""
     if has_ansible_v2:
-        from .v2 import HostManagerV2 as HostManager
+        if has_ansible_v24:
+            from .v24 import HostManagerV24 as HostManager
+        else:
+            from .v2 import HostManagerV2 as HostManager
     else:
         from .v1 import HostManagerV1 as HostManager
 
