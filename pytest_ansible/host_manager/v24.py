@@ -8,7 +8,7 @@ from ansible.inventory.manager import InventoryManager
 log = get_logger(__name__)
 
 
-class HostManagerV2(BaseHostManager):
+class HostManagerV24(BaseHostManager):
 
     """Pass."""
 
@@ -16,6 +16,7 @@ class HostManagerV2(BaseHostManager):
 
     def initialize_inventory(self):
         self.options['loader'] = DataLoader()
-        self.options['variable_manager'] = VariableManager(loader=self.loader)
-        self.options['inventory_manager'] = InventoryManager(loader=self.loader, sources=self.inventory)
+        self.options['variable_manager'] = VariableManager(loader=self.options['loader'])
+        self.options['inventory_manager'] = InventoryManager(loader=self.options['loader'],
+                                                             sources=self.options['inventory'])
         self.options['variable_manager'].set_inventory(self.options['inventory_manager'])
