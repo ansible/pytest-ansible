@@ -86,11 +86,10 @@ class BaseHostManager(object):
 
 def get_host_manager(*args, **kwargs):
     """Initialize and return a HostManager instance."""
-    if has_ansible_v2:
-        if has_ansible_v24:
-            from .v24 import HostManagerV24 as HostManager
-        else:
-            from .v2 import HostManagerV2 as HostManager
+    if has_ansible_v24:
+        from .v24 import HostManagerV24 as HostManager
+    elif has_ansible_v2:
+        from .v2 import HostManagerV2 as HostManager
     else:
         from .v1 import HostManagerV1 as HostManager
 
