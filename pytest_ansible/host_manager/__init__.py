@@ -15,7 +15,6 @@ class BaseHostManager(object):
 
     """Pass."""
 
-    _dispatcher = Exception
     _required_kwargs = ('inventory',)
 
     def __init__(self, *args, **kwargs):
@@ -23,9 +22,11 @@ class BaseHostManager(object):
 
         self.has_required_kwargs(**kwargs)
 
+        # Sub-classes should override this value
+        self._dispatcher = None
+
         # Initialize ansible inventory manager
-        if self.options.get('inventory_manager', None) is None:
-            self.initialize_inventory()
+        self.initialize_inventory()
 
     def has_required_kwargs(self, **kwargs):
         """Return whether the required kwargs were provided during instantiation."""
@@ -62,6 +63,7 @@ class BaseHostManager(object):
                 return self._dispatcher(**self.options)
 
     def __getattr__(self, attr):
+        log.debug("BaseHostManager.__getattr__(%s)" % attr)
         """Return a ModuleDispatcher instance described the provided `attr`."""
         if not self.has_matching_inventory(attr):
             raise AttributeError("type HostManager has no attribute '%s'" % attr)
@@ -86,6 +88,8 @@ class BaseHostManager(object):
 
 def get_host_manager(*args, **kwargs):
     """Initialize and return a HostManager instance."""
+    log.debug("get_host_manager(%s, %s)" % (args, kwargs))
+
     if has_ansible_v24:
         from .v24 import HostManagerV24 as HostManager
     elif has_ansible_v2:
@@ -95,3 +99,13 @@ def get_host_manager(*args, **kwargs):
 
     # TODO - figure out how to surface the parser defaults here too
     return HostManager(*args, **kwargs)
+
+
+def get_inventory_manager(*args, **kwargs):
+    """Return an instance of ansible inventory manager object."""
+    if has_ansible_v24:
+        from ansible.inventory.manager import InventoryManager
+        return InventoryManager(*args, **kwargs)
+    else:
+        from ansible.inventory import Inventory
+        return Inventory(*args, **kwargs)

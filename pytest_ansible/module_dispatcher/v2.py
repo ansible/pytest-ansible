@@ -75,6 +75,7 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
 
         parser = CLI.base_parser(
             runas_opts=True,
+            inventory_opts=True,
             async_opts=True,
             output_opts=True,
             connect_opts=True,
@@ -116,7 +117,7 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
                 dict(
                     action=dict(
                         module=self.options['module_name'], args=complex_args
-                    )
+                    ),
                 ),
             ]
         )

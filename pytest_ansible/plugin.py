@@ -6,14 +6,9 @@ import ansible.constants
 import ansible.utils
 import ansible.errors
 
-from ansible.inventory import Inventory
-from pkg_resources import parse_version
 from pytest_ansible.logger import get_logger
 from pytest_ansible.fixtures import (ansible_adhoc, ansible_module, ansible_facts, localhost)
-from pytest_ansible.host_manager import get_host_manager
-
-has_ansible_v2 = parse_version(ansible.__version__) >= parse_version('2.0.0')
-has_ansible_v24 = parse_version(ansible.__version__) >= parse_version('2.4.0')
+from pytest_ansible.host_manager import get_host_manager, get_inventory_manager
 
 log = get_logger(__name__)
 
@@ -100,12 +95,12 @@ def pytest_configure(config):
 
     # Enable connection debugging
     if config.option.verbose > 0:
-        if has_ansible_v2:
+        if hasattr(ansible.utils, 'VERBOSITY'):
+            ansible.utils.VERBOSITY = int(config.option.verbose)
+        else:
             from ansible.utils.display import Display
             display = Display()
             display.verbosity = int(config.option.verbose)
-        else:
-            ansible.utils.VERBOSITY = int(config.option.verbose)
 
     assert config.pluginmanager.register(PyTestAnsiblePlugin(config), "ansible")
 
@@ -119,7 +114,7 @@ def pytest_generate_tests(metafunc):
         PyTestAnsiblePlugin.assert_required_ansible_parameters(metafunc.config)
         # TODO: figure out how to use PyTestAnsiblePlugin.initialize() instead
         try:
-            inventory_manager = Inventory(metafunc.config.getoption('ansible_inventory'))
+            inventory_manager = get_inventory_manager(metafunc.config.getoption('ansible_inventory'))
         except ansible.errors.AnsibleError, e:
             raise pytest.UsageError(e)
         pattern = metafunc.config.getoption('ansible_host_pattern')
@@ -129,7 +124,7 @@ def pytest_generate_tests(metafunc):
         PyTestAnsiblePlugin.assert_required_ansible_parameters(metafunc.config)
         # TODO: figure out how to use PyTestAnsiblePlugin.initialize() instead
         try:
-            inventory_manager = Inventory(metafunc.config.getoption('ansible_inventory'))
+            inventory_manager = get_inventory_manager(metafunc.config.getoption('ansible_inventory'))
         except ansible.errors.AnsibleError, e:
             raise pytest.UsageError(e)
         metafunc.parametrize("ansible_group", inventory_manager.list_groups())

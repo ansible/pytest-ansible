@@ -10,7 +10,9 @@ class HostManagerV1(BaseHostManager):
 
     """Fixme."""
 
-    _dispatcher = ModuleDispatcherV1
+    def __init__(self, *args, **kwargs):
+        super(HostManagerV1, self).__init__(*args, **kwargs)
+        self._dispatcher = ModuleDispatcherV1
 
     def keys(self):
         return [h for h in self.options['inventory_manager'].list_hosts()]
