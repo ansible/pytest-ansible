@@ -67,12 +67,15 @@ def pytest_runtest_setup(item):
     # Conditionally skip tests that are pinned to a specific ansible version
     if isinstance(item, item.Function):
         has_ansible_v1 = parse_version(ansible.__version__) < parse_version('2.0.0')
+        has_ansible_v24 = parse_version(ansible.__version__) >= parse_version('2.4.0')
 
         # conditionally skip
         if item.get_marker('requires_ansible_v1') and not has_ansible_v1:
             pytest.skip("requires < ansible-2.*")
         if item.get_marker('requires_ansible_v2') and has_ansible_v1:
             pytest.skip("requires >= ansible-2.*")
+        if item.get_marker('requires_ansible_v24') and not has_ansible_v24:
+            pytest.skip("requires >= ansible-2.4.*")
 
         # conditionally xfail
         mark = item.get_marker('ansible_v1_xfail')
