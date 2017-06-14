@@ -225,7 +225,9 @@ def test_params_required_with_bogus_inventory_v24(testdir, option, recwarn):
     # Assert py.test exit code
     assert result.ret == EXIT_OK
 
-    assert re.search(r'Unable to parse .*/bogus as an inventory source', str(result.errlines))
+    # There appear to be '\n' newline characters within the output.  Using the join on errlines flattens the string for
+    # easier comparison.
+    assert re.search(r'Unable to parse .*/bogus as an inventory source', ' '.join(result.errlines))
 
 
 @pytest.mark.requires_ansible_v1
