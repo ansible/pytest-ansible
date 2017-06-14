@@ -3,6 +3,7 @@ import pytest
 import ansible
 import mock
 from _pytest.main import EXIT_OK, EXIT_TESTSFAILED, EXIT_USAGEERROR, EXIT_NOTESTSCOLLECTED, EXIT_INTERRUPTED
+from pkg_resources import parse_version
 
 if sys.version_info[0] == 2:
     import __builtin__ as builtins  # NOQA
@@ -179,34 +180,57 @@ def test_params_required_with_bogus_inventory_v1(testdir, option):
     mock_exists.assert_any_call('bogus')
 
 
-@pytest.mark.requires_ansible_v2
+@pytest.mark.skipif(
+    parse_version(ansible.__version__) < parse_version('2.0.0') or
+    parse_version(ansible.__version__) >= parse_version('2.4.0'),
+    reason="requires ansible >= 2.0 and < 2.4"
+)
 def test_params_required_with_bogus_inventory_v2(testdir, option, recwarn):
     src = """
         import pytest
         def test_func(ansible_module):
-            ansible_module.ping()
+            with pytest.warns(UserWarning) as record:
+                ansible_module.ping()
+            assert len(record) == 1
+            assert record[0].message.args[0] == "provided hosts list is empty, only localhost is available"
     """
     testdir.makepyfile(src)
 
     with mock.patch('ansible.parsing.dataloader.DataLoader.path_exists', return_value=False) as mock_exists:
-        # with mock.patch('ansible.parsing.dataloader.DataLoader.is_file', return_value=False) as mock_isfile:
         result = testdir.runpytest(*['-vvvvvs', '--ansible-inventory', 'bogus', '--ansible-host-pattern', 'all'])
 
     # Assert py.test exit code
     assert result.ret == EXIT_OK
-    # assert result.ret == EXIT_TESTSFAILED
-
-    # TODO - assert the following warning appears
-    # [WARNING]: provided hosts list is empty, only localhost is available"
-    if False:
-        result.stderr.fnmatch_lines(
-            [
-                "*provided hosts list is empty, only localhost is available",
-            ]
-        )
 
     # Assert mock open called on provided file
     mock_exists.assert_any_call('bogus')
+
+
+@pytest.mark.requires_ansible_v24
+def test_params_required_with_bogus_inventory_v24(testdir, option, recwarn):
+    src = """
+        import pytest
+        def test_func(ansible_module):
+            with pytest.warns(UserWarning) as record:
+                ansible_module.ping()
+            assert len(record) == 1
+            assert record[0].message.args[0] == "provided hosts list is empty, only localhost is available"
+
+    """
+    testdir.makepyfile(src)
+
+    result = testdir.runpytest(*['-vvvvvs', '--ansible-inventory', 'bogus', '--ansible-host-pattern', 'all'])
+
+    # Assert py.test exit code
+    assert result.ret == EXIT_OK
+
+    result.stderr.fnmatch_lines(
+        [
+            "*Unable to parse*",
+            "*bogus*",
+            "*as an inventory source*",
+        ]
+    )
 
 
 @pytest.mark.requires_ansible_v1

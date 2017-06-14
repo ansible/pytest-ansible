@@ -12,11 +12,15 @@ class HostManagerV24(BaseHostManager):
 
     """Pass."""
 
-    _dispatcher = ModuleDispatcherV2
+    def __init__(self, *args, **kwargs):
+        super(HostManagerV24, self).__init__(*args, **kwargs)
+        self._dispatcher = ModuleDispatcherV2
 
     def initialize_inventory(self):
+        log.debug("HostManagerV24.initialize_inventory()")
         self.options['loader'] = DataLoader()
-        self.options['variable_manager'] = VariableManager(loader=self.options['loader'])
         self.options['inventory_manager'] = InventoryManager(loader=self.options['loader'],
                                                              sources=self.options['inventory'])
-        self.options['variable_manager'].set_inventory(self.options['inventory_manager'])
+        self.options['variable_manager'] = VariableManager(loader=self.options['loader'],
+                                                           inventory=self.options['inventory_manager'])
+        # self.options['inventory_manager'].clear_caches()
