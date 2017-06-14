@@ -2,6 +2,7 @@ import sys
 import pytest
 import ansible
 import mock
+import re
 from _pytest.main import EXIT_OK, EXIT_TESTSFAILED, EXIT_USAGEERROR, EXIT_NOTESTSCOLLECTED, EXIT_INTERRUPTED
 from pkg_resources import parse_version
 
@@ -224,13 +225,7 @@ def test_params_required_with_bogus_inventory_v24(testdir, option, recwarn):
     # Assert py.test exit code
     assert result.ret == EXIT_OK
 
-    result.stderr.fnmatch_lines(
-        [
-            "*Unable to parse*",
-            "*bogus*",
-            "*as an inventory source*",
-        ]
-    )
+    assert re.search(r'Unable to parse .*/bogus as an inventory source', str(result.errlines))
 
 
 @pytest.mark.requires_ansible_v1
