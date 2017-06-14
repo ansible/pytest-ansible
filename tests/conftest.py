@@ -7,6 +7,22 @@ from pkg_resources import parse_version
 pytest_plugins = 'pytester',
 
 
+# setup logging
+logger = logging.getLogger()
+logger.setLevel(logging.DEBUG)
+
+# create stderr StreamHandler
+sh = logging.StreamHandler()
+sh.setLevel(logging.DEBUG)
+
+# create formatter and add it to the handlers
+formatter = logging.Formatter('%(levelname)s - %(message)s')
+sh.setFormatter(formatter)
+
+# add handler to logger
+logger.addHandler(sh)
+
+
 ALL_HOSTS = ['another_host', 'localhost', 'yet_another_host']
 
 POSITIVE_HOST_PATTERNS = [
@@ -113,20 +129,3 @@ def option(request, testdir):
 def hosts():
     from pytest_ansible.host_manager import get_host_manager
     return get_host_manager(inventory=','.join(ALL_HOSTS), connection='local')
-
-
-@pytest.fixture(autouse=True)
-def initialize_logging():
-    '''Intialize python logging to improve test failure debugging.'''
-
-    # setup logging
-    logger = logging.getLogger()
-    logger.setLevel(logging.DEBUG)
-    # create stderr StreamHandler
-    sh = logging.StreamHandler()
-    sh.setLevel(logging.DEBUG)
-    # create formatter and add it to the handlers
-    formatter = logging.Formatter('%(levelname)s - %(message)s')
-    sh.setFormatter(formatter)
-    # add handler to logger
-    logger.addHandler(sh)
