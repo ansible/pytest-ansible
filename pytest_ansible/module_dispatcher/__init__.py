@@ -23,6 +23,9 @@ class BaseModuleDispatcher(object):
         """Return the whether the inventory contains a host matching the provided `item`."""
         return len(self.options['inventory_manager'].list_hosts(item)) > 0
 
+    def __iter__(self):
+        return iter(self.options['inventory_manager'].list_hosts(self.options['host_pattern']))
+
     def __getattr__(self, name):
         """Run the ansible module matching the provided `name`.
 
