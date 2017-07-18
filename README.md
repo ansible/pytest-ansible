@@ -53,7 +53,7 @@ The `ansible_adhoc` fixture returns a function used to initialize a `HostManager
 ```python
 def test_all_the_pings(ansible_adhoc):
     result = ansible_adhoc().all.ping()
-    assert result.is_successful
+    assert not result.is_failed
 
 ```
 
