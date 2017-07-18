@@ -5,6 +5,7 @@ import ansible
 import ansible.constants
 import ansible.utils
 import ansible.errors
+import collections
 
 from pytest_ansible.logger import get_logger
 from pytest_ansible.fixtures import (ansible_adhoc, ansible_module, ansible_facts, localhost)
@@ -208,7 +209,7 @@ class PyTestAnsiblePlugin:
             if hasattr(request.function, 'ansible'):
                 return request.function.ansible.kwargs
         elif request.scope == 'class':
-            if hasattr(request.cls, 'pytestmark'):
+            if hasattr(request.cls, 'pytestmark') and isinstance(request.cls.pytestmark, collections.Iterable):
                 for pytestmark in request.cls.pytestmark:
                     if pytestmark.name == 'ansible':
                         return pytestmark.kwargs
