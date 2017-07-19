@@ -52,8 +52,9 @@ The `ansible_adhoc` fixture returns a function used to initialize a `HostManager
 
 ```python
 def test_all_the_pings(ansible_adhoc):
-    result = ansible_adhoc().all.ping()
-    assert not result.is_failed
+    contacted = ansible_adhoc().all.ping()
+    for (host, result) in contacted.items():
+        assert result.is_successful
 
 ```
 
@@ -79,12 +80,14 @@ def test_do_something_cloudy(localhost, ansible_adhoc):
     )
 
     # Deploy an ec2 instance from localhost using the `ansible_adhoc` fixture
-    result = ansible_adhoc(inventory='localhost,', connection='local').localhost.ec2(**params)
-    assert result.is_successful
+    contacted = ansible_adhoc(inventory='localhost,', connection='local').localhost.ec2(**params)
+    for (host, result) in contacted.items():
+        assert result.is_successful
 
     # Deploy an ec2 instance from localhost using the `localhost` fixture
-    result = localhost.ec2(**params)
-    assert result.is_successful
+    contacted = localhost.ec2(**params)
+    for (host, result) in contacted.items():
+        assert result.is_successful
 ```
 
 
