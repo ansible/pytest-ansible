@@ -13,7 +13,7 @@ class BaseModuleDispatcher(object):
         self.options = kwargs
 
         # Assert the expected kwargs were provided
-        self.has_required_kwargs(**kwargs)
+        self.check_required_kwargs(**kwargs)
 
     def __len__(self):
         """Return the number of hosts that match the `host_pattern`."""
@@ -36,12 +36,11 @@ class BaseModuleDispatcher(object):
             self.options['module_name'] = name
             return self._run
 
-    def has_required_kwargs(self, **kwargs):
-        """Return whether whether the required kwargs were provided during instantiation."""
+    def check_required_kwargs(self, **kwargs):
+        """Raise a TypeError if any required kwargs are missing."""
         for kwarg in self.required_kwargs:
-            assert kwarg in self.options, "Missing required keyword argument '%s'" % kwarg
-            # The following is a bit of magic and should go away
-            # setattr(self, kwarg, kwargs.get(kwarg))
+            if kwarg not in self.options:
+                raise TypeError("Missing required keyword argument '%s'" % kwarg)
 
     def has_module(self, name):
         """Return whether ansible provides the requested module."""

@@ -20,7 +20,7 @@ class BaseHostManager(object):
     def __init__(self, *args, **kwargs):
         self.options = kwargs
 
-        self.has_required_kwargs(**kwargs)
+        self.check_required_kwargs(**kwargs)
 
         # Sub-classes should override this value
         self._dispatcher = None
@@ -28,10 +28,11 @@ class BaseHostManager(object):
         # Initialize ansible inventory manager
         self.initialize_inventory()
 
-    def has_required_kwargs(self, **kwargs):
-        """Return whether the required kwargs were provided during instantiation."""
+    def check_required_kwargs(self, **kwargs):
+        """Raise a TypeError if any required kwargs are missing."""
         for kwarg in self._required_kwargs:
-            assert kwarg in self.options, "Missing required keyword argument '%s'" % kwarg
+            if kwarg not in self.options:
+                raise TypeError("Missing required keyword argument '%s'" % kwarg)
 
     def has_matching_inventory(self, host_pattern):
         """Return whether any matching ansible inventory is found for the provided host_pattern."""
