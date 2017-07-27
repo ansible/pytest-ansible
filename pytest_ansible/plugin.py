@@ -9,7 +9,7 @@ import collections
 
 from pytest_ansible.logger import get_logger
 from pytest_ansible.fixtures import (ansible_adhoc, ansible_module, ansible_facts, localhost)
-from pytest_ansible.host_manager import get_host_manager, get_inventory_manager
+from pytest_ansible.host_manager import get_host_manager
 
 log = get_logger(__name__)
 
@@ -113,22 +113,33 @@ def pytest_generate_tests(metafunc):
     if 'ansible_host' in metafunc.fixturenames:
         # assert required --ansible-* parameters were used
         PyTestAnsiblePlugin.assert_required_ansible_parameters(metafunc.config)
-        # TODO: figure out how to use PyTestAnsiblePlugin.initialize() instead
         try:
-            inventory_manager = get_inventory_manager(metafunc.config.getoption('ansible_inventory'))
+            plugin = metafunc.config.pluginmanager.getplugin("ansible")
+            hosts = plugin.initialize(config=plugin.config, pattern=metafunc.config.getoption('ansible_host_pattern'))
         except ansible.errors.AnsibleError, e:
             raise pytest.UsageError(e)
-        pattern = metafunc.config.getoption('ansible_host_pattern')
-        metafunc.parametrize("ansible_host", inventory_manager.list_hosts(pattern))
+        # Return the host name as a string
+        # metafunc.parametrize("ansible_host", hosts.keys())
+        # Return a HostManager instance where pattern=host (e.g. ansible_host.all.shell('date'))
+        # metafunc.parametrize("ansible_host", iter(plugin.initialize(config=plugin.config, pattern=h) for h in
+        #                                           hosts.keys()))
+        # Return a ModuleDispatcher instance representing `host` (e.g. ansible_host.shell('date'))
+        metafunc.parametrize("ansible_host", iter(hosts[h] for h in hosts.keys()))
+
     if 'ansible_group' in metafunc.fixturenames:
         # assert required --ansible-* parameters were used
         PyTestAnsiblePlugin.assert_required_ansible_parameters(metafunc.config)
-        # TODO: figure out how to use PyTestAnsiblePlugin.initialize() instead
         try:
-            inventory_manager = get_inventory_manager(metafunc.config.getoption('ansible_inventory'))
+            plugin = metafunc.config.pluginmanager.getplugin("ansible")
+            hosts = plugin.initialize(config=plugin.config, pattern=metafunc.config.getoption('ansible_host_pattern'))
         except ansible.errors.AnsibleError, e:
             raise pytest.UsageError(e)
-        metafunc.parametrize("ansible_group", inventory_manager.list_groups())
+        # FIXME: Eeew, this shouldn't be interfacing with `hosts.options`
+        groups = hosts.options['inventory_manager'].list_groups()
+        # Return the group name as a string
+        # metafunc.parametrize("ansible_group", groups)
+        # Return a ModuleDispatcher instance representing the group (e.g. ansible_group.shell('date'))
+        metafunc.parametrize("ansible_group", iter(hosts[g] for g in groups))
 
 
 class PyTestAnsiblePlugin:
@@ -164,30 +175,42 @@ class PyTestAnsiblePlugin:
             # assert required --ansible-* parameters were used
             self.assert_required_ansible_parameters(config)
 
-    def _load_ansible_config(self, request):
-        """Load ansible configuration from command-line and decorator kwargs."""
-        # List of config parameter names
+    def _load_ansible_config(self, config):
+        """Load ansible configuration from command-line."""
         option_names = ['ansible_inventory', 'ansible_host_pattern', 'ansible_connection', 'ansible_user',
                         'ansible_module_path', 'ansible_become', 'ansible_become_method', 'ansible_become_user',
                         'ansible_ask_become_pass', 'ansible_subset']
 
-        # Remember the pytest request attr
-        kwargs = dict(__request__=request)
+        kwargs = dict()
 
         # Load command-line supplied values
         for key in option_names:
             short_key = key[8:]
-            kwargs[short_key] = request.config.getoption(key)
+            kwargs[short_key] = config.getoption(key)
+
+        # normalize ansible.ansible_become options
+        kwargs['become'] = kwargs['become'] or ansible.constants.DEFAULT_BECOME
+        kwargs['become_user'] = kwargs['become_user'] or ansible.constants.DEFAULT_BECOME_USER
+        kwargs['ask_become_pass'] = kwargs['ask_become_pass'] or ansible.constants.DEFAULT_BECOME_ASK_PASS
+
+        log.debug("config: %s" % kwargs)
+        return kwargs
+
+    def _load_request_config(self, request):
+        """Load ansible configuration from decorator kwargs."""
+        kwargs = dict()
 
         # Override options from @pytest.mark.ansible
-        marker_kwargs = self._get_marker_kwargs(request)
-
-        # Merge marker_kwargs with kwargs
-        if marker_kwargs:
-            for short_key in kwargs.keys():
-                if short_key in marker_kwargs:
-                    kwargs[short_key] = marker_kwargs[short_key]
-                    log.debug("ansible marker override %s:%s" % (short_key, kwargs[short_key]))
+        if request.scope == 'function':
+            if hasattr(request.function, 'ansible'):
+                kwargs = request.function.ansible.kwargs
+        elif request.scope == 'class':
+            if hasattr(request.cls, 'pytestmark') and isinstance(request.cls.pytestmark, collections.Iterable):
+                for pytestmark in request.cls.pytestmark:
+                    if pytestmark.name == 'ansible':
+                        kwargs = pytestmark.kwargs
+                    else:
+                        continue
 
         # Was this fixture called in conjunction with a parametrized fixture
         if 'ansible_host' in request.fixturenames:
@@ -195,31 +218,19 @@ class PyTestAnsiblePlugin:
         elif 'ansible_group' in request.fixturenames:
             kwargs['host_pattern'] = request.getfuncargvalue('ansible_group')
 
-        # normalize ansible.ansible_become options
-        kwargs['become'] = kwargs['become'] or ansible.constants.DEFAULT_BECOME
-        kwargs['become_user'] = kwargs['become_user'] or ansible.constants.DEFAULT_BECOME_USER
-        kwargs['ask_become_pass'] = kwargs['ask_become_pass'] or ansible.constants.DEFAULT_BECOME_ASK_PASS
-
-        log.debug("kwargs: %s" % kwargs)
+        log.debug("request: %s" % kwargs)
         return kwargs
 
-    def _get_marker_kwargs(self, request):
-        """Return a dictionary of the ansible parameters supplied to the ansible marker."""
-        if request.scope == 'function':
-            if hasattr(request.function, 'ansible'):
-                return request.function.ansible.kwargs
-        elif request.scope == 'class':
-            if hasattr(request.cls, 'pytestmark') and isinstance(request.cls.pytestmark, collections.Iterable):
-                for pytestmark in request.cls.pytestmark:
-                    if pytestmark.name == 'ansible':
-                        return pytestmark.kwargs
-                    else:
-                        continue
-        return {}
-
-    def initialize(self, request, **kwargs):
+    def initialize(self, config=None, request=None, **kwargs):
         """Return an initialized Ansible Host Manager instance."""
-        ansible_cfg = self._load_ansible_config(request)
+        ansible_cfg = dict()
+        # merge command-line configuration options
+        if config is not None:
+            ansible_cfg.update(self._load_ansible_config(config))
+        # merge pytest request configuration options
+        if request is not None:
+            ansible_cfg.update(self._load_request_config(request))
+        # merge in provided kwargs
         ansible_cfg.update(kwargs)
         return get_host_manager(**ansible_cfg)
 

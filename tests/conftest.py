@@ -97,6 +97,11 @@ class PyTestOption(object):
         # Create inventory file
         self.inventory = testdir.makefile('.ini', inventory='''
             [local]
+
+            [local:children]
+            reachable
+
+            [reachable]
             localhost ansible_connection=local ansible_python_interpreter='/usr/bin/env python'
             127.0.0.2 ansible_connection=local ansible_python_interpreter='/usr/bin/env python'
             127.0.0.3 ansible_connection=local ansible_python_interpreter='/usr/bin/env python'

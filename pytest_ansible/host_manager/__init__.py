@@ -75,6 +75,15 @@ class BaseHostManager(object):
     def keys(self):
         return [h.name for h in self.options['inventory_manager'].list_hosts()]
 
+    def __iter__(self):
+        all_hosts = self.options['inventory_manager'].list_hosts(self.options['host_pattern'])
+        # Return only the name (ala .keys()
+        # return iter(self.options['inventory_manager'].list_hosts(self.options['host_pattern']))
+        # Return a BaseHostManager instance initialized for each host in the inventory
+        # return iter([self.__class__(host_pattern=h, **self.options) for h in all_hosts])
+        # Return a ModuleDispatcher representing the group
+        return iter([self[h] for h in all_hosts])
+
     def __len__(self):
         """Return the number of inventory hosts."""
         return len(self.options['inventory_manager'].list_hosts())
@@ -94,19 +103,9 @@ def get_host_manager(*args, **kwargs):
     if has_ansible_v24:
         from .v24 import HostManagerV24 as HostManager
     elif has_ansible_v2:
-        from .v2 import HostManagerV2 as HostManager
+        from pytest_ansible.host_manager.v2 import HostManagerV2 as HostManager
     else:
         from .v1 import HostManagerV1 as HostManager
 
     # TODO - figure out how to surface the parser defaults here too
     return HostManager(*args, **kwargs)
-
-
-def get_inventory_manager(*args, **kwargs):
-    """Return an instance of ansible inventory manager object."""
-    if has_ansible_v24:
-        from ansible.inventory.manager import InventoryManager
-        return InventoryManager(*args, **kwargs)
-    else:
-        from ansible.inventory import Inventory
-        return Inventory(*args, **kwargs)

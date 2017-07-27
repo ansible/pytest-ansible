@@ -45,7 +45,8 @@ def test_debug_logging(testdir, capsys):
         'DEBUG - pytest_generate_tests() called',
         'DEBUG - PyTestAnsiblePlugin initialized',
         'DEBUG - pytest_collection_modifyitems() called',
-        'DEBUG - kwargs: {*',
+        'DEBUG - config: {*',
+        'DEBUG - request: {*',
         'DEBUG - pytest_report_header() called',
     ]
 

@@ -68,7 +68,7 @@ def test_defaults(request):
     from ansible.constants import DEFAULT_TRANSPORT
 
     plugin = request.config.pluginmanager.getplugin("ansible")
-    hosts = plugin.initialize(request)
+    hosts = plugin.initialize(config=request.config, request=request)
 
     # from pytest_ansible.host_manager import get_host_manager
     # hosts = get_host_manager(inventory='unknown.example.com,')
