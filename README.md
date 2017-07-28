@@ -53,7 +53,7 @@ The `ansible_adhoc` fixture returns a function used to initialize a `HostManager
 ```python
 def test_all_the_pings(ansible_adhoc):
     contacted = ansible_adhoc().all.ping()
-    for (host, result) in contacted.items():
+    for result in contacted:
         assert result.is_successful
 
 ```
@@ -81,12 +81,12 @@ def test_do_something_cloudy(localhost, ansible_adhoc):
 
     # Deploy an ec2 instance from localhost using the `ansible_adhoc` fixture
     contacted = ansible_adhoc(inventory='localhost,', connection='local').localhost.ec2(**params)
-    for (host, result) in contacted.items():
+    for result in contacted:
         assert result.is_successful
 
     # Deploy an ec2 instance from localhost using the `localhost` fixture
     contacted = localhost.ec2(**params)
-    for (host, result) in contacted.items():
+    for result in contacted:
         assert result.is_successful
 ```
 
@@ -230,6 +230,67 @@ class Test_Local(object):
         '''do some testing'''
     def test_service(self, ansible_module):
         '''do some testing'''
+```
+
+### Inspecting results
+
+When calling an ansible module using ``ansible_adhoc``, or any of the provided
+fixtures, the object returned will be an instance of class ``AdHocResult``.
+The ``AdHocResult`` class can be inspected as follows:
+
+```python
+
+def test_adhocresult(ansible_adhoc):
+    contacted = ansible_adhoc(inventory=my_inventory).command("date")
+
+    # As a dictionary
+    for (host, result) in contacted.items():
+        assert result.is_successful, "Failed on host %s" % host
+    for result in contacted.values():
+        assert result.is_successful
+    for host in contacted.keys():
+        assert host in ['localhost', 'one.example.com']
+
+    assert contacted.localhost.is_successful
+
+    # As a list
+    assert len(contacted) > 0
+    assert 'localhost' in contacted
+
+    # As an iterator
+    for result in contacted:
+        assert result.is_successful
+
+    # With __getattr__
+    assert contacted.localhost.is_successful
+
+    # Or __gettem__
+    assert contacted['localhost'].is_successful
+```
+
+Using the ``AdHocResult`` object provides ways to conveniently access results
+for different hosts involved in the ansible adhoc command. Once the specific
+host result is found, you may inspect the result of the ansible adhoc command
+on that use by way of the ``ModuleResult`` interface.  The ``ModuleResult``
+class represents the dictionary returned by the ansible module for a particular
+host.  The contents of the dictionary depend on the module called.
+
+The ``ModuleResult`` interface provides some convenient proprerties to
+determine the success of the module call.  Examples are included below.
+
+```python
+
+def test_moduleresult(localhost):
+    contacted = localhost.command("find /tmp")
+
+    assert contacted.localhost.is_successful
+    assert contacted.localhost.is_ok
+    assert contacted.localhost.is_changed
+    assert not contacted.localhost.is_failed
+
+    contacted = localhost.shell("exit 1")
+    assert contacted.localhost.is_failed
+    assert not contacted.localhost.is_successful
 ```
 
 ### Exception handling
