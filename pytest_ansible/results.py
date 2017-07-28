@@ -77,6 +77,10 @@ class AdHocResult(object):
         """Return whether the provided `item` was contacted."""
         return item in self.contacted
 
+    def __iter__(self):
+        """Return an iterator of the contacted inventory hosts."""
+        return iter(self.contacted)
+
     def keys(self):
         """Return a list of contacted inventory hosts."""
         return self.contacted.keys()
