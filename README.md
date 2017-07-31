@@ -43,19 +43,132 @@ py.test \
     [--check]
 ```
 
-The following fixtures are available:
+## Inventory
 
+Using ansible first starts with defining your inventory.  This can be done
+several ways, but to start, we'll use the ``ansible_adhoc`` fixture.
 
-### Fixture ``ansible_adhoc``
+```python
+def test_my_inventory(ansible_adhoc):
+    hosts = ansible_adhoc()
+```
 
-The `ansible_adhoc` fixture returns a function used to initialize a `HostManager` object.
+In the example above, the `hosts` variable is an instance of the `HostManager`
+class and describes your ansible inventory.  For this to work, you'll need to
+tell `ansible` where to find your inventory.  Inventory can be an [INI
+file](http://docs.ansible.com/ansible/latest/intro_inventory.html), an
+executable script that returns [properly formatted
+JSON](http://docs.ansible.com/ansible/latest/intro_dynamic_inventory.html).  For example, 
+
+```bash
+# py.test --inventory my_inventory.ini --host-pattern all
+```
+
+or 
+
+```bash
+# py.test --inventory path/to/my/script.py --host-pattern webservers
+```
+or 
+
+```bash
+# py.test --inventory one.example.com,two.example.com --host-pattern all
+```
+
+In the above examples, the inventory provided at runtime will be used in all
+tests that use the `ansible_adhoc` fixture.  A more realistic scenario may
+involve using different inventory files (or host patterns) with different
+tests.  To accomplish this, the method returned by the `ansible_adhoc` fixture
+accepts parameters.  Some examples are noted below.
 
 ```python
 def test_all_the_pings(ansible_adhoc):
-    contacted = ansible_adhoc().all.ping()
-    for result in contacted:
-        assert result.is_successful
+    # Define the ansible inventory
+    my_inventory='''
+    [webservers]
+    web-1.example.com
+    web-2.example.com
+    web-3.example.com
+    web-4.example.com
 
+    [databases]
+    postgres-1.example.com
+    postgres-2.example.com
+
+    [all_regions]
+    [all_regions:children]
+    east
+    west
+
+    [east]
+    web-1.example.com
+    web-2.example.com
+    postgres-1.example.com
+
+    [west]
+    web-3.example.com
+    web-4.example.com
+    postgres-2.example.com
+    '''
+
+    # Create the 'acme' db
+    ansible_adhoc(inventory=my_inventory).databases.postgresql_db(
+        name='acme',
+        encoding='UTF-8',
+        template='template0'
+    )
+```
+
+### Fixture ``ansible_adhoc``
+
+The `ansible_adhoc` fixture returns a function used to initialize
+a `HostManager` object.  The `ansible_adhoc` fixture will default to parameters
+supplied to the `py.test` command-line, or to keyword arguments supplied upon
+calling the function.
+
+The example below demonstrates basic usage with options supplied at run-time to `py.test`.
+
+```python
+def test_all_the_pings(ansible_adhoc):
+    ansible_adhoc().all.ping()
+```
+
+The following example demonstrates available keyword arguments when creating
+a `HostManager` object.
+
+```python
+def test_uptime(ansible_adhoc):
+    # take down the database
+    ansible_adhoc(inventory='db1.example.com,', user='ec2-user', 
+        become=True, become_user='root', connection='local').all.command('reboot')
+```
+
+The `HostManager` object returned by the `ansible_adhoc()` method provides
+numerous ways of targetting commands against some, or all, of the inventory.
+
+```python
+def test_host_manager(ansible_adhoc):
+    hosts = ansible_adhoc()
+
+    # __getitem__
+    hosts['all'].ping()
+    hosts['localhost'].ping()
+
+    # __getattr__
+    hosts.all.ping()
+    hosts.localhost.ping()
+
+    # All supported [ansible host patterns](http://docs.ansible.com/ansible/latest/intro_patterns.html)
+    hosts['webservers:!phoenix').ping()  # all webservers that are not in phoenix
+    hosts[0].ping()
+    hosts[0:2].ping()
+
+    assert 'one.example.com' in hosts
+
+    assert hasattr(hosts, 'two.example.com')
+
+    for a_host in hosts:
+        a_host.ping()
 ```
 
 ### Fixture ``localhost``
@@ -80,45 +193,23 @@ def test_do_something_cloudy(localhost, ansible_adhoc):
     )
 
     # Deploy an ec2 instance from localhost using the `ansible_adhoc` fixture
-    contacted = ansible_adhoc(inventory='localhost,', connection='local').localhost.ec2(**params)
-    for result in contacted:
-        assert result.is_successful
+    ansible_adhoc(inventory='localhost,', connection='local').localhost.ec2(**params)
 
     # Deploy an ec2 instance from localhost using the `localhost` fixture
-    contacted = localhost.ec2(**params)
-    for result in contacted:
-        assert result.is_successful
+    localhost.ec2(**params)
 ```
-
 
 ### Fixture ``ansible_module``
 
 The ``ansible_module`` fixture allows tests and fixtures to call [ansible
-modules](http://docs.ansible.com/modules.html).
+modules](http://docs.ansible.com/modules.html).  Unlike the `ansible_adhoc`
+fixture, this fixture only uses the options supplied to `py.test` at run time.
 
 A very basic example demonstrating the ansible [``ping`` module](http://docs.ansible.com/ping_module.html):
 
 ```python
 def test_ping(ansible_module):
     ansible_module.ping()
-```
-
-The above example doesn't do any validation/inspection of the return value.  A
-more likely use case will involve inspecting the return value.  The
-``ansible_module`` fixture returns a JSON data describing the ansible module
-result.  The format of the JSON data depends on the ``--ansible-inventory``
-used, and the [ansible module](http://docs.ansible.com/modules_by_category.html).
-
-The following example demonstrates inspecting the module result.
-
-```python
-def test_ping(ansible_module):
-    contacted = ansible_module.ping()
-    for (host, result) in contacted.items():
-        assert 'ping' in result, \
-            "Failure on host:%s" % host
-        assert result['ping'] == 'pong', \
-            "Unexpected ping response: %s" % result['ping']
 ```
 
 A more involved example of updating the sshd configuration, and restarting the
@@ -234,13 +325,13 @@ class Test_Local(object):
 
 ### Inspecting results
 
-When calling an ansible module using ``ansible_adhoc``, or any of the provided
-fixtures, the object returned will be an instance of class ``AdHocResult``.
-The ``AdHocResult`` class can be inspected as follows:
+When using the `ansible_adhoc`, `localhost` or `ansible_module` fixtures, the
+object returned will be an instance of class ``AdHocResult``.  The
+``AdHocResult`` class can be inspected as follows:
 
 ```python
 
-def test_adhocresult(ansible_adhoc):
+def test_adhoc_result(ansible_adhoc):
     contacted = ansible_adhoc(inventory=my_inventory).command("date")
 
     # As a dictionary
@@ -280,7 +371,7 @@ determine the success of the module call.  Examples are included below.
 
 ```python
 
-def test_moduleresult(localhost):
+def test_module_result(localhost):
     contacted = localhost.command("find /tmp")
 
     assert contacted.localhost.is_successful
@@ -292,6 +383,10 @@ def test_moduleresult(localhost):
     assert contacted.localhost.is_failed
     assert not contacted.localhost.is_successful
 ```
+
+The contents of the JSON returned by an ansible module differs from module to
+module.  For guidance, consult the documentation and examples for the specific
+[ansible module](http://docs.ansible.com/modules_by_category.html).
 
 ### Exception handling
 
