@@ -1,24 +1,11 @@
 import pytest
-import logging
 from _pytest.main import EXIT_OK, EXIT_TESTSFAILED, EXIT_USAGEERROR, EXIT_NOTESTSCOLLECTED, EXIT_INTERRUPTED  # NOQA
 
 
-@pytest.mark.integration
+@pytest.mark.old
 def test_contacted_with_params(testdir, option):
     """FIXME
     """
-
-    # setup logging
-    logger = logging.getLogger()
-    logger.setLevel(logging.DEBUG)
-    # create stderr StreamHandler
-    sh = logging.StreamHandler()
-    sh.setLevel(logging.DEBUG)
-    # create formatter and add it to the handlers
-    formatter = logging.Formatter('%(levelname)s - %(message)s')
-    sh.setFormatter(formatter)
-    # add handler to logger
-    logger.addHandler(sh)
 
     src = """
         import pytest
@@ -27,36 +14,23 @@ def test_contacted_with_params(testdir, option):
 
             # assert contacted hosts ...
             assert contacted
-            assert len(contacted) == len(ansible_module.inventory_manager.list_hosts('local'))
+            assert len(contacted) == len(ansible_module)
             for result in contacted.values():
-                assert 'failed' not in result
-                assert 'invocation' in result
-                assert 'module_name' in result['invocation']
-                assert 'ping' == result['invocation']['module_name']
+                assert result.is_successful
+                assert result['ping'] == 'pong'
 
     """
     testdir.makepyfile(src)
-    result = testdir.runpytest(*option.args + ['--ansible-inventory', str(option.inventory), '--ansible-host-pattern', 'local'])
+    result = testdir.runpytest_subprocess(*option.args + ['--ansible-inventory', str(option.inventory),
+                                                          '--ansible-host-pattern', 'local'])
     assert result.ret == EXIT_OK
     assert result.parseoutcomes()['passed'] == 1
 
 
-@pytest.mark.integration
+@pytest.mark.old
 def test_contacted_with_params_and_inventory_marker(testdir, option):
     """FIXME
     """
-    # setup logging
-    logger = logging.getLogger()
-    logger.setLevel(logging.DEBUG)
-    # create stderr StreamHandler
-    sh = logging.StreamHandler()
-    sh.setLevel(logging.DEBUG)
-    # create formatter and add it to the handlers
-    formatter = logging.Formatter('%(levelname)s - %(message)s')
-    sh.setFormatter(formatter)
-    # add handler to logger
-    logger.addHandler(sh)
-
     src = """
         import pytest
         @pytest.mark.ansible(inventory='%s')
@@ -65,21 +39,19 @@ def test_contacted_with_params_and_inventory_marker(testdir, option):
 
             # assert contacted hosts ...
             assert contacted
-            assert len(contacted) == len(ansible_module.inventory_manager.list_hosts('local'))
+            assert len(contacted) == len(ansible_module)
             for result in contacted.values():
-                assert 'failed' not in result
-                assert 'invocation' in result
-                assert 'module_name' in result['invocation']
-                assert 'ping' == result['invocation']['module_name']
+                assert result.is_successful
+                assert result['ping'] == 'pong'
 
     """ % str(option.inventory)
     testdir.makepyfile(src)
-    result = testdir.runpytest(*option.args + ['--ansible-host-pattern', 'local', '-vs'])
+    result = testdir.runpytest_subprocess(*option.args + ['--ansible-host-pattern', 'local'])
     assert result.ret == EXIT_OK
     assert result.parseoutcomes()['passed'] == 1
 
 
-@pytest.mark.integration
+@pytest.mark.old
 def test_contacted_with_params_and_host_pattern_marker(testdir, option):
     """FIXME
     """
@@ -91,21 +63,20 @@ def test_contacted_with_params_and_host_pattern_marker(testdir, option):
 
             # assert contacted hosts ...
             assert contacted
-            assert len(contacted) == len(ansible_module.inventory_manager.list_hosts('local'))
+            assert len(contacted) == len(ansible_module)
             for result in contacted.values():
-                assert 'failed' not in result
-                assert 'invocation' in result
-                assert 'module_name' in result['invocation']
-                assert 'ping' == result['invocation']['module_name']
+                assert result.is_successful
+                assert result['ping'] == 'pong'
 
     """
     testdir.makepyfile(src)
-    result = testdir.runpytest(*option.args + ['--ansible-inventory', str(option.inventory), '--ansible-host-pattern', 'unreachable'])
+    result = testdir.runpytest_subprocess(*option.args + ['--ansible-inventory', str(option.inventory),
+                                                          '--ansible-host-pattern', 'unreachable'])
     assert result.ret == EXIT_OK
     assert result.parseoutcomes()['passed'] == 1
 
 
-@pytest.mark.integration
+@pytest.mark.old
 def test_contacted_with_params_and_inventory_host_pattern_marker(testdir, option):
     """FIXME
     """
@@ -117,25 +88,24 @@ def test_contacted_with_params_and_inventory_host_pattern_marker(testdir, option
 
             # assert contacted hosts ...
             assert contacted
-            assert len(contacted) == len(ansible_module.inventory_manager.list_hosts('local'))
+            assert len(contacted) == len(ansible_module)
             for result in contacted.values():
-                assert 'failed' not in result
-                assert 'invocation' in result
-                assert 'module_name' in result['invocation']
-                assert 'ping' == result['invocation']['module_name']
+                assert result.is_successful
+                assert result['ping'] == 'pong'
 
     """ % str(option.inventory)
     testdir.makepyfile(src)
-    result = testdir.runpytest(*option.args + ['--ansible-inventory', '/dev/null', '--ansible-host-pattern', 'unreachable'])
+    result = testdir.runpytest_subprocess(*option.args + ['--ansible-inventory', '/dev/null', '--ansible-host-pattern',
+                                                          'unreachable'])
     assert result.ret == EXIT_OK
     assert result.parseoutcomes()['passed'] == 1
 
 
-@pytest.mark.integration
+@pytest.mark.old
 def test_become(testdir, option):
     """Test --ansible-become* parameters.  This test doesn't actually 'sudo',
     but verifies that 'sudo' was attempted by asserting
-    '--ansible-become-user=<bogus_username>' fails as expected.
+    '--ansible-become-user' fails as expected.
     """
     src = """
         import pytest
@@ -148,141 +118,120 @@ def test_become(testdir, option):
 
             # assert contacted hosts ...
             assert contacted
-            assert len(contacted) == len(ansible_module.inventory_manager.list_hosts('localhost'))
+            assert len(contacted) == len(ansible_module)
             for result in contacted.values():
                 assert 'failed' in result, "Missing expected field in JSON response: failed"
                 assert result['failed'], "Test did not fail as expected"
                 if ansible.__version__.startswith('2'):
-                    assert 'module_stderr' in result
-                    assert 'sudo: unknown user: asdfasdf' in result['module_stderr']
-                    # assert 'sudo: a password is required' in result['module_stderr']
+                    assert 'msg' in result, "Missing expected field in JSON response: msg"
+                    assert result['msg'].startswith('Failed to set permissions on the temporary files Ansible needs ' \
+                        'to create when becoming an unprivileged user')
                 else:
                     assert 'msg' in result, "Missing expected field in JSON response: msg"
                     assert 'sudo: unknown user: asdfasdf' in result['msg']
-                    # assert re.match('\[sudo via ansible, [^\]]*\] password:', result['msg']) is not None
-                    # "sudo: must be setuid root"
-
     """ % str(option.inventory)
     testdir.makepyfile(src)
-    result = testdir.runpytest(
+    result = testdir.runpytest_subprocess(
         *option.args + [
             '--ansible-inventory', str(option.inventory),
             '--ansible-host-pattern', 'localhost',  # run against a single host
             '--ansible-become',  # Enable become support
-            '--ansible-become-user', 'asdfasdf'  # Connect using a bogus username
+            '--ansible-become-user', 'asdfasdf'  # Connect as asdfasdf
         ]
     )
     assert result.ret == EXIT_OK
     assert result.parseoutcomes()['passed'] == 1
 
 
-@pytest.mark.integration
+@pytest.mark.old
 def test_dark_with_params(testdir, option):
     """FIXME
     """
     src = """
         import pytest
-        from pytest_ansible.errors import (AnsibleHostUnreachable, AnsibleNoHostsMatch)
+        from pytest_ansible.errors import (AnsibleConnectionFailure, AnsibleNoHostsMatch)
         def test_func(ansible_module):
-            exc_info = pytest.raises(AnsibleHostUnreachable, ansible_module.ping)
-            (contacted, dark) = exc_info.value.results
+            exc_info = pytest.raises(AnsibleConnectionFailure, ansible_module.ping)
 
             # assert no contacted hosts ...
-            assert not contacted, "%d hosts were contacted, expected %d" \
-                % (len(contacted), 0)
+            assert not exc_info.value.contacted, "%d hosts were contacted, expected %d" \
+                % (len(exc_info.value.contacted), 0)
 
             # assert dark hosts ...
-            assert dark
-            assert len(dark) == len(ansible_module.inventory_manager.list_hosts('unreachable'))
-            for result in dark.values():
-                assert 'failed' in result or 'unreachable' in result
-                assert result.get('failed', False) or result.get('unreachable', False)
+            assert exc_info.value.dark
     """
     testdir.makepyfile(src)
-    result = testdir.runpytest(*option.args + ['--ansible-inventory', str(option.inventory), '--ansible-host-pattern', 'unreachable'])
+    result = testdir.runpytest_subprocess(*option.args + ['--ansible-inventory', str(option.inventory),
+                                                          '--ansible-host-pattern', 'unreachable'])
     print "\n".join(result.stdout.lines)
     print "\n".join(result.stderr.lines)
     assert result.ret == EXIT_OK
     assert result.parseoutcomes()['passed'] == 1
 
 
-@pytest.mark.integration
+@pytest.mark.old
 def test_dark_with_params_and_inventory_marker(testdir, option):
     """FIXME
     """
     src = """
         import pytest
-        from pytest_ansible.errors import (AnsibleHostUnreachable, AnsibleNoHostsMatch)
+        from pytest_ansible.errors import (AnsibleConnectionFailure, AnsibleNoHostsMatch)
         @pytest.mark.ansible(inventory='{inventory}')
         def test_func(ansible_module):
-            exc_info = pytest.raises(AnsibleHostUnreachable, ansible_module.ping)
-            (contacted, dark) = exc_info.value.results
+            exc_info = pytest.raises(AnsibleConnectionFailure, ansible_module.ping)
 
             # assert no contacted hosts ...
-            assert not contacted, "%d hosts were contacted, expected %d" \
-                % (len(contacted), 0)
+            assert not exc_info.value.contacted, "%d hosts were contacted, expected %d" \
+                % (len(exc_info.value.contacted), 0)
 
             # assert dark hosts ...
-            assert dark
-            assert len(dark) == len(ansible_module.inventory_manager.list_hosts('unreachable'))
-            for result in dark.values():
-                assert 'failed' in result or 'unreachable' in result
-                assert result.get('failed', False) or result.get('unreachable', False)
+            assert exc_info.value.dark
     """.format(inventory=str(option.inventory))
     testdir.makepyfile(src)
-    result = testdir.runpytest(*option.args + ['--ansible-host-pattern', 'unreachable'])
+    result = testdir.runpytest_subprocess(*option.args + ['--ansible-host-pattern', 'unreachable'])
     assert result.ret == EXIT_OK
     assert result.parseoutcomes()['passed'] == 1
 
 
-@pytest.mark.integration
+@pytest.mark.old
 def test_dark_with_params_and_host_pattern_marker(testdir, option):
     """FIXME
     """
     src = """
         import pytest
         import ansible
-        from pytest_ansible.errors import (AnsibleHostUnreachable, AnsibleNoHostsMatch)
+        from pytest_ansible.errors import (AnsibleConnectionFailure, AnsibleNoHostsMatch)
         @pytest.mark.ansible(host_pattern='unreachable')
         def test_func(ansible_module):
-            exc_info = pytest.raises(AnsibleHostUnreachable, ansible_module.ping)
-            (contacted, dark) = exc_info.value.results
+            exc_info = pytest.raises(AnsibleConnectionFailure, ansible_module.ping)
 
             # assert no contacted hosts ...
-            assert not contacted, "%d hosts were contacted, expected %d" \
-                % (len(contacted), 0)
+            assert not exc_info.value.contacted, "%d hosts were contacted, expected %d" \
+                % (len(exc_info.value.contacted), 0)
 
             # assert dark hosts ...
-            assert dark
-            assert len(dark) == len(ansible_module.inventory_manager.list_hosts('unreachable'))
-            for result in dark.values():
-                assert 'failed' in result or 'unreachable' in result
-                assert result.get('failed', False) or result.get('unreachable', False)
-                if ansible.__version__.startswith('2'):
-                    assert 'SSH encountered an unknown error' in result['msg']
-                else:
-                    assert result['msg'].startswith('SSH Error: ssh: Could not resolve hostname')
+            assert exc_info.value.dark
     """
     testdir.makepyfile(src)
-    result = testdir.runpytest(*option.args + ['--ansible-inventory', str(option.inventory), '--ansible-host-pattern', 'local'])
+    result = testdir.runpytest_subprocess(*option.args + ['--ansible-inventory', str(option.inventory),
+                                                          '--ansible-host-pattern', 'local'])
     assert result.ret == EXIT_OK
     assert result.parseoutcomes()['passed'] == 1
 
 
-@pytest.mark.integration
+@pytest.mark.old
 def test_dark_with_debug_enabled(testdir, option):
-    """Verify that when --ansible-debug is provide, additional output is provided upon host failure.
+    """Verify that when verbosity is enabled, additional output is provided upon host failure.
     """
     src = """
         import pytest
-        from pytest_ansible.errors import AnsibleHostUnreachable
+        from pytest_ansible.errors import AnsibleConnectionFailure
         def test_func(ansible_module):
             ansible_module.ping()
     """
     testdir.makepyfile(src)
-    result = testdir.runpytest(*option.args + ['--ansible-inventory', str(option.inventory),
-                                               '--ansible-host-pattern', 'unreachable',
-                                               '--ansible-debug'])
+    result = testdir.runpytest_subprocess(*option.args + ['--ansible-inventory', str(option.inventory),
+                                                          '--ansible-host-pattern', 'unreachable', '-v'])
     assert result.ret == EXIT_TESTSFAILED
     assert result.parseoutcomes()['failed'] == 1
     # FIXME - the following doesn't work on ansible-v2

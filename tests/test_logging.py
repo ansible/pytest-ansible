@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 import logging
+from fnmatch import fnmatch
 from _pytest.main import EXIT_OK, EXIT_NOTESTSCOLLECTED, EXIT_INTERRUPTED  # NOQA
 
 
-def assert_fnmatch_lines(output, matches):
-    if isinstance(output, str):
-        output = output.split('\n')
-    missing = []
+def assert_fnmatch_lines(lines, matches):
     for match in matches:
-        if match not in output:
-            missing.append(match)
-    assert len(missing) == 0, "The following matches were not found:\n - %s" % '\n - '.join(missing)
+        for line in lines.split('\n'):
+            if line == match or fnmatch(line, match):
+                break
+        else:
+            raise ValueError('String {0} not found in output:\n{1}'.format(match, lines))
 
 
 def test_debug_logging(testdir, capsys):
@@ -30,21 +30,36 @@ def test_debug_logging(testdir, capsys):
 
     src = """\
     def test_foo(ansible_module):
-        pass
+        ansible_module.ping()
     """
-    result = testdir.inline_runsource(src, *['--ansible-inventory', 'localhost,', '--ansible-connection', 'local', '--ansible-host-pattern', 'all'])
+    result = testdir.inline_runsource(src, *['--ansible-inventory', 'localhost,', '--ansible-connection', 'local',
+                                             '--ansible-host-pattern', 'all'])
 
     # Assert py.test exit code
     assert result.ret == EXIT_OK
 
     (stdout, stderr) = capsys.readouterr()
-    # FIXME
     fnmatch_lines = [
-        # 'DEBUG - pytest_cmdline_main() called',
-        # 'DEBUG - pytest_runtest_setup() called',
+        'DEBUG - pytest_addoption() called',
         'DEBUG - pytest_configure() called',
+        'DEBUG - pytest_generate_tests() called',
         'DEBUG - PyTestAnsiblePlugin initialized',
         'DEBUG - pytest_collection_modifyitems() called',
+        'DEBUG - config: {*',
+        'DEBUG - request: {*',
+        'DEBUG - pytest_report_header() called',
     ]
+
+    # 'DEBUG - pytest_cmdline_main() called',
+    # 'DEBUG - pytest_runtest_setup() called',
+    # X log.debug("pytest_addoption() called")
+    # X log.debug("pytest_configure() called")
+    # X log.debug("pytest_generate_tests() called")
+    # X log.debug("PyTestAnsiblePlugin initialized")
+    # X log.debug("pytest_report_header() called")
+    # X log.debug("pytest_collection_modifyitems() called")
+    # log.debug("ansible marker override %s:%s" % (short_key, kwargs[short_key]))
+    # # log.debug("kwargs: %s" % kwargs)
+
     # Assert stderr logging
     assert_fnmatch_lines(stderr, fnmatch_lines)

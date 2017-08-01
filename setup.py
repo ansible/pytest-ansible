@@ -2,7 +2,7 @@ import os
 import sys
 import glob
 import shutil
-from setuptools import setup, Command
+from setuptools import setup, Command, find_packages
 from setuptools.command.test import test as TestCommand
 from pytest_ansible import __version__, __author__, __author_email__
 
@@ -54,7 +54,8 @@ class CleanCommand(Command):
             for fname in files:
                 if fname.endswith('.pyc') and os.path.isfile(os.path.join(root, fname)):
                     rm_list.append(os.path.join(root, fname))
-            if root.endswith('__pycache__'):
+            if root.endswith('__pycache__') or root.endswith('.cache') or root.endswith('.ansible') or \
+               root.endswith('.eggs') or root.endswith('.tox'):
                 rm_list.append(root)
 
         # Find egg's
@@ -109,7 +110,7 @@ setup(
     author_email=__author_email__,
     url='http://github.com/jlaska/pytest-ansible',
     platforms='any',
-    packages=['pytest_ansible'],
+    packages=find_packages(),
     entry_points={
         'pytest11': [
             'pytest-ansible = pytest_ansible.plugin'
@@ -117,7 +118,7 @@ setup(
     },
     zip_safe=False,
     tests_require=['tox'],
-    setup_requires=['setuptools-markdown'],
+    setup_requires=['pypandoc<1.2.0', 'setuptools-markdown'],
     install_requires=['ansible', 'pytest'],
     cmdclass={
         'test': ToxTestCommand,

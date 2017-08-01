@@ -2,11 +2,9 @@ sudo: false
 language: python
 sudo: required # needed for test_become
 env:
-    - TOXENV=py26-ansible_v1
-    - TOXENV=py27-ansible_v1
-    - TOXENV=py26-ansible_v2
-    - TOXENV=py27-ansible_v2
-    - TOXENV=py26-ansible_devel
+    - TOXENV=py27-ansible_v19
+    - TOXENV=py27-ansible_v22
+    - TOXENV=py27-ansible_v23
     - TOXENV=py27-ansible_devel
 install:
     - pip install -r test-requirements.txt
@@ -16,3 +14,6 @@ before_script:
     - TOXENV=lint tox
 after_success:
     - TOXENV=coveralls tox
+addons:
+  apt_packages:
+    - pandoc
