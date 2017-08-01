@@ -22,7 +22,7 @@ inspect and act on, much like with an ansible
 Install this plugin using ``pip``
 
 ```bash
-    pip install pytest-ansible
+pip install pytest-ansible
 ```
 
 ## Usage
@@ -55,78 +55,44 @@ def test_my_inventory(ansible_adhoc):
 
 In the example above, the `hosts` variable is an instance of the `HostManager`
 class and describes your ansible inventory.  For this to work, you'll need to
-tell `ansible` where to find your inventory.  Inventory can be an [INI
-file](http://docs.ansible.com/ansible/latest/intro_inventory.html), an
+tell `ansible` where to find your inventory.  Inventory can be anything
+supported by ansible, which includes an [INI
+file](http://docs.ansible.com/ansible/latest/intro_inventory.html) or an
 executable script that returns [properly formatted
-JSON](http://docs.ansible.com/ansible/latest/intro_dynamic_inventory.html).  For example, 
+JSON](http://docs.ansible.com/ansible/latest/intro_dynamic_inventory.html).
+For example, 
 
 ```bash
-# py.test --inventory my_inventory.ini --host-pattern all
+py.test --inventory my_inventory.ini --host-pattern all
 ```
 
 or 
 
 ```bash
-# py.test --inventory path/to/my/script.py --host-pattern webservers
+py.test --inventory path/to/my/script.py --host-pattern webservers
 ```
 or 
 
 ```bash
-# py.test --inventory one.example.com,two.example.com --host-pattern all
+py.test --inventory one.example.com,two.example.com --host-pattern all
 ```
 
 In the above examples, the inventory provided at runtime will be used in all
 tests that use the `ansible_adhoc` fixture.  A more realistic scenario may
 involve using different inventory files (or host patterns) with different
-tests.  To accomplish this, the method returned by the `ansible_adhoc` fixture
-accepts parameters.  Some examples are noted below.
-
-```python
-def test_all_the_pings(ansible_adhoc):
-    # Define the ansible inventory
-    my_inventory='''
-    [webservers]
-    web-1.example.com
-    web-2.example.com
-    web-3.example.com
-    web-4.example.com
-
-    [databases]
-    postgres-1.example.com
-    postgres-2.example.com
-
-    [all_regions]
-    [all_regions:children]
-    east
-    west
-
-    [east]
-    web-1.example.com
-    web-2.example.com
-    postgres-1.example.com
-
-    [west]
-    web-3.example.com
-    web-4.example.com
-    postgres-2.example.com
-    '''
-
-    # Create the 'acme' db
-    ansible_adhoc(inventory=my_inventory).databases.postgresql_db(
-        name='acme',
-        encoding='UTF-8',
-        template='template0'
-    )
-```
+tests.  To accomplish this, the fixture `ansible_adhoc` allows you to customize
+the inventory parameters.  Read on for more detail on using the `ansible_adhoc`
+fixture.
 
 ### Fixture ``ansible_adhoc``
 
 The `ansible_adhoc` fixture returns a function used to initialize
 a `HostManager` object.  The `ansible_adhoc` fixture will default to parameters
-supplied to the `py.test` command-line, or to keyword arguments supplied upon
-calling the function.
+supplied to the `py.test` command-line, but also allows one to provide keyword
+arguments used to initialize the inventory.
 
-The example below demonstrates basic usage with options supplied at run-time to `py.test`.
+The example below demonstrates basic usage with options supplied at run-time to
+`py.test`.
 
 ```python
 def test_all_the_pings(ansible_adhoc):
@@ -140,11 +106,12 @@ a `HostManager` object.
 def test_uptime(ansible_adhoc):
     # take down the database
     ansible_adhoc(inventory='db1.example.com,', user='ec2-user', 
-        become=True, become_user='root', connection='local').all.command('reboot')
+        become=True, become_user='root').all.command('reboot')
 ```
 
-The `HostManager` object returned by the `ansible_adhoc()` method provides
-numerous ways of targetting commands against some, or all, of the inventory.
+The `HostManager` object returned by the `ansible_adhoc()` function provides
+numerous ways of calling ansible modules against some, or all, of the
+inventory.  The following demonstates sample usage.
 
 ```python
 def test_host_manager(ansible_adhoc):
@@ -158,7 +125,7 @@ def test_host_manager(ansible_adhoc):
     hosts.all.ping()
     hosts.localhost.ping()
 
-    # All supported [ansible host patterns](http://docs.ansible.com/ansible/latest/intro_patterns.html)
+    # Supports [ansible host patterns](http://docs.ansible.com/ansible/latest/intro_patterns.html)
     hosts['webservers:!phoenix').ping()  # all webservers that are not in phoenix
     hosts[0].ping()
     hosts[0:2].ping()
@@ -258,20 +225,21 @@ A systems facts can be useful when deciding whether to skip a test ...
 
 ```python
 def test_something_with_amazon_ec2(ansible_facts):
-    for (host, facts) in ansible_facts.items():
+    for facts in ansible_facts:
         if 'ec2.internal' != facts['ansible_domain']:
             pytest.skip("This test only applies to ec2 instances")
 
 ```
 
-Alternatively, you could inspect ``ec2_facts`` for greater granularity ...
+Additionally, since facts are just ansible modules, you could inspect the
+contents of the ``ec2_facts`` module for greater granularity ...
 
 ```python
 
-def test_terminate_us_east_1_instances(ansible_module):
+def test_terminate_us_east_1_instances(ansible_adhoc):
 
-    for (host, ec2_facts) in ansible_module.ec2_facts().items():
-        if ec2_facts['ansible_ec2_placement_region'].startswith('us-east'):
+    for facts in ansible_adhoc().all.ec2_facts():
+        if facts['ansible_ec2_placement_region'].startswith('us-east'):
             '''do some testing'''
 ```
 
@@ -279,7 +247,9 @@ def test_terminate_us_east_1_instances(ansible_module):
 
 Perhaps the ``--ansible-inventory=<inventory>`` includes many systems, but you
 only wish to interact with a subset.  The ``pytest.mark.ansible`` marker can be
-used to modify the ``pytest-ansible`` command-line parameters for a single test.
+used to modify the ``pytest-ansible`` command-line parameters for a single
+test.  Please note, the fixture `ansible_adhoc` is the prefer mechanism for
+interacting with ansible inventory within tests.
 
 For example, to interact with the local system, you would adjust the
 ``host_pattern`` and ``connection`` parameters.
