@@ -50,6 +50,7 @@ class AdHocResult(object):
     """Fixme."""
 
     def __init__(self, **kwargs):
+        """Fixme."""
         required_kwargs = ('contacted',)
         for kwarg in required_kwargs:
             assert kwarg in kwargs, "Missing required keyword argument '%s'" % kwarg

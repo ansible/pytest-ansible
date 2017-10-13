@@ -10,9 +10,10 @@ log = get_logger(__name__)
 
 class HostManagerV2(BaseHostManager):
 
-    """Pass."""
+    """Fixme."""
 
     def __init__(self, *args, **kwargs):
+        """Fixme."""
         super(HostManagerV2, self).__init__(*args, **kwargs)
         self._dispatcher = ModuleDispatcherV2
 

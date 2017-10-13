@@ -13,11 +13,12 @@ log = get_logger(__name__)
 
 class BaseHostManager(object):
 
-    """Pass."""
+    """Fixme."""
 
     _required_kwargs = ('inventory',)
 
     def __init__(self, *args, **kwargs):
+        """Fixme."""
         self.options = kwargs
 
         self.check_required_kwargs(**kwargs)
@@ -64,8 +65,8 @@ class BaseHostManager(object):
                 return self._dispatcher(**self.options)
 
     def __getattr__(self, attr):
-        log.debug("BaseHostManager.__getattr__(%s)" % attr)
         """Return a ModuleDispatcher instance described the provided `attr`."""
+        log.debug("BaseHostManager.__getattr__(%s)" % attr)
         if not self.has_matching_inventory(attr):
             raise AttributeError("type HostManager has no attribute '%s'" % attr)
         else:
@@ -76,6 +77,7 @@ class BaseHostManager(object):
         return [h.name for h in self.options['inventory_manager'].list_hosts()]
 
     def __iter__(self):
+        """Return an iterator for hosts matching the `host_pattern`."""
         all_hosts = self.options['inventory_manager'].list_hosts(self.options['host_pattern'])
         # Return only the name (ala .keys()
         # return iter(self.options['inventory_manager'].list_hosts(self.options['host_pattern']))

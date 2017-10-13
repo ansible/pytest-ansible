@@ -23,9 +23,10 @@ log = get_logger(__name__)
 
 class ResultAccumulator(CallbackBase):
 
-    """FIXME."""
+    """Fixme."""
 
     def __init__(self, *args, **kwargs):
+        """Initialize object."""
         super(ResultAccumulator, self).__init__(*args, **kwargs)
         self.contacted = {}
         self.unreachable = {}
@@ -53,7 +54,7 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
         return ansible.plugins.module_loader.has_plugin(name)
 
     def _run(self, *module_args, **complex_args):
-        """The API provided by ansible is not intended as a public API."""
+        """Execute an ansible adhoc command returning the result in a AdhocResult object."""
         # Assemble module argument string
         if module_args:
             complex_args.update(dict(_raw_params=' '.join(module_args)))

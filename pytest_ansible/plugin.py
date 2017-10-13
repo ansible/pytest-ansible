@@ -147,6 +147,7 @@ class PyTestAnsiblePlugin:
     """Ansible PyTest Plugin Class."""
 
     def __init__(self, config):
+        """Initialize plugin."""
         log.debug("PyTestAnsiblePlugin initialized")
         self.config = config
 
@@ -236,7 +237,7 @@ class PyTestAnsiblePlugin:
 
     @staticmethod
     def assert_required_ansible_parameters(config):
-        """Helper method to assert whether the required --ansible-* parameters were provided."""
+        """Assert whether the required --ansible-* parameters were provided."""
         errors = []
 
         # Verify --ansible-host-pattern was provided

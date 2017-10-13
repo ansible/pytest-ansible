@@ -29,7 +29,7 @@ class ModuleDispatcherV1(BaseModuleDispatcher):
         return ansible.utils.module_finder.has_plugin(name)
 
     def _run(self, *module_args, **complex_args):
-        """The API provided by ansible is not intended as a public API."""
+        """Execute an ansible adhoc command returning the results in a AdHocResult object."""
         # Assemble module argument string
         if True:
             module_args = ' '.join(module_args)

@@ -10,6 +10,7 @@ class BaseModuleDispatcher(object):
     required_kwargs = ('inventory',)
 
     def __init__(self, **kwargs):
+        """Save provided keyword arguments and assert required values have been provided."""
         self.options = kwargs
 
         # Assert the expected kwargs were provided
@@ -47,5 +48,5 @@ class BaseModuleDispatcher(object):
         raise RuntimeError("Must be implemented by a sub-class")
 
     def _run(self, *args, **kwargs):
-        """The API provided by ansible is not intended as a public API."""
+        """Raise a runtime error, unless implemented by sub-classes."""
         raise RuntimeError("Must be implemented by a sub-class")
