@@ -1,15 +1,16 @@
 """PyTest Ansible Plugin."""
 
-import pytest
-import ansible
-import ansible.constants
-import ansible.utils
-import ansible.errors
 import collections
 
-from pytest_ansible.logger import get_logger
+import ansible
+import ansible.constants
+import ansible.errors
+import ansible.utils
+import pytest
+
 from pytest_ansible.fixtures import (ansible_adhoc, ansible_module, ansible_facts, localhost)
 from pytest_ansible.host_manager import get_host_manager
+from pytest_ansible.logger import get_logger
 
 log = get_logger(__name__)
 
@@ -54,7 +55,8 @@ def pytest_addoption(parser):
                     action='store_true',
                     dest='ansible_check',
                     default=False,
-                    help='don\'t make any changes; instead, try to predict some of the changes that may occur')
+                    help='don\'t make any changes; instead, try to predict some of the changes '
+                         'that may occur')
     group.addoption('--module-path', '--ansible-module-path',
                     action='store',
                     dest='ansible_module_path',
@@ -71,8 +73,9 @@ def pytest_addoption(parser):
                     action='store',
                     dest='ansible_become_method',
                     default=ansible.constants.DEFAULT_BECOME_METHOD,
-                    help="privilege escalation method to use (default: %%(default)s), valid choices: [ %s ]" %
-                    (' | '.join(ansible.constants.BECOME_METHODS)))
+                    help="privilege escalation method to use (default: %%(default)s), "
+                         "valid choices: [ %s ]" %
+                         (' | '.join(ansible.constants.BECOME_METHODS)))
     group.addoption('--become-user', '--ansible-become-user',
                     action='store',
                     dest='ansible_become_user',
@@ -115,7 +118,8 @@ def pytest_generate_tests(metafunc):
         PyTestAnsiblePlugin.assert_required_ansible_parameters(metafunc.config)
         try:
             plugin = metafunc.config.pluginmanager.getplugin("ansible")
-            hosts = plugin.initialize(config=plugin.config, pattern=metafunc.config.getoption('ansible_host_pattern'))
+            hosts = plugin.initialize(config=plugin.config,
+                                      pattern=metafunc.config.getoption('ansible_host_pattern'))
         except ansible.errors.AnsibleError as e:
             raise pytest.UsageError(e)
         # Return the host name as a string
@@ -124,14 +128,15 @@ def pytest_generate_tests(metafunc):
         # metafunc.parametrize("ansible_host", iter(plugin.initialize(config=plugin.config, pattern=h) for h in
         #                                           hosts.keys()))
         # Return a ModuleDispatcher instance representing `host` (e.g. ansible_host.shell('date'))
-        metafunc.parametrize("ansible_host", iter(hosts[h] for h in hosts.keys()))
+        metafunc.parametrize("ansible_host", iter(hosts[h] for h in list(hosts.keys())))
 
     if 'ansible_group' in metafunc.fixturenames:
         # assert required --ansible-* parameters were used
         PyTestAnsiblePlugin.assert_required_ansible_parameters(metafunc.config)
         try:
             plugin = metafunc.config.pluginmanager.getplugin("ansible")
-            hosts = plugin.initialize(config=plugin.config, pattern=metafunc.config.getoption('ansible_host_pattern'))
+            hosts = plugin.initialize(config=plugin.config,
+                                      pattern=metafunc.config.getoption('ansible_host_pattern'))
         except ansible.errors.AnsibleError as e:
             raise pytest.UsageError(e)
         # FIXME: Eeew, this shouldn't be interfacing with `hosts.options`
@@ -178,9 +183,10 @@ class PyTestAnsiblePlugin:
 
     def _load_ansible_config(self, config):
         """Load ansible configuration from command-line."""
-        option_names = ['ansible_inventory', 'ansible_host_pattern', 'ansible_connection', 'ansible_user',
-                        'ansible_module_path', 'ansible_become', 'ansible_become_method', 'ansible_become_user',
-                        'ansible_ask_become_pass', 'ansible_subset']
+        option_names = ['ansible_inventory', 'ansible_host_pattern', 'ansible_connection',
+                        'ansible_user', 'ansible_module_path', 'ansible_become',
+                        'ansible_become_method', 'ansible_become_user', 'ansible_ask_become_pass',
+                        'ansible_subset']
 
         kwargs = dict()
 
@@ -190,9 +196,10 @@ class PyTestAnsiblePlugin:
             kwargs[short_key] = config.getoption(key)
 
         # normalize ansible.ansible_become options
-        kwargs['become'] = kwargs['become'] or ansible.constants.DEFAULT_BECOME
-        kwargs['become_user'] = kwargs['become_user'] or ansible.constants.DEFAULT_BECOME_USER
-        kwargs['ask_become_pass'] = kwargs['ask_become_pass'] or ansible.constants.DEFAULT_BECOME_ASK_PASS
+        kwargs['become'] = kwargs.get('become', ansible.constants.DEFAULT_BECOME)
+        kwargs['become_user'] = kwargs.get('become_user', ansible.constants.DEFAULT_BECOME_USER)
+        kwargs['ask_become_pass'] = kwargs.get('ask_become_pass',
+                                               ansible.constants.DEFAULT_BECOME_ASK_PASS)
 
         log.debug("config: %s" % kwargs)
         return kwargs
@@ -206,7 +213,8 @@ class PyTestAnsiblePlugin:
             if hasattr(request.function, 'ansible'):
                 kwargs = request.function.ansible.kwargs
         elif request.scope == 'class':
-            if hasattr(request.cls, 'pytestmark') and isinstance(request.cls.pytestmark, collections.Iterable):
+            if hasattr(request.cls, 'pytestmark') and isinstance(request.cls.pytestmark,
+                                                                 collections.Iterable):
                 for pytestmark in request.cls.pytestmark:
                     if pytestmark.name == 'ansible':
                         kwargs = pytestmark.kwargs
@@ -250,8 +258,8 @@ class PyTestAnsiblePlugin:
         # Verify --ansible-inventory was provided
         ansible_inventory = config.getoption('ansible_inventory')
         if ansible_inventory is None or ansible_inventory == "":
-            errors.append("Unable to find an inventory file, specify one with the --ansible-inventory/--inventory "
-                          "parameter.")
+            errors.append("Unable to find an inventory file, specify one with the "
+                          "--ansible-inventory/--inventory parameter.")
 
         if errors:
             raise pytest.UsageError(*errors)

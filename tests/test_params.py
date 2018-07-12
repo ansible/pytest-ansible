@@ -54,7 +54,6 @@ def test_report_header(testdir, option):
         'ansible: %s' % ansible.__version__,
     ])
 
-
 def test_params_not_required_when_not_using_fixture(testdir, option):
     """Verify the ansible parameters are not required if the fixture is not used.
     """
@@ -197,8 +196,10 @@ def test_params_required_with_bogus_inventory_v2(testdir, option, recwarn):
     """
     testdir.makepyfile(src)
 
-    with mock.patch('ansible.parsing.dataloader.DataLoader.path_exists', return_value=False) as mock_exists:
-        result = testdir.runpytest(*['-vvvvvs', '--ansible-inventory', 'bogus', '--ansible-host-pattern', 'all'])
+    with mock.patch('ansible.parsing.dataloader.DataLoader.path_exists',
+                    return_value=False) as mock_exists:
+        result = testdir.runpytest(*['-vvvvvs', '--ansible-inventory', 'bogus',
+                                     '--ansible-host-pattern', 'all'])
 
     # Assert py.test exit code
     assert result.ret == EXIT_OK
@@ -222,7 +223,8 @@ def test_params_required_with_bogus_inventory_v24(testdir, option, recwarn):
     """
     testdir.makepyfile(src)
 
-    result = testdir.runpytest(*['-vvvvvs', '--ansible-inventory', 'bogus', '--ansible-host-pattern', 'all'])
+    result = testdir.runpytest(*['-vvvvvs', '--ansible-inventory', 'bogus',
+                                 '--ansible-host-pattern', 'all'])
 
     # Assert py.test exit code
     assert result.ret == EXIT_OK
@@ -279,8 +281,9 @@ def test_param_override_with_marker(testdir):
             ansible_module.ping()
     """
     testdir.makepyfile(src)
-    result = testdir.runpytest(*['-vvvvvs', '--tb', 'native', '--ansible-inventory', 'garbage,', '--ansible-host-pattern',
-                                 'garbage', '--ansible-connection', 'garbage'])
+    result = testdir.runpytest(*['-vvvvvs', '--tb', 'native', '--ansible-inventory', 'garbage,',
+                                 '--ansible-host-pattern','garbage', '--ansible-connection',
+                                 'garbage'])
     assert result.ret == EXIT_OK
 
     # Mock assert the correct variables are set

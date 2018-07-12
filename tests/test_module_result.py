@@ -28,12 +28,12 @@ def module_result_ok(request):
     return ModuleResult(
         **{
             'invocation': {
-                'module_name': u'debug',
+                'module_name': 'debug',
                 'module_args': {
-                    'msg': u'testing'
+                    'msg': 'testing'
                 }
             },
-            'msg': u'testing',
+            'msg': 'testing',
             'changed': False,
             '_ansible_verbose_always': True,
             '_ansible_no_log': False
@@ -46,13 +46,13 @@ def module_result_failed():
     return ModuleResult(
         **{
             'invocation': {
-                'module_name': u'fail',
+                'module_name': 'fail',
                 'module_args': {}
             },
             'failed': True,
             'changed': False,
             '_ansible_no_log': False,
-            'msg': u'Failed as requested from task'
+            'msg': 'Failed as requested from task'
         }
     )
 

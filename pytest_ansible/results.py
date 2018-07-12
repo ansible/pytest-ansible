@@ -84,11 +84,11 @@ class AdHocResult(object):
 
     def keys(self):
         """Return a list of contacted inventory hosts."""
-        return self.contacted.keys()
+        return list(self.contacted.keys())
 
     def items(self):
         """Return a list of tuples containing the inventory host key, and the ModuleResult instance."""
-        for k in self.contacted.keys():
+        for k in list(self.contacted.keys()):
             yield (k, getattr(self, k))
 
     def values(self):

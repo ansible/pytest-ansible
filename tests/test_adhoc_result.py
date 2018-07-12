@@ -17,11 +17,13 @@ def test_len(adhoc_result):
 
 
 def test_keys(adhoc_result):
-    assert set(adhoc_result) == set(ALL_HOSTS)
+    sorted_keys = list(adhoc_result.keys())
+    sorted_keys.sort()
+    assert sorted_keys == ALL_HOSTS
 
 
 def test_items(adhoc_result):
-    items = adhoc_result.items()
+    items = list(adhoc_result.items())
     assert isinstance(items, GeneratorType)
     for count, item in enumerate(items, 1):
         assert isinstance(item, tuple)
@@ -31,10 +33,8 @@ def test_items(adhoc_result):
 
 
 def test_values(adhoc_result):
-    values = adhoc_result.values()
-    assert isinstance(values, list)
-    # assure that it is a copy
-    assert values is not adhoc_result.contacted.values()
+    values = list(adhoc_result.values())
+    assert isinstance(values, GeneratorType)
     for count, val in enumerate(values, 1):
         assert isinstance(val, ModuleResult)
     assert count == len(ALL_HOSTS)
@@ -93,7 +93,7 @@ def test_connection_failure_v1():
     assert exc_info.value.dark['unknown.example.com']['failed']
     # Assert msg
     assert 'msg' in exc_info.value.dark['unknown.example.com']
-    assert exc_info.value.dark['unknown.example.com']['msg'].startswith(u'SSH Error: ssh: Could not resolve hostname'
+    assert exc_info.value.dark['unknown.example.com']['msg'].startswith('SSH Error: ssh: Could not resolve hostname'
                                                                         ' unknown.example.com:')
 
 
@@ -111,7 +111,7 @@ def test_connection_failure_v2():
     # Assert dark
     assert 'unknown.example.com' in exc_info.value.dark
     # Assert unreachable
-    assert 'unreachable' in exc_info.value.dark['unknown.example.com'], exc_info.value.dark.keys()
+    assert 'unreachable' in exc_info.value.dark['unknown.example.com'], list(exc_info.value.dark.keys())
     assert exc_info.value.dark['unknown.example.com']['unreachable']
     # Assert msg
     assert 'msg' in exc_info.value.dark['unknown.example.com']
