@@ -9,15 +9,17 @@ from ansible.executor.task_queue_manager import TaskQueueManager
 from ansible.playbook.play import Play
 from ansible.cli import CLI
 from pytest_ansible.logger import get_logger
-from pytest_ansible.module_dispatcher import BaseModuleDispatcher
+from pytest_ansible.module_dispatcher.v2 import ModuleDispatcherV2
 from pytest_ansible.results import AdHocResult
 from pytest_ansible.errors import AnsibleConnectionFailure
 
-has_ansible_v2 = parse_version(ansible.__version__) >= parse_version('2.0.0')
+has_ansible_v25 = parse_version(ansible.__version__) >= parse_version('2.5.0')
 
-
-if not has_ansible_v2:
+if not has_ansible_v25:
     raise ImportError("Only supported with ansible-2.* and newer")
+else:
+    from ansible.plugins.loader import module_loader
+
 
 log = get_logger(__name__)
 
@@ -45,14 +47,15 @@ class ResultAccumulator(CallbackBase):
         return dict(contacted=self.contacted, unreachable=self.unreachable)
 
 
-class ModuleDispatcherV2(BaseModuleDispatcher):
+class ModuleDispatcherV25(ModuleDispatcherV2):
 
     """Pass."""
 
     required_kwargs = ('inventory', 'inventory_manager', 'variable_manager', 'host_pattern', 'loader')
 
     def has_module(self, name):
-        return ansible.plugins.module_loader.has_plugin(name)
+
+        return module_loader.has_plugin(name)
 
     def _run(self, *module_args, **complex_args):
         """Execute an ansible adhoc command returning the result in a AdhocResult object."""
