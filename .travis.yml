@@ -6,6 +6,7 @@ env:
     - TOXENV=py27-ansible_v22
     - TOXENV=py27-ansible_v23
     - TOXENV=py27-ansible_devel
+    - TOXENV=py36-ansible_v25
 install:
     - pip install -r test-requirements.txt
 script:
