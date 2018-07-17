@@ -55,6 +55,7 @@ class CleanCommand(Command):
                 if fname.endswith('.pyc') and os.path.isfile(os.path.join(root, fname)):
                     rm_list.append(os.path.join(root, fname))
             if root.endswith('__pycache__') or root.endswith('.cache') or root.endswith('.ansible') or \
+               root.endswith('.pytest_cache') or \
                root.endswith('.eggs') or root.endswith('.tox'):
                 rm_list.append(root)
 
@@ -65,7 +66,7 @@ class CleanCommand(Command):
         # Zap!
         for rm in rm_list:
             if self.verbose:
-                print "Removing '%s'" % rm
+                print("Removing '%s'" % rm)
             if os.path.isdir(rm):
                 if not self.dry_run:
                     shutil.rmtree(rm)
@@ -82,8 +83,8 @@ def long_description(*paths):
     # attempt to import pandoc
     try:
         import pypandoc
-    except (ImportError, OSError), e:
-        print "Unable to import pypandoc - %s" % e
+    except (ImportError, OSError) as e:
+        print("Unable to import pypandoc - %s" % e)
         return result
 
     # attempt md -> rst conversion
@@ -92,8 +93,8 @@ def long_description(*paths):
             result += '\n' + pypandoc.convert(
                 path, 'rst', format='markdown'
             )
-    except (OSError, IOError), e:
-        print "Failed to convert with pypandoc - %s" % e
+    except (OSError, IOError) as e:
+        print("Failed to convert with pypandoc - %s" % e)
         return result
 
     return result
