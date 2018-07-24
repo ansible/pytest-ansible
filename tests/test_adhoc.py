@@ -163,8 +163,8 @@ def test_dark_with_params(testdir, option):
     testdir.makepyfile(src)
     result = testdir.runpytest_subprocess(*option.args + ['--ansible-inventory', str(option.inventory),
                                                           '--ansible-host-pattern', 'unreachable'])
-    print "\n".join(result.stdout.lines)
-    print "\n".join(result.stderr.lines)
+    print("\n".join(result.stdout.lines))
+    print("\n".join(result.stderr.lines))
     assert result.ret == EXIT_OK
     assert result.parseoutcomes()['passed'] == 1
 
