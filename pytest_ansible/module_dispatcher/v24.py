@@ -47,7 +47,7 @@ class ResultAccumulator(CallbackBase):
         return dict(contacted=self.contacted, unreachable=self.unreachable)
 
 
-class ModuleDispatcherV25(ModuleDispatcherV2):
+class ModuleDispatcherV24(ModuleDispatcherV2):
 
     """Pass."""
 

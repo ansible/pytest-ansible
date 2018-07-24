@@ -103,7 +103,8 @@ def get_host_manager(*args, **kwargs):
     log.debug("get_host_manager(%s, %s)" % (args, kwargs))
 
     if has_ansible_v24:
-        from .v24 import HostManagerV24 as HostManager
+        from pytest_ansible.host_manager.v24 import HostManagerV24 as HostManager
+        # from .v24 import HostManagerV24 as HostManager
     elif has_ansible_v2:
         from pytest_ansible.host_manager.v2 import HostManagerV2 as HostManager
     else:
