@@ -13,10 +13,10 @@ from pytest_ansible.module_dispatcher.v2 import ModuleDispatcherV2
 from pytest_ansible.results import AdHocResult
 from pytest_ansible.errors import AnsibleConnectionFailure
 
-has_ansible_v25 = parse_version(ansible.__version__) >= parse_version('2.5.0')
+has_ansible_v24 = parse_version(ansible.__version__) >= parse_version('2.4.0')
 
-if not has_ansible_v25:
-    raise ImportError("Only supported with ansible-2.* and newer")
+if not has_ansible_v24:
+    raise ImportError("Only supported with ansible-2.4 and newer")
 else:
     from ansible.plugins.loader import module_loader
 
