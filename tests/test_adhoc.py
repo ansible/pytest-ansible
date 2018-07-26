@@ -112,6 +112,8 @@ def test_become(testdir, option):
         import ansible
         import re
         import os
+        from pkg_resources import parse_version
+
         @pytest.mark.ansible(inventory='%s', host_pattern='localhost')
         def test_func(ansible_module):
             contacted = ansible_module.ping()
@@ -120,9 +122,13 @@ def test_become(testdir, option):
             assert contacted
             assert len(contacted) == len(ansible_module)
             for result in contacted.values():
-                assert 'failed' in result, "Missing expected field in JSON response: failed"
-                assert result['failed'], "Test did not fail as expected"
-                if ansible.__version__.startswith('2'):
+                # Assert test failed as expected
+                if parse_version(ansible.__version__) < parse_version('2.4.0'):
+                    assert 'failed' in result, "Missing expected field in JSON response: failed"
+                    assert result['failed'], "Test did not fail as expected"
+
+                # Assert expected failure message
+                if parse_version(ansible.__version__) >= parse_version('2.0.0'):
                     assert 'msg' in result, "Missing expected field in JSON response: msg"
                     assert result['msg'].startswith('Failed to set permissions on the temporary files Ansible needs ' \
                         'to create when becoming an unprivileged user')
