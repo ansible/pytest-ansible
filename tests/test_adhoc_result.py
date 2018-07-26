@@ -17,9 +17,7 @@ def test_len(adhoc_result):
 
 
 def test_keys(adhoc_result):
-    sorted_keys = adhoc_result.keys()
-    sorted_keys.sort()
-    assert sorted_keys == ALL_HOSTS
+    assert set(adhoc_result) == set(ALL_HOSTS)
 
 
 def test_items(adhoc_result):
