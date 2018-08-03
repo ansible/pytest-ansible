@@ -126,7 +126,7 @@ def test_host_manager(ansible_adhoc):
     hosts.localhost.ping()
 
     # Supports [ansible host patterns](http://docs.ansible.com/ansible/latest/intro_patterns.html)
-    hosts['webservers:!phoenix').ping()  # all webservers that are not in phoenix
+    hosts['webservers:!phoenix'].ping()  # all webservers that are not in phoenix
     hosts[0].ping()
     hosts[0:2].ping()
 
