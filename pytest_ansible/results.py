@@ -93,5 +93,4 @@ class AdHocResult(object):
 
     def values(self):
         """Return a list of ModuleResult instances for each contacted inventory host."""
-        for k in self.contacted.keys():
-            yield getattr(self, k)
+        return [getattr(self, k) for k in self.contacted.keys()]
