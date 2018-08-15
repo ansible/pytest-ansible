@@ -115,7 +115,7 @@ def test_params_required_when_using_generator(testdir, option, fixture_name):
     assert result.ret == EXIT_INTERRUPTED
     result.stdout.fnmatch_lines([
         'collected 0 items / 1 errors',
-        'E   UsageError: Missing required parameter --ansible-host-pattern/--host-pattern',
+        'E  *UsageError: Missing required parameter --ansible-host-pattern/--host-pattern',
     ])
 
 
@@ -214,7 +214,9 @@ def test_params_required_with_bogus_inventory_v24(testdir, option, recwarn):
         def test_func(ansible_module):
             with pytest.warns(UserWarning) as record:
                 ansible_module.ping()
-            assert len(record) == 1
+            # Ensure at least one warning in the queue
+            assert len(record) >= 1
+            # Ensure the latest warning is the ansible localhost warning
             assert record[0].message.args[0] == "provided hosts list is empty, only localhost is available"
 
     """
