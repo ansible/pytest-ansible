@@ -4,7 +4,6 @@
 [![Coverage Status](https://coveralls.io/repos/github/ansible/pytest-ansible/badge.svg?branch=master)](https://coveralls.io/github/ansible/pytest-ansible?branch=master)
 [![Requirements Status](https://requires.io/github/ansible/pytest-ansible/requirements.svg?branch=master)](https://requires.io/github/ansible/pytest-ansible/requirements/?branch=master)
 [![Version](https://img.shields.io/pypi/v/pytest-ansible.svg)](https://pypi.python.org/pypi/pytest-ansible/)
-[![Downloads](https://img.shields.io/pypi/dm/pytest-ansible.svg)](https://pypi.python.org/pypi/pytest-ansible/)
 [![License](https://img.shields.io/pypi/l/pytest-ansible.svg)](https://pypi.python.org/pypi/pytest-ansible/)
 [![Supported Python Versions](https://img.shields.io/pypi/pyversions/pytest-ansible.svg)](https://pypi.python.org/pypi/pytest-ansible/)
 
