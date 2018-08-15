@@ -103,7 +103,7 @@ def long_description(*paths):
 setup(
     name="pytest-ansible",
     version=__version__,
-    description='Plugin for py.test to allow running ansible',
+    description='Plugin for py.test to simplify calling ansible modules from tests or fixtures',
     long_description=long_description('README.md', 'HISTORY.md'),
     license='MIT',
     keywords='py.test pytest ansible',

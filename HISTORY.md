@@ -1,5 +1,15 @@
 ## Release History
 
+### 2.0.1 (2018-08-10)
+
+* Convert AdHocResult.values() to return a list, not a generator (Thanks Alan Rominger)
+* Preliminary support for py3
+
+### 2.0.0 (2017-07-27)
+
+* Major changes to allow ansible-style inventory indexing
+* Improved results processing using python objects, rather than dictionaries
+
 ### 1.4.0 (2016-MM-DD)
 
 * Add parameter --ansible-module-path (thanks David Barroso)
