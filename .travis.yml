@@ -1,6 +1,6 @@
-sudo: false
 language: python
 sudo: required # needed for test_become
+dist: xenial
 python:
     - "2.7"
     - "3.6"
