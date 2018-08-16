@@ -4,6 +4,7 @@ sudo: required # needed for test_become
 python:
     - "2.7"
     - "3.6"
+    - "3.7"
 env:
     - TOXENV=ansible_v24
     - TOXENV=ansible_v25
