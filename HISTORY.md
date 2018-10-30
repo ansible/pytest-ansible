@@ -1,5 +1,8 @@
 ## Release History
 
+### 2.0.2 (2018-10-30)
+* Additional fixes in support of python-3
+
 ### 2.0.1 (2018-08-10)
 
 * Convert AdHocResult.values() to return a list, not a generator (Thanks Alan Rominger)
