@@ -7,7 +7,7 @@ __all__ = ('ansible_module', 'ansible_facts', 'ansible_adhoc', 'localhost')
 log = get_logger(__name__)
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope='session')
 def ansible_adhoc(request):
     """Return an inventory initialization method."""
     plugin = request.config.pluginmanager.getplugin("ansible")
@@ -17,14 +17,14 @@ def ansible_adhoc(request):
     return init_host_mgr
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope='session')
 def ansible_module(ansible_adhoc):
     """Return a subclass of BaseModuleDispatcher."""
     host_mgr = ansible_adhoc()
     return getattr(host_mgr, host_mgr.options['host_pattern'])
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope='session')
 def ansible_facts(ansible_module):
     """Return ansible_facts dictionary."""
     return ansible_module.setup()
