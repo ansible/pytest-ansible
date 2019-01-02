@@ -1,6 +1,6 @@
 # pytest-ansible
 
-[![Build Status](https://img.shields.io/travis/ansible/pytest-ansible.svg)](https://travis-ci.org/ansible/pytest-ansible)
+[![Build Status](https://img.shields.io/travis/com/ansible/pytest-ansible.svg)](https://travis-ci.com/ansible/pytest-ansible)
 [![Coverage Status](https://coveralls.io/repos/github/ansible/pytest-ansible/badge.svg?branch=master)](https://coveralls.io/github/ansible/pytest-ansible?branch=master)
 [![Requirements Status](https://requires.io/github/ansible/pytest-ansible/requirements.svg?branch=master)](https://requires.io/github/ansible/pytest-ansible/requirements/?branch=master)
 [![Version](https://img.shields.io/pypi/v/pytest-ansible.svg)](https://pypi.python.org/pypi/pytest-ansible/)
