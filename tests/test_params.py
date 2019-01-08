@@ -190,10 +190,8 @@ def test_params_required_with_bogus_inventory_v2(testdir, option, recwarn):
     src = """
         import pytest
         def test_func(ansible_module):
-            with pytest.warns(UserWarning) as record:
+            with pytest.warns(UserWarning, match="provided hosts list is empty, only localhost is available"):
                 ansible_module.ping()
-            assert len(record) == 1
-            assert record[0].message.args[0] == "provided hosts list is empty, only localhost is available"
     """
     testdir.makepyfile(src)
 
