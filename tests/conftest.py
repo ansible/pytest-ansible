@@ -34,10 +34,10 @@ POSITIVE_HOST_PATTERNS = [
     ('!localhost', 2),
     ('all[0]', 1),
     ('all[-1]', 1),
-    pytest.mark.requires_ansible_v1(('*[0-1]', 1)),
-    pytest.mark.requires_ansible_v2(('*[0-1]', 2)),
-    pytest.mark.requires_ansible_v2(('*[0:1]', 2)),  # this is confusing, but how host slicing works on v2
-    pytest.mark.requires_ansible_v2(('*[0:]', 3)),
+    pytest.param('*[0-1]', 1, marks=pytest.mark.requires_ansible_v1()),
+    pytest.param('*[0-1]', 2, marks=pytest.mark.requires_ansible_v2()),
+    pytest.param('*[0:1]', 2, marks=pytest.mark.requires_ansible_v2()),  # this is confusing, but how host slicing works on v2
+    pytest.param('*[0:]', 3, marks=pytest.mark.requires_ansible_v2()),
 ]
 
 NEGATIVE_HOST_PATTERNS = [
@@ -47,10 +47,10 @@ NEGATIVE_HOST_PATTERNS = [
 
 POSITIVE_HOST_SLICES = [
     (slice(0, 0), 1),
-    pytest.mark.requires_ansible_v1((slice(0, 1), 1)),
-    pytest.mark.requires_ansible_v2((slice(0, 1), 2)),
-    pytest.mark.requires_ansible_v1((slice(0, 2), 2)),
-    pytest.mark.requires_ansible_v2((slice(0, 2), 3)),
+    pytest.param(slice(0, 1), 1, marks=pytest.mark.requires_ansible_v1()),
+    pytest.param(slice(0, 1), 2, marks=pytest.mark.requires_ansible_v2()),
+    pytest.param(slice(0, 2), 2, marks=pytest.mark.requires_ansible_v1()),
+    pytest.param(slice(0, 2), 3, marks=pytest.mark.requires_ansible_v2()),
     (slice(0), 1),
     (slice(1), 1),
     (slice(2), 1),
