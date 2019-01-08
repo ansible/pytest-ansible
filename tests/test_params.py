@@ -135,7 +135,7 @@ def test_param_requires_value(testdir, required_value_parameter):
     """Verifies failure when not providing a value to a parameter that requires a value"""
 
     result = testdir.runpytest(*[required_value_parameter])
-    assert result.ret == EXIT_INTERRUPTED
+    assert result.ret == EXIT_USAGEERROR
     result.stderr.fnmatch_lines([
         '*: error: argument *%s*: expected one argument' % required_value_parameter,
     ])
