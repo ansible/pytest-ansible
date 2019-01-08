@@ -116,5 +116,5 @@ def module_result_unreachable():
     ]
 )
 def test_is_property(request, fixture_name, prop, expected_result):
-    fixture = request.getfuncargvalue(fixture_name)
+    fixture = request.getfixturevalue(fixture_name)
     assert getattr(fixture, prop) == expected_result
