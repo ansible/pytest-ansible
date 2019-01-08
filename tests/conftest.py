@@ -65,7 +65,7 @@ NEGATIVE_HOST_SLICES = [
 
 def pytest_runtest_setup(item):
     # Conditionally skip tests that are pinned to a specific ansible version
-    if isinstance(item, item.Function):
+    if isinstance(item, pytest.Function):
         has_ansible_v1 = parse_version(ansible.__version__) < parse_version('2.0.0')
         has_ansible_v24 = parse_version(ansible.__version__) >= parse_version('2.4.0')
 
