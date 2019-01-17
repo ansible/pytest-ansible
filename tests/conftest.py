@@ -34,10 +34,10 @@ POSITIVE_HOST_PATTERNS = [
     ('!localhost', 2),
     ('all[0]', 1),
     ('all[-1]', 1),
-    pytest.mark.requires_ansible_v1(('*[0-1]', 1)),
-    pytest.mark.requires_ansible_v2(('*[0-1]', 2)),
-    pytest.mark.requires_ansible_v2(('*[0:1]', 2)),  # this is confusing, but how host slicing works on v2
-    pytest.mark.requires_ansible_v2(('*[0:]', 3)),
+    pytest.param('*[0-1]', 1, marks=pytest.mark.requires_ansible_v1()),
+    pytest.param('*[0-1]', 2, marks=pytest.mark.requires_ansible_v2()),
+    pytest.param('*[0:1]', 2, marks=pytest.mark.requires_ansible_v2()),  # this is confusing, but how host slicing works on v2
+    pytest.param('*[0:]', 3, marks=pytest.mark.requires_ansible_v2()),
 ]
 
 NEGATIVE_HOST_PATTERNS = [
@@ -47,10 +47,10 @@ NEGATIVE_HOST_PATTERNS = [
 
 POSITIVE_HOST_SLICES = [
     (slice(0, 0), 1),
-    pytest.mark.requires_ansible_v1((slice(0, 1), 1)),
-    pytest.mark.requires_ansible_v2((slice(0, 1), 2)),
-    pytest.mark.requires_ansible_v1((slice(0, 2), 2)),
-    pytest.mark.requires_ansible_v2((slice(0, 2), 3)),
+    pytest.param(slice(0, 1), 1, marks=pytest.mark.requires_ansible_v1()),
+    pytest.param(slice(0, 1), 2, marks=pytest.mark.requires_ansible_v2()),
+    pytest.param(slice(0, 2), 2, marks=pytest.mark.requires_ansible_v1()),
+    pytest.param(slice(0, 2), 3, marks=pytest.mark.requires_ansible_v2()),
     (slice(0), 1),
     (slice(1), 1),
     (slice(2), 1),
@@ -65,25 +65,25 @@ NEGATIVE_HOST_SLICES = [
 
 def pytest_runtest_setup(item):
     # Conditionally skip tests that are pinned to a specific ansible version
-    if isinstance(item, item.Function):
+    if isinstance(item, pytest.Function):
         has_ansible_v1 = parse_version(ansible.__version__) < parse_version('2.0.0')
         has_ansible_v24 = parse_version(ansible.__version__) >= parse_version('2.4.0')
 
         # conditionally skip
-        if item.get_marker('requires_ansible_v1') and not has_ansible_v1:
+        if item.get_closest_marker('requires_ansible_v1') and not has_ansible_v1:
             pytest.skip("requires < ansible-2.*")
-        if item.get_marker('requires_ansible_v2') and has_ansible_v1:
+        if item.get_closest_marker('requires_ansible_v2') and has_ansible_v1:
             pytest.skip("requires >= ansible-2.*")
-        if item.get_marker('requires_ansible_v24') and not has_ansible_v24:
+        if item.get_closest_marker('requires_ansible_v24') and not has_ansible_v24:
             pytest.skip("requires >= ansible-2.4.*")
 
         # conditionally xfail
-        mark = item.get_marker('ansible_v1_xfail')
+        mark = item.get_closest_marker('ansible_v1_xfail')
         if mark and has_ansible_v1:
             item.add_marker(pytest.mark.xfail(reason="expected failure on < ansible-2.*",
                                               raises=mark.kwargs.get('raises')))
 
-        mark = item.get_marker('ansible_v2_xfail')
+        mark = item.get_closest_marker('ansible_v2_xfail')
         if mark and not has_ansible_v1:
             item.add_marker(pytest.xfail(reason="expected failure on >= ansible-2.*",
                                          raises=mark.kwargs.get('raises')))

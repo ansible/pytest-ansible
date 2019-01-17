@@ -5,7 +5,6 @@ import ansible
 import ansible.constants
 import ansible.utils
 import ansible.errors
-import collections
 
 from pytest_ansible.logger import get_logger
 from pytest_ansible.fixtures import (ansible_adhoc, ansible_module, ansible_facts, localhost)
@@ -202,22 +201,9 @@ class PyTestAnsiblePlugin:
         kwargs = dict()
 
         # Override options from @pytest.mark.ansible
-        if request.scope == 'function':
-            if hasattr(request.function, 'ansible'):
-                kwargs = request.function.ansible.kwargs
-        elif request.scope == 'class':
-            if hasattr(request.cls, 'pytestmark') and isinstance(request.cls.pytestmark, collections.Iterable):
-                for pytestmark in request.cls.pytestmark:
-                    if pytestmark.name == 'ansible':
-                        kwargs = pytestmark.kwargs
-                    else:
-                        continue
-
-        # Was this fixture called in conjunction with a parametrized fixture
-        if 'ansible_host' in request.fixturenames:
-            kwargs['host_pattern'] = request.getfuncargvalue('ansible_host')
-        elif 'ansible_group' in request.fixturenames:
-            kwargs['host_pattern'] = request.getfuncargvalue('ansible_group')
+        marker = request.node.get_closest_marker('ansible')
+        if marker:
+            kwargs = marker.kwargs
 
         log.debug("request: %s" % kwargs)
         return kwargs

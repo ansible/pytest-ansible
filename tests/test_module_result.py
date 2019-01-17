@@ -111,10 +111,10 @@ def module_result_unreachable():
         ('module_result_failed', 'is_successful', False),
         ('module_result_changed', 'is_changed', True),
         ('module_result_changed', 'is_successful', True),
-        pytest.mark.skipif('True')(('module_result_skipped', 'is_skipped', True)),
-        pytest.mark.skipif('True')(('module_result_unreachable', 'is_unreachable', True)),
+        pytest.param('module_result_skipped', 'is_skipped', True, marks=pytest.mark.skipif('True')),
+        pytest.param('module_result_unreachable', 'is_unreachable', True, marks=pytest.mark.skipif('True')),
     ]
 )
 def test_is_property(request, fixture_name, prop, expected_result):
-    fixture = request.getfuncargvalue(fixture_name)
+    fixture = request.getfixturevalue(fixture_name)
     assert getattr(fixture, prop) == expected_result
