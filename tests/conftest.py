@@ -68,6 +68,7 @@ def pytest_runtest_setup(item):
     if isinstance(item, pytest.Function):
         has_ansible_v1 = parse_version(ansible.__version__) < parse_version('2.0.0')
         has_ansible_v24 = parse_version(ansible.__version__) >= parse_version('2.4.0')
+        has_ansible_v28 = parse_version(ansible.__version__) >= parse_version('2.8.0')
 
         # conditionally skip
         if item.get_closest_marker('requires_ansible_v1') and not has_ansible_v1:
