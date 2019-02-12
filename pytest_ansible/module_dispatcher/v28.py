@@ -80,7 +80,7 @@ class ModuleDispatcherV28(ModuleDispatcherV2):
         log.debug("[%s] %s: %s" % (self.options['host_pattern'], self.options['module_name'], complex_args))
 
         # Pass along cli options
-        args = ['pytest-ansible', '-vvvvv']
+        args = ['pytest-ansible', '-vvvvv', self.options['host_pattern']]
         for argument in ('connection', 'user', 'become', 'become_method', 'become_usder', 'module_path'):
             arg_value = self.options.get(argument)
             argument = argument.replace('_', '-')
