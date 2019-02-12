@@ -3,18 +3,16 @@ import ansible.constants
 import ansible.utils
 import ansible.errors
 
-from pkg_resources import parse_version
 from ansible.plugins.callback import CallbackBase
 from ansible.executor.task_queue_manager import TaskQueueManager
 from ansible.playbook.play import Play
-from ansible.cli import CLI
 from ansible.cli.adhoc import AdHocCLI
 from pytest_ansible.logger import get_logger
 from pytest_ansible.module_dispatcher.v2 import ModuleDispatcherV2
 from pytest_ansible.results import AdHocResult
 from pytest_ansible.errors import AnsibleConnectionFailure
+from pytest_ansible.has_version import has_ansible_v28
 
-has_ansible_v28 = parse_version(ansible.__version__) >= parse_version('2.8.0')
 
 if not has_ansible_v28:
     raise ImportError("Only supported with ansible-2.8 and newer")
@@ -81,7 +79,7 @@ class ModuleDispatcherV28(ModuleDispatcherV2):
 
         # Pass along cli options
         args = ['pytest-ansible', '-vvvvv', self.options['host_pattern']]
-        for argument in ('connection', 'user', 'become', 'become_method', 'become_usder', 'module_path'):
+        for argument in ('connection', 'user', 'become', 'become_method', 'become_user', 'module_path'):
             arg_value = self.options.get(argument)
             argument = argument.replace('_', '-')
 

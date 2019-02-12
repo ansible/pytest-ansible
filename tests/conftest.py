@@ -1,7 +1,14 @@
-import ansible
 import pytest
 import logging
-from pkg_resources import parse_version
+from pytest_ansible.has_version import (
+    has_ansible_v1,
+    has_ansible_v24,
+)
+try:
+    from ansible.utils import context_objects as co
+except ImportError:
+    # if it does not exist because of old version of ansible, we don't need it
+    co = None
 
 
 pytest_plugins = 'pytester',
@@ -66,10 +73,6 @@ NEGATIVE_HOST_SLICES = [
 def pytest_runtest_setup(item):
     # Conditionally skip tests that are pinned to a specific ansible version
     if isinstance(item, pytest.Function):
-        has_ansible_v1 = parse_version(ansible.__version__) < parse_version('2.0.0')
-        has_ansible_v24 = parse_version(ansible.__version__) >= parse_version('2.4.0')
-        has_ansible_v28 = parse_version(ansible.__version__) >= parse_version('2.8.0')
-
         # conditionally skip
         if item.get_closest_marker('requires_ansible_v1') and not has_ansible_v1:
             pytest.skip("requires < ansible-2.*")
@@ -77,6 +80,8 @@ def pytest_runtest_setup(item):
             pytest.skip("requires >= ansible-2.*")
         if item.get_closest_marker('requires_ansible_v24') and not has_ansible_v24:
             pytest.skip("requires >= ansible-2.4.*")
+        if item.get_closest_marker('requires_ansible_v28') and not has_ansible_v24:
+            pytest.skip("requires >= ansible-2.8.*")
 
         # conditionally xfail
         mark = item.get_closest_marker('ansible_v1_xfail')
@@ -124,6 +129,14 @@ class PyTestOption(object):
         args.append('--tb')
         args.append('native')
         return args
+
+
+@pytest.fixture(autouse=True)
+def clear_global_context():
+    # Reset the stored command line args
+    # if context object does not exist because of old version of ansible, we don't need it
+    if co is not None:
+        co.GlobalCLIArgs._Singleton__instance = None
 
 
 @pytest.fixture()

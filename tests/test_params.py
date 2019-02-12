@@ -1,10 +1,14 @@
 import sys
 import pytest
 import ansible
-import mock
+from pkg_resources import parse_version
+from pytest_ansible.has_version import has_ansible_v28
+try:
+    import mock
+except ImportError:
+    from unittest import mock
 import re
 from _pytest.main import EXIT_OK, EXIT_TESTSFAILED, EXIT_USAGEERROR, EXIT_NOTESTSCOLLECTED, EXIT_INTERRUPTED
-from pkg_resources import parse_version
 
 if sys.version_info[0] == 2:
     import __builtin__ as builtins  # NOQA
@@ -206,6 +210,10 @@ def test_params_required_with_bogus_inventory_v2(testdir, option, recwarn):
 
 
 @pytest.mark.requires_ansible_v24
+@pytest.mark.skipif(
+    has_ansible_v28,
+    reason="requires ansible < 2.8"
+)
 def test_params_required_with_bogus_inventory_v24(testdir, option, recwarn):
     src = """
         import pytest

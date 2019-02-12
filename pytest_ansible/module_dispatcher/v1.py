@@ -4,14 +4,13 @@ import ansible.constants
 import ansible.utils
 import ansible.errors
 
-from pkg_resources import parse_version
 from ansible.runner import Runner
 from pytest_ansible.logger import get_logger
 from pytest_ansible.module_dispatcher import BaseModuleDispatcher
 from pytest_ansible.errors import AnsibleConnectionFailure
 from pytest_ansible.results import AdHocResult
+from pytest_ansible.has_version import has_ansible_v1
 
-has_ansible_v1 = parse_version(ansible.__version__) < parse_version('2.0.0')
 
 if not has_ansible_v1:
     raise ImportError("Only supported with ansible < 2.0")

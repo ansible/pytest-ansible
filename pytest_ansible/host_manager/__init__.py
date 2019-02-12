@@ -1,13 +1,13 @@
 """Fixme."""
 
 import ansible
-from pkg_resources import parse_version
 from pytest_ansible.logger import get_logger
+from pytest_ansible.has_version import (
+    has_ansible_v2,
+    has_ansible_v24,
+    has_ansible_v28,
+)
 
-# conditionally import ansible libraries
-has_ansible_v2 = parse_version(ansible.__version__) >= parse_version('2.0.0')
-has_ansible_v24 = parse_version(ansible.__version__) >= parse_version('2.4.0')
-has_ansible_v28 = parse_version(ansible.__version__) >= parse_version('2.8.0')
 
 log = get_logger(__name__)
 
