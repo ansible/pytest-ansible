@@ -6,18 +6,16 @@ import ansible.errors
 from ansible.plugins.callback import CallbackBase
 from ansible.executor.task_queue_manager import TaskQueueManager
 from ansible.playbook.play import Play
-from ansible.cli import CLI
+from ansible.cli.adhoc import AdHocCLI
 from pytest_ansible.logger import get_logger
 from pytest_ansible.module_dispatcher.v2 import ModuleDispatcherV2
 from pytest_ansible.results import AdHocResult
 from pytest_ansible.errors import AnsibleConnectionFailure
-from pytest_ansible.has_version import (
-    has_ansible_v24,
-)
+from pytest_ansible.has_version import has_ansible_v28
 
-if not has_ansible_v24:
 
-    raise ImportError("Only supported with ansible-2.4 and newer")
+if not has_ansible_v28:
+    raise ImportError("Only supported with ansible-2.8 and newer")
 else:
     from ansible.plugins.loader import module_loader
 
@@ -48,7 +46,7 @@ class ResultAccumulator(CallbackBase):
         return dict(contacted=self.contacted, unreachable=self.unreachable)
 
 
-class ModuleDispatcherV24(ModuleDispatcherV2):
+class ModuleDispatcherV28(ModuleDispatcherV2):
 
     """Pass."""
 
@@ -79,28 +77,27 @@ class ModuleDispatcherV24(ModuleDispatcherV2):
         # Log the module and parameters
         log.debug("[%s] %s: %s" % (self.options['host_pattern'], self.options['module_name'], complex_args))
 
-        parser = CLI.base_parser(
-            runas_opts=True,
-            inventory_opts=True,
-            async_opts=True,
-            output_opts=True,
-            connect_opts=True,
-            check_opts=True,
-            runtask_opts=True,
-            vault_opts=True,
-            fork_opts=True,
-            module_opts=True,
-        )
-        (options, args) = parser.parse_args([])
-
         # Pass along cli options
-        options.verbosity = 5
-        options.connection = self.options.get('connection')
-        options.remote_user = self.options.get('user')
-        options.become = self.options.get('become')
-        options.become_method = self.options.get('become_method')
-        options.become_user = self.options.get('become_user')
-        options.module_path = self.options.get('module_path')
+        args = ['pytest-ansible', '-vvvvv', self.options['host_pattern']]
+        for argument in ('connection', 'user', 'become', 'become_method', 'become_user', 'module_path'):
+            arg_value = self.options.get(argument)
+            argument = argument.replace('_', '-')
+
+            if arg_value in (None, False):
+                continue
+
+            if arg_value is True:
+                args.append('--{0}'.format(argument))
+            else:
+                args.append('--{0}={1}'.format(argument, arg_value))
+
+        # Use Ansible's own adhoc cli to parse the fake command line we created and then save it
+        # into Ansible's global context
+        adhoc = AdHocCLI(args)
+        adhoc.parse()
+
+        # And now we'll never speak of this again
+        del adhoc
 
         # Initialize callback to capture module JSON responses
         cb = ResultAccumulator()
@@ -109,7 +106,6 @@ class ModuleDispatcherV24(ModuleDispatcherV2):
             inventory=self.options['inventory_manager'],
             variable_manager=self.options['variable_manager'],
             loader=self.options['loader'],
-            options=options,
             stdout_callback=cb,
             passwords=dict(conn_pass=None, become_pass=None),
         )
