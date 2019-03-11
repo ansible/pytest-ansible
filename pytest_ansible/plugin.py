@@ -6,6 +6,11 @@ import ansible.constants
 import ansible.utils
 import ansible.errors
 
+try:
+    from ansible.plugins import become_loader
+except ImportError:
+    become_loader = None
+
 from pytest_ansible.logger import get_logger
 from pytest_ansible.fixtures import (ansible_adhoc, ansible_module, ansible_facts, localhost)
 from pytest_ansible.host_manager import get_host_manager
@@ -14,6 +19,14 @@ log = get_logger(__name__)
 
 # Silence linters for imported fixtures
 (ansible_adhoc, ansible_module, ansible_facts, localhost)
+
+
+def become_methods():
+    """Return string list of become methods available to ansible."""
+    if become_loader:
+        return [method.name for method in become_loader.all()]
+    else:
+        return ansible.constants.BECOME_METHODS
 
 
 def pytest_addoption(parser):
@@ -71,7 +84,7 @@ def pytest_addoption(parser):
                     dest='ansible_become_method',
                     default=ansible.constants.DEFAULT_BECOME_METHOD,
                     help="privilege escalation method to use (default: %%(default)s), valid choices: [ %s ]" %
-                    (' | '.join(ansible.constants.BECOME_METHODS)))
+                    (' | '.join(become_methods())))
     group.addoption('--become-user', '--ansible-become-user',
                     action='store',
                     dest='ansible_become_user',
