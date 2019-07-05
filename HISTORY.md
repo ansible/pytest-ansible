@@ -1,5 +1,10 @@
 ## Release History
 
+### 2.1.0 (2019-07-05)
+* Add support for ansible-2.8
+* Test and lint cleanup
+* Pytest 4 compliance
+
 ### 2.0.2 (2018-10-30)
 * Additional fixes in support of python-3
 
