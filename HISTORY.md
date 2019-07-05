@@ -1,5 +1,8 @@
 ## Release History
 
+### 2.1.1 (2019-07-05)
+* Re-release around pypi version conflict
+
 ### 2.1.0 (2019-07-05)
 * Add support for ansible-2.8
 * Test and lint cleanup
