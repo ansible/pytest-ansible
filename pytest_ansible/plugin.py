@@ -5,6 +5,7 @@ import ansible
 import ansible.constants
 import ansible.utils
 import ansible.errors
+import ansible.plugins.loader
 
 try:
     from ansible.plugins import become_loader
@@ -26,7 +27,7 @@ def become_methods():
     if become_loader:
         return [method.name for method in become_loader.all()]
     else:
-        return ansible.constants.BECOME_METHODS
+        return [method.name for method in ansible.plugins.loader.become_loader.all()]
 
 
 def pytest_addoption(parser):
