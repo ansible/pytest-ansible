@@ -7,7 +7,7 @@ import ansible.utils
 import ansible.errors
 
 try:
-    from ansible.plugins import become_loader
+    from ansible.plugins.loader import become_loader
 except ImportError:
     become_loader = None
 
