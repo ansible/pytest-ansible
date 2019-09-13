@@ -8,7 +8,15 @@ try:
 except ImportError:
     from unittest import mock
 import re
-from _pytest.main import EXIT_OK, EXIT_TESTSFAILED, EXIT_USAGEERROR, EXIT_NOTESTSCOLLECTED, EXIT_INTERRUPTED
+try:
+    from _pytest.main import EXIT_OK, EXIT_TESTSFAILED, EXIT_USAGEERROR, EXIT_NOTESTSCOLLECTED, EXIT_INTERRUPTED  # NOQA
+except ImportError:
+    from _pytest.main import ExitCode
+    EXIT_OK = ExitCode.OK
+    EXIT_TESTSFAILED = ExitCode.TESTS_FAILED
+    EXIT_USAGEERROR = ExitCode.USAGE_ERROR
+    EXIT_INTERRUPTED = ExitCode.INTERRUPTED
+    EXIT_NOTESTSCOLLECTED = ExitCode.NO_TESTS_COLLECTED
 
 if sys.version_info[0] == 2:
     import __builtin__ as builtins  # NOQA
@@ -35,7 +43,7 @@ def test_plugin_help(testdir):
         '  --become-user=ANSIBLE_BECOME_USER, --ansible-become-user=ANSIBLE_BECOME_USER',
         '  --ask-become-pass=ANSIBLE_ASK_BECOME_PASS, --ansible-ask-become-pass=ANSIBLE_ASK_BECOME_PASS',
         # Check for the marker in --help
-        '  ansible (args) * Ansible integration',
+        '  ansible (args)*Ansible integration',
     ])
 
 
@@ -119,7 +127,7 @@ def test_params_required_when_using_generator(testdir, option, fixture_name):
     assert result.ret == EXIT_INTERRUPTED
     result.stdout.fnmatch_lines([
         'collected 0 items / 1 errors',
-        'E  *UsageError: Missing required parameter --ansible-host-pattern/--host-pattern',
+        '*UsageError: Missing required parameter --ansible-host-pattern/--host-pattern',
     ])
 
 
