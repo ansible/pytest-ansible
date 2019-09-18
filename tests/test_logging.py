@@ -1,8 +1,13 @@
 # -*- coding: utf-8 -*-
 import logging
 from fnmatch import fnmatch
-from _pytest.main import EXIT_OK, EXIT_NOTESTSCOLLECTED, EXIT_INTERRUPTED  # NOQA
-
+try:
+    from _pytest.main import EXIT_OK, EXIT_NOTESTSCOLLECTED, EXIT_INTERRUPTED  # NOQA
+except ImportError:
+    from _pytest.main import ExitCode
+    EXIT_OK = ExitCode.OK
+    EXIT_INTERRUPTED = ExitCode.INTERRUPTED
+    EXIT_NOTESTSCOLLECTED = ExitCode.NO_TESTS_COLLECTED
 
 def assert_fnmatch_lines(lines, matches):
     for match in matches:

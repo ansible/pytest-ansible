@@ -1,5 +1,9 @@
 import pytest
-from _pytest.main import EXIT_OK
+try:
+    from _pytest.main import EXIT_OK
+except ImportError:
+    from _pytest.main import ExitCode
+    EXIT_OK = ExitCode.OK
 
 
 def test_ansible_adhoc(testdir, option):

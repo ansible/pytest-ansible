@@ -1,5 +1,13 @@
 import pytest
-from _pytest.main import EXIT_OK, EXIT_TESTSFAILED, EXIT_USAGEERROR, EXIT_NOTESTSCOLLECTED, EXIT_INTERRUPTED  # NOQA
+try:
+    from _pytest.main import EXIT_OK, EXIT_TESTSFAILED, EXIT_USAGEERROR, EXIT_NOTESTSCOLLECTED, EXIT_INTERRUPTED  # NOQA
+except ImportError:
+    from _pytest.main import ExitCode
+    EXIT_OK = ExitCode.OK
+    EXIT_TESTSFAILED = ExitCode.TESTS_FAILED
+    EXIT_USAGEERROR = ExitCode.USAGE_ERROR
+    EXIT_INTERRUPTED = ExitCode.INTERRUPTED
+    EXIT_NOTESTSCOLLECTED = ExitCode.NO_TESTS_COLLECTED
 
 
 @pytest.mark.old
