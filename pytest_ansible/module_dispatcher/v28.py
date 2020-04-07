@@ -114,6 +114,8 @@ class ModuleDispatcherV28(ModuleDispatcherV2):
         play_ds = dict(
             name="pytest-ansible",
             hosts=self.options['host_pattern'],
+            become=self.options['become'],
+            become_user=self.options['become_user'],
             gather_facts='no',
             tasks=[
                 dict(
