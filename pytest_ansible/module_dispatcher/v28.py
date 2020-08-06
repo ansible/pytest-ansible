@@ -34,9 +34,12 @@ class ResultAccumulator(CallbackBase):
         self.unreachable = {}
 
     def v2_runner_on_failed(self, result, *args, **kwargs):
-        self.contacted[result._host.get_name()] = result._result
+        result2 = dict(failed=True)
+        result2.update(result._result)
+        self.contacted[result._host.get_name()] = result2
 
-    v2_runner_on_ok = v2_runner_on_failed
+    def v2_runner_on_ok(self, result):
+        self.contacted[result._host.get_name()] = result._result
 
     def v2_runner_on_unreachable(self, result):
         self.unreachable[result._host.get_name()] = result._result
