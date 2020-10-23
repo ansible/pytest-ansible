@@ -51,6 +51,15 @@ class ModuleDispatcherV24(ModuleDispatcherV2):
     required_kwargs = ('inventory', 'inventory_manager', 'variable_manager', 'host_pattern', 'loader')
 
     def has_module(self, name):
+        # Make sure we parse module_path and pass it to the loader,
+        # otherwise, only built-in modules will work.
+        if 'module_path' in self.options:
+            paths = self.options['module_path']
+            if isinstance(paths, (list, tuple, set)):
+                for path in paths:
+                    module_loader.add_directory(path)
+            else:
+                module_loader.add_directory(paths)
 
         return module_loader.has_plugin(name)
 

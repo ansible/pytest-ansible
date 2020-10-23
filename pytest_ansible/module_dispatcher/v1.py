@@ -22,6 +22,16 @@ class ModuleDispatcherV1(BaseModuleDispatcher):
     required_kwargs = ('inventory', 'inventory_manager', 'host_pattern')
 
     def has_module(self, name):
+        # Make sure we parse module_path and pass it to the loader,
+        # otherwise, only built-in modules will work.
+        if 'module_path' in self.options:
+            paths = self.options['module_path']
+            if isinstance(paths, (list, tuple, set)):
+                for path in paths:
+                    ansible.utils.module_finder.add_directory(path)
+            else:
+                ansible.utils.module_finder.add_directory(paths)
+
         return ansible.utils.module_finder.has_plugin(name)
 
     def _run(self, *module_args, **complex_args):
