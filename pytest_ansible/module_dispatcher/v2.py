@@ -8,7 +8,6 @@ from ansible.executor.task_queue_manager import TaskQueueManager
 from ansible.playbook.play import Play
 # from ansible.plugins.loader import module_loader
 from ansible.cli import CLI
-from pytest_ansible.logger import get_logger
 from pytest_ansible.module_dispatcher import BaseModuleDispatcher
 from pytest_ansible.results import AdHocResult
 from pytest_ansible.errors import AnsibleConnectionFailure
@@ -18,7 +17,6 @@ from pytest_ansible.has_version import has_ansible_v2
 if not has_ansible_v2:
     raise ImportError("Only supported with ansible-2.* and newer")
 
-log = get_logger(__name__)
 
 
 class ResultAccumulator(CallbackBase):
@@ -72,8 +70,6 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
         if len(hosts) == 0 and not no_hosts:
             raise ansible.errors.AnsibleError("Specified hosts and/or --limit does not match any hosts")
 
-        # Log the module and parameters
-        log.debug("[%s] %s: %s" % (self.options['host_pattern'], self.options['module_name'], complex_args))
 
         parser = CLI.base_parser(
             runas_opts=True,
@@ -123,21 +119,17 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
                 ),
             ]
         )
-        log.debug("Play(%s)", play_ds)
         play = Play().load(play_ds, variable_manager=self.options['variable_manager'], loader=self.options['loader'])
 
         # now create a task queue manager to execute the play
         tqm = None
         try:
-            log.debug("TaskQueueManager(%s)", kwargs)
             tqm = TaskQueueManager(**kwargs)
             tqm.run(play)
         finally:
             if tqm:
                 tqm.cleanup()
 
-        # Log the results
-        log.debug(cb.results)
 
         # Raise exception if host(s) unreachable
         # FIXME - if multiple hosts were involved, should an exception be raised?

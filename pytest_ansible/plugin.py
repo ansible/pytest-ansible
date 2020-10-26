@@ -11,11 +11,9 @@ try:
 except ImportError:
     become_loader = None
 
-from pytest_ansible.logger import get_logger
 from pytest_ansible.fixtures import (ansible_adhoc, ansible_module, ansible_facts, localhost)
 from pytest_ansible.host_manager import get_host_manager
 
-log = get_logger(__name__)
 
 # Silence linters for imported fixtures
 (ansible_adhoc, ansible_module, ansible_facts, localhost)
@@ -31,7 +29,6 @@ def become_methods():
 
 def pytest_addoption(parser):
     """Add options to control ansible."""
-    log.debug("pytest_addoption() called")
 
     group = parser.getgroup('pytest-ansible')
     group.addoption('--inventory', '--ansible-inventory',
@@ -102,7 +99,6 @@ def pytest_addoption(parser):
 
 def pytest_configure(config):
     """Validate --ansible-* parameters."""
-    log.debug("pytest_configure() called")
 
     config.addinivalue_line("markers", "ansible(**kwargs): Ansible integration")
 
@@ -120,7 +116,6 @@ def pytest_configure(config):
 
 def pytest_generate_tests(metafunc):
     """Generate tests when specific `ansible_*` fixtures are used by tests."""
-    log.debug("pytest_generate_tests() called")
 
     if 'ansible_host' in metafunc.fixturenames:
         # assert required --ansible-* parameters were used
@@ -160,18 +155,14 @@ class PyTestAnsiblePlugin:
 
     def __init__(self, config):
         """Initialize plugin."""
-        log.debug("PyTestAnsiblePlugin initialized")
         self.config = config
 
     def pytest_report_header(self, config, startdir):
         """Return the version of ansible."""
-        log.debug("pytest_report_header() called")
         return 'ansible: %s' % ansible.__version__
 
     def pytest_collection_modifyitems(self, session, config, items):
         """Validate --ansible-* parameters."""
-        log.debug("pytest_collection_modifyitems() called")
-        log.debug("items: %s" % items)
 
         uses_ansible_fixtures = False
         for item in items:
@@ -202,11 +193,10 @@ class PyTestAnsiblePlugin:
             kwargs[short_key] = config.getoption(key)
 
         # normalize ansible.ansible_become options
-        kwargs['become'] = kwargs['become'] or ansible.constants.DEFAULT_BECOME
-        kwargs['become_user'] = kwargs['become_user'] or ansible.constants.DEFAULT_BECOME_USER
-        kwargs['ask_become_pass'] = kwargs['ask_become_pass'] or ansible.constants.DEFAULT_BECOME_ASK_PASS
+        kwargs['become'] = kwargs.get('become') or ansible.constants.DEFAULT_BECOME
+        kwargs['become_user'] = kwargs.get('become_user') or ansible.constants.DEFAULT_BECOME_USER
+        kwargs['ask_become_pass'] = kwargs.get('ask_become_pass') or ansible.constants.DEFAULT_BECOME_ASK_PASS
 
-        log.debug("config: %s" % kwargs)
         return kwargs
 
     def _load_request_config(self, request):
@@ -218,7 +208,6 @@ class PyTestAnsiblePlugin:
         if marker:
             kwargs = marker.kwargs
 
-        log.debug("request: %s" % kwargs)
         return kwargs
 
     def initialize(self, config=None, request=None, **kwargs):

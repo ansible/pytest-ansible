@@ -58,32 +58,3 @@ def test_localhost(testdir, option):
     result = testdir.runpytest(*option.args)
     assert result.ret == EXIT_OK
     assert result.parseoutcomes()['passed'] == 1
-
-
-def test_ansible_host(testdir, option):
-    src = """
-        import pytest
-        from pytest_ansible.module_dispatcher import BaseModuleDispatcher
-        def test_func(ansible_host):
-            assert isinstance(ansible_host, BaseModuleDispatcher)
-    """
-    testdir.makepyfile(src)
-    result = testdir.runpytest(*option.args + ['--ansible-inventory', str(option.inventory), '--ansible-host-pattern', 'all'])
-    assert result.ret == EXIT_OK
-    assert result.parseoutcomes()['passed'] == 8
-
-
-# NOTE: ansible-v1.9 will fail with a KeyError when attempting hosts['ungrouped'].  This surfaces as a AssertionError in
-# the following test.
-@pytest.mark.ansible_v1_xfail(raises=AssertionError)
-def test_ansible_group(testdir, option):
-    src = """
-        import pytest
-        from pytest_ansible.module_dispatcher import BaseModuleDispatcher
-        def test_func(ansible_group):
-            assert isinstance(ansible_group, BaseModuleDispatcher)
-    """
-    testdir.makepyfile(src)
-    result = testdir.runpytest(*option.args + ['--ansible-inventory', str(option.inventory), '--ansible-host-pattern', 'all'])
-    assert result.ret == EXIT_OK
-    assert result.parseoutcomes()['passed'] == 5
