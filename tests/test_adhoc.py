@@ -125,7 +125,6 @@ def test_become(testdir, option):
         @pytest.mark.ansible(inventory='%s', host_pattern='localhost')
         def test_func(ansible_module):
             contacted = ansible_module.ping()
-
             # assert contacted hosts ...
             assert contacted
             assert len(contacted) == len(ansible_module)

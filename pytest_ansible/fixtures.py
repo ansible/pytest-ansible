@@ -1,10 +1,6 @@
 """PyTest fixtures."""
 
 import pytest
-from pytest_ansible.logger import get_logger
-
-__all__ = ('ansible_module', 'ansible_facts', 'ansible_adhoc', 'localhost')
-log = get_logger(__name__)
 
 
 @pytest.fixture(scope='function')

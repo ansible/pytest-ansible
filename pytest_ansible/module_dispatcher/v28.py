@@ -7,7 +7,6 @@ from ansible.plugins.callback import CallbackBase
 from ansible.executor.task_queue_manager import TaskQueueManager
 from ansible.playbook.play import Play
 from ansible.cli.adhoc import AdHocCLI
-from pytest_ansible.logger import get_logger
 from pytest_ansible.module_dispatcher.v2 import ModuleDispatcherV2
 from pytest_ansible.results import AdHocResult
 from pytest_ansible.errors import AnsibleConnectionFailure
@@ -19,8 +18,6 @@ if not has_ansible_v28:
 else:
     from ansible.plugins.loader import module_loader
 
-
-log = get_logger(__name__)
 
 
 class ResultAccumulator(CallbackBase):
@@ -77,9 +74,6 @@ class ModuleDispatcherV28(ModuleDispatcherV2):
         if len(hosts) == 0 and not no_hosts:
             raise ansible.errors.AnsibleError("Specified hosts and/or --limit does not match any hosts")
 
-        # Log the module and parameters
-        log.debug("[%s] %s: %s" % (self.options['host_pattern'], self.options['module_name'], complex_args))
-
         # Pass along cli options
         args = ['pytest-ansible', '-vvvvv', self.options['host_pattern']]
         for argument in ('connection', 'user', 'become', 'become_method', 'become_user', 'module_path'):
@@ -117,8 +111,8 @@ class ModuleDispatcherV28(ModuleDispatcherV2):
         play_ds = dict(
             name="pytest-ansible",
             hosts=self.options['host_pattern'],
-            become=self.options['become'],
-            become_user=self.options['become_user'],
+            become=self.options.get('become'),
+            become_user=self.options.get('become_user'),
             gather_facts='no',
             tasks=[
                 dict(
@@ -128,21 +122,17 @@ class ModuleDispatcherV28(ModuleDispatcherV2):
                 ),
             ]
         )
-        log.debug("Play(%s)", play_ds)
         play = Play().load(play_ds, variable_manager=self.options['variable_manager'], loader=self.options['loader'])
 
         # now create a task queue manager to execute the play
         tqm = None
         try:
-            log.debug("TaskQueueManager(%s)", kwargs)
             tqm = TaskQueueManager(**kwargs)
             tqm.run(play)
         finally:
             if tqm:
                 tqm.cleanup()
 
-        # Log the results
-        log.debug(cb.results)
 
         # Raise exception if host(s) unreachable
         # FIXME - if multiple hosts were involved, should an exception be raised?

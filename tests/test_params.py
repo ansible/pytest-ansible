@@ -107,31 +107,6 @@ def test_params_required_when_using_fixture(testdir, option, fixture_name):
 
 
 @pytest.mark.parametrize(
-    "fixture_name",
-    [
-        'ansible_host',
-        'ansible_group',
-    ],
-)
-def test_params_required_when_using_generator(testdir, option, fixture_name):
-    """Verify the ansible parameters are required when using a fixture generator.
-    """
-
-    src = """
-        import pytest
-        def test_func({0}):
-            assert True
-    """.format(fixture_name)
-    testdir.makepyfile(src)
-    result = testdir.runpytest(*option.args)
-    assert result.ret == EXIT_INTERRUPTED
-    result.stdout.fnmatch_lines([
-        'collected 0 items / 1 errors',
-        '*UsageError: Missing required parameter --ansible-host-pattern/--host-pattern',
-    ])
-
-
-@pytest.mark.parametrize(
     "required_value_parameter",
     [
         '--ansible-inventory', '--inventory',

@@ -1,9 +1,6 @@
 """Fixme."""
 
 import ansible.errors  # NOQA
-from pytest_ansible.logger import get_logger
-
-log = get_logger(__name__)
 
 
 class ModuleResult(dict):
