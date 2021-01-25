@@ -1,3 +1,4 @@
+import os
 import sys
 
 import warnings
@@ -117,6 +118,14 @@ class ModuleDispatcherV28(ModuleDispatcherV2):
 
         # Initialize callback to capture module JSON responses
         cb = ResultAccumulator()
+
+        # Optionally configure Vault password file 
+        vault_passwd_file = os.getenv('ANSIBLE_VAULT_PASSWORD_FILE', '').strip()
+        if vault_passwd_file:
+            vault_secrets = CLI.setup_vault_secrets(self.options['loader'], ansible.constants.DEFAULT_VAULT_IDENTITY_LIST,
+                                                    vault_password_files=[vault_passwd_file],
+                                                    auto_prompt=False)
+            self.options['loader'].set_vault_secrets(vault_secrets)
 
         kwargs = dict(
             inventory=self.options['inventory_manager'],
