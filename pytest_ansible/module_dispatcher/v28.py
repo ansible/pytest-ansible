@@ -1,3 +1,5 @@
+import sys
+
 import warnings
 import ansible.constants
 import ansible.utils
@@ -84,7 +86,15 @@ class ModuleDispatcherV28(ModuleDispatcherV2):
             raise ansible.errors.AnsibleError("Specified hosts and/or --limit does not match any hosts")
 
         # Pass along cli options
-        args = ['pytest-ansible', '-vvvvv', self.options['host_pattern']]
+        args = ['pytest-ansible']
+        verbosity = None
+        for verbosity_syntax in ('-v', '-vv', '-vvv', '-vvvv', '-vvvvv'):
+            if verbosity_syntax in sys.argv:
+                verbosity = verbosity_syntax
+                break
+        if verbosity is not None:
+            args.append(verbosity_syntax)
+        args.extend([self.options['host_pattern']])
         for argument in ('connection', 'user', 'become', 'become_method', 'become_user', 'module_path'):
             arg_value = self.options.get(argument)
             argument = argument.replace('_', '-')
