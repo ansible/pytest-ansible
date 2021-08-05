@@ -17,7 +17,15 @@ def ansible_adhoc(request):
 def ansible_module(ansible_adhoc):
     """Return a subclass of BaseModuleDispatcher."""
     host_mgr = ansible_adhoc()
-    return getattr(host_mgr, host_mgr.options['host_pattern'])
+    attribute = host_mgr.options['host_pattern']
+
+    try:
+        value = getattr(host_mgr, attribute)
+    except:
+        if str(attribute).startswith("tower"):
+            attribute = attribute.replace("tower", "automationcontroller")
+            value = getattr(host_mgr, attribute)
+    return value
 
 
 @pytest.fixture(scope='function')
