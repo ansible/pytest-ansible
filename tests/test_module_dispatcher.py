@@ -1,5 +1,6 @@
 import pytest
 from conftest import (POSITIVE_HOST_PATTERNS, NEGATIVE_HOST_PATTERNS)
+from unittest.mock import call, patch
 
 
 def test_runtime_error():
@@ -47,3 +48,13 @@ def test_ansible_module_error(hosts):
     with pytest.raises(AnsibleModuleError) as exc_info:
         hosts.all.a_module_that_most_certainly_does_not_exist()
     assert str(exc_info.value) == "The module {0} was not found in configured module paths.".format("a_module_that_most_certainly_does_not_exist")
+
+def test_dispatching_collection_modules():
+    from pytest_ansible.module_dispatcher import BaseModuleDispatcher
+    dispatcher = BaseModuleDispatcher(inventory='localhost,')
+    with patch.object(BaseModuleDispatcher, 'has_module', return_value=True):
+        with patch.object(BaseModuleDispatcher, '_run') as ran:
+            dispatcher.namespace.collection.test(test='something')
+            assert ran.called
+            assert dispatcher.options['module_name'] == 'namespace.collection.test'
+            assert ran.call_args_list == [call(test='something')]
