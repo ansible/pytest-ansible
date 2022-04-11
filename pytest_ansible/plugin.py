@@ -1,6 +1,5 @@
 """PyTest Ansible Plugin."""
 
-import os
 import pytest
 import ansible
 import ansible.constants
@@ -32,11 +31,10 @@ def pytest_addoption(parser):
     """Add options to control ansible."""
 
     group = parser.getgroup('pytest-ansible')
-    env_inventory = os.getenv("ANSIBLE_INVENTORY", ansible.constants.DEFAULT_HOST_LIST)
     group.addoption('--inventory', '--ansible-inventory',
                     action='store',
                     dest='ansible_inventory',
-                    default=env_inventory,
+                    default=ansible.constants.DEFAULT_HOST_LIST,
                     metavar='ANSIBLE_INVENTORY',
                     help='ansible inventory file URI (default: %(default)s)')
     group.addoption('--host-pattern', '--ansible-host-pattern',
