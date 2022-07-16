@@ -20,8 +20,14 @@ jobs:
             ansible-version: v28
           - python-version: 3.6
             ansible-version: v29
+          - python-version: 3.6
+            ansible-version: v34
+          - python-version: 3.7
+            ansible-version: v34
           - python-version: 3.7
             ansible-version: v41
+          - python-version: 3.8
+            ansible-version: v34
           - python-version: 3.8
             ansible-version: v51
           - python-version: 3.8
