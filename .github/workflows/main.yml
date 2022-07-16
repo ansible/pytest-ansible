@@ -26,7 +26,7 @@ jobs:
             ansible-version: v410
           - python-version: 3.9
             ansible-version: v410
-          - python-version: 3.10
+          - python-version: "3.10"
             ansible-version: v410
           - python-version: 3.11
             ansible-version: v410
