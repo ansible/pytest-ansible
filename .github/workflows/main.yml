@@ -30,7 +30,7 @@ jobs:
             ansible-version: v410
           - python-version: "3.11.0-beta.4"
             ansible-version: v410
-
+      fail-fast: false
 
     steps:
     - uses: actions/checkout@v1
