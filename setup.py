@@ -123,7 +123,7 @@ setup(
     setup_requires=['setuptools-markdown'],
     install_requires=[
         "ansible == 2.*;python_version<='3.6'",
-        "ansible == 4.*;python_version=='3.7",
+        "ansible == 4.*;python_version=='3.7'",
         "ansible == 5.*;python_version>='3.8'",
         "pytest >= 6.2.5"],
     cmdclass={
