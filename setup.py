@@ -125,7 +125,7 @@ setup(
         "ansible == 2.*;python_version<='3.6'",
         "ansible == 4.*;python_version=='3.7'",
         "ansible == 5.*;python_version>='3.8'",
-        "pytest >= 6.2.5"],
+        "pytest >= 6.2.5;python_version>='3.10'"],
     cmdclass={
         'test': ToxTestCommand,
         'clean': CleanCommand,
