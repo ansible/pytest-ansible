@@ -15,8 +15,8 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        python-version: [3.9]
-        ansible-version: [v29,v212,v213]
+        python-version: [ 3.6]
+        ansible-version: [v28, v29]
 
     steps:
     - uses: actions/checkout@v1
