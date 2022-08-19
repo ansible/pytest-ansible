@@ -37,6 +37,12 @@ def pytest_addoption(parser):
                     default=ansible.constants.DEFAULT_HOST_LIST,
                     metavar='ANSIBLE_INVENTORY',
                     help='ansible inventory file URI (default: %(default)s)')
+    group.addoption('--extra-inventory', '--ansible-extra-inventory',
+                    action='store',
+                    dest='ansible_extra_inventory',
+                    default=None,
+                    metavar='ANSIBLE_EXTRA_INVENTORY',
+                    help='ansible extra inventory file URI (default: %(default)s)')
     group.addoption('--host-pattern', '--ansible-host-pattern',
                     action='store',
                     dest='ansible_host_pattern',
@@ -143,10 +149,12 @@ def pytest_generate_tests(metafunc):
             raise pytest.UsageError(e)
         # FIXME: Eeew, this shouldn't be interfacing with `hosts.options`
         groups = hosts.options['inventory_manager'].list_groups()
+        extra_groups = hosts.get_extra_inventory_groups()
         # Return the group name as a string
         # metafunc.parametrize("ansible_group", groups)
         # Return a ModuleDispatcher instance representing the group (e.g. ansible_group.shell('date'))
         metafunc.parametrize("ansible_group", iter(hosts[g] for g in groups))
+        metafunc.parametrize("ansible_group", iter(hosts[g] for g in extra_groups))
 
 
 class PyTestAnsiblePlugin:
@@ -181,7 +189,7 @@ class PyTestAnsiblePlugin:
 
     def _load_ansible_config(self, config):
         """Load ansible configuration from command-line."""
-        option_names = ['ansible_inventory', 'ansible_host_pattern', 'ansible_connection', 'ansible_user',
+        option_names = ['ansible_inventory', 'ansible_extra_inventory', 'ansible_host_pattern', 'ansible_connection', 'ansible_user',
                         'ansible_module_path', 'ansible_become', 'ansible_become_method', 'ansible_become_user',
                         'ansible_ask_become_pass', 'ansible_subset']
 

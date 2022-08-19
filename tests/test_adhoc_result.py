@@ -3,7 +3,6 @@ from types import GeneratorType
 from pytest_ansible.results import ModuleResult
 from conftest import ALL_HOSTS
 
-
 invalid_hosts = ['none', 'all', '*', 'local*']
 
 
@@ -105,7 +104,7 @@ def test_connection_failure_v2():
     with pytest.raises(AnsibleConnectionFailure) as exc_info:
         hosts.all.ping()
     # Assert message
-    assert exc_info.value.message == "Host unreachable"
+    assert exc_info.value.message == "Host unreachable in the inventory"
     # Assert contacted
     assert exc_info.value.contacted == {}
     # Assert dark
@@ -116,3 +115,24 @@ def test_connection_failure_v2():
     # Assert msg
     assert 'msg' in exc_info.value.dark['unknown.example.com']
     assert 'Failed to connect to the host via ssh' in exc_info.value.dark['unknown.example.com']['msg']
+
+
+@pytest.mark.requires_ansible_v2
+def test_connection_failure_extra_inventory_v2():
+    from pytest_ansible.host_manager import get_host_manager
+    from pytest_ansible.errors import AnsibleConnectionFailure
+    hosts = get_host_manager(inventory='localhost', extra_inventory='unknown.example.extra.com,')
+    with pytest.raises(AnsibleConnectionFailure) as exc_info:
+        hosts.all.ping()
+    # Assert message
+    assert exc_info.value.message == "Host unreachable in the extra inventory"
+    # Assert contacted
+    assert exc_info.value.contacted == {}
+    # Assert dark
+    assert 'unknown.example.extra.com' in exc_info.value.dark
+    # Assert unreachable
+    assert 'unreachable' in exc_info.value.dark['unknown.example.extra.com'], exc_info.value.dark.keys()
+    assert exc_info.value.dark['unknown.example.extra.com']['unreachable']
+    # Assert msg
+    assert 'msg' in exc_info.value.dark['unknown.example.extra.com']
+    assert 'Failed to connect to the host via ssh' in exc_info.value.dark['unknown.example.extra.com']['msg']
