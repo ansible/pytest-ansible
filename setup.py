@@ -109,7 +109,7 @@ setup(
     keywords='py.test pytest ansible',
     author=__author__,
     author_email=__author_email__,
-    url='http://github.com/jlaska/pytest-ansible',
+    url='http://github.com/ansible-community/pytest-ansible',
     platforms='any',
     packages=find_packages(),
     entry_points={
@@ -135,9 +135,7 @@ setup(
         'Topic :: Software Development :: Quality Assurance',
         'Topic :: Utilities',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3'
+        'Programming Language :: Python :: 3.9',
     ],
 )
