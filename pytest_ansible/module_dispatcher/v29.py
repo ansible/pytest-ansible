@@ -12,10 +12,10 @@ from ansible.cli.adhoc import AdHocCLI
 from pytest_ansible.module_dispatcher.v2 import ModuleDispatcherV2
 from pytest_ansible.results import AdHocResult
 from pytest_ansible.errors import AnsibleConnectionFailure
-from pytest_ansible.has_version import has_ansible_v28
+from pytest_ansible.has_version import has_ansible_v29
 
-if not has_ansible_v28:
-    raise ImportError("Only supported with ansible-2.8 and newer")
+if not has_ansible_v29:
+    raise ImportError("Only supported with ansible-2.9 and newer")
 else:
     from ansible.plugins.loader import module_loader
 
@@ -45,7 +45,7 @@ class ResultAccumulator(CallbackBase):
         return dict(contacted=self.contacted, unreachable=self.unreachable)
 
 
-class ModuleDispatcherV28(ModuleDispatcherV2):
+class ModuleDispatcherV29(ModuleDispatcherV2):
     """Pass."""
 
     required_kwargs = ('inventory', 'inventory_manager', 'variable_manager', 'host_pattern', 'loader')
@@ -111,7 +111,7 @@ class ModuleDispatcherV28(ModuleDispatcherV2):
         # And now we'll never speak of this again
         del adhoc
 
-        # Initialize callback to capture module JSON responses
+        # Initialize callbacks to capture module JSON responses
         cb = ResultAccumulator()
 
         kwargs = dict(
@@ -121,6 +121,18 @@ class ModuleDispatcherV28(ModuleDispatcherV2):
             stdout_callback=cb,
             passwords=dict(conn_pass=None, become_pass=None),
         )
+
+        # If we have an extra inventory, do the same that we did for the inventory
+        if 'extra_inventory_manager' in self.options:
+            cb_extra = ResultAccumulator()
+
+            kwargs_extra = dict(
+                inventory=self.options['extra_inventory_manager'],
+                variable_manager=self.options['extra_variable_manager'],
+                loader=self.options['extra_loader'],
+                stdout_callback=cb_extra,
+                passwords=dict(conn_pass=None, become_pass=None),
+            )
 
         # create a pseudo-play to execute the specified module via a single task
         play_ds = dict(
@@ -137,7 +149,11 @@ class ModuleDispatcherV28(ModuleDispatcherV2):
                 ),
             ]
         )
+
         play = Play().load(play_ds, variable_manager=self.options['variable_manager'], loader=self.options['loader'])
+        if 'extra_inventory_manager' in self.options:
+            play_extra = Play().load(play_ds, variable_manager=self.options['extra_variable_manager'],
+                                     loader=self.options['extra_loader'])
 
         # now create a task queue manager to execute the play
         tqm = None
@@ -148,10 +164,25 @@ class ModuleDispatcherV28(ModuleDispatcherV2):
             if tqm:
                 tqm.cleanup()
 
+        if 'extra_inventory_manager' in self.options:
+            tqm_extra = None
+            try:
+                tqm_extra = TaskQueueManager(**kwargs_extra)
+                tqm_extra.run(play_extra)
+            finally:
+                if tqm_extra:
+                    tqm_extra.cleanup()
+
         # Raise exception if host(s) unreachable
         # FIXME - if multiple hosts were involved, should an exception be raised?
         if cb.unreachable:
-            raise AnsibleConnectionFailure("Host unreachable", dark=cb.unreachable, contacted=cb.contacted)
+            raise AnsibleConnectionFailure("Host unreachable in the inventory", dark=cb.unreachable,
+                                           contacted=cb.contacted)
+        if 'extra_inventory_manager' in self.options:
+            if cb_extra.unreachable:
+                raise AnsibleConnectionFailure("Host unreachable in the extra inventory", dark=cb_extra.unreachable,
+                                               contacted=cb_extra.contacted)
 
         # Success!
-        return AdHocResult(contacted=cb.contacted)
+        return AdHocResult(contacted=({**cb.contacted, **cb_extra.contacted} if 'extra_inventory_manager'
+                                                                                in self.options else cb.contacted))

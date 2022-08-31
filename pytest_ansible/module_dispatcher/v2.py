@@ -13,14 +13,11 @@ from pytest_ansible.results import AdHocResult
 from pytest_ansible.errors import AnsibleConnectionFailure
 from pytest_ansible.has_version import has_ansible_v2
 
-
 if not has_ansible_v2:
     raise ImportError("Only supported with ansible-2.* and newer")
 
 
-
 class ResultAccumulator(CallbackBase):
-
     """Fixme."""
 
     def __init__(self, *args, **kwargs):
@@ -43,7 +40,6 @@ class ResultAccumulator(CallbackBase):
 
 
 class ModuleDispatcherV2(BaseModuleDispatcher):
-
     """Pass."""
 
     required_kwargs = ('inventory', 'inventory_manager', 'variable_manager', 'host_pattern', 'loader')
@@ -79,7 +75,6 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
         hosts = self.options['inventory_manager'].list_hosts(self.options['host_pattern'])
         if len(hosts) == 0 and not no_hosts:
             raise ansible.errors.AnsibleError("Specified hosts and/or --limit does not match any hosts")
-
 
         parser = CLI.base_parser(
             runas_opts=True,
@@ -139,7 +134,6 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
         finally:
             if tqm:
                 tqm.cleanup()
-
 
         # Raise exception if host(s) unreachable
         # FIXME - if multiple hosts were involved, should an exception be raised?
