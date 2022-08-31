@@ -1,11 +1,14 @@
 """Fixme."""
 
 import ansible
+
 from pytest_ansible.has_version import (
     has_ansible_v2,
     has_ansible_v24,
     has_ansible_v28,
-    has_ansible_v29
+    has_ansible_v29,
+    has_ansible_v212,
+    has_ansible_v213
 )
 
 
@@ -119,13 +122,16 @@ class BaseHostManager(object):
 def get_host_manager(*args, **kwargs):
     """Initialize and return a HostManager instance."""
 
-    if has_ansible_v29:
+    if has_ansible_v213:
+        from pytest_ansible.host_manager.v213 import HostManagerV213 as HostManager
+    elif has_ansible_v212:
+        from pytest_ansible.host_manager.v212 import HostManagerV212 as HostManager
+    elif has_ansible_v29:
         from pytest_ansible.host_manager.v29 import HostManagerV29 as HostManager
     elif has_ansible_v28:
         from pytest_ansible.host_manager.v28 import HostManagerV28 as HostManager
     elif has_ansible_v24:
         from pytest_ansible.host_manager.v24 import HostManagerV24 as HostManager
-        # from .v24 import HostManagerV24 as HostManager
     elif has_ansible_v2:
         from pytest_ansible.host_manager.v2 import HostManagerV2 as HostManager
     else:
