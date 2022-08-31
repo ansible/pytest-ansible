@@ -30,6 +30,7 @@ Once installed, the following ``py.test`` command-line parameters are available:
 ```bash
 py.test \
     [--inventory <path_to_inventory>] \
+    [--extra-inventory <path_to_extra_inventory>] \
     [--host-pattern <host-pattern>] \
     [--connection <plugin>] \
     [--module-path <path_to_modules] \
@@ -81,6 +82,18 @@ involve using different inventory files (or host patterns) with different
 tests.  To accomplish this, the fixture `ansible_adhoc` allows you to customize
 the inventory parameters.  Read on for more detail on using the `ansible_adhoc`
 fixture.
+
+## Extra Inventory
+
+Using ansible first starts with defining your extra inventory. This feature was added in version 2.3.0, and is intended
+to allow the user to work with two different inventories. This can be done in several ways, but to start, 
+we'll use the ``ansible_adhoc`` fixture.
+
+For example, 
+
+```bash
+py.test --inventory my_inventory.ini --extra-inventory my_second_inventory.ini --host-pattern host_in_second_inventory
+```
 
 ### Fixture ``ansible_adhoc``
 
