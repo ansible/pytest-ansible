@@ -71,15 +71,24 @@ class ModuleDispatcherV213(ModuleDispatcherV2):
 
         # Assert hosts matching the provided pattern exist
         hosts = self.options['inventory_manager'].list_hosts()
+        if 'extra_inventory_manager' in self.options:
+            extra_hosts = self.options['extra_inventory_manager'].list_hosts()
+        else:
+            extra_hosts = []
         no_hosts = False
-        if len(hosts) == 0:
+        if len(hosts + extra_hosts) == 0:
             no_hosts = True
             warnings.warn("provided hosts list is empty, only localhost is available")
 
         self.options['inventory_manager'].subset(self.options.get('subset'))
         hosts = self.options['inventory_manager'].list_hosts(self.options['host_pattern'])
-        if len(hosts) == 0 and not no_hosts:
-            raise ansible.errors.AnsibleError("Specified hosts and/or --limit does not match any hosts")
+        if 'extra_inventory_manager' in self.options:
+            self.options['extra_inventory_manager'].subset(self.options.get('subset'))
+            extra_hosts = self.options['extra_inventory_manager'].list_hosts()
+        else:
+            extra_hosts = []
+        if len(hosts + extra_hosts) == 0 and not no_hosts:
+            raise ansible.errors.AnsibleError("Specified hosts and/or --limit does not match any hosts.")
 
         # Pass along cli options
         args = ['pytest-ansible']
