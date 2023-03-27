@@ -1,13 +1,20 @@
 import pytest
 
-from _pytest.main import ExitCode
 
+try:
+    from _pytest.main import EXIT_INTERRUPTED  # type: ignore[attr-defined]
+    from _pytest.main import EXIT_NOTESTSCOLLECTED  # type: ignore[attr-defined]
+    from _pytest.main import EXIT_OK  # type: ignore[attr-defined]
+    from _pytest.main import EXIT_TESTSFAILED  # type: ignore[attr-defined]
+    from _pytest.main import EXIT_USAGEERROR  # type: ignore[attr-defined]
+except ImportError:
+    from _pytest.main import ExitCode
 
-EXIT_OK = ExitCode.OK
-EXIT_TESTSFAILED = ExitCode.TESTS_FAILED
-EXIT_USAGEERROR = ExitCode.USAGE_ERROR
-EXIT_INTERRUPTED = ExitCode.INTERRUPTED
-EXIT_NOTESTSCOLLECTED = ExitCode.NO_TESTS_COLLECTED
+    EXIT_OK = ExitCode.OK
+    EXIT_TESTSFAILED = ExitCode.TESTS_FAILED
+    EXIT_USAGEERROR = ExitCode.USAGE_ERROR
+    EXIT_INTERRUPTED = ExitCode.INTERRUPTED
+    EXIT_NOTESTSCOLLECTED = ExitCode.NO_TESTS_COLLECTED
 
 
 @pytest.mark.old
