@@ -29,6 +29,15 @@ repos:
           - flake8-print>=5.0
           - flake8-pytest-style>=1.2.2
           - flake8-future-annotations>=0.0.3
+  - repo: https://github.com/pycqa/pylint
+    rev: v2.17.1
+    hooks:
+      - id: pylint
+        args:
+          - --output-format=colorized
+        additional_dependencies:
+          - ansible-core
+          - pytest
   - repo: https://github.com/jazzband/pip-tools
     rev: 6.12.3
     hooks:
