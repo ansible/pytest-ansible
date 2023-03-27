@@ -6,10 +6,7 @@ import ansible.constants
 import ansible.utils
 import ansible.errors
 
-try:
-    from ansible.plugins.loader import become_loader
-except ImportError:
-    become_loader = None
+from ansible.plugins.loader import become_loader
 
 from pytest_ansible.fixtures import (
     ansible_adhoc,
