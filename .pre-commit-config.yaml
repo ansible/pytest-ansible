@@ -47,7 +47,6 @@ repos:
         additional_dependencies:
           - pytest
           - ansible-core
-          - types-mock
           - types-pkg_resources
   - repo: https://github.com/jazzband/pip-tools
     rev: 6.12.3
