@@ -1,7 +1,7 @@
 import pytest
 
 try:
-    from _pytest.main import (
+    from _pytest.main import (  # type: ignore
         EXIT_OK,
         EXIT_TESTSFAILED,
         EXIT_USAGEERROR,

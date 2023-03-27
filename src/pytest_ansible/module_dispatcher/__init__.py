@@ -1,5 +1,6 @@
 """Define BaseModuleDispatcher class."""
 
+from typing import Sequence
 from pytest_ansible.errors import AnsibleModuleError
 
 
@@ -7,7 +8,7 @@ class BaseModuleDispatcher(object):
 
     """Fixme.."""
 
-    required_kwargs = ("inventory",)
+    required_kwargs: Sequence[str] = ("inventory",)
 
     def __init__(self, **kwargs):
         """Save provided keyword arguments and assert required values have been provided."""

@@ -1,4 +1,6 @@
+from __future__ import annotations
 import sys
+from typing import Sequence
 
 import warnings
 import ansible.constants
@@ -48,7 +50,7 @@ class ResultAccumulator(CallbackBase):
 class ModuleDispatcherV212(ModuleDispatcherV2):
     """Pass."""
 
-    required_kwargs = (
+    required_kwargs: Sequence[str] = (
         "inventory",
         "inventory_manager",
         "variable_manager",

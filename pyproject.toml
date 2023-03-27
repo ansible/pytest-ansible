@@ -39,6 +39,23 @@ documentation = "https://github.com/ansible-community/pytest-ansible"
 repository = "https://github.com/ansible-community/pytest-ansible"
 changelog = "https://github.com/ansible-community/pytest-ansible/releases"
 
+[tool.mypy]
+python_version = 3.9
+# strict = true
+color_output = true
+error_summary = true
+# Temporary disabled until we fix them:
+disallow_untyped_calls = false
+disallow_untyped_defs = false
+disallow_any_generics = false
+
+[[tool.mypy.overrides]]
+module = [
+  "ansible.*",
+]
+ignore_missing_imports = true
+ignore_errors = true
+
 [tool.pylint.MAIN]
 extension-pkg-allow-list = ["black.parsing"]
 
