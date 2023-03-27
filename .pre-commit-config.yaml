@@ -1,0 +1,52 @@
+---
+ci:
+  # format compatible with commitlint
+  autoupdate_commit_msg: "chore: pre-commit autoupdate"
+  autoupdate_schedule: monthly
+  autofix_commit_msg: |
+    chore: auto fixes from pre-commit.com hooks
+
+    for more information, see https://pre-commit.ci
+  skip:
+    - pip-compile
+repos:
+  - repo: meta
+    hooks:
+      - id: check-useless-excludes
+  - repo: https://github.com/jazzband/pip-tools
+    rev: 6.12.3
+    hooks:
+      - id: pip-compile
+        name: lock
+        alias: lock
+        always_run: true
+        entry: pip-compile --upgrade --resolver=backtracking -q --no-annotate --output-file=.config/requirements-lock.txt pyproject.toml --strip-extras --unsafe-package ruamel-yaml-clib
+        files: ^.config\/requirements.*$
+        language: python
+        language_version: "3.9" # minimal we support officially
+        pass_filenames: false
+        stages: [manual]
+        additional_dependencies:
+          - pip>=22.3.1
+      - id: pip-compile
+        name: deps
+        alias: deps
+        always_run: true
+        entry: pip-compile --resolver=backtracking -q --no-annotate --output-file=.config/requirements.txt pyproject.toml --extra docs --extra test --strip-extras --unsafe-package ruamel-yaml-clib
+        files: ^.config\/requirements.*$
+        language: python
+        language_version: "3.9" # minimal we support officially
+        pass_filenames: false
+        additional_dependencies:
+          - pip>=22.3.1
+      - id: pip-compile
+        entry: pip-compile --resolver=backtracking -q --no-annotate --output-file=.config/requirements.txt pyproject.toml --extra docs --extra test --strip-extras --unsafe-package ruamel-yaml-clib --upgrade
+        language: python
+        always_run: true
+        pass_filenames: false
+        files: ^.config\/requirements.*$
+        alias: up
+        stages: [manual]
+        language_version: "3.9" # minimal we support officially
+        additional_dependencies:
+          - pip>=22.3.1

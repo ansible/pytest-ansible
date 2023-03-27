@@ -1,0 +1,49 @@
+[build-system]
+requires = [
+  "setuptools >= 63.0.0", # required by pyproject+setuptools_scm integration
+  "setuptools_scm[toml] >= 7.0.5", # required for "no-local-version" scheme
+
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+# https://peps.python.org/pep-0621/#readme
+requires-python = ">=3.9"
+dynamic = ["version", "dependencies", "optional-dependencies"]
+name = "pytest-ansible"
+description = "Plugin for py.test to simplify calling ansible modules from tests or fixtures"
+readme = "README.md"
+authors = [{ "name" = "Ansible by Red Hat", "email" = "info@ansible.com" }]
+maintainers = [{ "name" = "Ansible by Red Hat", "email" = "info@ansible.com" }]
+license = { text = "MIT" }
+classifiers = [
+  'Development Status :: 5 - Production/Stable',
+  'Intended Audience :: Developers',
+  'License :: OSI Approved :: MIT License',
+  'Operating System :: OS Independent',
+  'Topic :: Software Development :: Testing',
+  'Topic :: Software Development :: Quality Assurance',
+  'Topic :: Utilities',
+  'Programming Language :: Python',
+  'Programming Language :: Python :: 3',
+  'Programming Language :: Python :: 3.9',
+]
+keywords = ["ansible", "testing", "pytest"]
+
+[project.entry-points.pytest11]
+pytest-ansible = 'pytest_ansible.plugin'
+
+[project.urls]
+homepage = "https://github.com/ansible-community/pytest-ansible"
+documentation = "https://github.com/ansible-community/pytest-ansible"
+repository = "https://github.com/ansible-community/pytest-ansible"
+changelog = "https://github.com/ansible-community/pytest-ansible/releases"
+
+[tool.setuptools.dynamic]
+optional-dependencies.test = { file = [".config/requirements-test.txt"] }
+optional-dependencies.lock = { file = [".config/requirements-lock.txt"] }
+dependencies = { file = [".config/requirements.in"] }
+
+[tool.setuptools_scm]
+local_scheme = "no-local-version"
+write_to = "src/pytest_ansible/_version.py"
