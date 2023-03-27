@@ -7,7 +7,7 @@ class BaseModuleDispatcher(object):
 
     """Fixme.."""
 
-    required_kwargs = ('inventory',)
+    required_kwargs = ("inventory",)
 
     def __init__(self, **kwargs):
         """Save provided keyword arguments and assert required values have been provided."""
@@ -18,11 +18,13 @@ class BaseModuleDispatcher(object):
 
     def __len__(self):
         """Return the number of hosts that match the `host_pattern`."""
-        return len(self.options['inventory_manager'].list_hosts(self.options['host_pattern']))
+        return len(
+            self.options["inventory_manager"].list_hosts(self.options["host_pattern"])
+        )
 
     def __contains__(self, item):
         """Return the whether the inventory contains a host matching the provided `item`."""
-        return len(self.options['inventory_manager'].list_hosts(item)) > 0
+        return len(self.options["inventory_manager"].list_hosts(item)) > 0
 
     def __getattr__(self, name):
         """Run the ansible module matching the provided `name`.
@@ -32,9 +34,11 @@ class BaseModuleDispatcher(object):
         if not self.has_module(name):
             # TODO: should we just raise an AttributeError, or a more
             # raise AttributeError("'{0}' object has no attribute '{1}'".format(self.__class__.__name__, name))
-            raise AnsibleModuleError("The module {0} was not found in configured module paths.".format(name))
+            raise AnsibleModuleError(
+                "The module {0} was not found in configured module paths.".format(name)
+            )
         else:
-            self.options['module_name'] = name
+            self.options["module_name"] = name
             return self._run
 
     def check_required_kwargs(self, **kwargs):

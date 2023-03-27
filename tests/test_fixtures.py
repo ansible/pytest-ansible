@@ -1,8 +1,10 @@
 import pytest
+
 try:
     from _pytest.main import EXIT_OK
 except ImportError:
     from _pytest.main import ExitCode
+
     EXIT_OK = ExitCode.OK
 
 
@@ -16,9 +18,17 @@ def test_ansible_adhoc(testdir, option):
             assert isinstance(ansible_adhoc(), BaseHostManager)
     """
     testdir.makepyfile(src)
-    result = testdir.runpytest(*option.args + ['--ansible-inventory', str(option.inventory), '--ansible-host-pattern', 'local'])
+    result = testdir.runpytest(
+        *option.args
+        + [
+            "--ansible-inventory",
+            str(option.inventory),
+            "--ansible-host-pattern",
+            "local",
+        ]
+    )
     assert result.ret == EXIT_OK
-    assert result.parseoutcomes()['passed'] == 1
+    assert result.parseoutcomes()["passed"] == 1
 
 
 def test_ansible_module(testdir, option):
@@ -29,9 +39,17 @@ def test_ansible_module(testdir, option):
             assert isinstance(ansible_module, BaseModuleDispatcher)
     """
     testdir.makepyfile(src)
-    result = testdir.runpytest(*option.args + ['--ansible-inventory', str(option.inventory), '--ansible-host-pattern', 'local'])
+    result = testdir.runpytest(
+        *option.args
+        + [
+            "--ansible-inventory",
+            str(option.inventory),
+            "--ansible-host-pattern",
+            "local",
+        ]
+    )
     assert result.ret == EXIT_OK
-    assert result.parseoutcomes()['passed'] == 1
+    assert result.parseoutcomes()["passed"] == 1
 
 
 def test_ansible_facts(testdir, option):
@@ -42,9 +60,17 @@ def test_ansible_facts(testdir, option):
             assert isinstance(ansible_facts, AdHocResult)
     """
     testdir.makepyfile(src)
-    result = testdir.runpytest(*option.args + ['--ansible-inventory', str(option.inventory), '--ansible-host-pattern', 'local'])
+    result = testdir.runpytest(
+        *option.args
+        + [
+            "--ansible-inventory",
+            str(option.inventory),
+            "--ansible-host-pattern",
+            "local",
+        ]
+    )
     assert result.ret == EXIT_OK
-    assert result.parseoutcomes()['passed'] == 1
+    assert result.parseoutcomes()["passed"] == 1
 
 
 def test_localhost(testdir, option):
@@ -57,4 +83,4 @@ def test_localhost(testdir, option):
     testdir.makepyfile(src)
     result = testdir.runpytest(*option.args)
     assert result.ret == EXIT_OK
-    assert result.parseoutcomes()['passed'] == 1
+    assert result.parseoutcomes()["passed"] == 1

@@ -8,14 +8,14 @@ from pytest_ansible.has_version import (
     has_ansible_v28,
     has_ansible_v29,
     has_ansible_v212,
-    has_ansible_v213
+    has_ansible_v213,
 )
 
 
 class BaseHostManager(object):
     """Fixme."""
 
-    _required_kwargs = ('inventory',)
+    _required_kwargs = ("inventory",)
 
     def __init__(self, *args, **kwargs):
         """Fixme."""
@@ -32,16 +32,23 @@ class BaseHostManager(object):
     def get_extra_inventory_hosts(self, host_pattern=None):
         try:
             if host_pattern is None:
-                extra_inventory_hosts = [h.name for h in self.options['extra_inventory_manager'].list_hosts()]
+                extra_inventory_hosts = [
+                    h.name for h in self.options["extra_inventory_manager"].list_hosts()
+                ]
             else:
-                extra_inventory_hosts = [h.name for h in self.options['extra_inventory_manager'].list_hosts(host_pattern)]
+                extra_inventory_hosts = [
+                    h.name
+                    for h in self.options["extra_inventory_manager"].list_hosts(
+                        host_pattern
+                    )
+                ]
         except:
             extra_inventory_hosts = []
         return extra_inventory_hosts
 
     def get_extra_inventory_groups(self):
         try:
-            extra_inventory_groups = self.options['extra_inventory_manager'].groups
+            extra_inventory_groups = self.options["extra_inventory_manager"].groups
         except:
             extra_inventory_groups = []
         return extra_inventory_groups
@@ -55,10 +62,12 @@ class BaseHostManager(object):
     def has_matching_inventory(self, host_pattern):
         """Return whether any matching ansible inventory is found for the provided host_pattern."""
         try:
-            return len(self.options['inventory_manager'].list_hosts(host_pattern)) > 0 or \
-                   host_pattern in self.options['inventory_manager'].groups or \
-                   len(self.get_extra_inventory_hosts(host_pattern)) > 0 or \
-                   host_pattern in self.get_extra_inventory_groups()
+            return (
+                len(self.options["inventory_manager"].list_hosts(host_pattern)) > 0
+                or host_pattern in self.options["inventory_manager"].groups
+                or len(self.get_extra_inventory_hosts(host_pattern)) > 0
+                or host_pattern in self.get_extra_inventory_groups()
+            )
         except ansible.errors.AnsibleError:
             return False
 
@@ -69,10 +78,10 @@ class BaseHostManager(object):
             new_item = "all["
             if item.start is not None:
                 new_item += str(item.start)
-            new_item += '-'
+            new_item += "-"
             if item.stop is not None:
                 new_item += str(item.stop)
-            item = new_item + ']'
+            item = new_item + "]"
 
         if item in self.__dict__:
             return self.__dict__[item]
@@ -80,7 +89,7 @@ class BaseHostManager(object):
             if not self.has_matching_inventory(item):
                 raise KeyError(item)
             else:
-                self.options['host_pattern'] = item
+                self.options["host_pattern"] = item
                 return self._dispatcher(**self.options)
 
     def __getattr__(self, attr):
@@ -88,18 +97,24 @@ class BaseHostManager(object):
         if not self.has_matching_inventory(attr):
             raise AttributeError("type HostManager has no attribute '%s'" % attr)
         else:
-            self.options['host_pattern'] = attr
+            self.options["host_pattern"] = attr
             return self._dispatcher(**self.options)
 
     def keys(self):
-        inventory_hosts = [h.name for h in self.options['inventory_manager'].list_hosts()]
+        inventory_hosts = [
+            h.name for h in self.options["inventory_manager"].list_hosts()
+        ]
         extra_inventory_hosts = self.get_extra_inventory_hosts()
         return inventory_hosts + extra_inventory_hosts
 
     def __iter__(self):
         """Return an iterator for hosts matching the `host_pattern`."""
-        extra_hosts = self.get_extra_inventory_hosts(host_pattern=self.options['host_pattern'])
-        all_hosts = self.options['inventory_manager'].list_hosts(self.options['host_pattern'])
+        extra_hosts = self.get_extra_inventory_hosts(
+            host_pattern=self.options["host_pattern"]
+        )
+        all_hosts = self.options["inventory_manager"].list_hosts(
+            self.options["host_pattern"]
+        )
         # Return only the name (ala .keys()
         # return iter(self.options['inventory_manager'].list_hosts(self.options['host_pattern']))
         # Return a BaseHostManager instance initialized for each host in the inventory
@@ -109,7 +124,9 @@ class BaseHostManager(object):
 
     def __len__(self):
         """Return the number of inventory hosts."""
-        return len(self.options['inventory_manager'].list_hosts()) + len(self.get_extra_inventory_hosts())
+        return len(self.options["inventory_manager"].list_hosts()) + len(
+            self.get_extra_inventory_hosts()
+        )
 
     def __contains__(self, item):
         """Return whether there is inventory matching the provided `item`."""

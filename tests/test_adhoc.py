@@ -1,8 +1,16 @@
 import pytest
+
 try:
-    from _pytest.main import EXIT_OK, EXIT_TESTSFAILED, EXIT_USAGEERROR, EXIT_NOTESTSCOLLECTED, EXIT_INTERRUPTED  # NOQA
+    from _pytest.main import (
+        EXIT_OK,
+        EXIT_TESTSFAILED,
+        EXIT_USAGEERROR,
+        EXIT_NOTESTSCOLLECTED,
+        EXIT_INTERRUPTED,
+    )  # NOQA
 except ImportError:
     from _pytest.main import ExitCode
+
     EXIT_OK = ExitCode.OK
     EXIT_TESTSFAILED = ExitCode.TESTS_FAILED
     EXIT_USAGEERROR = ExitCode.USAGE_ERROR
@@ -12,8 +20,7 @@ except ImportError:
 
 @pytest.mark.old
 def test_contacted_with_params(testdir, option):
-    """FIXME
-    """
+    """FIXME"""
 
     src = """
         import pytest
@@ -29,16 +36,22 @@ def test_contacted_with_params(testdir, option):
 
     """
     testdir.makepyfile(src)
-    result = testdir.runpytest_subprocess(*option.args + ['--ansible-inventory', str(option.inventory),
-                                                          '--ansible-host-pattern', 'local'])
+    result = testdir.runpytest_subprocess(
+        *option.args
+        + [
+            "--ansible-inventory",
+            str(option.inventory),
+            "--ansible-host-pattern",
+            "local",
+        ]
+    )
     assert result.ret == EXIT_OK
-    assert result.parseoutcomes()['passed'] == 1
+    assert result.parseoutcomes()["passed"] == 1
 
 
 @pytest.mark.old
 def test_contacted_with_params_and_inventory_marker(testdir, option):
-    """FIXME
-    """
+    """FIXME"""
     src = """
         import pytest
         @pytest.mark.ansible(inventory='%s')
@@ -52,17 +65,20 @@ def test_contacted_with_params_and_inventory_marker(testdir, option):
                 assert result.is_successful
                 assert result['ping'] == 'pong'
 
-    """ % str(option.inventory)
+    """ % str(
+        option.inventory
+    )
     testdir.makepyfile(src)
-    result = testdir.runpytest_subprocess(*option.args + ['--ansible-host-pattern', 'local'])
+    result = testdir.runpytest_subprocess(
+        *option.args + ["--ansible-host-pattern", "local"]
+    )
     assert result.ret == EXIT_OK
-    assert result.parseoutcomes()['passed'] == 1
+    assert result.parseoutcomes()["passed"] == 1
 
 
 @pytest.mark.old
 def test_contacted_with_params_and_host_pattern_marker(testdir, option):
-    """FIXME
-    """
+    """FIXME"""
     src = """
         import pytest
         @pytest.mark.ansible(host_pattern='local')
@@ -78,16 +94,22 @@ def test_contacted_with_params_and_host_pattern_marker(testdir, option):
 
     """
     testdir.makepyfile(src)
-    result = testdir.runpytest_subprocess(*option.args + ['--ansible-inventory', str(option.inventory),
-                                                          '--ansible-host-pattern', 'unreachable'])
+    result = testdir.runpytest_subprocess(
+        *option.args
+        + [
+            "--ansible-inventory",
+            str(option.inventory),
+            "--ansible-host-pattern",
+            "unreachable",
+        ]
+    )
     assert result.ret == EXIT_OK
-    assert result.parseoutcomes()['passed'] == 1
+    assert result.parseoutcomes()["passed"] == 1
 
 
 @pytest.mark.old
 def test_contacted_with_params_and_inventory_host_pattern_marker(testdir, option):
-    """FIXME
-    """
+    """FIXME"""
     src = """
         import pytest
         @pytest.mark.ansible(inventory='%s', host_pattern='local')
@@ -101,12 +123,16 @@ def test_contacted_with_params_and_inventory_host_pattern_marker(testdir, option
                 assert result.is_successful
                 assert result['ping'] == 'pong'
 
-    """ % str(option.inventory)
+    """ % str(
+        option.inventory
+    )
     testdir.makepyfile(src)
-    result = testdir.runpytest_subprocess(*option.args + ['--ansible-inventory', '/dev/null', '--ansible-host-pattern',
-                                                          'unreachable'])
+    result = testdir.runpytest_subprocess(
+        *option.args
+        + ["--ansible-inventory", "/dev/null", "--ansible-host-pattern", "unreachable"]
+    )
     assert result.ret == EXIT_OK
-    assert result.parseoutcomes()['passed'] == 1
+    assert result.parseoutcomes()["passed"] == 1
 
 
 @pytest.mark.old
@@ -142,24 +168,29 @@ def test_become(testdir, option):
                 else:
                     assert 'msg' in result, "Missing expected field in JSON response: msg"
                     assert 'sudo: unknown user: asdfasdf' in result['msg']
-    """ % str(option.inventory)
+    """ % str(
+        option.inventory
+    )
     testdir.makepyfile(src)
     result = testdir.runpytest_subprocess(
-        *option.args + [
-            '--ansible-inventory', str(option.inventory),
-            '--ansible-host-pattern', 'localhost',  # run against a single host
-            '--ansible-become',  # Enable become support
-            '--ansible-become-user', 'asdfasdf'  # Connect as asdfasdf
+        *option.args
+        + [
+            "--ansible-inventory",
+            str(option.inventory),
+            "--ansible-host-pattern",
+            "localhost",  # run against a single host
+            "--ansible-become",  # Enable become support
+            "--ansible-become-user",
+            "asdfasdf",  # Connect as asdfasdf
         ]
     )
     assert result.ret == EXIT_OK
-    assert result.parseoutcomes()['passed'] == 1
+    assert result.parseoutcomes()["passed"] == 1
 
 
 @pytest.mark.old
 def test_dark_with_params(testdir, option):
-    """FIXME
-    """
+    """FIXME"""
     src = """
         import pytest
         from pytest_ansible.errors import (AnsibleConnectionFailure, AnsibleNoHostsMatch)
@@ -174,18 +205,24 @@ def test_dark_with_params(testdir, option):
             assert exc_info.value.dark
     """
     testdir.makepyfile(src)
-    result = testdir.runpytest_subprocess(*option.args + ['--ansible-inventory', str(option.inventory),
-                                                          '--ansible-host-pattern', 'unreachable'])
+    result = testdir.runpytest_subprocess(
+        *option.args
+        + [
+            "--ansible-inventory",
+            str(option.inventory),
+            "--ansible-host-pattern",
+            "unreachable",
+        ]
+    )
     print("\n".join(result.stdout.lines))
     print("\n".join(result.stderr.lines))
     assert result.ret == EXIT_OK
-    assert result.parseoutcomes()['passed'] == 1
+    assert result.parseoutcomes()["passed"] == 1
 
 
 @pytest.mark.old
 def test_dark_with_params_and_inventory_marker(testdir, option):
-    """FIXME
-    """
+    """FIXME"""
     src = """
         import pytest
         from pytest_ansible.errors import (AnsibleConnectionFailure, AnsibleNoHostsMatch)
@@ -199,17 +236,20 @@ def test_dark_with_params_and_inventory_marker(testdir, option):
 
             # assert dark hosts ...
             assert exc_info.value.dark
-    """.format(inventory=str(option.inventory))
+    """.format(
+        inventory=str(option.inventory)
+    )
     testdir.makepyfile(src)
-    result = testdir.runpytest_subprocess(*option.args + ['--ansible-host-pattern', 'unreachable'])
+    result = testdir.runpytest_subprocess(
+        *option.args + ["--ansible-host-pattern", "unreachable"]
+    )
     assert result.ret == EXIT_OK
-    assert result.parseoutcomes()['passed'] == 1
+    assert result.parseoutcomes()["passed"] == 1
 
 
 @pytest.mark.old
 def test_dark_with_params_and_host_pattern_marker(testdir, option):
-    """FIXME
-    """
+    """FIXME"""
     src = """
         import pytest
         import ansible
@@ -226,16 +266,22 @@ def test_dark_with_params_and_host_pattern_marker(testdir, option):
             assert exc_info.value.dark
     """
     testdir.makepyfile(src)
-    result = testdir.runpytest_subprocess(*option.args + ['--ansible-inventory', str(option.inventory),
-                                                          '--ansible-host-pattern', 'local'])
+    result = testdir.runpytest_subprocess(
+        *option.args
+        + [
+            "--ansible-inventory",
+            str(option.inventory),
+            "--ansible-host-pattern",
+            "local",
+        ]
+    )
     assert result.ret == EXIT_OK
-    assert result.parseoutcomes()['passed'] == 1
+    assert result.parseoutcomes()["passed"] == 1
 
 
 @pytest.mark.old
 def test_dark_with_debug_enabled(testdir, option):
-    """Verify that when verbosity is enabled, additional output is provided upon host failure.
-    """
+    """Verify that when verbosity is enabled, additional output is provided upon host failure."""
     src = """
         import pytest
         from pytest_ansible.errors import AnsibleConnectionFailure
@@ -243,10 +289,18 @@ def test_dark_with_debug_enabled(testdir, option):
             ansible_module.ping()
     """
     testdir.makepyfile(src)
-    result = testdir.runpytest_subprocess(*option.args + ['--ansible-inventory', str(option.inventory),
-                                                          '--ansible-host-pattern', 'unreachable', '-v'])
+    result = testdir.runpytest_subprocess(
+        *option.args
+        + [
+            "--ansible-inventory",
+            str(option.inventory),
+            "--ansible-host-pattern",
+            "unreachable",
+            "-v",
+        ]
+    )
     assert result.ret == EXIT_TESTSFAILED
-    assert result.parseoutcomes()['failed'] == 1
+    assert result.parseoutcomes()["failed"] == 1
     # FIXME - the following doesn't work on ansible-v2
     # result.stdout.fnmatch_lines([
     #     '*ESTABLISH CONNECTION FOR USER: *',

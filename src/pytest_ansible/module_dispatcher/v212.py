@@ -48,13 +48,19 @@ class ResultAccumulator(CallbackBase):
 class ModuleDispatcherV212(ModuleDispatcherV2):
     """Pass."""
 
-    required_kwargs = ('inventory', 'inventory_manager', 'variable_manager', 'host_pattern', 'loader')
+    required_kwargs = (
+        "inventory",
+        "inventory_manager",
+        "variable_manager",
+        "host_pattern",
+        "loader",
+    )
 
     def has_module(self, name):
         # Make sure we parse module_path and pass it to the loader,
         # otherwise, only built-in modules will work.
-        if 'module_path' in self.options:
-            paths = self.options['module_path']
+        if "module_path" in self.options:
+            paths = self.options["module_path"]
             if isinstance(paths, (list, tuple, set)):
                 for path in paths:
                     module_loader.add_directory(path)
@@ -67,41 +73,52 @@ class ModuleDispatcherV212(ModuleDispatcherV2):
         """Execute an ansible adhoc command returning the result in a AdhocResult object."""
         # Assemble module argument string
         if module_args:
-            complex_args.update(dict(_raw_params=' '.join(module_args)))
+            complex_args.update(dict(_raw_params=" ".join(module_args)))
 
         # Assert hosts matching the provided pattern exist
-        hosts = self.options['inventory_manager'].list_hosts()
+        hosts = self.options["inventory_manager"].list_hosts()
         no_hosts = False
         if len(hosts) == 0:
             no_hosts = True
             warnings.warn("provided hosts list is empty, only localhost is available")
 
-        self.options['inventory_manager'].subset(self.options.get('subset'))
-        hosts = self.options['inventory_manager'].list_hosts(self.options['host_pattern'])
+        self.options["inventory_manager"].subset(self.options.get("subset"))
+        hosts = self.options["inventory_manager"].list_hosts(
+            self.options["host_pattern"]
+        )
         if len(hosts) == 0 and not no_hosts:
-            raise ansible.errors.AnsibleError("Specified hosts and/or --limit does not match any hosts")
+            raise ansible.errors.AnsibleError(
+                "Specified hosts and/or --limit does not match any hosts"
+            )
 
         # Pass along cli options
-        args = ['pytest-ansible']
+        args = ["pytest-ansible"]
         verbosity = None
-        for verbosity_syntax in ('-v', '-vv', '-vvv', '-vvvv', '-vvvvv'):
+        for verbosity_syntax in ("-v", "-vv", "-vvv", "-vvvv", "-vvvvv"):
             if verbosity_syntax in sys.argv:
                 verbosity = verbosity_syntax
                 break
         if verbosity is not None:
             args.append(verbosity_syntax)
-        args.extend([self.options['host_pattern']])
-        for argument in ('connection', 'user', 'become', 'become_method', 'become_user', 'module_path'):
+        args.extend([self.options["host_pattern"]])
+        for argument in (
+            "connection",
+            "user",
+            "become",
+            "become_method",
+            "become_user",
+            "module_path",
+        ):
             arg_value = self.options.get(argument)
-            argument = argument.replace('_', '-')
+            argument = argument.replace("_", "-")
 
             if arg_value in (None, False):
                 continue
 
             if arg_value is True:
-                args.append('--{0}'.format(argument))
+                args.append("--{0}".format(argument))
             else:
-                args.append('--{0}={1}'.format(argument, arg_value))
+                args.append("--{0}={1}".format(argument, arg_value))
 
         # Use Ansible's own adhoc cli to parse the fake command line we created and then save it
         # into Ansible's global context
@@ -115,21 +132,21 @@ class ModuleDispatcherV212(ModuleDispatcherV2):
         cb = ResultAccumulator()
 
         kwargs = dict(
-            inventory=self.options['inventory_manager'],
-            variable_manager=self.options['variable_manager'],
-            loader=self.options['loader'],
+            inventory=self.options["inventory_manager"],
+            variable_manager=self.options["variable_manager"],
+            loader=self.options["loader"],
             stdout_callback=cb,
             passwords=dict(conn_pass=None, become_pass=None),
         )
 
         # If we have an extra inventory, do the same that we did for the inventory
-        if 'extra_inventory_manager' in self.options:
+        if "extra_inventory_manager" in self.options:
             cb_extra = ResultAccumulator()
 
             kwargs_extra = dict(
-                inventory=self.options['extra_inventory_manager'],
-                variable_manager=self.options['extra_variable_manager'],
-                loader=self.options['extra_loader'],
+                inventory=self.options["extra_inventory_manager"],
+                variable_manager=self.options["extra_variable_manager"],
+                loader=self.options["extra_loader"],
                 stdout_callback=cb_extra,
                 passwords=dict(conn_pass=None, become_pass=None),
             )
@@ -137,23 +154,28 @@ class ModuleDispatcherV212(ModuleDispatcherV2):
         # create a pseudo-play to execute the specified module via a single task
         play_ds = dict(
             name="pytest-ansible",
-            hosts=self.options['host_pattern'],
-            become=self.options.get('become'),
-            become_user=self.options.get('become_user'),
-            gather_facts='no',
+            hosts=self.options["host_pattern"],
+            become=self.options.get("become"),
+            become_user=self.options.get("become_user"),
+            gather_facts="no",
             tasks=[
                 dict(
-                    action=dict(
-                        module=self.options['module_name'], args=complex_args
-                    ),
+                    action=dict(module=self.options["module_name"], args=complex_args),
                 ),
-            ]
+            ],
         )
 
-        play = Play().load(play_ds, variable_manager=self.options['variable_manager'], loader=self.options['loader'])
-        if 'extra_inventory_manager' in self.options:
-            play_extra = Play().load(play_ds, variable_manager=self.options['extra_variable_manager'],
-                                     loader=self.options['extra_loader'])
+        play = Play().load(
+            play_ds,
+            variable_manager=self.options["variable_manager"],
+            loader=self.options["loader"],
+        )
+        if "extra_inventory_manager" in self.options:
+            play_extra = Play().load(
+                play_ds,
+                variable_manager=self.options["extra_variable_manager"],
+                loader=self.options["extra_loader"],
+            )
 
         # now create a task queue manager to execute the play
         tqm = None
@@ -164,7 +186,7 @@ class ModuleDispatcherV212(ModuleDispatcherV2):
             if tqm:
                 tqm.cleanup()
 
-        if 'extra_inventory_manager' in self.options:
+        if "extra_inventory_manager" in self.options:
             tqm_extra = None
             try:
                 tqm_extra = TaskQueueManager(**kwargs_extra)
@@ -176,13 +198,24 @@ class ModuleDispatcherV212(ModuleDispatcherV2):
         # Raise exception if host(s) unreachable
         # FIXME - if multiple hosts were involved, should an exception be raised?
         if cb.unreachable:
-            raise AnsibleConnectionFailure("Host unreachable in the inventory", dark=cb.unreachable,
-                                           contacted=cb.contacted)
-        if 'extra_inventory_manager' in self.options:
+            raise AnsibleConnectionFailure(
+                "Host unreachable in the inventory",
+                dark=cb.unreachable,
+                contacted=cb.contacted,
+            )
+        if "extra_inventory_manager" in self.options:
             if cb_extra.unreachable:
-                raise AnsibleConnectionFailure("Host unreachable in the extra inventory", dark=cb_extra.unreachable,
-                                               contacted=cb_extra.contacted)
+                raise AnsibleConnectionFailure(
+                    "Host unreachable in the extra inventory",
+                    dark=cb_extra.unreachable,
+                    contacted=cb_extra.contacted,
+                )
 
         # Success!
-        return AdHocResult(contacted=({**cb.contacted, **cb_extra.contacted} if 'extra_inventory_manager'
-                                                                                in self.options else cb.contacted))
+        return AdHocResult(
+            contacted=(
+                {**cb.contacted, **cb_extra.contacted}
+                if "extra_inventory_manager" in self.options
+                else cb.contacted
+            )
+        )

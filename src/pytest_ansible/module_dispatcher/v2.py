@@ -6,6 +6,7 @@ import ansible.errors
 from ansible.plugins.callback import CallbackBase
 from ansible.executor.task_queue_manager import TaskQueueManager
 from ansible.playbook.play import Play
+
 # from ansible.plugins.loader import module_loader
 from ansible.cli import CLI
 from pytest_ansible.module_dispatcher import BaseModuleDispatcher
@@ -42,13 +43,19 @@ class ResultAccumulator(CallbackBase):
 class ModuleDispatcherV2(BaseModuleDispatcher):
     """Pass."""
 
-    required_kwargs = ('inventory', 'inventory_manager', 'variable_manager', 'host_pattern', 'loader')
+    required_kwargs = (
+        "inventory",
+        "inventory_manager",
+        "variable_manager",
+        "host_pattern",
+        "loader",
+    )
 
     def has_module(self, name):
         # Make sure we parse module_path and pass it to the loader,
         # otherwise, only built-in modules will work.
-        if 'module_path' in self.options:
-            paths = self.options['module_path']
+        if "module_path" in self.options:
+            paths = self.options["module_path"]
             if isinstance(paths, (list, tuple, set)):
                 for path in paths:
                     ansible.plugins.module_loader.add_directory(path)
@@ -62,19 +69,23 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
         """Execute an ansible adhoc command returning the result in a AdhocResult object."""
         # Assemble module argument string
         if module_args:
-            complex_args.update(dict(_raw_params=' '.join(module_args)))
+            complex_args.update(dict(_raw_params=" ".join(module_args)))
 
         # Assert hosts matching the provided pattern exist
-        hosts = self.options['inventory_manager'].list_hosts()
+        hosts = self.options["inventory_manager"].list_hosts()
         no_hosts = False
         if len(hosts) == 0:
             no_hosts = True
             warnings.warn("provided hosts list is empty, only localhost is available")
 
-        self.options['inventory_manager'].subset(self.options.get('subset'))
-        hosts = self.options['inventory_manager'].list_hosts(self.options['host_pattern'])
+        self.options["inventory_manager"].subset(self.options.get("subset"))
+        hosts = self.options["inventory_manager"].list_hosts(
+            self.options["host_pattern"]
+        )
         if len(hosts) == 0 and not no_hosts:
-            raise ansible.errors.AnsibleError("Specified hosts and/or --limit does not match any hosts")
+            raise ansible.errors.AnsibleError(
+                "Specified hosts and/or --limit does not match any hosts"
+            )
 
         parser = CLI.base_parser(
             runas_opts=True,
@@ -92,20 +103,20 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
 
         # Pass along cli options
         options.verbosity = 5
-        options.connection = self.options.get('connection')
-        options.remote_user = self.options.get('user')
-        options.become = self.options.get('become')
-        options.become_method = self.options.get('become_method')
-        options.become_user = self.options.get('become_user')
-        options.module_path = self.options.get('module_path')
+        options.connection = self.options.get("connection")
+        options.remote_user = self.options.get("user")
+        options.become = self.options.get("become")
+        options.become_method = self.options.get("become_method")
+        options.become_user = self.options.get("become_user")
+        options.module_path = self.options.get("module_path")
 
         # Initialize callback to capture module JSON responses
         cb = ResultAccumulator()
 
         kwargs = dict(
-            inventory=self.options['inventory_manager'],
-            variable_manager=self.options['variable_manager'],
-            loader=self.options['loader'],
+            inventory=self.options["inventory_manager"],
+            variable_manager=self.options["variable_manager"],
+            loader=self.options["loader"],
             options=options,
             stdout_callback=cb,
             passwords=dict(conn_pass=None, become_pass=None),
@@ -114,17 +125,19 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
         # create a pseudo-play to execute the specified module via a single task
         play_ds = dict(
             name="pytest-ansible",
-            hosts=self.options['host_pattern'],
-            gather_facts='no',
+            hosts=self.options["host_pattern"],
+            gather_facts="no",
             tasks=[
                 dict(
-                    action=dict(
-                        module=self.options['module_name'], args=complex_args
-                    ),
+                    action=dict(module=self.options["module_name"], args=complex_args),
                 ),
-            ]
+            ],
         )
-        play = Play().load(play_ds, variable_manager=self.options['variable_manager'], loader=self.options['loader'])
+        play = Play().load(
+            play_ds,
+            variable_manager=self.options["variable_manager"],
+            loader=self.options["loader"],
+        )
 
         # now create a task queue manager to execute the play
         tqm = None
@@ -138,7 +151,9 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
         # Raise exception if host(s) unreachable
         # FIXME - if multiple hosts were involved, should an exception be raised?
         if cb.unreachable:
-            raise AnsibleConnectionFailure("Host unreachable", dark=cb.unreachable, contacted=cb.contacted)
+            raise AnsibleConnectionFailure(
+                "Host unreachable", dark=cb.unreachable, contacted=cb.contacted
+            )
 
         # Success!
         return AdHocResult(contacted=cb.contacted)

@@ -3,7 +3,7 @@ from types import GeneratorType
 from pytest_ansible.results import ModuleResult
 from conftest import ALL_HOSTS
 
-invalid_hosts = ['none', 'all', '*', 'local*']
+invalid_hosts = ["none", "all", "*", "local*"]
 
 
 @pytest.fixture()
@@ -78,7 +78,8 @@ def test_not_getattr(adhoc_result, host_pattern):
 def test_connection_failure_v1():
     from pytest_ansible.host_manager import get_host_manager
     from pytest_ansible.errors import AnsibleConnectionFailure
-    hosts = get_host_manager(inventory='unknown.example.com,', connection='smart')
+
+    hosts = get_host_manager(inventory="unknown.example.com,", connection="smart")
     with pytest.raises(AnsibleConnectionFailure) as exc_info:
         hosts.all.ping()
     # Assert message
@@ -86,21 +87,23 @@ def test_connection_failure_v1():
     # Assert contacted
     assert exc_info.value.contacted == {}
     # Assert dark
-    assert 'unknown.example.com' in exc_info.value.dark
+    assert "unknown.example.com" in exc_info.value.dark
     # Assert unreachable
-    assert 'failed' in exc_info.value.dark['unknown.example.com']
-    assert exc_info.value.dark['unknown.example.com']['failed']
+    assert "failed" in exc_info.value.dark["unknown.example.com"]
+    assert exc_info.value.dark["unknown.example.com"]["failed"]
     # Assert msg
-    assert 'msg' in exc_info.value.dark['unknown.example.com']
-    assert exc_info.value.dark['unknown.example.com']['msg'].startswith(u'SSH Error: ssh: Could not resolve hostname'
-                                                                        ' unknown.example.com:')
+    assert "msg" in exc_info.value.dark["unknown.example.com"]
+    assert exc_info.value.dark["unknown.example.com"]["msg"].startswith(
+        "SSH Error: ssh: Could not resolve hostname" " unknown.example.com:"
+    )
 
 
 @pytest.mark.requires_ansible_v2
 def test_connection_failure_v2():
     from pytest_ansible.host_manager import get_host_manager
     from pytest_ansible.errors import AnsibleConnectionFailure
-    hosts = get_host_manager(inventory='unknown.example.com,', connection='smart')
+
+    hosts = get_host_manager(inventory="unknown.example.com,", connection="smart")
     with pytest.raises(AnsibleConnectionFailure) as exc_info:
         hosts.all.ping()
     # Assert message
@@ -108,20 +111,28 @@ def test_connection_failure_v2():
     # Assert contacted
     assert exc_info.value.contacted == {}
     # Assert dark
-    assert 'unknown.example.com' in exc_info.value.dark
+    assert "unknown.example.com" in exc_info.value.dark
     # Assert unreachable
-    assert 'unreachable' in exc_info.value.dark['unknown.example.com'], exc_info.value.dark.keys()
-    assert exc_info.value.dark['unknown.example.com']['unreachable']
+    assert (
+        "unreachable" in exc_info.value.dark["unknown.example.com"]
+    ), exc_info.value.dark.keys()
+    assert exc_info.value.dark["unknown.example.com"]["unreachable"]
     # Assert msg
-    assert 'msg' in exc_info.value.dark['unknown.example.com']
-    assert 'Failed to connect to the host via ssh' in exc_info.value.dark['unknown.example.com']['msg']
+    assert "msg" in exc_info.value.dark["unknown.example.com"]
+    assert (
+        "Failed to connect to the host via ssh"
+        in exc_info.value.dark["unknown.example.com"]["msg"]
+    )
 
 
 @pytest.mark.requires_ansible_v2
 def test_connection_failure_extra_inventory_v2():
     from pytest_ansible.host_manager import get_host_manager
     from pytest_ansible.errors import AnsibleConnectionFailure
-    hosts = get_host_manager(inventory='localhost', extra_inventory='unknown.example.extra.com,')
+
+    hosts = get_host_manager(
+        inventory="localhost", extra_inventory="unknown.example.extra.com,"
+    )
     with pytest.raises(AnsibleConnectionFailure) as exc_info:
         hosts.all.ping()
     # Assert message
@@ -129,10 +140,15 @@ def test_connection_failure_extra_inventory_v2():
     # Assert contacted
     assert exc_info.value.contacted == {}
     # Assert dark
-    assert 'unknown.example.extra.com' in exc_info.value.dark
+    assert "unknown.example.extra.com" in exc_info.value.dark
     # Assert unreachable
-    assert 'unreachable' in exc_info.value.dark['unknown.example.extra.com'], exc_info.value.dark.keys()
-    assert exc_info.value.dark['unknown.example.extra.com']['unreachable']
+    assert (
+        "unreachable" in exc_info.value.dark["unknown.example.extra.com"]
+    ), exc_info.value.dark.keys()
+    assert exc_info.value.dark["unknown.example.extra.com"]["unreachable"]
     # Assert msg
-    assert 'msg' in exc_info.value.dark['unknown.example.extra.com']
-    assert 'Failed to connect to the host via ssh' in exc_info.value.dark['unknown.example.extra.com']['msg']
+    assert "msg" in exc_info.value.dark["unknown.example.extra.com"]
+    assert (
+        "Failed to connect to the host via ssh"
+        in exc_info.value.dark["unknown.example.extra.com"]["msg"]
+    )
