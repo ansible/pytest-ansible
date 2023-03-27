@@ -4,10 +4,7 @@ import ansible
 from pkg_resources import parse_version
 from pytest_ansible.has_version import has_ansible_v28
 
-try:
-    import mock
-except ImportError:
-    from unittest import mock  # type: ignore
+from unittest import mock
 import re
 
 try:
