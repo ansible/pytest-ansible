@@ -15,9 +15,11 @@ class HostManagerV28(BaseHostManager):
         self._dispatcher = ModuleDispatcherV28
 
     def initialize_inventory(self):
-        self.options['loader'] = DataLoader()
-        self.options['inventory_manager'] = InventoryManager(loader=self.options['loader'],
-                                                             sources=self.options['inventory'])
-        self.options['variable_manager'] = VariableManager(loader=self.options['loader'],
-                                                           inventory=self.options['inventory_manager'])
+        self.options["loader"] = DataLoader()
+        self.options["inventory_manager"] = InventoryManager(
+            loader=self.options["loader"], sources=self.options["inventory"]
+        )
+        self.options["variable_manager"] = VariableManager(
+            loader=self.options["loader"], inventory=self.options["inventory_manager"]
+        )
         # self.options['inventory_manager'].clear_caches()

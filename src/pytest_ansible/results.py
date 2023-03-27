@@ -19,23 +19,25 @@ class ModuleResult(dict):
 
     @property
     def is_ok(self):
-        return not (self.is_changed or self.is_unreachable or self.is_skipped or self.is_failed)
+        return not (
+            self.is_changed or self.is_unreachable or self.is_skipped or self.is_failed
+        )
 
     @property
     def is_changed(self):
-        return self._check_key('changed')
+        return self._check_key("changed")
 
     @property
     def is_unreachable(self):
-        return self._check_key('unreachable')
+        return self._check_key("unreachable")
 
     @property
     def is_skipped(self):
-        return self._check_key('skipped')
+        return self._check_key("skipped")
 
     @property
     def is_failed(self):
-        return self._check_key('failed') or self.get('rc', 0) != 0
+        return self._check_key("failed") or self.get("rc", 0) != 0
 
     @property
     def is_successful(self):
@@ -48,7 +50,7 @@ class AdHocResult(object):
 
     def __init__(self, **kwargs):
         """Fixme."""
-        required_kwargs = ('contacted',)
+        required_kwargs = ("contacted",)
         for kwarg in required_kwargs:
             assert kwarg in kwargs, "Missing required keyword argument '%s'" % kwarg
             setattr(self, kwarg, kwargs.get(kwarg))
