@@ -1,7 +1,0 @@
-tox
-pytest<6.0.0
-coverage
-coveralls
-mock
-pylama
-pylama_pylint
