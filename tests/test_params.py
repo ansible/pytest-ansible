@@ -1,20 +1,22 @@
+import re
 import sys
-import pytest
-import ansible
-from pkg_resources import parse_version
-from pytest_ansible.has_version import has_ansible_v28
 
 from unittest import mock
-import re
+
+import ansible
+import pytest
+
+from pkg_resources import parse_version
+
+from pytest_ansible.has_version import has_ansible_v28
+
 
 try:
-    from _pytest.main import (  # type: ignore
-        EXIT_OK,
-        EXIT_TESTSFAILED,
-        EXIT_USAGEERROR,
-        EXIT_NOTESTSCOLLECTED,
-        EXIT_INTERRUPTED,
-    )  # NOQA
+    from _pytest.main import EXIT_INTERRUPTED  # type: ignore[attr-defined]
+    from _pytest.main import EXIT_NOTESTSCOLLECTED  # type: ignore[attr-defined]
+    from _pytest.main import EXIT_OK  # type: ignore[attr-defined]
+    from _pytest.main import EXIT_TESTSFAILED  # type: ignore[attr-defined]
+    from _pytest.main import EXIT_USAGEERROR  # type: ignore[attr-defined]
 except ImportError:
     from _pytest.main import ExitCode
 

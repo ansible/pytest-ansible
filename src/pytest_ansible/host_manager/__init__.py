@@ -2,14 +2,12 @@
 
 import ansible
 
-from pytest_ansible.has_version import (
-    has_ansible_v2,
-    has_ansible_v24,
-    has_ansible_v28,
-    has_ansible_v29,
-    has_ansible_v212,
-    has_ansible_v213,
-)
+from pytest_ansible.has_version import has_ansible_v2
+from pytest_ansible.has_version import has_ansible_v24
+from pytest_ansible.has_version import has_ansible_v28
+from pytest_ansible.has_version import has_ansible_v29
+from pytest_ansible.has_version import has_ansible_v212
+from pytest_ansible.has_version import has_ansible_v213
 
 
 class BaseHostManager(object):

@@ -39,6 +39,17 @@ documentation = "https://github.com/ansible-community/pytest-ansible"
 repository = "https://github.com/ansible-community/pytest-ansible"
 changelog = "https://github.com/ansible-community/pytest-ansible/releases"
 
+
+[tool.isort]
+force_single_line = true # Force from .. import to be 1 per line, minimizing changes at time of implementation
+known_first_party = ["pytest_ansible"]
+lines_after_imports = 2 # Ensures consistency for cases when there's variable vs function/class definitions after imports
+lines_between_types = 1 # Separate import/from with 1 line
+no_lines_before = "LOCALFOLDER" # Keeps local imports bundled with first-party
+profile = "black" # Avoid conflict with black
+skip_glob = []
+
+
 [tool.mypy]
 python_version = 3.9
 # strict = true
@@ -100,7 +111,6 @@ disable = [
   "too-many-statements",
   "undefined-loop-variable",
   "unexpected-keyword-arg",
-  "ungrouped-imports",
   "unnecessary-comprehension",
   "unnecessary-pass",
   "unused-argument",

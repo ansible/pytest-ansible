@@ -1,20 +1,25 @@
 from __future__ import annotations
-from typing import Any, Sequence
-import warnings
-import ansible.constants
-import ansible.utils
-import ansible.errors
 
-from ansible.plugins.callback import CallbackBase
-from ansible.executor.task_queue_manager import TaskQueueManager
-from ansible.playbook.play import Play
+import warnings
+
+from typing import Any
+from typing import Sequence
+
+import ansible.constants
+import ansible.errors
+import ansible.utils
 
 # from ansible.plugins.loader import module_loader
 from ansible.cli import CLI
-from pytest_ansible.module_dispatcher import BaseModuleDispatcher
-from pytest_ansible.results import AdHocResult
+from ansible.executor.task_queue_manager import TaskQueueManager
+from ansible.playbook.play import Play
+from ansible.plugins.callback import CallbackBase
+
 from pytest_ansible.errors import AnsibleConnectionFailure
 from pytest_ansible.has_version import has_ansible_v2
+from pytest_ansible.module_dispatcher import BaseModuleDispatcher
+from pytest_ansible.results import AdHocResult
+
 
 if not has_ansible_v2:
     raise ImportError("Only supported with ansible-2.* and newer")
