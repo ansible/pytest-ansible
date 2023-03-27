@@ -57,3 +57,4 @@ target/
 
 # pycharm
 .idea/
+src/pytest_ansible/_version.py
