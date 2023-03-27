@@ -1,7 +1,7 @@
 import pytest
 
 try:
-    from _pytest.main import EXIT_OK
+    from _pytest.main import EXIT_OK  # type: ignore
 except ImportError:
     from _pytest.main import ExitCode
 

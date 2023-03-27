@@ -38,6 +38,17 @@ repos:
         additional_dependencies:
           - ansible-core
           - pytest
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.1.1
+    hooks:
+      - id: mypy
+        # empty args needed in order to match mypy cli behavior
+        # args: [--strict]
+        additional_dependencies:
+          - pytest
+          - ansible-core
+          - types-mock
+          - types-pkg_resources
   - repo: https://github.com/jazzband/pip-tools
     rev: 6.12.3
     hooks:

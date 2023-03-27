@@ -7,11 +7,11 @@ from pytest_ansible.has_version import has_ansible_v28
 try:
     import mock
 except ImportError:
-    from unittest import mock
+    from unittest import mock  # type: ignore
 import re
 
 try:
-    from _pytest.main import (
+    from _pytest.main import (  # type: ignore
         EXIT_OK,
         EXIT_TESTSFAILED,
         EXIT_USAGEERROR,
