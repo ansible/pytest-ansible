@@ -1,8 +1,8 @@
 import pytest
-from pytest_ansible.has_version import (
-    has_ansible_v1,
-    has_ansible_v24,
-)
+
+from pytest_ansible.has_version import has_ansible_v1
+from pytest_ansible.has_version import has_ansible_v24
+
 
 try:
     from ansible.utils import context_objects as co

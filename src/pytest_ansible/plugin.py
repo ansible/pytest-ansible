@@ -1,19 +1,17 @@
 """PyTest Ansible Plugin."""
 
-import pytest
 import ansible
 import ansible.constants
-import ansible.utils
 import ansible.errors
+import ansible.utils
+import pytest
 
 from ansible.plugins.loader import become_loader
 
-from pytest_ansible.fixtures import (
-    ansible_adhoc,
-    ansible_module,
-    ansible_facts,
-    localhost,
-)
+from pytest_ansible.fixtures import ansible_adhoc
+from pytest_ansible.fixtures import ansible_facts
+from pytest_ansible.fixtures import ansible_module
+from pytest_ansible.fixtures import localhost
 from pytest_ansible.host_manager import get_host_manager
 
 

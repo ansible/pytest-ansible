@@ -1,4 +1,5 @@
 import pytest
+
 from pytest_ansible.results import ModuleResult
 
 
