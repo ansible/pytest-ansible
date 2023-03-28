@@ -1,6 +1,6 @@
 [build-system]
 requires = [
-  "setuptools >= 63.0.0", # required by pyproject+setuptools_scm integration
+  "setuptools >= 63.0.0",          # required by pyproject+setuptools_scm integration
   "setuptools_scm[toml] >= 7.0.5", # required for "no-local-version" scheme
 
 ]
@@ -43,12 +43,12 @@ changelog = "https://github.com/ansible-community/pytest-ansible/releases"
 
 
 [tool.isort]
-force_single_line = true # Force from .. import to be 1 per line, minimizing changes at time of implementation
+force_single_line = true               # Force from .. import to be 1 per line, minimizing changes at time of implementation
 known_first_party = ["pytest_ansible"]
-lines_after_imports = 2 # Ensures consistency for cases when there's variable vs function/class definitions after imports
-lines_between_types = 1 # Separate import/from with 1 line
-no_lines_before = "LOCALFOLDER" # Keeps local imports bundled with first-party
-profile = "black" # Avoid conflict with black
+lines_after_imports = 2                # Ensures consistency for cases when there's variable vs function/class definitions after imports
+lines_between_types = 1                # Separate import/from with 1 line
+no_lines_before = "LOCALFOLDER"        # Keeps local imports bundled with first-party
+profile = "black"                      # Avoid conflict with black
 skip_glob = []
 
 
@@ -63,9 +63,7 @@ disallow_untyped_defs = false
 disallow_any_generics = false
 
 [[tool.mypy.overrides]]
-module = [
-  "ansible.*",
-]
+module = ["ansible.*"]
 ignore_missing_imports = true
 ignore_errors = true
 
@@ -84,18 +82,8 @@ disable = [
   # https://github.com/PyCQA/pylint/issues/850
   "cyclic-import",
   # https://github.com/PyCQA/pylint/issues/8453
-  "preferred-module",
   # Temporarily disabled until we fix them:
-  "bare-except",
-  "consider-using-f-string",
-  "duplicate-code",
-  "fixme",
-  "implicit-str-concat",
-  "import-error",
-  "import-outside-toplevel",
-  "invalid-name",
-  "missing-class-docstring",
-  "missing-function-docstring",
+
   "missing-module-docstring",
   "no-else-raise",
   "no-else-return",
@@ -129,17 +117,14 @@ disable = [
 
 [tool.pytest]
 minversion = 6.0
-addopts = [
-  "-v",
-  "--tb=native"
-]
+addopts = ["-v", "--tb=native"]
 markers = [
-    "old",
-    "unit",
-    "ansible_v1_xfail",
-    "requires_ansible_v1",
-    "requires_ansible_v2",
-    "requires_ansible_v24"
+  "old",
+  "unit",
+  "ansible_v1_xfail",
+  "requires_ansible_v1",
+  "requires_ansible_v2",
+  "requires_ansible_v24",
 ]
 
 [tool.setuptools.dynamic]
