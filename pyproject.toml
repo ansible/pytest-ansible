@@ -80,7 +80,6 @@ disable = [
   # https://github.com/PyCQA/pylint/issues/850
   "cyclic-import",
   # https://github.com/PyCQA/pylint/issues/8453
-  "preferred-module",
   # Temporarily disabled until we fix them:
   "duplicate-code",
   "fixme",
