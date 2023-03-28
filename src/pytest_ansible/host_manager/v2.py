@@ -1,8 +1,9 @@
+from ansible.inventory import Inventory
 from ansible.parsing.dataloader import DataLoader
+from ansible.vars import VariableManager
+
 from pytest_ansible.host_manager import BaseHostManager
 from pytest_ansible.module_dispatcher.v2 import ModuleDispatcherV2
-from ansible.vars import VariableManager
-from ansible.inventory import Inventory
 
 
 class HostManagerV2(BaseHostManager):

@@ -1,14 +1,16 @@
 import warnings
+
 import ansible
 import ansible.constants
-import ansible.utils
 import ansible.errors
+import ansible.utils
 
 from ansible.runner import Runner
-from pytest_ansible.module_dispatcher import BaseModuleDispatcher
+
 from pytest_ansible.errors import AnsibleConnectionFailure
-from pytest_ansible.results import AdHocResult
 from pytest_ansible.has_version import has_ansible_v1
+from pytest_ansible.module_dispatcher import BaseModuleDispatcher
+from pytest_ansible.results import AdHocResult
 
 
 if not has_ansible_v1:

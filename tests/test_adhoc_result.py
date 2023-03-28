@@ -1,7 +1,11 @@
-import pytest
 from types import GeneratorType
-from pytest_ansible.results import ModuleResult
+
+import pytest
+
 from conftest import ALL_HOSTS
+
+from pytest_ansible.results import ModuleResult
+
 
 invalid_hosts = ["none", "all", "*", "local*"]
 
@@ -76,8 +80,8 @@ def test_not_getattr(adhoc_result, host_pattern):
 
 @pytest.mark.requires_ansible_v1
 def test_connection_failure_v1():
-    from pytest_ansible.host_manager import get_host_manager
     from pytest_ansible.errors import AnsibleConnectionFailure
+    from pytest_ansible.host_manager import get_host_manager
 
     hosts = get_host_manager(inventory="unknown.example.com,", connection="smart")
     with pytest.raises(AnsibleConnectionFailure) as exc_info:
@@ -100,8 +104,8 @@ def test_connection_failure_v1():
 
 @pytest.mark.requires_ansible_v2
 def test_connection_failure_v2():
-    from pytest_ansible.host_manager import get_host_manager
     from pytest_ansible.errors import AnsibleConnectionFailure
+    from pytest_ansible.host_manager import get_host_manager
 
     hosts = get_host_manager(inventory="unknown.example.com,", connection="smart")
     with pytest.raises(AnsibleConnectionFailure) as exc_info:
@@ -127,8 +131,8 @@ def test_connection_failure_v2():
 
 @pytest.mark.requires_ansible_v2
 def test_connection_failure_extra_inventory_v2():
-    from pytest_ansible.host_manager import get_host_manager
     from pytest_ansible.errors import AnsibleConnectionFailure
+    from pytest_ansible.host_manager import get_host_manager
 
     hosts = get_host_manager(
         inventory="localhost", extra_inventory="unknown.example.extra.com,"

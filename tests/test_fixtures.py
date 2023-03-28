@@ -1,5 +1,6 @@
 import pytest
 
+
 try:
     from _pytest.main import EXIT_OK  # type: ignore
 except ImportError:
