@@ -1,4 +1,5 @@
 from ansible.inventory import Inventory
+
 from pytest_ansible.host_manager import BaseHostManager
 from pytest_ansible.module_dispatcher.v1 import ModuleDispatcherV1
 

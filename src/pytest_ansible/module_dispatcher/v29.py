@@ -1,23 +1,29 @@
 import sys
-
 import warnings
-import ansible.constants
-import ansible.utils
-import ansible.errors
 
-from ansible.plugins.callback import CallbackBase
+import ansible.constants
+import ansible.errors
+import ansible.utils
+
+from ansible.cli.adhoc import AdHocCLI
 from ansible.executor.task_queue_manager import TaskQueueManager
 from ansible.playbook.play import Play
-from ansible.cli.adhoc import AdHocCLI
-from pytest_ansible.module_dispatcher.v2 import ModuleDispatcherV2
-from pytest_ansible.results import AdHocResult
+from ansible.plugins.callback import CallbackBase
+
 from pytest_ansible.errors import AnsibleConnectionFailure
 from pytest_ansible.has_version import has_ansible_v29
+from pytest_ansible.module_dispatcher.v2 import ModuleDispatcherV2
+from pytest_ansible.results import AdHocResult
+
+
+# pylint: disable=ungrouped-imports
 
 if not has_ansible_v29:
     raise ImportError("Only supported with ansible-2.9 and newer")
 else:
     from ansible.plugins.loader import module_loader
+
+# pylint: enable=ungrouped-imports
 
 
 class ResultAccumulator(CallbackBase):
