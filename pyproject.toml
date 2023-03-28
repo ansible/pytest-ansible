@@ -27,6 +27,8 @@ classifiers = [
   'Programming Language :: Python',
   'Programming Language :: Python :: 3',
   'Programming Language :: Python :: 3.9',
+  'Programming Language :: Python :: 3.10',
+  'Programming Language :: Python :: 3.11',
 ]
 keywords = ["ansible", "testing", "pytest"]
 
@@ -123,6 +125,21 @@ disable = [
   "useless-object-inheritance",
   "using-constant-test",
   "wrong-import-order",
+]
+
+[tool.pytest]
+minversion = 6.0
+addopts = [
+  "-v",
+  "--tb=native"
+]
+markers = [
+    "old",
+    "unit",
+    "ansible_v1_xfail",
+    "requires_ansible_v1",
+    "requires_ansible_v2",
+    "requires_ansible_v24"
 ]
 
 [tool.setuptools.dynamic]
