@@ -52,7 +52,7 @@ class AdHocResult(object):
         """Fixme."""
         required_kwargs = ("contacted",)
         for kwarg in required_kwargs:
-            assert kwarg in kwargs, "Missing required keyword argument '%s'" % kwarg
+            assert kwarg in kwargs, f"Missing required keyword argument '{kwarg}'"
             setattr(self, kwarg, kwargs.get(kwarg))
 
     def __getitem__(self, item):
@@ -67,7 +67,7 @@ class AdHocResult(object):
         if attr in self.contacted:
             return ModuleResult(**self.contacted[attr])
         else:
-            raise AttributeError("type AdHocResult has no attribute '%s'" % attr)
+            raise AttributeError(f"type AdHocResult has no attribute '{attr}'")
 
     def __len__(self):
         """Return the number of contacted hosts."""

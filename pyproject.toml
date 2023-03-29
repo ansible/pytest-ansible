@@ -82,8 +82,16 @@ disable = [
   # https://github.com/PyCQA/pylint/issues/850
   "cyclic-import",
   # https://github.com/PyCQA/pylint/issues/8453
+  "preferred-module",
   # Temporarily disabled until we fix them:
-
+  "duplicate-code",
+  "fixme",
+  "implicit-str-concat",
+  "import-error",
+  "import-outside-toplevel",
+  "invalid-name",
+  "missing-class-docstring",
+  "missing-function-docstring",
   "missing-module-docstring",
   "no-else-raise",
   "no-else-return",

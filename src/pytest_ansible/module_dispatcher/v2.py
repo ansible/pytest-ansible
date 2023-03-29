@@ -155,11 +155,12 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
             if tqm:
                 tqm.cleanup()
 
-        # Raise exception if host(s) unreachable
-        # FIXME - if multiple hosts were involved, should an exception be raised?
-        if cb.unreachable:
+        # Raise exception if any of the contacted hosts are unreachable
+        if any(result.get("unreachable", False) for result in cb.contacted.values()):
             raise AnsibleConnectionFailure(
-                "Host unreachable", dark=cb.unreachable, contacted=cb.contacted
+                "One or more hosts are unreachable",
+                dark=cb.unreachable,
+                contacted=cb.contacted,
             )
 
         # Success!

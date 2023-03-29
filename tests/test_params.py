@@ -75,7 +75,7 @@ def test_report_header(testdir, option):
     assert result.ret == EXIT_NOTESTSCOLLECTED
     result.stdout.fnmatch_lines(
         [
-            "ansible: %s" % ansible.__version__,
+            f"ansible: {ansible.__version__}",
         ]
     )
 
@@ -104,13 +104,10 @@ def test_params_not_required_when_not_using_fixture(testdir, option):
 def test_params_required_when_using_fixture(testdir, option, fixture_name):
     """Verify the ansible parameters are required if the fixture is used."""
 
-    src = """
+    src = f"""
         import pytest
-        def test_func({0}):
-            {0}
-    """.format(
-        fixture_name
-    )
+        def test_func({fixture_name}):
+            {fixture_name}"""
     testdir.makepyfile(src)
     result = testdir.runpytest(*option.args)
     assert result.ret == EXIT_USAGEERROR
@@ -146,9 +143,7 @@ def test_param_requires_value(testdir, required_value_parameter):
     result = testdir.runpytest(*[required_value_parameter])
     assert result.ret == EXIT_USAGEERROR
     result.stderr.fnmatch_lines(
-        [
-            "*: error: argument *%s*: expected one argument" % required_value_parameter,
-        ]
+        [f"*: error: argument *{required_value_parameter}*: expected one argument"]
     )
 
 
@@ -288,15 +283,10 @@ def test_params_required_without_inventory_with_host_pattern_v2(testdir, option)
     result = testdir.runpytest(*option.args + ["--ansible-host-pattern", "all"])
     assert result.ret == EXIT_OK
 
-    # TODO - validate the following warning message
-    # [WARNING]: provided hosts list is empty, only localhost is available
-    if False:
-        result.stderr.fnmatch_lines(
-            [
-                "*[WARNING]: Host file not found: /etc/ansible/hosts*",
-                "*provided hosts list is empty, only localhost is available",
-            ]
-        )
+    # Validate the following warning message
+    result.stderr.fnmatch_lines(
+        ["*[WARNING]: No inventory was parsed, only implicit localhost is available*"]
+    )
 
 
 def test_param_override_with_marker(testdir):

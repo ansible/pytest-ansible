@@ -51,22 +51,20 @@ def test_contacted_with_params(testdir, option):
 @pytest.mark.old
 def test_contacted_with_params_and_inventory_marker(testdir, option):
     """FIXME"""
-    src = """
-        import pytest
-        @pytest.mark.ansible(inventory='%s')
-        def test_func(ansible_module):
-            contacted = ansible_module.ping()
+    src = f"""
+    import pytest
+    @pytest.mark.ansible(inventory='{option.inventory}')
+    def test_func(ansible_module):
+        contacted = ansible_module.ping()
 
-            # assert contacted hosts ...
-            assert contacted
-            assert len(contacted) == len(ansible_module)
-            for result in contacted.values():
-                assert result.is_successful
-                assert result['ping'] == 'pong'
+        # assert contacted hosts ...
+        assert contacted
+        assert len(contacted) == len(ansible_module)
+        for result in contacted.values():
+            assert result.is_successful
+            assert result['ping'] == 'pong'
+    """
 
-    """ % str(
-        option.inventory
-    )
     testdir.makepyfile(src)
     result = testdir.runpytest_subprocess(
         *option.args + ["--ansible-host-pattern", "local"]
@@ -109,22 +107,20 @@ def test_contacted_with_params_and_host_pattern_marker(testdir, option):
 @pytest.mark.old
 def test_contacted_with_params_and_inventory_host_pattern_marker(testdir, option):
     """FIXME"""
-    src = """
-        import pytest
-        @pytest.mark.ansible(inventory='%s', host_pattern='local')
-        def test_func(ansible_module):
-            contacted = ansible_module.ping()
+    src = f"""
+    import pytest
+    @pytest.mark.ansible(inventory='{option.inventory}', host_pattern='local')
+    def test_func(ansible_module):
+        contacted = ansible_module.ping()
 
-            # assert contacted hosts ...
-            assert contacted
-            assert len(contacted) == len(ansible_module)
-            for result in contacted.values():
-                assert result.is_successful
-                assert result['ping'] == 'pong'
+        # assert contacted hosts ...
+        assert contacted
+        assert len(contacted) == len(ansible_module)
+        for result in contacted.values():
+            assert result.is_successful
+            assert result['ping'] == 'pong'
+    """
 
-    """ % str(
-        option.inventory
-    )
     testdir.makepyfile(src)
     result = testdir.runpytest_subprocess(
         *option.args
@@ -140,36 +136,35 @@ def test_become(testdir, option):
     but verifies that 'sudo' was attempted by asserting
     '--ansible-become-user' fails as expected.
     """
-    src = """
-        import pytest
-        import ansible
-        import re
-        import os
-        from pkg_resources import parse_version
+    src = f"""
+    import pytest
+    import ansible
+    import re
+    import os
+    from pkg_resources import parse_version
 
-        @pytest.mark.ansible(inventory='%s', host_pattern='localhost')
-        def test_func(ansible_module):
-            contacted = ansible_module.ping()
-            # assert contacted hosts ...
-            assert contacted
-            assert len(contacted) == len(ansible_module)
-            for result in contacted.values():
-                # Assert test failed as expected
-                if parse_version(ansible.__version__) < parse_version('2.4.0'):
-                    assert 'failed' in result, "Missing expected field in JSON response: failed"
-                    assert result['failed'], "Test did not fail as expected"
+    @pytest.mark.ansible(inventory='{option.inventory}', host_pattern='localhost')
+    def test_func(ansible_module):
+        contacted = ansible_module.ping()
+        # assert contacted hosts ...
+        assert contacted
+        assert len(contacted) == len(ansible_module)
+        for result in contacted.values():
+            # Assert test failed as expected
+            if parse_version(ansible.__version__) < parse_version('2.4.0'):
+                assert 'failed' in result, "Missing expected field in JSON response: failed"
+                assert result['failed'], "Test did not fail as expected"
 
-                # Assert expected failure message
-                if parse_version(ansible.__version__) >= parse_version('2.0.0'):
-                    assert 'msg' in result, "Missing expected field in JSON response: msg"
-                    assert result['msg'].startswith('Failed to set permissions on the temporary files Ansible needs ' \
-                        'to create when becoming an unprivileged user')
-                else:
-                    assert 'msg' in result, "Missing expected field in JSON response: msg"
-                    assert 'sudo: unknown user: asdfasdf' in result['msg']
-    """ % str(
-        option.inventory
-    )
+            # Assert expected failure message
+            if parse_version(ansible.__version__) >= parse_version('2.0.0'):
+                assert 'msg' in result, "Missing expected field in JSON response: msg"
+                assert result['msg'].startswith('Failed to set permissions on the temporary files Ansible needs ' \
+                    'to create when becoming an unprivileged user')
+            else:
+                assert 'msg' in result, "Missing expected field in JSON response: msg"
+                assert 'sudo: unknown user: asdfasdf' in result['msg']
+    """
+
     testdir.makepyfile(src)
     result = testdir.runpytest_subprocess(
         *option.args
@@ -222,22 +217,23 @@ def test_dark_with_params(testdir, option):
 @pytest.mark.old
 def test_dark_with_params_and_inventory_marker(testdir, option):
     """FIXME"""
-    src = """
-        import pytest
-        from pytest_ansible.errors import (AnsibleConnectionFailure, AnsibleNoHostsMatch)
-        @pytest.mark.ansible(inventory='{inventory}')
-        def test_func(ansible_module):
-            exc_info = pytest.raises(AnsibleConnectionFailure, ansible_module.ping)
+    src = f"""
+    import pytest
+    from pytest_ansible.errors import AnsibleConnectionFailure, AnsibleNoHostsMatch
 
-            # assert no contacted hosts ...
-            assert not exc_info.value.contacted, "%d hosts were contacted, expected %d" \
+    @pytest.mark.ansible(inventory='{option.inventory}')
+    def test_func(ansible_module):
+        with pytest.raises(AnsibleConnectionFailure) as exc_info:
+            ansible_module.ping()
+
+        # assert no contacted hosts ...
+        assert not exc_info.value.contacted, "%d hosts were contacted, expected %d" \
                 % (len(exc_info.value.contacted), 0)
 
-            # assert dark hosts ...
-            assert exc_info.value.dark
-    """.format(
-        inventory=str(option.inventory)
-    )
+        # assert dark hosts ...
+        assert exc_info.value.dark
+    """
+
     testdir.makepyfile(src)
     result = testdir.runpytest_subprocess(
         *option.args + ["--ansible-host-pattern", "unreachable"]

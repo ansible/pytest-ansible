@@ -115,8 +115,7 @@ def pytest_addoption(parser):
         action="store",
         dest="ansible_become_method",
         default=ansible.constants.DEFAULT_BECOME_METHOD,
-        help="privilege escalation method to use (default: %%(default)s), valid choices: [ %s ]"
-        % (" | ".join(become_methods())),
+        help=f"privilege escalation method to use (default: %(default)s), valid choices: [ {' | '.join(become_methods())} ]",
     )
     group.addoption(
         "--become-user",
@@ -210,7 +209,7 @@ class PyTestAnsiblePlugin:
 
     def pytest_report_header(self, config, startdir):
         """Return the version of ansible."""
-        return "ansible: %s" % ansible.__version__
+        return f"ansible: {ansible.__version__}"
 
     def pytest_collection_modifyitems(self, session, config, items):
         """Validate --ansible-* parameters."""

@@ -37,7 +37,7 @@ class BaseModuleDispatcher(object):
             # TODO: should we just raise an AttributeError, or a more
             # raise AttributeError("'{0}' object has no attribute '{1}'".format(self.__class__.__name__, name))
             raise AnsibleModuleError(
-                "The module {0} was not found in configured module paths.".format(name)
+                f"The module {0} was not found in configured module paths."
             )
         else:
             self.options["module_name"] = name
@@ -47,7 +47,7 @@ class BaseModuleDispatcher(object):
         """Raise a TypeError if any required kwargs are missing."""
         for kwarg in self.required_kwargs:
             if kwarg not in self.options:
-                raise TypeError("Missing required keyword argument '%s'" % kwarg)
+                raise TypeError(f"Missing required keyword argument '{kwarg}'")
 
     def has_module(self, name):
         """Return whether ansible provides the requested module."""

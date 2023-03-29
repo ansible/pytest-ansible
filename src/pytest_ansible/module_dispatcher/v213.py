@@ -131,9 +131,9 @@ class ModuleDispatcherV213(ModuleDispatcherV2):
                 continue
 
             if arg_value is True:
-                args.append("--{0}".format(argument))
+                args.append(f"--{argument}")
             else:
-                args.append("--{0}={1}".format(argument, arg_value))
+                args.append(f"--{argument}={arg_value}")
 
         # Use Ansible's own adhoc cli to parse the fake command line we created and then save it
         # into Ansible's global context
@@ -210,14 +210,22 @@ class ModuleDispatcherV213(ModuleDispatcherV2):
                 if tqm_extra:
                     tqm_extra.cleanup()
 
-        # Raise exception if host(s) unreachable
-        # FIXME - if multiple hosts were involved, should an exception be raised?
-        if cb.unreachable:
+        # Raise exception if all hosts are unreachable
+        if len(cb.contacted) > 0 and len(cb.unreachable) == len(cb.contacted):
             raise AnsibleConnectionFailure(
-                "Host unreachable in the inventory",
+                "All hosts are unreachable in the inventory",
                 dark=cb.unreachable,
                 contacted=cb.contacted,
             )
+
+        # Raise exception if some hosts are unreachable while others are reachable
+        elif len(cb.unreachable) > 0:
+            raise AnsibleConnectionFailure(
+                "Some hosts are unreachable in the inventory",
+                dark=cb.unreachable,
+                contacted=cb.contacted,
+            )
+
         if "extra_inventory_manager" in self.options:
             if cb_extra.unreachable:
                 raise AnsibleConnectionFailure(

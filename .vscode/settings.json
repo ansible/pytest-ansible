@@ -1,17 +1,16 @@
 {
-    "python.testing.unittestEnabled": false,
-    "python.testing.pytestEnabled": true,
-    "python.formatting.provider": "black",
-    "editor.formatOnSave": true,
-    "python.linting.pylintEnabled": true,
-    "python.linting.flake8Enabled": true,
-    "python.linting.mypyEnabled": true,
-    "isort.check": true,
     "[python]": {
         "editor.codeActionsOnSave": {
             "source.organizeImports": true
         }
     },
+    "editor.formatOnSave": true,
+    "isort.check": true,
     "prettier.enable": false,
-    "ansible.python.activationScript": "/home/ruchi/venv2/develans/bin/activate"
+    "python.formatting.provider": "black",
+    "python.linting.flake8Enabled": true,
+    "python.linting.mypyEnabled": true,
+    "python.linting.pylintEnabled": true,
+    "python.testing.pytestEnabled": true,
+    "python.testing.unittestEnabled": false
 }
