@@ -13,6 +13,7 @@ from ansible.cli.adhoc import AdHocCLI
 from ansible.executor.task_queue_manager import TaskQueueManager
 from ansible.playbook.play import Play
 from ansible.plugins.callback import CallbackBase
+from ansible.plugins.loader import module_loader
 
 from pytest_ansible.errors import AnsibleConnectionFailure
 from pytest_ansible.has_version import has_ansible_v212
@@ -23,8 +24,7 @@ from pytest_ansible.results import AdHocResult
 # pylint: disable=ungrouped-imports
 if not has_ansible_v212:
     raise ImportError("Only supported with ansible-2.12 and newer")
-else:
-    from ansible.plugins.loader import module_loader
+
 # pylint: enable=ungrouped-imports
 
 
@@ -50,6 +50,7 @@ class ResultAccumulator(CallbackBase):
 
     @property
     def results(self):
+        """Returns a dictionary of results from the Ansible playbook run, including information on contacted and unreachable hosts."""
         return dict(contacted=self.contacted, unreachable=self.unreachable)
 
 
@@ -196,6 +197,8 @@ class ModuleDispatcherV212(ModuleDispatcherV2):
 
         if "extra_inventory_manager" in self.options:
             tqm_extra = None
+            play_extra = None
+            kwargs_extra = self.options["extra_inventory_manager"]
             try:
                 tqm_extra = TaskQueueManager(**kwargs_extra)
                 tqm_extra.run(play_extra)
@@ -204,13 +207,18 @@ class ModuleDispatcherV212(ModuleDispatcherV2):
                     tqm_extra.cleanup()
 
         # Raise exception if host(s) unreachable
-        # FIXME - if multiple hosts were involved, should an exception be raised?
         if cb.unreachable:
+            exception_msgs = []
+            for host, unreachable_info in cb.unreachable.items():
+                exception_msgs.append(
+                    f"Host '{host}' is unreachable with the following error: {unreachable_info.get('msg', 'unknown')}"
+                )
             raise AnsibleConnectionFailure(
-                "Host unreachable in the inventory",
+                "The following hosts are unreachable:\n" + "\n".join(exception_msgs),
                 dark=cb.unreachable,
                 contacted=cb.contacted,
             )
+
         if "extra_inventory_manager" in self.options:
             if cb_extra.unreachable:
                 raise AnsibleConnectionFailure(

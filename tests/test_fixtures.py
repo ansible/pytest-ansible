@@ -10,6 +10,10 @@ except ImportError:
 
 
 def test_ansible_adhoc(testdir, option):
+    """
+    Test the ansible_adhoc fixture to make sure it returns a function that
+    creates an instance of BaseHostManager.
+    """
     src = """
         import pytest
         import types
@@ -33,6 +37,10 @@ def test_ansible_adhoc(testdir, option):
 
 
 def test_ansible_module(testdir, option):
+    """
+    Test the ansible module dispatcher by creating a test function that asserts the
+    ansible_module fixture is an instance of the BaseModuleDispatcher class.
+    """
     src = """
         import pytest
         from pytest_ansible.module_dispatcher import BaseModuleDispatcher
@@ -54,6 +62,7 @@ def test_ansible_module(testdir, option):
 
 
 def test_ansible_facts(testdir, option):
+    """Test that the `ansible_facts` fixture returns an instance of `AdHocResult`."""
     src = """
         import pytest
         from pytest_ansible.results import AdHocResult
@@ -75,6 +84,7 @@ def test_ansible_facts(testdir, option):
 
 
 def test_localhost(testdir, option):
+    """Test that the localhost fixture returns an instance of BaseModuleDispatcher."""
     src = """
         import pytest
         from pytest_ansible.module_dispatcher import BaseModuleDispatcher

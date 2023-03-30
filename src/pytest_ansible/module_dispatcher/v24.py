@@ -8,6 +8,7 @@ from ansible.cli import CLI
 from ansible.executor.task_queue_manager import TaskQueueManager
 from ansible.playbook.play import Play
 from ansible.plugins.callback import CallbackBase
+from ansible.plugins.loader import module_loader
 
 from pytest_ansible.errors import AnsibleConnectionFailure
 from pytest_ansible.has_version import has_ansible_v24
@@ -19,8 +20,7 @@ from pytest_ansible.results import AdHocResult
 
 if not has_ansible_v24:
     raise ImportError("Only supported with ansible-2.4 and newer")
-else:
-    from ansible.plugins.loader import module_loader
+
 
 # pylint: enable=ungrouped-imports
 
@@ -157,10 +157,16 @@ class ModuleDispatcherV24(ModuleDispatcherV2):
                 tqm.cleanup()
 
         # Raise exception if host(s) unreachable
-        # FIXME - if multiple hosts were involved, should an exception be raised?
         if cb.unreachable:
+            exception_msgs = []
+            for host, unreachable_info in cb.unreachable.items():
+                exception_msgs.append(
+                    f"Host '{host}' is unreachable with the following error: {unreachable_info.get('msg', 'unknown')}"
+                )
             raise AnsibleConnectionFailure(
-                "Host unreachable", dark=cb.unreachable, contacted=cb.contacted
+                "The following hosts are unreachable:\n" + "\n".join(exception_msgs),
+                dark=cb.unreachable,
+                contacted=cb.contacted,
             )
 
         # Success!

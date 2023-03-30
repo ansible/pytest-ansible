@@ -7,6 +7,7 @@ import ansible.utils
 import pytest
 
 from ansible.plugins.loader import become_loader
+from ansible.utils.display import Display
 
 from pytest_ansible.fixtures import ansible_adhoc
 from pytest_ansible.fixtures import ansible_facts
@@ -23,8 +24,10 @@ def become_methods():
     """Return string list of become methods available to ansible."""
     if become_loader:
         return [method.name for method in become_loader.all()]
-    else:
-        return ansible.constants.BECOME_METHODS
+    # Replace this line:
+    # return ansible.constants.BECOME_METHODS
+    # with the actual list of become methods:
+    return ["sudo", "su", "doas", "pbrun", "pfexec", "dzdo", "ksu", "runas", "pmrun"]
 
 
 def pytest_addoption(parser):
@@ -148,8 +151,6 @@ def pytest_configure(config):
         if hasattr(ansible.utils, "VERBOSITY"):
             ansible.utils.VERBOSITY = int(config.option.verbose)
         else:
-            from ansible.utils.display import Display
-
             display = Display()
             display.verbosity = int(config.option.verbose)
 

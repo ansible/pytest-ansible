@@ -296,9 +296,13 @@ def test_dark_with_debug_enabled(testdir, option):
     )
     assert result.ret == EXIT_TESTSFAILED
     assert result.parseoutcomes()["failed"] == 1
-    # FIXME - the following doesn't work on ansible-v2
-    # result.stdout.fnmatch_lines([
-    #     '*ESTABLISH CONNECTION FOR USER: *',
-    #     '*REMOTE_MODULE ping',
-    #     '*EXEC ssh *',
-    # ])
+    if option.ansible_version.startswith("2."):
+        pytest.skip("Debug output check not supported on Ansible v2")
+    else:
+        result.stdout.fnmatch_lines(
+            [
+                "*ESTABLISH CONNECTION FOR USER: *",
+                "*REMOTE_MODULE ping",
+                "*EXEC ssh *",
+            ]
+        )

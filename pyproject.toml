@@ -84,15 +84,10 @@ disable = [
   # Temporarily disabled until we fix them:
   "duplicate-code",
   "fixme",
-  "implicit-str-concat",
   "import-error",
-  "import-outside-toplevel",
   "invalid-name",
-  "missing-class-docstring",
   "missing-function-docstring",
   "missing-module-docstring",
-  "no-else-raise",
-  "no-else-return",
   "no-member",
   "no-name-in-module",
   "not-callable",
@@ -114,16 +109,11 @@ disable = [
   "unused-variable",
   "use-a-generator",
   "use-dict-literal",
-  "use-list-literal",
-  "used-before-assignment",
-  "useless-object-inheritance",
-  "using-constant-test",
-  "wrong-import-order",
 ]
 
 [tool.pytest]
 minversion = 6.0
-addopts = ["-v", "--tb=native"]
+_addopts = ["-v", "--tb=native"]
 markers = [
   "old",
   "unit",

@@ -2,6 +2,7 @@ import pytest
 
 from pytest_ansible.has_version import has_ansible_v1
 from pytest_ansible.has_version import has_ansible_v24
+from pytest_ansible.host_manager import get_host_manager
 
 
 try:
@@ -57,6 +58,10 @@ NEGATIVE_HOST_SLICES = [
 
 
 def pytest_runtest_setup(item):
+    """
+    Pytest hook function that is called before each test is run.
+    This function conditionally skips tests that are pinned to a specific version of Ansible.
+    """
     # Conditionally skip tests that are pinned to a specific ansible version
     if isinstance(item, pytest.Function):
         # conditionally skip
@@ -89,7 +94,9 @@ def pytest_runtest_setup(item):
             )
 
 
-class PyTestOption(object):
+class PyTestOption:
+    """Helper class for passing parameters and using a common inventory file in tests."""
+
     def __init__(self, config, testdir):
         self.config = config
 
@@ -121,7 +128,8 @@ class PyTestOption(object):
 
     @property
     def args(self):
-        args = list()
+        """Returns a list of command-line arguments for pytest to use, including the native traceback format."""
+        args = []
         args.append("--tb")
         args.append("native")
         return args
@@ -129,6 +137,7 @@ class PyTestOption(object):
 
 @pytest.fixture(autouse=True)
 def clear_global_context():
+    """This function is used to reset the stored command line arguments for Ansible when running tests. It is typically used in a pytest fixture to ensure that the context is cleared before each test."""
     # Reset the stored command line args
     # if context object does not exist because of old version of ansible, we don't need it
     if co is not None:
@@ -145,6 +154,8 @@ def option(request, testdir):
 
 @pytest.fixture()
 def hosts():
-    from pytest_ansible.host_manager import get_host_manager
-
+    """
+    Return a `HostManager` instance that manages the hosts defined in the `ALL_HOSTS` constant.
+    The `HostManager` instance is configured to use a local connection to the hosts.
+    """
     return get_host_manager(inventory=",".join(ALL_HOSTS), connection="local")

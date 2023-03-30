@@ -9,6 +9,7 @@ from ansible.cli.adhoc import AdHocCLI
 from ansible.executor.task_queue_manager import TaskQueueManager
 from ansible.playbook.play import Play
 from ansible.plugins.callback import CallbackBase
+from ansible.plugins.loader import module_loader
 
 from pytest_ansible.errors import AnsibleConnectionFailure
 from pytest_ansible.has_version import has_ansible_v213
@@ -20,8 +21,7 @@ from pytest_ansible.results import AdHocResult
 
 if not has_ansible_v213:
     raise ImportError("Only supported with ansible-2.13 and newer")
-else:
-    from ansible.plugins.loader import module_loader
+
 
 # pylint: enable=ungrouped-imports
 
@@ -48,6 +48,7 @@ class ResultAccumulator(CallbackBase):
 
     @property
     def results(self):
+        """Returns a dictionary of results containing 'contacted' and 'unreachable' hosts."""
         return dict(contacted=self.contacted, unreachable=self.unreachable)
 
 
@@ -203,6 +204,8 @@ class ModuleDispatcherV213(ModuleDispatcherV2):
 
         if "extra_inventory_manager" in self.options:
             tqm_extra = None
+            play_extra = None
+            kwargs_extra = self.options["extra_inventory_manager"]
             try:
                 tqm_extra = TaskQueueManager(**kwargs_extra)
                 tqm_extra.run(play_extra)
@@ -219,7 +222,7 @@ class ModuleDispatcherV213(ModuleDispatcherV2):
             )
 
         # Raise exception if some hosts are unreachable while others are reachable
-        elif len(cb.unreachable) > 0:
+        if len(cb.unreachable) > 0:
             raise AnsibleConnectionFailure(
                 "Some hosts are unreachable in the inventory",
                 dark=cb.unreachable,

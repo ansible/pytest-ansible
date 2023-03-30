@@ -8,9 +8,16 @@ from pytest_ansible.has_version import has_ansible_v28
 from pytest_ansible.has_version import has_ansible_v29
 from pytest_ansible.has_version import has_ansible_v212
 from pytest_ansible.has_version import has_ansible_v213
+from pytest_ansible.host_manager.v2 import HostManagerV2
+from pytest_ansible.host_manager.v24 import HostManagerV24
+from pytest_ansible.host_manager.v28 import HostManagerV28
+from pytest_ansible.host_manager.v29 import HostManagerV29
+from pytest_ansible.host_manager.v212 import HostManagerV212
+from pytest_ansible.host_manager.v213 import HostManagerV213
+from .v1 import HostManagerV1
 
 
-class BaseHostManager(object):
+class BaseHostManager:
     """Fixme."""
 
     _required_kwargs = ("inventory",)
@@ -83,20 +90,17 @@ class BaseHostManager(object):
 
         if item in self.__dict__:
             return self.__dict__[item]
-        else:
-            if not self.has_matching_inventory(item):
-                raise KeyError(item)
-            else:
-                self.options["host_pattern"] = item
-                return self._dispatcher(**self.options)
+        if not self.has_matching_inventory(item):
+            raise KeyError(item)
+        self.options["host_pattern"] = item
+        return self._dispatcher(**self.options)
 
     def __getattr__(self, attr):
         """Return a ModuleDispatcher instance described the provided `attr`."""
         if not self.has_matching_inventory(attr):
             raise AttributeError(f"type HostManager has no attribute '{attr}'")
-        else:
-            self.options["host_pattern"] = attr
-            return self._dispatcher(**self.options)
+        self.options["host_pattern"] = attr
+        return self._dispatcher(**self.options)
 
     def keys(self):
         inventory_hosts = [
@@ -138,19 +142,19 @@ def get_host_manager(*args, **kwargs):
     """Initialize and return a HostManager instance."""
 
     if has_ansible_v213:
-        from pytest_ansible.host_manager.v213 import HostManagerV213 as HostManager
+        HostManager = HostManagerV213
     elif has_ansible_v212:
-        from pytest_ansible.host_manager.v212 import HostManagerV212 as HostManager
+        HostManager = HostManagerV212
     elif has_ansible_v29:
-        from pytest_ansible.host_manager.v29 import HostManagerV29 as HostManager
+        HostManager = HostManagerV29
     elif has_ansible_v28:
-        from pytest_ansible.host_manager.v28 import HostManagerV28 as HostManager
+        HostManager = HostManagerV28
     elif has_ansible_v24:
-        from pytest_ansible.host_manager.v24 import HostManagerV24 as HostManager
+        HostManager = HostManagerV24
     elif has_ansible_v2:
-        from pytest_ansible.host_manager.v2 import HostManagerV2 as HostManager
+        HostManager = HostManagerV2
     else:
-        from .v1 import HostManagerV1 as HostManager
+        HostManager = HostManagerV1
 
     # TODO - figure out how to surface the parser defaults here too
     return HostManager(*args, **kwargs)

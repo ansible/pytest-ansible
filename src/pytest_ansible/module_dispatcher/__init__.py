@@ -5,7 +5,7 @@ from typing import Sequence
 from pytest_ansible.errors import AnsibleModuleError
 
 
-class BaseModuleDispatcher(object):
+class BaseModuleDispatcher:
 
     """Fixme.."""
 
@@ -39,9 +39,8 @@ class BaseModuleDispatcher(object):
             raise AnsibleModuleError(
                 f"The module {0} was not found in configured module paths."
             )
-        else:
-            self.options["module_name"] = name
-            return self._run
+        self.options["module_name"] = name
+        return self._run
 
     def check_required_kwargs(self, **kwargs):
         """Raise a TypeError if any required kwargs are missing."""
