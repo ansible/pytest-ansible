@@ -86,14 +86,13 @@ def pytest_runtest_setup(item):
 
         mark = item.get_closest_marker("ansible_v2_xfail")
         if mark and not has_ansible_v1:
-            item.add_marker(
-                pytest.xfail(
-                    reason="expected failure on >= ansible-2.*",
-                    raises=mark.kwargs.get("raises"),
+            with pytest.raises(mark.kwargs.get("raises", Exception)):
+                item.add_marker(
+                    pytest.xfail(reason="expected failure on >= ansible-2.*")
                 )
-            )
 
 
+# pylint: disable=too-few-public-methods
 class PyTestOption:
     """Helper class for passing parameters and using a common inventory file in tests."""
 

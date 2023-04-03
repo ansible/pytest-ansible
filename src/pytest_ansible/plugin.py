@@ -17,6 +17,7 @@ from pytest_ansible.host_manager import get_host_manager
 
 
 # Silence linters for imported fixtures
+# pylint: disable=pointless-statement
 (ansible_adhoc, ansible_module, ansible_facts, localhost)
 
 
@@ -208,18 +209,18 @@ class PyTestAnsiblePlugin:
         """Initialize plugin."""
         self.config = config
 
-    def pytest_report_header(self, config, startdir):
+    def pytest_report_header(self):
         """Return the version of ansible."""
         return f"ansible: {ansible.__version__}"
 
-    def pytest_collection_modifyitems(self, session, config, items):
+    def pytest_collection_modifyitems(self, config, items):
         """Validate --ansible-* parameters."""
 
         uses_ansible_fixtures = False
         for item in items:
             if not hasattr(item, "fixturenames"):
                 continue
-            if any([fixture.startswith("ansible_") for fixture in item.fixturenames]):
+            if any(fixture.startswith("ansible_") for fixture in item.fixturenames):
                 # TODO - ignore if they are using a marker
                 # marker = item.get_marker('ansible')
                 # if marker and 'inventory' in marker.kwargs:

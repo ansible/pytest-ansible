@@ -2,11 +2,8 @@ import pytest
 
 
 try:
-    from _pytest.main import EXIT_INTERRUPTED  # type: ignore[attr-defined]
-    from _pytest.main import EXIT_NOTESTSCOLLECTED  # type: ignore[attr-defined]
     from _pytest.main import EXIT_OK  # type: ignore[attr-defined]
     from _pytest.main import EXIT_TESTSFAILED  # type: ignore[attr-defined]
-    from _pytest.main import EXIT_USAGEERROR  # type: ignore[attr-defined]
 except ImportError:
     from _pytest.main import ExitCode
 

@@ -25,28 +25,28 @@ def test_keys(hosts):
 
 
 @pytest.mark.parametrize("host_pattern, num_hosts", POSITIVE_HOST_PATTERNS)
-def test_contains(host_pattern, num_hosts, hosts):
+def test_contains(host_pattern, hosts):
     assert host_pattern in hosts, f"{host_pattern} not in hosts"
 
 
 @pytest.mark.parametrize("host_pattern, num_hosts", NEGATIVE_HOST_PATTERNS)
-def test_not_contains(host_pattern, num_hosts, hosts):
+def test_not_contains(host_pattern, hosts):
     assert host_pattern not in hosts
 
 
 @pytest.mark.parametrize("host_pattern, num_hosts", POSITIVE_HOST_PATTERNS)
-def test_getitem(host_pattern, num_hosts, hosts):
+def test_getitem(host_pattern, hosts):
     assert hosts[host_pattern]
 
 
 @pytest.mark.parametrize("host_pattern, num_hosts", NEGATIVE_HOST_PATTERNS)
-def test_not_getitem(host_pattern, num_hosts, hosts):
+def test_not_getitem(host_pattern, hosts):
     with pytest.raises(KeyError):
         assert hosts[host_pattern]
 
 
 @pytest.mark.parametrize("host_pattern, num_hosts", POSITIVE_HOST_PATTERNS)
-def test_getattr(host_pattern, num_hosts, hosts):
+def test_getattr(host_pattern, hosts):
     assert hasattr(hosts, host_pattern)
 
 
@@ -60,11 +60,12 @@ def test_slice(host_slice, num_hosts, hosts):
 @pytest.mark.parametrize("host_slice", NEGATIVE_HOST_SLICES)
 def test_not_slice(host_slice, hosts):
     with pytest.raises(KeyError):
-        hosts[host_slice]
+        result = hosts[host_slice]
+    assert result is None
 
 
 @pytest.mark.parametrize("host_pattern, num_hosts", NEGATIVE_HOST_PATTERNS)
-def test_not_getattr(host_pattern, num_hosts, hosts):
+def test_not_getattr(host_pattern, hosts):
     assert not hasattr(hosts, host_pattern)
     with pytest.raises(AttributeError):
         getattr(hosts, host_pattern)

@@ -37,7 +37,9 @@ def test_items(adhoc_result):
     """Test that the items in the adhoc_result are correctly formatted."""
     items = adhoc_result.items()
     assert isinstance(items, GeneratorType)
-    for count, item in enumerate(items, 1):
+    count = 0
+    for item in items:
+        count += 1
         assert isinstance(item, tuple)
         assert isinstance(item[0], str)
         assert isinstance(item[1], ModuleResult)
@@ -53,8 +55,10 @@ def test_values(adhoc_result):
     assert isinstance(values, list)
     # assure that it is a copy
     assert values is not adhoc_result.contacted.values()
-    for count, val in enumerate(values, 1):
+    count = 0  # Initialize count with 0
+    for val in values:
         assert isinstance(val, ModuleResult)
+        count += 1
     assert count == len(ALL_HOSTS)
 
 

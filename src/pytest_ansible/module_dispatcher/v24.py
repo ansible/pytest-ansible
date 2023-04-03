@@ -31,12 +31,15 @@ class ResultAccumulator(CallbackBase):
 
     def __init__(self, *args, **kwargs):
         """Initialize object."""
-        super(ResultAccumulator, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.contacted = {}
         self.unreachable = {}
+        self.failed_hosts = []
 
     def v2_runner_on_failed(self, result, *args, **kwargs):
-        self.contacted[result._host.get_name()] = result._result
+        host = result._host.get_name()
+        self.failed_hosts.append(host)
+        super().v2_runner_on_failed(result, *args, **kwargs)
 
     v2_runner_on_ok = v2_runner_on_failed
 
@@ -107,7 +110,7 @@ class ModuleDispatcherV24(ModuleDispatcherV2):
             fork_opts=True,
             module_opts=True,
         )
-        (options, args) = parser.parse_args([])
+        (options) = parser.parse_args([])
 
         # Pass along cli options
         options.verbosity = 5
@@ -150,6 +153,7 @@ class ModuleDispatcherV24(ModuleDispatcherV2):
         # now create a task queue manager to execute the play
         tqm = None
         try:
+            options = kwargs.pop("options", None)
             tqm = TaskQueueManager(**kwargs)
             tqm.run(play)
         finally:

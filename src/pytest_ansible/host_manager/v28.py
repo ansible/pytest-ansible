@@ -12,8 +12,8 @@ class HostManagerV28(BaseHostManager):
 
     def __init__(self, *args, **kwargs):
         """Fixme."""
-        super(HostManagerV28, self).__init__(*args, **kwargs)
-        self._dispatcher = ModuleDispatcherV28
+        super().__init__(*args, **kwargs)
+        self._dispatcher = ModuleDispatcherV28()
 
     def initialize_inventory(self):
         self.options["loader"] = DataLoader()

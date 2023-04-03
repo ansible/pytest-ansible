@@ -25,7 +25,7 @@ invalid_hosts = ("none", "all", "*", "local*")
 
 
 @pytest.fixture()
-def module_result_ok(request):
+def module_result_ok():
     return ModuleResult(
         **{
             "invocation": {"module_name": "debug", "module_args": {"msg": "testing"}},
@@ -51,7 +51,7 @@ def module_result_failed():
 
 
 @pytest.fixture()
-def module_result_changed(request):
+def module_result_changed():
     return ModuleResult(
         **{
             "changed": True,
@@ -83,12 +83,12 @@ def module_result_changed(request):
 
 @pytest.fixture()
 def module_result_skipped():
-    raise NotImplemented("Coming soon!")
+    raise NotImplementedError("Coming soon!")
 
 
 @pytest.fixture()
 def module_result_unreachable():
-    raise NotImplemented("Coming soon!")
+    raise NotImplementedError("Coming soon!")
 
 
 @pytest.mark.parametrize(

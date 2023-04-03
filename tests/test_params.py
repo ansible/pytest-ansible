@@ -1,5 +1,4 @@
 import re
-import sys
 
 from unittest import mock
 
@@ -12,7 +11,6 @@ from pytest_ansible.has_version import has_ansible_v28
 
 
 try:
-    from _pytest.main import EXIT_INTERRUPTED  # type: ignore[attr-defined]
     from _pytest.main import EXIT_NOTESTSCOLLECTED  # type: ignore[attr-defined]
     from _pytest.main import EXIT_OK  # type: ignore[attr-defined]
     from _pytest.main import EXIT_TESTSFAILED  # type: ignore[attr-defined]
@@ -26,10 +24,8 @@ except ImportError:
     EXIT_INTERRUPTED = ExitCode.INTERRUPTED
     EXIT_NOTESTSCOLLECTED = ExitCode.NO_TESTS_COLLECTED
 
-if sys.version_info[0] == 2:
-    import __builtin__ as builtins  # NOQA
-else:
-    import builtins  # NOQA
+# if sys.version_info[0] == 2:
+# else:
 
 
 def test_plugin_help(testdir):
@@ -165,7 +161,7 @@ def test_params_required_with_inventory_without_host_pattern(testdir, option):
 
 
 @pytest.mark.requires_ansible_v1
-def test_params_required_with_bogus_inventory_v1(testdir, option):
+def test_params_required_with_bogus_inventory_v1(testdir):
     src = """
         import pytest
         def test_func(ansible_module):
@@ -196,7 +192,7 @@ def test_params_required_with_bogus_inventory_v1(testdir, option):
     or parse_version(ansible.__version__) >= parse_version("2.4.0"),
     reason="requires ansible >= 2.0 and < 2.4",
 )
-def test_params_required_with_bogus_inventory_v2(testdir, option, recwarn):
+def test_params_required_with_bogus_inventory_v2(testdir):
     src = """
         import pytest
         def test_func(ansible_module):
@@ -227,7 +223,7 @@ def test_params_required_with_bogus_inventory_v2(testdir, option, recwarn):
 
 @pytest.mark.requires_ansible_v24
 @pytest.mark.skipif(has_ansible_v28, reason="requires ansible < 2.8")
-def test_params_required_with_bogus_inventory_v24(testdir, option, recwarn):
+def test_params_required_with_bogus_inventory_v24(testdir):
     src = """
         import pytest
         def test_func(ansible_module):

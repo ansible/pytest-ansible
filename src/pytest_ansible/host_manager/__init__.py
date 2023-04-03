@@ -22,17 +22,20 @@ class BaseHostManager:
 
     _required_kwargs = ("inventory",)
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, **kwargs):
         """Fixme."""
         self.options = kwargs
 
         self.check_required_kwargs(**kwargs)
 
         # Sub-classes should override this value
-        self._dispatcher = None
+        self._dispatcher = self._default_dispatcher
 
         # Initialize ansible inventory manager
         self.initialize_inventory()
+
+    def _default_dispatcher(self, **kwargs):
+        pass
 
     def get_extra_inventory_hosts(self, host_pattern=None):
         try:
@@ -58,7 +61,7 @@ class BaseHostManager:
             extra_inventory_groups = []
         return extra_inventory_groups
 
-    def check_required_kwargs(self, **kwargs):
+    def check_required_kwargs(self):
         """Raise a TypeError if any required kwargs are missing."""
         for kwarg in self._required_kwargs:
             if kwarg not in self.options:

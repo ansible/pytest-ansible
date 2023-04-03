@@ -42,7 +42,7 @@ class BaseModuleDispatcher:
         self.options["module_name"] = name
         return self._run
 
-    def check_required_kwargs(self, **kwargs):
+    def check_required_kwargs(self):
         """Raise a TypeError if any required kwargs are missing."""
         for kwarg in self.required_kwargs:
             if kwarg not in self.options:

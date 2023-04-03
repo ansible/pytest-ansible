@@ -31,14 +31,18 @@ class ResultAccumulator(CallbackBase):
 
     def __init__(self, *args, **kwargs):
         """Initialize object."""
-        super(ResultAccumulator, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.contacted = {}
         self.unreachable = {}
+        self.failed_hosts = []
 
     def v2_runner_on_failed(self, result, *args, **kwargs):
         result2 = dict(failed=True)
         result2.update(result._result)
         self.contacted[result._host.get_name()] = result2
+        host = result._host.get_name()
+        self.failed_hosts.append(host)
+        super().v2_runner_on_failed(result, *args, **kwargs)
 
     def v2_runner_on_ok(self, result):
         self.contacted[result._host.get_name()] = result._result

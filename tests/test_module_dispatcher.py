@@ -3,9 +3,6 @@ import pytest
 from conftest import NEGATIVE_HOST_PATTERNS
 from conftest import POSITIVE_HOST_PATTERNS
 
-import pytest_ansible.module_dispatcher.v1  # NOQA
-import pytest_ansible.module_dispatcher.v2  # NOQA
-
 from pytest_ansible.errors import AnsibleModuleError
 from pytest_ansible.module_dispatcher import BaseModuleDispatcher
 
@@ -37,13 +34,13 @@ def test_len(host_pattern, num_hosts, hosts):
 
 
 @pytest.mark.parametrize("host_pattern, num_hosts", POSITIVE_HOST_PATTERNS)
-def test_contains(host_pattern, num_hosts, hosts):
+def test_contains(host_pattern, hosts):
     assert host_pattern in hosts.all
     assert host_pattern in hosts["all"]
 
 
 @pytest.mark.parametrize("host_pattern, num_hosts", NEGATIVE_HOST_PATTERNS)
-def test_not_contains(host_pattern, num_hosts, hosts):
+def test_not_contains(host_pattern, hosts):
     assert host_pattern not in hosts.all
     assert host_pattern not in hosts["all"]
 
