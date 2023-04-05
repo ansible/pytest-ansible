@@ -51,9 +51,9 @@ def test_contacted_with_params(testdir, option):
 @pytest.mark.old
 def test_contacted_with_params_and_inventory_marker(testdir, option):
     """FIXME"""
-    src = """
+    src = f"""
         import pytest
-        @pytest.mark.ansible(inventory='%s')
+        @pytest.mark.ansible(inventory='{option.inventory}')
         def test_func(ansible_module):
             contacted = ansible_module.ping()
 
@@ -64,9 +64,8 @@ def test_contacted_with_params_and_inventory_marker(testdir, option):
                 assert result.is_successful
                 assert result['ping'] == 'pong'
 
-    """ % str(
-        option.inventory
-    )
+        """
+
     testdir.makepyfile(src)
     result = testdir.runpytest_subprocess(
         *option.args + ["--ansible-host-pattern", "local"]
@@ -109,9 +108,9 @@ def test_contacted_with_params_and_host_pattern_marker(testdir, option):
 @pytest.mark.old
 def test_contacted_with_params_and_inventory_host_pattern_marker(testdir, option):
     """FIXME"""
-    src = """
+    src = f"""
         import pytest
-        @pytest.mark.ansible(inventory='%s', host_pattern='local')
+        @pytest.mark.ansible(inventory='{option.inventory}', host_pattern='local')
         def test_func(ansible_module):
             contacted = ansible_module.ping()
 
@@ -121,10 +120,8 @@ def test_contacted_with_params_and_inventory_host_pattern_marker(testdir, option
             for result in contacted.values():
                 assert result.is_successful
                 assert result['ping'] == 'pong'
+        """
 
-    """ % str(
-        option.inventory
-    )
     testdir.makepyfile(src)
     result = testdir.runpytest_subprocess(
         *option.args
@@ -140,14 +137,14 @@ def test_become(testdir, option):
     but verifies that 'sudo' was attempted by asserting
     '--ansible-become-user' fails as expected.
     """
-    src = """
+    src = f"""
         import pytest
         import ansible
         import re
         import os
         from pkg_resources import parse_version
 
-        @pytest.mark.ansible(inventory='%s', host_pattern='localhost')
+        @pytest.mark.ansible(inventory='{option.inventory}', host_pattern='localhost')
         def test_func(ansible_module):
             contacted = ansible_module.ping()
             # assert contacted hosts ...
@@ -167,9 +164,8 @@ def test_become(testdir, option):
                 else:
                     assert 'msg' in result, "Missing expected field in JSON response: msg"
                     assert 'sudo: unknown user: asdfasdf' in result['msg']
-    """ % str(
-        option.inventory
-    )
+        """
+
     testdir.makepyfile(src)
     result = testdir.runpytest_subprocess(
         *option.args
@@ -222,10 +218,10 @@ def test_dark_with_params(testdir, option):
 @pytest.mark.old
 def test_dark_with_params_and_inventory_marker(testdir, option):
     """FIXME"""
-    src = """
+    src = f"""
         import pytest
         from pytest_ansible.errors import (AnsibleConnectionFailure, AnsibleNoHostsMatch)
-        @pytest.mark.ansible(inventory='{inventory}')
+        @pytest.mark.ansible(inventory='{option.inventory}')
         def test_func(ansible_module):
             exc_info = pytest.raises(AnsibleConnectionFailure, ansible_module.ping)
 
@@ -235,9 +231,8 @@ def test_dark_with_params_and_inventory_marker(testdir, option):
 
             # assert dark hosts ...
             assert exc_info.value.dark
-    """.format(
-        inventory=str(option.inventory)
-    )
+        """
+
     testdir.makepyfile(src)
     result = testdir.runpytest_subprocess(
         *option.args + ["--ansible-host-pattern", "unreachable"]
