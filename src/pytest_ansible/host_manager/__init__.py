@@ -40,14 +40,14 @@ class BaseHostManager(object):
                         host_pattern
                     )
                 ]
-        except:
+        except ValueError:
             extra_inventory_hosts = []
         return extra_inventory_hosts
 
     def get_extra_inventory_groups(self):
         try:
             extra_inventory_groups = self.options["extra_inventory_manager"].groups
-        except:
+        except ValueError:
             extra_inventory_groups = []
         return extra_inventory_groups
 

@@ -82,7 +82,6 @@ disable = [
   # https://github.com/PyCQA/pylint/issues/8453
   "preferred-module",
   # Temporarily disabled until we fix them:
-  "bare-except",
   "consider-using-f-string",
   "duplicate-code",
   "fixme",
@@ -132,7 +131,7 @@ markers = [
   "ansible_v1_xfail",
   "requires_ansible_v1",
   "requires_ansible_v2",
-  "requires_ansible_v24"
+  "requires_ansible_v24",
 ]
 
 [tool.setuptools.dynamic]
