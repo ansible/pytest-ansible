@@ -50,8 +50,7 @@ def test_ansible_module_error(hosts):
 
     with pytest.raises(AnsibleModuleError) as exc_info:
         hosts.all.a_module_that_most_certainly_does_not_exist()
-    assert str(
-        exc_info.value
-    ) == "The module {0} was not found in configured module paths.".format(
-        "a_module_that_most_certainly_does_not_exist"
+    assert (
+        str(exc_info.value)
+        == f"The module {'a_module_that_most_certainly_does_not_exist'} was not found in configured module paths."
     )

@@ -122,9 +122,9 @@ class ModuleDispatcherV29(ModuleDispatcherV2):
                 continue
 
             if arg_value is True:
-                args.append("--{0}".format(argument))
+                args.append(f"--{argument}")
             else:
-                args.append("--{0}={1}".format(argument, arg_value))
+                args.append(f"--{argument}={arg_value}")
 
         # Use Ansible's own adhoc cli to parse the fake command line we created and then save it
         # into Ansible's global context
