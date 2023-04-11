@@ -84,11 +84,9 @@ disable = [
   # Temporarily disabled until we fix them:
   "duplicate-code",
   "fixme",
-  "implicit-str-concat",
   "import-error",
   "import-outside-toplevel",
   "invalid-name",
-  "missing-class-docstring",
   "missing-function-docstring",
   "missing-module-docstring",
   "no-else-raise",
