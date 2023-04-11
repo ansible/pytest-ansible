@@ -29,7 +29,7 @@ repos:
       - id: isort
         name: Sort import statements using isort
   - repo: https://github.com/psf/black
-    rev: 23.1.0
+    rev: 23.3.0
     hooks:
       - id: black
         language_version: python3
@@ -45,7 +45,7 @@ repos:
           - flake8-pytest-style>=1.2.2
           - flake8-future-annotations>=0.0.3
   - repo: https://github.com/pycqa/pylint
-    rev: v2.17.1
+    rev: v3.0.0a6
     hooks:
       - id: pylint
         args:
