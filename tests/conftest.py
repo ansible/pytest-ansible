@@ -90,6 +90,8 @@ def pytest_runtest_setup(item):
 
 
 class PyTestOption(object):
+    """Helper class that provides methods for creating and managing an inventory file."""
+
     def __init__(self, config, testdir):
         self.config = config
 

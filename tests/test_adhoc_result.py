@@ -98,7 +98,7 @@ def test_connection_failure_v1():
     # Assert msg
     assert "msg" in exc_info.value.dark["unknown.example.com"]
     assert exc_info.value.dark["unknown.example.com"]["msg"].startswith(
-        "SSH Error: ssh: Could not resolve hostname" " unknown.example.com:"
+        "SSH Error: ssh: Could not resolve hostname" + " unknown.example.com:"
     )
 
 

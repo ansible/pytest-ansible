@@ -40,14 +40,14 @@ class BaseHostManager(object):
                         host_pattern
                     )
                 ]
-        except:
+        except KeyError:
             extra_inventory_hosts = []
         return extra_inventory_hosts
 
     def get_extra_inventory_groups(self):
         try:
             extra_inventory_groups = self.options["extra_inventory_manager"].groups
-        except:
+        except KeyError:
             extra_inventory_groups = []
         return extra_inventory_groups
 
@@ -55,7 +55,7 @@ class BaseHostManager(object):
         """Raise a TypeError if any required kwargs are missing."""
         for kwarg in self._required_kwargs:
             if kwarg not in self.options:
-                raise TypeError("Missing required keyword argument '%s'" % kwarg)
+                raise TypeError(f"Missing required keyword argument '{kwarg}'")
 
     def has_matching_inventory(self, host_pattern):
         """Return whether any matching ansible inventory is found for the provided host_pattern."""
@@ -86,17 +86,15 @@ class BaseHostManager(object):
         else:
             if not self.has_matching_inventory(item):
                 raise KeyError(item)
-            else:
-                self.options["host_pattern"] = item
-                return self._dispatcher(**self.options)
+            self.options["host_pattern"] = item
+            return self._dispatcher(**self.options)
 
     def __getattr__(self, attr):
         """Return a ModuleDispatcher instance described the provided `attr`."""
         if not self.has_matching_inventory(attr):
-            raise AttributeError("type HostManager has no attribute '%s'" % attr)
-        else:
-            self.options["host_pattern"] = attr
-            return self._dispatcher(**self.options)
+            raise AttributeError(f"type HostManager has no attribute '{attr}'")
+        self.options["host_pattern"] = attr
+        return self._dispatcher(**self.options)
 
     def keys(self):
         inventory_hosts = [
