@@ -9,7 +9,6 @@ from ansible.cli.adhoc import AdHocCLI
 from ansible.executor.task_queue_manager import TaskQueueManager
 from ansible.playbook.play import Play
 from ansible.plugins.callback import CallbackBase
-from ansible.plugins.loader import module_loader
 
 from pytest_ansible.errors import AnsibleConnectionFailure
 from pytest_ansible.has_version import has_ansible_v213
@@ -17,10 +16,11 @@ from pytest_ansible.module_dispatcher.v2 import ModuleDispatcherV2
 from pytest_ansible.results import AdHocResult
 
 
-# pylint: disable=ungrouped-imports
+# pylint: disable=ungrouped-imports, wrong-import-position
 
 if not has_ansible_v213:
     raise ImportError("Only supported with ansible-2.13 and newer")
+from ansible.plugins.loader import module_loader
 
 
 # pylint: enable=ungrouped-imports
