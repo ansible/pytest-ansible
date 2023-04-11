@@ -86,17 +86,15 @@ class BaseHostManager(object):
         else:
             if not self.has_matching_inventory(item):
                 raise KeyError(item)
-            else:
-                self.options["host_pattern"] = item
-                return self._dispatcher(**self.options)
+            self.options["host_pattern"] = item
+            return self._dispatcher(**self.options)
 
     def __getattr__(self, attr):
         """Return a ModuleDispatcher instance described the provided `attr`."""
         if not self.has_matching_inventory(attr):
             raise AttributeError(f"type HostManager has no attribute '{attr}'")
-        else:
-            self.options["host_pattern"] = attr
-            return self._dispatcher(**self.options)
+        self.options["host_pattern"] = attr
+        return self._dispatcher(**self.options)
 
     def keys(self):
         inventory_hosts = [
