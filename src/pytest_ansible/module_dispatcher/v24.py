@@ -15,12 +15,12 @@ from pytest_ansible.module_dispatcher.v2 import ModuleDispatcherV2
 from pytest_ansible.results import AdHocResult
 
 
-# pylint: disable=ungrouped-imports
+# pylint: disable=ungrouped-imports, wrong-import-position
 
 if not has_ansible_v24:
     raise ImportError("Only supported with ansible-2.4 and newer")
-else:
-    from ansible.plugins.loader import module_loader
+from ansible.plugins.loader import module_loader
+
 
 # pylint: enable=ungrouped-imports
 

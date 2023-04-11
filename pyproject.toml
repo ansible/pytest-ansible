@@ -89,7 +89,6 @@ disable = [
   "invalid-name",
   "missing-function-docstring",
   "missing-module-docstring",
-  "no-else-raise",
   "no-else-return",
   "no-member",
   "no-name-in-module",
