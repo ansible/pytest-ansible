@@ -83,11 +83,10 @@ class BaseHostManager(object):
 
         if item in self.__dict__:
             return self.__dict__[item]
-        else:
-            if not self.has_matching_inventory(item):
-                raise KeyError(item)
-            self.options["host_pattern"] = item
-            return self._dispatcher(**self.options)
+        if not self.has_matching_inventory(item):
+            raise KeyError(item)
+        self.options["host_pattern"] = item
+        return self._dispatcher(**self.options)
 
     def __getattr__(self, attr):
         """Return a ModuleDispatcher instance described the provided `attr`."""

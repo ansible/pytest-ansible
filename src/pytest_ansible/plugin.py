@@ -23,8 +23,7 @@ def become_methods():
     """Return string list of become methods available to ansible."""
     if become_loader:
         return [method.name for method in become_loader.all()]
-    else:
-        return ansible.constants.BECOME_METHODS
+    return ansible.constants.BECOME_METHODS
 
 
 def pytest_addoption(parser):
