@@ -56,6 +56,7 @@ def test_slice(host_slice, num_hosts, hosts):
     ), f"{len(hosts[host_slice])} != {num_hosts} for {host_slice}"
 
 
+# pylint: disable=pointless-statement
 @pytest.mark.parametrize("host_slice", NEGATIVE_HOST_SLICES)
 def test_not_slice(host_slice, hosts):
     with pytest.raises(KeyError):

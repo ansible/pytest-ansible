@@ -16,6 +16,7 @@ from pytest_ansible.host_manager import get_host_manager
 
 
 # Silence linters for imported fixtures
+# pylint: disable=pointless-statement
 (ansible_adhoc, ansible_module, ansible_facts, localhost)
 
 
