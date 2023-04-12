@@ -22,10 +22,13 @@ class BaseHostManager(object):
         self.check_required_kwargs(**kwargs)
 
         # Sub-classes should override this value
-        self._dispatcher = None
+        self._dispatcher = self._default_dispatcher
 
         # Initialize ansible inventory manager
         self.initialize_inventory()
+
+    def _default_dispatcher(self, **kwargs):
+        pass
 
     def get_extra_inventory_hosts(self, host_pattern=None):
         try:
