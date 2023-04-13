@@ -98,7 +98,6 @@ disable = [
   "too-many-statements",
   "unexpected-keyword-arg",
   "unused-argument",
-  "unused-import",
   "unused-variable",
   "use-a-generator",
   "use-dict-literal",
@@ -106,7 +105,6 @@ disable = [
   "used-before-assignment",
   "useless-object-inheritance",
   "using-constant-test",
-  "wrong-import-order",
 ]
 
 [tool.pytest]

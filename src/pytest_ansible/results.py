@@ -1,7 +1,5 @@
 """Fixme."""
 
-import ansible.errors  # NOQA
-
 
 class ModuleResult(dict):
 
