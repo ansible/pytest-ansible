@@ -10,7 +10,7 @@ class HostManagerV1(BaseHostManager):
 
     def __init__(self, *args, **kwargs):
         """Fixme."""
-        super(HostManagerV1, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._dispatcher = ModuleDispatcherV1
 
     def keys(self):

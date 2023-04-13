@@ -11,7 +11,7 @@ class HostManagerV29(BaseHostManager):
 
     def __init__(self, *args, **kwargs):
         """Fixme."""
-        super(HostManagerV29, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._dispatcher = ModuleDispatcherV29
 
     def initialize_inventory(self):

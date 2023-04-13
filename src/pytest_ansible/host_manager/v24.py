@@ -12,7 +12,7 @@ class HostManagerV24(BaseHostManager):
 
     def __init__(self, *args, **kwargs):
         """Fixme."""
-        super(HostManagerV24, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._dispatcher = ModuleDispatcherV24
 
     def initialize_inventory(self):
