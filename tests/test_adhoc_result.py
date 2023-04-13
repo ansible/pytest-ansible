@@ -26,6 +26,7 @@ def test_keys(adhoc_result):
 def test_items(adhoc_result):
     items = adhoc_result.items()
     assert isinstance(items, GeneratorType)
+    count = 0
     for count, item in enumerate(items, 1):
         assert isinstance(item, tuple)
         assert isinstance(item[0], str)
@@ -38,6 +39,7 @@ def test_values(adhoc_result):
     assert isinstance(values, list)
     # assure that it is a copy
     assert values is not adhoc_result.contacted.values()
+    count = 0
     for count, val in enumerate(values, 1):
         assert isinstance(val, ModuleResult)
     assert count == len(ALL_HOSTS)

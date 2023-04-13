@@ -7,8 +7,6 @@ class AnsibleNoHostsMatch(ansible.errors.AnsibleError):
 
     """Sub-class AnsibleError when no hosts match."""
 
-    pass
-
 
 class AnsibleConnectionFailure(ansible.errors.AnsibleError):
 
@@ -24,5 +22,3 @@ class AnsibleConnectionFailure(ansible.errors.AnsibleError):
 class AnsibleModuleError(ansible.errors.AnsibleError):
 
     """Sub-class AnsibleError when module failures occur."""
-
-    pass
