@@ -1,6 +1,7 @@
 import pytest
 
 
+# pylint: disable=unused-import
 try:
     from _pytest.main import EXIT_INTERRUPTED  # type: ignore[attr-defined]
     from _pytest.main import EXIT_NOTESTSCOLLECTED  # type: ignore[attr-defined]

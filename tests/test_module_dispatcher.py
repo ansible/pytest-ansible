@@ -15,6 +15,7 @@ def test_runtime_error():
         bmd._run("foo")
 
 
+# pylint: disable=unused-import
 @pytest.mark.requires_ansible_v1
 def test_importerror_requires_v2():
     with pytest.raises(ImportError):

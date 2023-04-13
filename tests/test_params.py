@@ -11,6 +11,7 @@ from pkg_resources import parse_version
 from pytest_ansible.has_version import has_ansible_v28
 
 
+# pylint: disable=unused-import
 try:
     from _pytest.main import EXIT_INTERRUPTED  # type: ignore[attr-defined]
     from _pytest.main import EXIT_NOTESTSCOLLECTED  # type: ignore[attr-defined]
@@ -26,6 +27,7 @@ except ImportError:
     EXIT_INTERRUPTED = ExitCode.INTERRUPTED
     EXIT_NOTESTSCOLLECTED = ExitCode.NO_TESTS_COLLECTED
 
+# pylint: disable=unused-import
 if sys.version_info[0] == 2:
     import __builtin__ as builtins  # NOQA
 else:
