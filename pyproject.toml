@@ -93,8 +93,6 @@ disable = [
   "no-name-in-module",
   "protected-access",
   "redefined-outer-name",
-  "super-with-arguments",
-  "too-few-public-methods",
   "too-many-branches",
   "too-many-locals",
   "too-many-statements",

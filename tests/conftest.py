@@ -89,6 +89,7 @@ def pytest_runtest_setup(item):
             )
 
 
+# pylint: disable=too-few-public-methods
 class PyTestOption(object):
     """Helper class that provides methods for creating and managing an inventory file."""
 
