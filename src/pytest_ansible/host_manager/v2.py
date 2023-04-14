@@ -7,10 +7,9 @@ from pytest_ansible.module_dispatcher.v2 import ModuleDispatcherV2
 
 
 class HostManagerV2(BaseHostManager):
-
     """Fixme."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         """Fixme."""
         super().__init__(*args, **kwargs)
         self._dispatcher = ModuleDispatcherV2
@@ -24,5 +23,5 @@ class HostManagerV2(BaseHostManager):
             host_list=self.options["inventory"],
         )
         self.options["variable_manager"].set_inventory(
-            self.options["inventory_manager"]
+            self.options["inventory_manager"],
         )

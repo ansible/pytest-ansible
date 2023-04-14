@@ -4,7 +4,6 @@ import warnings
 import ansible.constants
 import ansible.errors
 import ansible.utils
-
 from ansible.cli.adhoc import AdHocCLI
 from ansible.executor.task_queue_manager import TaskQueueManager
 from ansible.playbook.play import Play
@@ -15,7 +14,6 @@ from pytest_ansible.errors import AnsibleConnectionFailure
 from pytest_ansible.has_version import has_ansible_v28
 from pytest_ansible.module_dispatcher.v2 import ModuleDispatcherV2
 from pytest_ansible.results import AdHocResult
-
 
 # pylint: disable=ungrouped-imports, wrong-import-position
 if not has_ansible_v28:
@@ -28,7 +26,7 @@ if not has_ansible_v28:
 class ResultAccumulator(CallbackBase):
     """Fixme."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         """Initialize object."""
         super().__init__(*args, **kwargs)
         self.contacted = {}
@@ -89,11 +87,11 @@ class ModuleDispatcherV28(ModuleDispatcherV2):
 
         self.options["inventory_manager"].subset(self.options.get("subset"))
         hosts = self.options["inventory_manager"].list_hosts(
-            self.options["host_pattern"]
+            self.options["host_pattern"],
         )
         if len(hosts) == 0 and not no_hosts:
             raise ansible.errors.AnsibleError(
-                "Specified hosts and/or --limit does not match any hosts"
+                "Specified hosts and/or --limit does not match any hosts",
             )
 
         # Pass along cli options
@@ -180,7 +178,9 @@ class ModuleDispatcherV28(ModuleDispatcherV2):
         # FIXME - if multiple hosts were involved, should an exception be raised?
         if cb.unreachable:
             raise AnsibleConnectionFailure(
-                "Host unreachable", dark=cb.unreachable, contacted=cb.contacted
+                "Host unreachable",
+                dark=cb.unreachable,
+                contacted=cb.contacted,
             )
 
         # Success!

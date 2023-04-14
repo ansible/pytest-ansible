@@ -1,12 +1,12 @@
 import pytest
-
 from ansible.errors import AnsibleError
-from conftest import ALL_HOSTS
-from conftest import NEGATIVE_HOST_PATTERNS
-from conftest import NEGATIVE_HOST_SLICES
-from conftest import POSITIVE_HOST_PATTERNS
-from conftest import POSITIVE_HOST_SLICES
-
+from conftest import (
+    ALL_HOSTS,
+    NEGATIVE_HOST_PATTERNS,
+    NEGATIVE_HOST_SLICES,
+    POSITIVE_HOST_PATTERNS,
+    POSITIVE_HOST_SLICES,
+)
 
 pytestmark = [
     pytest.mark.unit,
@@ -78,7 +78,5 @@ def test_defaults(request):
     plugin = request.config.pluginmanager.getplugin("ansible")
     hosts = plugin.initialize(config=request.config, request=request)
 
-    # from pytest_ansible.host_manager import get_host_manager
-    # hosts = get_host_manager(inventory='unknown.example.com,')
     assert "connection" in hosts.options
     assert hosts.options["connection"] == DEFAULT_TRANSPORT

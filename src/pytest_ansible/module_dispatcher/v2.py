@@ -1,14 +1,11 @@
 from __future__ import annotations
 
 import warnings
-
-from typing import Sequence
+from collections.abc import Sequence
 
 import ansible.constants
 import ansible.errors
 import ansible.utils
-
-# from ansible.plugins.loader import module_loader
 from ansible.cli import CLI
 from ansible.executor.task_queue_manager import TaskQueueManager
 from ansible.playbook.play import Play
@@ -19,7 +16,6 @@ from pytest_ansible.has_version import has_ansible_v2
 from pytest_ansible.module_dispatcher import BaseModuleDispatcher
 from pytest_ansible.results import AdHocResult
 
-
 if not has_ansible_v2:
     raise ImportError("Only supported with ansible-2.* and newer")
 
@@ -27,7 +23,7 @@ if not has_ansible_v2:
 class ResultAccumulator(CallbackBase):
     """Fixme."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         """Initialize object."""
         super().__init__(*args, **kwargs)
         self.contacted = {}
@@ -69,7 +65,6 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
                 ansible.plugins.module_loader.add_directory(paths)
 
         return ansible.plugins.module_loader.has_plugin(name)
-        # return module_loader.has_plugin(name)
 
     def _run(self, *module_args, **complex_args):
         """Execute an ansible adhoc command returning the result in a AdhocResult object."""
@@ -86,11 +81,11 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
 
         self.options["inventory_manager"].subset(self.options.get("subset"))
         hosts = self.options["inventory_manager"].list_hosts(
-            self.options["host_pattern"]
+            self.options["host_pattern"],
         )
         if len(hosts) == 0 and not no_hosts:
             raise ansible.errors.AnsibleError(
-                "Specified hosts and/or --limit does not match any hosts"
+                "Specified hosts and/or --limit does not match any hosts",
             )
 
         parser = CLI.base_parser(
@@ -138,8 +133,8 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
                     "action": {
                         "module": self.options["module_name"],
                         "args": complex_args,
-                    }
-                }
+                    },
+                },
             ],
         }
 
@@ -162,7 +157,9 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
         # FIXME - if multiple hosts were involved, should an exception be raised?
         if cb.unreachable:
             raise AnsibleConnectionFailure(
-                "Host unreachable", dark=cb.unreachable, contacted=cb.contacted
+                "Host unreachable",
+                dark=cb.unreachable,
+                contacted=cb.contacted,
             )
 
         # Success!

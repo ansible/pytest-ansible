@@ -5,15 +5,15 @@ import ansible.constants
 import ansible.errors
 import ansible.utils
 import pytest
-
 from ansible.plugins.loader import become_loader
 
-from pytest_ansible.fixtures import ansible_adhoc
-from pytest_ansible.fixtures import ansible_facts
-from pytest_ansible.fixtures import ansible_module
-from pytest_ansible.fixtures import localhost
+from pytest_ansible.fixtures import (
+    ansible_adhoc,
+    ansible_facts,
+    ansible_module,
+    localhost,
+)
 from pytest_ansible.host_manager import get_host_manager
-
 
 # Silence linters for imported fixtures
 # pylint: disable=pointless-statement
@@ -29,7 +29,6 @@ def become_methods():
 
 def pytest_addoption(parser):
     """Add options to control ansible."""
-
     group = parser.getgroup("pytest-ansible")
     group.addoption(
         "--inventory",
@@ -141,7 +140,6 @@ def pytest_addoption(parser):
 
 def pytest_configure(config):
     """Validate --ansible-* parameters."""
-
     config.addinivalue_line("markers", "ansible(**kwargs): Ansible integration")
 
     # Enable connection debugging
@@ -159,7 +157,6 @@ def pytest_configure(config):
 
 def pytest_generate_tests(metafunc):
     """Generate tests when specific `ansible_*` fixtures are used by tests."""
-
     if "ansible_host" in metafunc.fixturenames:
         # assert required --ansible-* parameters were used
         PyTestAnsiblePlugin.assert_required_ansible_parameters(metafunc.config)
@@ -172,12 +169,11 @@ def pytest_generate_tests(metafunc):
         except ansible.errors.AnsibleError as e:
             raise pytest.UsageError(e)
         # Return the host name as a string
-        # metafunc.parametrize("ansible_host", hosts.keys())
         # Return a HostManager instance where pattern=host (e.g. ansible_host.all.shell('date'))
         # metafunc.parametrize("ansible_host", iter(plugin.initialize(config=plugin.config, pattern=h) for h in
         #                                           hosts.keys()))
         # Return a ModuleDispatcher instance representing `host` (e.g. ansible_host.shell('date'))
-        metafunc.parametrize("ansible_host", iter(hosts[h] for h in hosts.keys()))
+        metafunc.parametrize("ansible_host", iter(hosts[h] for h in hosts))
 
     if "ansible_group" in metafunc.fixturenames:
         # assert required --ansible-* parameters were used
@@ -194,17 +190,15 @@ def pytest_generate_tests(metafunc):
         groups = hosts.options["inventory_manager"].list_groups()
         extra_groups = hosts.get_extra_inventory_groups()
         # Return the group name as a string
-        # metafunc.parametrize("ansible_group", groups)
         # Return a ModuleDispatcher instance representing the group (e.g. ansible_group.shell('date'))
         metafunc.parametrize("ansible_group", iter(hosts[g] for g in groups))
         metafunc.parametrize("ansible_group", iter(hosts[g] for g in extra_groups))
 
 
 class PyTestAnsiblePlugin:
-
     """Ansible PyTest Plugin Class."""
 
-    def __init__(self, config):
+    def __init__(self, config) -> None:
         """Initialize plugin."""
         self.config = config
 
@@ -214,14 +208,12 @@ class PyTestAnsiblePlugin:
 
     def pytest_collection_modifyitems(self, session, config, items):
         """Validate --ansible-* parameters."""
-
         uses_ansible_fixtures = False
         for item in items:
             if not hasattr(item, "fixturenames"):
                 continue
             if any(fixture.startswith("ansible_") for fixture in item.fixturenames):
                 # TODO - ignore if they are using a marker
-                # marker = item.get_marker('ansible')
                 # if marker and 'inventory' in marker.kwargs:
                 uses_ansible_fixtures = True
                 break
@@ -297,7 +289,7 @@ class PyTestAnsiblePlugin:
         ansible_hostname = config.getoption("ansible_host_pattern")
         if ansible_hostname is None or ansible_hostname == "":
             errors.append(
-                "Missing required parameter --ansible-host-pattern/--host-pattern"
+                "Missing required parameter --ansible-host-pattern/--host-pattern",
             )
 
         # NOTE: I don't think this will ever catch issues since ansible_inventory
@@ -307,7 +299,7 @@ class PyTestAnsiblePlugin:
         if ansible_inventory is None or ansible_inventory == "":
             errors.append(
                 "Unable to find an inventory file, specify one with the --ansible-inventory/--inventory "
-                "parameter."
+                "parameter.",
             )
 
         if errors:

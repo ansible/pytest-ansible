@@ -1,23 +1,21 @@
 import re
 import sys
-
 from unittest import mock
 
 import ansible
 import pytest
-
 from pkg_resources import parse_version
-
 from pytest_ansible.has_version import has_ansible_v28
-
 
 # pylint: disable=unused-import
 try:
-    from _pytest.main import EXIT_INTERRUPTED  # type: ignore[attr-defined]
-    from _pytest.main import EXIT_NOTESTSCOLLECTED  # type: ignore[attr-defined]
-    from _pytest.main import EXIT_OK  # type: ignore[attr-defined]
-    from _pytest.main import EXIT_TESTSFAILED  # type: ignore[attr-defined]
-    from _pytest.main import EXIT_USAGEERROR  # type: ignore[attr-defined]
+    from _pytest.main import (
+        EXIT_INTERRUPTED,  # type: ignore[attr-defined]
+        EXIT_NOTESTSCOLLECTED,  # type: ignore[attr-defined]
+        EXIT_OK,  # type: ignore[attr-defined]
+        EXIT_TESTSFAILED,  # type: ignore[attr-defined]
+        EXIT_USAGEERROR,  # type: ignore[attr-defined]
+    )
 except ImportError:
     from _pytest.main import ExitCode
 
@@ -29,14 +27,13 @@ except ImportError:
 
 # pylint: disable=unused-import
 if sys.version_info[0] == 2:
-    import __builtin__ as builtins  # NOQA
+    import __builtin__ as builtins
 else:
     import builtins  # NOQA
 
 
 def test_plugin_help(testdir):
-    """Verifies expected output from of pytest --help"""
-
+    """Verifies expected output from of pytest --help."""
     result = testdir.runpytest("--help")
     result.stdout.fnmatch_lines(
         [
@@ -55,24 +52,22 @@ def test_plugin_help(testdir):
             "  --ask-become-pass=ANSIBLE_ASK_BECOME_PASS, --ansible-ask-become-pass=ANSIBLE_ASK_BECOME_PASS",
             # Check for the marker in --help
             "  ansible (args)*Ansible integration",
-        ]
+        ],
     )
 
 
 def test_plugin_markers(testdir):
-    """Verifies expected output from of pytest --markers"""
-
+    """Verifies expected output from of pytest --markers."""
     result = testdir.runpytest("--markers")
     result.stdout.fnmatch_lines(
         [
             "@pytest.mark.ansible(*args): Ansible integration",
-        ]
+        ],
     )
 
 
 def test_report_header(testdir, option):
     """Verify the expected ansible version in the pytest report header."""
-
     result = testdir.runpytest(*option.args)
     assert result.ret == EXIT_NOTESTSCOLLECTED
     result.stdout.fnmatch_lines([f"ansible: {ansible.__version__}"])
@@ -80,7 +75,6 @@ def test_report_header(testdir, option):
 
 def test_params_not_required_when_not_using_fixture(testdir, option):
     """Verify the ansible parameters are not required if the fixture is not used."""
-
     src = """
         import pytest
         def test_func():
@@ -101,7 +95,6 @@ def test_params_not_required_when_not_using_fixture(testdir, option):
 )
 def test_params_required_when_using_fixture(testdir, option, fixture_name):
     """Verify the ansible parameters are required if the fixture is used."""
-
     src = f"""
         import pytest
         def test_func({fixture_name}):
@@ -114,7 +107,7 @@ def test_params_required_when_using_fixture(testdir, option, fixture_name):
     result.stderr.fnmatch_lines(
         [
             "ERROR: Missing required parameter --ansible-host-pattern/--host-pattern",
-        ]
+        ],
     )
 
 
@@ -138,12 +131,11 @@ def test_params_required_when_using_fixture(testdir, option, fixture_name):
     ),
 )
 def test_param_requires_value(testdir, required_value_parameter):
-    """Verifies failure when not providing a value to a parameter that requires a value"""
-
+    """Verifies failure when not providing a value to a parameter that requires a value."""
     result = testdir.runpytest(*[required_value_parameter])
     assert result.ret == EXIT_USAGEERROR
     result.stderr.fnmatch_lines(
-        [f"*: error: argument *{required_value_parameter}*: expected one argument"]
+        [f"*: error: argument *{required_value_parameter}*: expected one argument"],
     )
 
 
@@ -155,12 +147,12 @@ def test_params_required_with_inventory_without_host_pattern(testdir, option):
             assert True
     """
     testdir.makepyfile(src)
-    result = testdir.runpytest(*option.args + ["--ansible-inventory", "local,"])
+    result = testdir.runpytest(*[*option.args, "--ansible-inventory", "local,"])
     assert result.ret == EXIT_USAGEERROR
     result.stderr.fnmatch_lines(
         [
             "ERROR: Missing required parameter --ansible-host-pattern/--host-pattern",
-        ]
+        ],
     )
 
 
@@ -174,7 +166,7 @@ def test_params_required_with_bogus_inventory_v1(testdir, option):
     testdir.makepyfile(src)
     with mock.patch("os.path.exists", return_value=False) as mock_exists:
         result = testdir.runpytest(
-            *["--ansible-inventory", "bogus", "--ansible-host-pattern", "all"]
+            *["--ansible-inventory", "bogus", "--ansible-host-pattern", "all"],
         )
 
     # Assert pytest exit code
@@ -184,7 +176,7 @@ def test_params_required_with_bogus_inventory_v1(testdir, option):
     result.stdout.fnmatch_lines(
         [
             "*Unable to find an inventory file, specify one with -i ?",
-        ]
+        ],
     )
 
     # Assert mock open called on provided file
@@ -206,7 +198,8 @@ def test_params_required_with_bogus_inventory_v2(testdir, option, recwarn):
     testdir.makepyfile(src)
 
     with mock.patch(
-        "ansible.parsing.dataloader.DataLoader.path_exists", return_value=False
+        "ansible.parsing.dataloader.DataLoader.path_exists",
+        return_value=False,
     ) as mock_exists:
         result = testdir.runpytest(
             *[
@@ -215,7 +208,7 @@ def test_params_required_with_bogus_inventory_v2(testdir, option, recwarn):
                 "bogus",
                 "--ansible-host-pattern",
                 "all",
-            ]
+            ],
         )
 
     # Assert pytest exit code
@@ -242,7 +235,7 @@ def test_params_required_with_bogus_inventory_v24(testdir, option, recwarn):
     testdir.makepyfile(src)
 
     result = testdir.runpytest(
-        *["-vvvvvs", "--ansible-inventory", "bogus", "--ansible-host-pattern", "all"]
+        *["-vvvvvs", "--ansible-inventory", "bogus", "--ansible-host-pattern", "all"],
     )
 
     # Assert pytest exit code
@@ -251,7 +244,8 @@ def test_params_required_with_bogus_inventory_v24(testdir, option, recwarn):
     # There appear to be '\n' newline characters within the output.  Using the join on errlines flattens the string for
     # easier comparison.
     assert re.search(
-        r"Unable to parse .*/bogus as an inventory source", " ".join(result.errlines)
+        r"Unable to parse .*/bogus as an inventory source",
+        " ".join(result.errlines),
     )
 
 
@@ -263,12 +257,12 @@ def test_params_required_without_inventory_with_host_pattern_v1(testdir, option)
             assert True
     """
     testdir.makepyfile(src)
-    result = testdir.runpytest(*option.args + ["--ansible-host-pattern", "all"])
+    result = testdir.runpytest(*[*option.args, "--ansible-host-pattern", "all"])
     assert result.ret == EXIT_TESTSFAILED
     result.stdout.fnmatch_lines(
         [
             "*Unable to find an inventory file, specify one with -i ?",
-        ]
+        ],
     )
 
 
@@ -280,7 +274,7 @@ def test_params_required_without_inventory_with_host_pattern_v2(testdir, option)
             assert True
     """
     testdir.makepyfile(src)
-    result = testdir.runpytest(*option.args + ["--ansible-host-pattern", "all"])
+    result = testdir.runpytest(*[*option.args, "--ansible-host-pattern", "all"])
     assert result.ret == EXIT_OK
 
     # TODO - validate the following warning message
@@ -291,7 +285,7 @@ def test_params_required_without_inventory_with_host_pattern_v2(testdir, option)
             [
                 "*[WARNING]: Host file not found: /etc/ansible/hosts*",
                 "*provided hosts list is empty, only localhost is available",
-            ]
+            ],
         )
 
 
@@ -314,7 +308,7 @@ def test_param_override_with_marker(testdir):
             "garbage",
             "--ansible-connection",
             "garbage",
-        ]
+        ],
     )
     assert result.ret == EXIT_OK
 

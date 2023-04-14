@@ -4,7 +4,6 @@ import ansible
 import ansible.constants
 import ansible.errors
 import ansible.utils
-
 from ansible.runner import Runner
 
 from pytest_ansible.errors import AnsibleConnectionFailure
@@ -12,13 +11,11 @@ from pytest_ansible.has_version import has_ansible_v1
 from pytest_ansible.module_dispatcher import BaseModuleDispatcher
 from pytest_ansible.results import AdHocResult
 
-
 if not has_ansible_v1:
     raise ImportError("Only supported with ansible < 2.0")
 
 
 class ModuleDispatcherV1(BaseModuleDispatcher):
-
     """Pass."""
 
     required_kwargs = ("inventory", "inventory_manager", "host_pattern")
@@ -53,11 +50,11 @@ class ModuleDispatcherV1(BaseModuleDispatcher):
 
         self.options["inventory_manager"].subset(self.options.get("subset"))
         hosts = self.options["inventory_manager"].list_hosts(
-            self.options["host_pattern"]
+            self.options["host_pattern"],
         )
         if len(hosts) == 0 and not no_hosts:
             raise ansible.errors.AnsibleError(
-                "Specified hosts and/or --limit does not match any hosts"
+                "Specified hosts and/or --limit does not match any hosts",
             )
 
         # Build module runner object
@@ -81,7 +78,9 @@ class ModuleDispatcherV1(BaseModuleDispatcher):
 
         if "dark" in results and results["dark"]:
             raise AnsibleConnectionFailure(
-                "Host unreachable", dark=results["dark"], contacted=results["contacted"]
+                "Host unreachable",
+                dark=results["dark"],
+                contacted=results["contacted"],
             )
 
         # Success!

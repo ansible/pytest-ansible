@@ -2,17 +2,12 @@
 
 
 class ModuleResult(dict):
-
     """Fixme."""
 
     def _check_key(self, key):
         # if 'results' in self:
-        #     flag = False
         #     for res in self.get('results', []):
         #         if isinstance(res, dict):
-        #             flag |= res.get(key, False)
-        #     return flag
-        # else:
         return self.get(key, False)
 
     @property
@@ -43,10 +38,9 @@ class ModuleResult(dict):
 
 
 class AdHocResult:
-
     """Fixme."""
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         """Fixme."""
         required_kwargs = ("contacted",)
         for kwarg in required_kwargs:
@@ -65,11 +59,11 @@ class AdHocResult:
             return ModuleResult(**self.contacted[attr])
         raise AttributeError(f"type AdHocResult has no attribute '{attr}'")
 
-    def __len__(self):
+    def __len__(self) -> int:
         """Return the number of contacted hosts."""
         return len(self.contacted)
 
-    def __contains__(self, item):
+    def __contains__(self, item) -> bool:
         """Return whether the provided `item` was contacted."""
         return item in self.contacted
 
@@ -83,9 +77,9 @@ class AdHocResult:
 
     def items(self):
         """Return a list of tuples containing the inventory host key, and the ModuleResult instance."""
-        for k in self.contacted.keys():
+        for k in self.contacted:
             yield (k, getattr(self, k))
 
     def values(self):
         """Return a list of ModuleResult instances for each contacted inventory host."""
-        return [getattr(self, k) for k in self.contacted.keys()]
+        return [getattr(self, k) for k in self.contacted]

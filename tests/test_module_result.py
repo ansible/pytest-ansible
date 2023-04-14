@@ -1,7 +1,5 @@
 import pytest
-
 from pytest_ansible.results import ModuleResult
-
 
 positive_host_patterns = {
     "all": 2,
@@ -33,7 +31,7 @@ def module_result_ok(request):
             "changed": False,
             "_ansible_verbose_always": True,
             "_ansible_no_log": False,
-        }
+        },
     )
 
 
@@ -46,7 +44,7 @@ def module_result_failed():
             "changed": False,
             "_ansible_no_log": False,
             "msg": "Failed as requested from task",
-        }
+        },
     )
 
 
@@ -77,7 +75,7 @@ def module_result_changed(request):
             },
             "stdout_lines": ["Fri Jun 17 21:32:54 EDT 2016"],
             "warnings": [],
-        }
+        },
     )
 
 

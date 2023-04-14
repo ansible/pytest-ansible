@@ -1,7 +1,5 @@
 import pytest
-
-from conftest import NEGATIVE_HOST_PATTERNS
-from conftest import POSITIVE_HOST_PATTERNS
+from conftest import NEGATIVE_HOST_PATTERNS, POSITIVE_HOST_PATTERNS
 
 
 def test_runtime_error():
