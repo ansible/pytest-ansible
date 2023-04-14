@@ -33,11 +33,14 @@ jobs:
           other_names: |
             lint
             pkg
+            devel
           platforms: linux
 
   build:
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os || 'ubuntu-22.04' }}
+    # Failure of 'devel' job should not mark the whole workflow as failed
+    continue-on-error: ${{ contains(matrix.name, 'devel') && true || false }}
     needs: pre
     defaults:
       run:
