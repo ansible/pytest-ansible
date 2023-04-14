@@ -93,11 +93,11 @@ def test_params_not_required_when_not_using_fixture(testdir, option):
 
 @pytest.mark.parametrize(
     "fixture_name",
-    [
+    (
         "ansible_adhoc",
         "ansible_module",
         "ansible_facts",
-    ],
+    ),
 )
 def test_params_required_when_using_fixture(testdir, option, fixture_name):
     """Verify the ansible parameters are required if the fixture is used."""
@@ -120,7 +120,7 @@ def test_params_required_when_using_fixture(testdir, option, fixture_name):
 
 @pytest.mark.parametrize(
     "required_value_parameter",
-    [
+    (
         "--ansible-inventory",
         "--inventory",
         "--ansible-host-pattern",
@@ -135,7 +135,7 @@ def test_params_required_when_using_fixture(testdir, option, fixture_name):
         "--become-user",
         "--ansible-module-path",
         "--module-path",
-    ],
+    ),
 )
 def test_param_requires_value(testdir, required_value_parameter):
     """Verifies failure when not providing a value to a parameter that requires a value"""
@@ -164,7 +164,7 @@ def test_params_required_with_inventory_without_host_pattern(testdir, option):
     )
 
 
-@pytest.mark.requires_ansible_v1
+@pytest.mark.requires_ansible_v1()
 def test_params_required_with_bogus_inventory_v1(testdir, option):
     src = """
         import pytest
@@ -225,7 +225,7 @@ def test_params_required_with_bogus_inventory_v2(testdir, option, recwarn):
     mock_exists.assert_any_call("bogus")
 
 
-@pytest.mark.requires_ansible_v24
+@pytest.mark.requires_ansible_v24()
 @pytest.mark.skipif(has_ansible_v28, reason="requires ansible < 2.8")
 def test_params_required_with_bogus_inventory_v24(testdir, option, recwarn):
     src = """
@@ -255,7 +255,7 @@ def test_params_required_with_bogus_inventory_v24(testdir, option, recwarn):
     )
 
 
-@pytest.mark.requires_ansible_v1
+@pytest.mark.requires_ansible_v1()
 def test_params_required_without_inventory_with_host_pattern_v1(testdir, option):
     src = """
         import pytest
@@ -272,7 +272,7 @@ def test_params_required_without_inventory_with_host_pattern_v1(testdir, option)
     )
 
 
-@pytest.mark.requires_ansible_v2
+@pytest.mark.requires_ansible_v2()
 def test_params_required_without_inventory_with_host_pattern_v2(testdir, option):
     src = """
         import pytest

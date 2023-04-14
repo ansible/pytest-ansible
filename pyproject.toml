@@ -113,6 +113,17 @@ markers = [
   "requires_ansible_v24",
 ]
 
+[tool.ruff]
+select = ["PT"]
+ignore = [
+  "E501", # we use black
+
+]
+target-version = "py39"
+
+[tool.ruff.flake8-pytest-style]
+parametrize-values-type = "tuple"
+
 [tool.setuptools.dynamic]
 optional-dependencies.test = { file = [".config/requirements-test.txt"] }
 optional-dependencies.lock = { file = [".config/requirements-lock.txt"] }

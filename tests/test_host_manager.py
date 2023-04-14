@@ -23,33 +23,33 @@ def test_keys(hosts):
     assert sorted_keys == ALL_HOSTS
 
 
-@pytest.mark.parametrize("host_pattern, num_hosts", POSITIVE_HOST_PATTERNS)
+@pytest.mark.parametrize(("host_pattern", "num_hosts"), POSITIVE_HOST_PATTERNS)
 def test_contains(host_pattern, num_hosts, hosts):
     assert host_pattern in hosts, f"{host_pattern} not in hosts"
 
 
-@pytest.mark.parametrize("host_pattern, num_hosts", NEGATIVE_HOST_PATTERNS)
+@pytest.mark.parametrize(("host_pattern", "num_hosts"), NEGATIVE_HOST_PATTERNS)
 def test_not_contains(host_pattern, num_hosts, hosts):
     assert host_pattern not in hosts
 
 
-@pytest.mark.parametrize("host_pattern, num_hosts", POSITIVE_HOST_PATTERNS)
+@pytest.mark.parametrize(("host_pattern", "num_hosts"), POSITIVE_HOST_PATTERNS)
 def test_getitem(host_pattern, num_hosts, hosts):
     assert hosts[host_pattern]
 
 
-@pytest.mark.parametrize("host_pattern, num_hosts", NEGATIVE_HOST_PATTERNS)
+@pytest.mark.parametrize(("host_pattern", "num_hosts"), NEGATIVE_HOST_PATTERNS)
 def test_not_getitem(host_pattern, num_hosts, hosts):
     with pytest.raises(KeyError):
         assert hosts[host_pattern]
 
 
-@pytest.mark.parametrize("host_pattern, num_hosts", POSITIVE_HOST_PATTERNS)
+@pytest.mark.parametrize(("host_pattern", "num_hosts"), POSITIVE_HOST_PATTERNS)
 def test_getattr(host_pattern, num_hosts, hosts):
     assert hasattr(hosts, host_pattern)
 
 
-@pytest.mark.parametrize("host_slice, num_hosts", POSITIVE_HOST_SLICES)
+@pytest.mark.parametrize(("host_slice", "num_hosts"), POSITIVE_HOST_SLICES)
 def test_slice(host_slice, num_hosts, hosts):
     assert (
         len(hosts[host_slice]) == num_hosts
@@ -63,7 +63,7 @@ def test_not_slice(host_slice, hosts):
         hosts[host_slice]
 
 
-@pytest.mark.parametrize("host_pattern, num_hosts", NEGATIVE_HOST_PATTERNS)
+@pytest.mark.parametrize(("host_pattern", "num_hosts"), NEGATIVE_HOST_PATTERNS)
 def test_not_getattr(host_pattern, num_hosts, hosts):
     assert not hasattr(hosts, host_pattern)
     with pytest.raises(AttributeError):

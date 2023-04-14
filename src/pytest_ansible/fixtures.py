@@ -3,7 +3,7 @@
 import pytest
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture()
 def ansible_adhoc(request):
     """Return an inventory initialization method."""
     plugin = request.config.pluginmanager.getplugin("ansible")
@@ -14,20 +14,20 @@ def ansible_adhoc(request):
     return init_host_mgr
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture()
 def ansible_module(ansible_adhoc):
     """Return a subclass of BaseModuleDispatcher."""
     host_mgr = ansible_adhoc()
     return getattr(host_mgr, host_mgr.options["host_pattern"])
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture()
 def ansible_facts(ansible_module):
     """Return ansible_facts dictionary."""
     return ansible_module.setup()
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture()
 def localhost(request):
     """Return a host manager representing localhost."""
     # NOTE: Do not use ansible_adhoc as a dependent fixture since that will assert specific command-line parameters have
