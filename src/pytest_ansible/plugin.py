@@ -246,7 +246,7 @@ class PyTestAnsiblePlugin:
             "ansible_subset",
         ]
 
-        kwargs = dict()
+        kwargs = {}
 
         # Load command-line supplied values
         for key in option_names:
@@ -266,7 +266,7 @@ class PyTestAnsiblePlugin:
 
     def _load_request_config(self, request):
         """Load ansible configuration from decorator kwargs."""
-        kwargs = dict()
+        kwargs = {}
 
         # Override options from @pytest.mark.ansible
         marker = request.node.get_closest_marker("ansible")
@@ -277,7 +277,7 @@ class PyTestAnsiblePlugin:
 
     def initialize(self, config=None, request=None, **kwargs):
         """Return an initialized Ansible Host Manager instance."""
-        ansible_cfg = dict()
+        ansible_cfg = {}
         # merge command-line configuration options
         if config is not None:
             ansible_cfg.update(self._load_ansible_config(config))

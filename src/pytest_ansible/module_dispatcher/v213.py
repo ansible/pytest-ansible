@@ -36,7 +36,7 @@ class ResultAccumulator(CallbackBase):
         self.unreachable = {}
 
     def v2_runner_on_failed(self, result, *args, **kwargs):
-        result2 = dict(failed=True)
+        result2 = {"failed": True}
         result2.update(result._result)
         self.contacted[result._host.get_name()] = result2
 
@@ -48,7 +48,7 @@ class ResultAccumulator(CallbackBase):
 
     @property
     def results(self):
-        return dict(contacted=self.contacted, unreachable=self.unreachable)
+        return {"contacted": self.contacted, "unreachable": self.unreachable}
 
 
 class ModuleDispatcherV213(ModuleDispatcherV2):
@@ -79,7 +79,7 @@ class ModuleDispatcherV213(ModuleDispatcherV2):
         """Execute an ansible adhoc command returning the result in a AdhocResult object."""
         # Assemble module argument string
         if module_args:
-            complex_args.update(dict(_raw_params=" ".join(module_args)))
+            complex_args.update({"_raw_params": " ".join(module_args)})
 
         # Assert hosts matching the provided pattern exist
         hosts = self.options["inventory_manager"].list_hosts()
@@ -146,39 +146,42 @@ class ModuleDispatcherV213(ModuleDispatcherV2):
         # Initialize callbacks to capture module JSON responses
         cb = ResultAccumulator()
 
-        kwargs = dict(
-            inventory=self.options["inventory_manager"],
-            variable_manager=self.options["variable_manager"],
-            loader=self.options["loader"],
-            stdout_callback=cb,
-            passwords=dict(conn_pass=None, become_pass=None),
-        )
+        kwargs = {
+            "inventory": self.options["inventory_manager"],
+            "variable_manager": self.options["variable_manager"],
+            "loader": self.options["loader"],
+            "stdout_callback": cb,
+            "passwords": {"conn_pass": None, "become_pass": None},
+        }
 
         # If we have an extra inventory, do the same that we did for the inventory
         if "extra_inventory_manager" in self.options:
             cb_extra = ResultAccumulator()
 
-            kwargs_extra = dict(
-                inventory=self.options["extra_inventory_manager"],
-                variable_manager=self.options["extra_variable_manager"],
-                loader=self.options["extra_loader"],
-                stdout_callback=cb_extra,
-                passwords=dict(conn_pass=None, become_pass=None),
-            )
+            kwargs_extra = {
+                "inventory": self.options["extra_inventory_manager"],
+                "variable_manager": self.options["extra_variable_manager"],
+                "loader": self.options["extra_loader"],
+                "stdout_callback": cb_extra,
+                "passwords": {"conn_pass": None, "become_pass": None},
+            }
 
         # create a pseudo-play to execute the specified module via a single task
-        play_ds = dict(
-            name="pytest-ansible",
-            hosts=self.options["host_pattern"],
-            become=self.options.get("become"),
-            become_user=self.options.get("become_user"),
-            gather_facts="no",
-            tasks=[
-                dict(
-                    action=dict(module=self.options["module_name"], args=complex_args),
-                ),
+        play_ds = {
+            "name": "pytest-ansible",
+            "hosts": self.options["host_pattern"],
+            "become": self.options.get("become"),
+            "become_user": self.options.get("become_user"),
+            "gather_facts": "no",
+            "tasks": [
+                {
+                    "action": {
+                        "module": self.options["module_name"],
+                        "args": complex_args,
+                    },
+                }
             ],
-        )
+        }
 
         play = Play().load(
             play_ds,

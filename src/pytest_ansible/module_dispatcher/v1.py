@@ -40,7 +40,7 @@ class ModuleDispatcherV1(BaseModuleDispatcher):
         """Execute an ansible adhoc command returning the results in a AdHocResult object."""
         # Assemble module argument string
         if module_args:
-            complex_args.update(dict(_raw_params=" ".join(module_args)))
+            complex_args.update({"_raw_params": " ".join(module_args)})
         else:
             module_args = " ".join(module_args)
 
@@ -61,19 +61,19 @@ class ModuleDispatcherV1(BaseModuleDispatcher):
             )
 
         # Build module runner object
-        kwargs = dict(
-            inventory=self.options.get("inventory_manager"),
-            pattern=self.options.get("host_pattern"),
-            module_name=self.options.get("module_name"),
-            module_args=module_args,
-            complex_args=complex_args,
-            transport=self.options.get("connection"),
-            remote_user=self.options.get("user"),
-            module_path=self.options.get("module_path"),
-            become=self.options.get("become"),
-            become_method=self.options.get("become_method"),
-            become_user=self.options.get("become_user"),
-        )
+        kwargs = {
+            "inventory": self.options.get("inventory_manager"),
+            "pattern": self.options.get("host_pattern"),
+            "module_name": self.options.get("module_name"),
+            "module_args": module_args,
+            "complex_args": complex_args,
+            "transport": self.options.get("connection"),
+            "remote_user": self.options.get("user"),
+            "module_path": self.options.get("module_path"),
+            "become": self.options.get("become"),
+            "become_method": self.options.get("become_method"),
+            "become_user": self.options.get("become_user"),
+        }
 
         # Run the module
         runner = Runner(**kwargs)
