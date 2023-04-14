@@ -5,7 +5,7 @@
 [![License](https://img.shields.io/pypi/l/pytest-ansible.svg)](https://pypi.python.org/pypi/pytest-ansible/)
 [![Supported Python Versions](https://img.shields.io/pypi/pyversions/pytest-ansible.svg)](https://pypi.python.org/pypi/pytest-ansible/)
 
-This repository contains a plugin for `py.test` which adds several fixtures
+This repository contains a plugin for `pytest` which adds several fixtures
 for running `ansible` modules, or inspecting `ansible_facts`. While one
 can simply call out to `ansible` using the `subprocess` module, having to
 parse stdout to determine the outcome of the operation is unpleasant and prone
@@ -23,10 +23,10 @@ pip install pytest-ansible
 
 ## Usage
 
-Once installed, the following `py.test` command-line parameters are available:
+Once installed, the following `pytest` command-line parameters are available:
 
 ```bash
-py.test \
+pytest \
     [--inventory <path_to_inventory>] \
     [--extra-inventory <path_to_extra_inventory>] \
     [--host-pattern <host-pattern>] \
@@ -60,19 +60,19 @@ JSON](http://docs.ansible.com/ansible/latest/intro_dynamic_inventory.html).
 For example,
 
 ```bash
-py.test --inventory my_inventory.ini --host-pattern all
+pytest --inventory my_inventory.ini --host-pattern all
 ```
 
 or
 
 ```bash
-py.test --inventory path/to/my/script.py --host-pattern webservers
+pytest --inventory path/to/my/script.py --host-pattern webservers
 ```
 
 or
 
 ```bash
-py.test --inventory one.example.com,two.example.com --host-pattern all
+pytest --inventory one.example.com,two.example.com --host-pattern all
 ```
 
 In the above examples, the inventory provided at runtime will be used in all
@@ -91,18 +91,18 @@ we'll use the `ansible_adhoc` fixture.
 For example,
 
 ```bash
-py.test --inventory my_inventory.ini --extra-inventory my_second_inventory.ini --host-pattern host_in_second_inventory
+pytest --inventory my_inventory.ini --extra-inventory my_second_inventory.ini --host-pattern host_in_second_inventory
 ```
 
 ### Fixture `ansible_adhoc`
 
 The `ansible_adhoc` fixture returns a function used to initialize
 a `HostManager` object. The `ansible_adhoc` fixture will default to parameters
-supplied to the `py.test` command-line, but also allows one to provide keyword
+supplied to the `pytest` command-line, but also allows one to provide keyword
 arguments used to initialize the inventory.
 
 The example below demonstrates basic usage with options supplied at run-time to
-`py.test`.
+`pytest`.
 
 ```python
 def test_all_the_pings(ansible_adhoc):
@@ -180,7 +180,7 @@ def test_do_something_cloudy(localhost, ansible_adhoc):
 
 The `ansible_module` fixture allows tests and fixtures to call [ansible
 modules](http://docs.ansible.com/modules.html). Unlike the `ansible_adhoc`
-fixture, this fixture only uses the options supplied to `py.test` at run time.
+fixture, this fixture only uses the options supplied to `pytest` at run time.
 
 A very basic example demonstrating the ansible [`ping` module](http://docs.ansible.com/ping_module.html):
 
