@@ -162,6 +162,7 @@ class ModuleDispatcherV213(ModuleDispatcherV2):
             "passwords": {"conn_pass": None, "become_pass": None},
         }
 
+        kwargs_extra = {}
         # If we have an extra inventory, do the same that we did for the inventory
         if "extra_inventory_manager" in self.options:
             cb_extra = ResultAccumulator()
@@ -196,6 +197,7 @@ class ModuleDispatcherV213(ModuleDispatcherV2):
             variable_manager=self.options["variable_manager"],
             loader=self.options["loader"],
         )
+        play_extra = None
         if "extra_inventory_manager" in self.options:
             play_extra = Play().load(
                 play_ds,
