@@ -11,7 +11,7 @@ build-backend = "setuptools.build_meta"
 requires-python = ">=3.9"
 dynamic = ["version", "dependencies", "optional-dependencies"]
 name = "pytest-ansible"
-description = "Plugin for py.test to simplify calling ansible modules from tests or fixtures"
+description = "Plugin for pytest to simplify calling ansible modules from tests or fixtures"
 readme = "README.md"
 authors = [{ "name" = "Ansible by Red Hat", "email" = "info@ansible.com" }]
 maintainers = [{ "name" = "Ansible by Red Hat", "email" = "info@ansible.com" }]

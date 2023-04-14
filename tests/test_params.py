@@ -35,7 +35,7 @@ else:
 
 
 def test_plugin_help(testdir):
-    """Verifies expected output from of py.test --help"""
+    """Verifies expected output from of pytest --help"""
 
     result = testdir.runpytest("--help")
     result.stdout.fnmatch_lines(
@@ -60,7 +60,7 @@ def test_plugin_help(testdir):
 
 
 def test_plugin_markers(testdir):
-    """Verifies expected output from of py.test --markers"""
+    """Verifies expected output from of pytest --markers"""
 
     result = testdir.runpytest("--markers")
     result.stdout.fnmatch_lines(
@@ -177,7 +177,7 @@ def test_params_required_with_bogus_inventory_v1(testdir, option):
             *["--ansible-inventory", "bogus", "--ansible-host-pattern", "all"]
         )
 
-    # Assert py.test exit code
+    # Assert pytest exit code
     assert result.ret == EXIT_TESTSFAILED
 
     # Assert expected error output
@@ -218,7 +218,7 @@ def test_params_required_with_bogus_inventory_v2(testdir, option, recwarn):
             ]
         )
 
-    # Assert py.test exit code
+    # Assert pytest exit code
     assert result.ret == EXIT_OK
 
     # Assert mock open called on provided file
@@ -245,7 +245,7 @@ def test_params_required_with_bogus_inventory_v24(testdir, option, recwarn):
         *["-vvvvvs", "--ansible-inventory", "bogus", "--ansible-host-pattern", "all"]
     )
 
-    # Assert py.test exit code
+    # Assert pytest exit code
     assert result.ret == EXIT_OK
 
     # There appear to be '\n' newline characters within the output.  Using the join on errlines flattens the string for
