@@ -98,7 +98,6 @@ disable = [
   "too-many-statements",
   "unexpected-keyword-arg",
   "unused-argument",
-  "use-dict-literal",
   "used-before-assignment",
 ]
 

@@ -45,7 +45,7 @@ class ResultAccumulator(CallbackBase):
 
     @property
     def results(self):
-        return dict(contacted=self.contacted, unreachable=self.unreachable)
+        return {"contacted": self.contacted, "unreachable": self.unreachable}
 
 
 class ModuleDispatcherV24(ModuleDispatcherV2):
@@ -77,7 +77,7 @@ class ModuleDispatcherV24(ModuleDispatcherV2):
         """Execute an ansible adhoc command returning the result in a AdhocResult object."""
         # Assemble module argument string
         if module_args:
-            complex_args.update(dict(_raw_params=" ".join(module_args)))
+            complex_args.update({"_raw_params": " ".join(module_args)})
 
         # Assert hosts matching the provided pattern exist
         hosts = self.options["inventory_manager"].list_hosts()
@@ -121,26 +121,30 @@ class ModuleDispatcherV24(ModuleDispatcherV2):
         # Initialize callback to capture module JSON responses
         cb = ResultAccumulator()
 
-        kwargs = dict(
-            inventory=self.options["inventory_manager"],
-            variable_manager=self.options["variable_manager"],
-            loader=self.options["loader"],
-            options=options,
-            stdout_callback=cb,
-            passwords=dict(conn_pass=None, become_pass=None),
-        )
+        kwargs = {
+            "inventory": self.options["inventory_manager"],
+            "variable_manager": self.options["variable_manager"],
+            "loader": self.options["loader"],
+            "options": options,
+            "stdout_callback": cb,
+            "passwords": {"conn_pass": None, "become_pass": None},
+        }
 
         # create a pseudo-play to execute the specified module via a single task
-        play_ds = dict(
-            name="pytest-ansible",
-            hosts=self.options["host_pattern"],
-            gather_facts="no",
-            tasks=[
-                dict(
-                    action=dict(module=self.options["module_name"], args=complex_args),
-                ),
+        play_ds = {
+            "name": "pytest-ansible",
+            "hosts": self.options["host_pattern"],
+            "gather_facts": "no",
+            "tasks": [
+                {
+                    "action": {
+                        "module": self.options["module_name"],
+                        "args": complex_args,
+                    },
+                },
             ],
-        )
+        }
+
         play = Play().load(
             play_ds,
             variable_manager=self.options["variable_manager"],
