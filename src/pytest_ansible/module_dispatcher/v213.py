@@ -18,12 +18,20 @@ from pytest_ansible.results import AdHocResult
 
 
 # pylint: disable=ungrouped-imports, wrong-import-position
-
 if not has_ansible_v213:
     raise ImportError("Only supported with ansible-2.13 and newer")
 
 
-# pylint: enable=ungrouped-imports
+HAS_CUSTOM_LOADER_SUPPORT = True
+
+try:
+    # init_plugin_loader was introduced in Ansible-core change here, v2.15
+    # https://github.com/ansible/ansible/pull/78915
+    # Whenever a new vXYZ.py dispather module is introduced, make this static import
+    # pylint: disable=ungrouped-imports
+    from ansible.plugins.loader import init_plugin_loader
+except ImportError:
+    HAS_CUSTOM_LOADER_SUPPORT = False
 
 
 class ResultAccumulator(CallbackBase):
@@ -194,6 +202,10 @@ class ModuleDispatcherV213(ModuleDispatcherV2):
                 variable_manager=self.options["extra_variable_manager"],
                 loader=self.options["extra_loader"],
             )
+
+        if HAS_CUSTOM_LOADER_SUPPORT:
+            # Load the collection finder, unsupported, may change in future
+            init_plugin_loader(ansible.constants.COLLECTIONS_PATHS)
 
         # now create a task queue manager to execute the play
         tqm = None
