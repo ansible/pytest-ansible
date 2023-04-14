@@ -90,7 +90,7 @@ def pytest_runtest_setup(item):
 
 
 # pylint: disable=too-few-public-methods
-class PyTestOption(object):
+class PyTestOption:
     """Helper class that provides methods for creating and managing an inventory file."""
 
     def __init__(self, config, testdir):
@@ -124,7 +124,7 @@ class PyTestOption(object):
 
     @property
     def args(self):
-        args = list()
+        args = []
         args.append("--tb")
         args.append("native")
         return args

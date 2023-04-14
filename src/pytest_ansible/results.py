@@ -42,7 +42,7 @@ class ModuleResult(dict):
         return not (self.is_failed or self.is_unreachable)
 
 
-class AdHocResult(object):
+class AdHocResult:
 
     """Fixme."""
 

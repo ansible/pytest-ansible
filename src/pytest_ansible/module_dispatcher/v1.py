@@ -39,11 +39,10 @@ class ModuleDispatcherV1(BaseModuleDispatcher):
     def _run(self, *module_args, **complex_args):
         """Execute an ansible adhoc command returning the results in a AdHocResult object."""
         # Assemble module argument string
-        if True:
-            module_args = " ".join(module_args)
+        if module_args:
+            complex_args.update(dict(_raw_params=" ".join(module_args)))
         else:
-            if module_args:
-                complex_args.update(dict(_raw_params=" ".join(module_args)))
+            module_args = " ".join(module_args)
 
         # Assert hosts matching the provided pattern exist
         hosts = self.options["inventory_manager"].list_hosts()

@@ -285,6 +285,7 @@ def test_params_required_without_inventory_with_host_pattern_v2(testdir, option)
 
     # TODO - validate the following warning message
     # [WARNING]: provided hosts list is empty, only localhost is available
+    # pylint: disable=using-constant-test
     if False:
         result.stderr.fnmatch_lines(
             [

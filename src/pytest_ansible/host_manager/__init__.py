@@ -10,7 +10,7 @@ from pytest_ansible.has_version import has_ansible_v212
 from pytest_ansible.has_version import has_ansible_v213
 
 
-class BaseHostManager(object):
+class BaseHostManager:
     """Fixme."""
 
     _required_kwargs = ("inventory",)

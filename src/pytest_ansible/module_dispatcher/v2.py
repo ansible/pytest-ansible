@@ -105,7 +105,7 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
             fork_opts=True,
             module_opts=True,
         )
-        (options, args) = parser.parse_args([])
+        (options) = parser.parse_args([])
 
         # Pass along cli options
         options.verbosity = 5
