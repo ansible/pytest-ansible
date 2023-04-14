@@ -1,7 +1,6 @@
 # pytest-ansible
 
-[![Build Status](https://github.com/ansible/pytest-ansible/workflows/CI/badge.svg)](https://github.com/ansible/pytest-ansible/actions)
-[![Requirements Status](https://requires.io/github/ansible/pytest-ansible/requirements.svg?branch=master)](https://requires.io/github/ansible/pytest-ansible/requirements/?branch=master)
+[![Build Status](https://github.com/ansible-community/pytest-ansible/actions/workflows/tox.yml/badge.svg)](https://github.com/ansible-community/pytest-ansible/actions/workflows/tox.yml)
 [![Version](https://img.shields.io/pypi/v/pytest-ansible.svg)](https://pypi.python.org/pypi/pytest-ansible/)
 [![License](https://img.shields.io/pypi/l/pytest-ansible.svg)](https://pypi.python.org/pypi/pytest-ansible/)
 [![Supported Python Versions](https://img.shields.io/pypi/pyversions/pytest-ansible.svg)](https://pypi.python.org/pypi/pytest-ansible/)
