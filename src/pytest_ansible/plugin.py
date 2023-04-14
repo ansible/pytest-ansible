@@ -219,7 +219,7 @@ class PyTestAnsiblePlugin:
         for item in items:
             if not hasattr(item, "fixturenames"):
                 continue
-            if any([fixture.startswith("ansible_") for fixture in item.fixturenames]):
+            if any(fixture.startswith("ansible_") for fixture in item.fixturenames):
                 # TODO - ignore if they are using a marker
                 # marker = item.get_marker('ansible')
                 # if marker and 'inventory' in marker.kwargs:
