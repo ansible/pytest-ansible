@@ -1,11 +1,8 @@
 from types import GeneratorType
 
 import pytest
-
 from conftest import ALL_HOSTS
-
 from pytest_ansible.results import ModuleResult
-
 
 invalid_hosts = ["none", "all", "*", "local*"]
 
@@ -100,7 +97,7 @@ def test_connection_failure_v1():
     # Assert msg
     assert "msg" in exc_info.value.dark["unknown.example.com"]
     assert exc_info.value.dark["unknown.example.com"]["msg"].startswith(
-        "SSH Error: ssh: Could not resolve hostname" + " unknown.example.com:"
+        "SSH Error: ssh: Could not resolve hostname" + " unknown.example.com:",
     )
 
 
@@ -137,7 +134,8 @@ def test_connection_failure_extra_inventory_v2():
     from pytest_ansible.host_manager import get_host_manager
 
     hosts = get_host_manager(
-        inventory="localhost", extra_inventory="unknown.example.extra.com,"
+        inventory="localhost",
+        extra_inventory="unknown.example.extra.com,",
     )
     with pytest.raises(AnsibleConnectionFailure) as exc_info:
         hosts.all.ping()

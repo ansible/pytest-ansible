@@ -1,5 +1,4 @@
 # pylint: disable=unused-import
-import pytest
 
 
 try:
@@ -21,13 +20,13 @@ def test_ansible_adhoc(testdir, option):
     """
     testdir.makepyfile(src)
     result = testdir.runpytest(
-        *option.args
-        + [
+        *[
+            *option.args,
             "--ansible-inventory",
             str(option.inventory),
             "--ansible-host-pattern",
             "local",
-        ]
+        ],
     )
     assert result.ret == EXIT_OK
     assert result.parseoutcomes()["passed"] == 1
@@ -42,13 +41,13 @@ def test_ansible_module(testdir, option):
     """
     testdir.makepyfile(src)
     result = testdir.runpytest(
-        *option.args
-        + [
+        *[
+            *option.args,
             "--ansible-inventory",
             str(option.inventory),
             "--ansible-host-pattern",
             "local",
-        ]
+        ],
     )
     assert result.ret == EXIT_OK
     assert result.parseoutcomes()["passed"] == 1
@@ -63,13 +62,13 @@ def test_ansible_facts(testdir, option):
     """
     testdir.makepyfile(src)
     result = testdir.runpytest(
-        *option.args
-        + [
+        *[
+            *option.args,
             "--ansible-inventory",
             str(option.inventory),
             "--ansible-host-pattern",
             "local",
-        ]
+        ],
     )
     assert result.ret == EXIT_OK
     assert result.parseoutcomes()["passed"] == 1

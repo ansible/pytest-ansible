@@ -3,7 +3,6 @@ import warnings
 import ansible.constants
 import ansible.errors
 import ansible.utils
-
 from ansible.cli import CLI
 from ansible.executor.task_queue_manager import TaskQueueManager
 from ansible.playbook.play import Play
@@ -15,7 +14,6 @@ from pytest_ansible.has_version import has_ansible_v24
 from pytest_ansible.module_dispatcher.v2 import ModuleDispatcherV2
 from pytest_ansible.results import AdHocResult
 
-
 # pylint: disable=ungrouped-imports, wrong-import-position
 
 if not has_ansible_v24:
@@ -26,10 +24,9 @@ if not has_ansible_v24:
 
 
 class ResultAccumulator(CallbackBase):
-
     """Fixme."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         """Initialize object."""
         super().__init__(*args, **kwargs)
         self.contacted = {}
@@ -49,7 +46,6 @@ class ResultAccumulator(CallbackBase):
 
 
 class ModuleDispatcherV24(ModuleDispatcherV2):
-
     """Pass."""
 
     required_kwargs = (
@@ -88,11 +84,11 @@ class ModuleDispatcherV24(ModuleDispatcherV2):
 
         self.options["inventory_manager"].subset(self.options.get("subset"))
         hosts = self.options["inventory_manager"].list_hosts(
-            self.options["host_pattern"]
+            self.options["host_pattern"],
         )
         if len(hosts) == 0 and not no_hosts:
             raise ansible.errors.AnsibleError(
-                "Specified hosts and/or --limit does not match any hosts"
+                "Specified hosts and/or --limit does not match any hosts",
             )
 
         parser = CLI.base_parser(
@@ -164,7 +160,9 @@ class ModuleDispatcherV24(ModuleDispatcherV2):
         # FIXME - if multiple hosts were involved, should an exception be raised?
         if cb.unreachable:
             raise AnsibleConnectionFailure(
-                "Host unreachable", dark=cb.unreachable, contacted=cb.contacted
+                "Host unreachable",
+                dark=cb.unreachable,
+                contacted=cb.contacted,
             )
 
         # Success!

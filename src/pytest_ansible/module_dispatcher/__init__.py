@@ -1,30 +1,29 @@
 """Define BaseModuleDispatcher class."""
 
-from typing import Sequence
+from collections.abc import Sequence
 
 from pytest_ansible.errors import AnsibleModuleError
 
 
 class BaseModuleDispatcher:
-
     """Fixme.."""
 
     required_kwargs: Sequence[str] = ("inventory",)
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         """Save provided keyword arguments and assert required values have been provided."""
         self.options = kwargs
 
         # Assert the expected kwargs were provided
         self.check_required_kwargs(**kwargs)
 
-    def __len__(self):
+    def __len__(self) -> int:
         """Return the number of hosts that match the `host_pattern`."""
         return len(
-            self.options["inventory_manager"].list_hosts(self.options["host_pattern"])
+            self.options["inventory_manager"].list_hosts(self.options["host_pattern"]),
         )
 
-    def __contains__(self, item):
+    def __contains__(self, item) -> bool:
         """Return the whether the inventory contains a host matching the provided `item`."""
         return len(self.options["inventory_manager"].list_hosts(item)) > 0
 
@@ -35,9 +34,8 @@ class BaseModuleDispatcher:
         """
         if not self.has_module(name):
             # TODO: should we just raise an AttributeError, or a more
-            # raise AttributeError("'{0}' object has no attribute '{1}'".format(self.__class__.__name__, name))
             raise AnsibleModuleError(
-                f"The module {name} was not found in configured module paths."
+                f"The module {name} was not found in configured module paths.",
             )
         self.options["module_name"] = name
         return self._run

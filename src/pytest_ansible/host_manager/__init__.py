@@ -2,12 +2,14 @@
 
 import ansible
 
-from pytest_ansible.has_version import has_ansible_v2
-from pytest_ansible.has_version import has_ansible_v24
-from pytest_ansible.has_version import has_ansible_v28
-from pytest_ansible.has_version import has_ansible_v29
-from pytest_ansible.has_version import has_ansible_v212
-from pytest_ansible.has_version import has_ansible_v213
+from pytest_ansible.has_version import (
+    has_ansible_v2,
+    has_ansible_v24,
+    has_ansible_v28,
+    has_ansible_v29,
+    has_ansible_v212,
+    has_ansible_v213,
+)
 
 
 class BaseHostManager:
@@ -15,7 +17,7 @@ class BaseHostManager:
 
     _required_kwargs = ("inventory",)
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         """Fixme."""
         self.options = kwargs
 
@@ -40,7 +42,7 @@ class BaseHostManager:
                 extra_inventory_hosts = [
                     h.name
                     for h in self.options["extra_inventory_manager"].list_hosts(
-                        host_pattern
+                        host_pattern,
                     )
                 ]
         except KeyError:
@@ -108,25 +110,23 @@ class BaseHostManager:
     def __iter__(self):
         """Return an iterator for hosts matching the `host_pattern`."""
         extra_hosts = self.get_extra_inventory_hosts(
-            host_pattern=self.options["host_pattern"]
+            host_pattern=self.options["host_pattern"],
         )
         all_hosts = self.options["inventory_manager"].list_hosts(
-            self.options["host_pattern"]
+            self.options["host_pattern"],
         )
         # Return only the name (ala .keys()
-        # return iter(self.options['inventory_manager'].list_hosts(self.options['host_pattern']))
         # Return a BaseHostManager instance initialized for each host in the inventory
-        # return iter([self.__class__(host_pattern=h, **self.options) for h in all_hosts])
         # Return a ModuleDispatcher representing the group
         return iter([self[h] for h in all_hosts + extra_hosts])
 
-    def __len__(self):
+    def __len__(self) -> int:
         """Return the number of inventory hosts."""
         return len(self.options["inventory_manager"].list_hosts()) + len(
-            self.get_extra_inventory_hosts()
+            self.get_extra_inventory_hosts(),
         )
 
-    def __contains__(self, item):
+    def __contains__(self, item) -> bool:
         """Return whether there is inventory matching the provided `item`."""
         return self.has_matching_inventory(item)
 
@@ -136,7 +136,6 @@ class BaseHostManager:
 
 def get_host_manager(*args, **kwargs):
     """Initialize and return a HostManager instance."""
-
     if has_ansible_v213:
         from pytest_ansible.host_manager.v213 import HostManagerV213 as HostManager
     elif has_ansible_v212:

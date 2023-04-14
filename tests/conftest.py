@@ -1,8 +1,5 @@
 import pytest
-
-from pytest_ansible.has_version import has_ansible_v1
-from pytest_ansible.has_version import has_ansible_v24
-
+from pytest_ansible.has_version import has_ansible_v1, has_ansible_v24
 
 try:
     from ansible.utils import context_objects as co
@@ -28,7 +25,9 @@ POSITIVE_HOST_PATTERNS = [
     pytest.param("*[0-1]", 1, marks=pytest.mark.requires_ansible_v1()),
     pytest.param("*[0-1]", 2, marks=pytest.mark.requires_ansible_v2()),
     pytest.param(
-        "*[0:1]", 2, marks=pytest.mark.requires_ansible_v2()
+        "*[0:1]",
+        2,
+        marks=pytest.mark.requires_ansible_v2(),
     ),  # this is confusing, but how host slicing works on v2
     pytest.param("*[0:]", 3, marks=pytest.mark.requires_ansible_v2()),
 ]
@@ -76,7 +75,7 @@ def pytest_runtest_setup(item):
                 pytest.mark.xfail(
                     reason="expected failure on < ansible-2.*",
                     raises=mark.kwargs.get("raises"),
-                )
+                ),
             )
 
         mark = item.get_closest_marker("ansible_v2_xfail")
@@ -85,7 +84,7 @@ def pytest_runtest_setup(item):
                 pytest.xfail(
                     reason="expected failure on >= ansible-2.*",
                     raises=mark.kwargs.get("raises"),
-                )
+                ),
             )
 
 
@@ -93,7 +92,7 @@ def pytest_runtest_setup(item):
 class PyTestOption:
     """Helper class that provides methods for creating and managing an inventory file."""
 
-    def __init__(self, config, testdir):
+    def __init__(self, config, testdir) -> None:
         self.config = config
 
         # Create inventory file
@@ -120,7 +119,6 @@ class PyTestOption:
         )
 
         # Create ansible.cfg file
-        # self.ansible_cfg = testdir.makefile('.cfg', ansible='''[ssh_connection]\ncontrol_path = %(directory)s/%%h-%%r''')
 
     @property
     def args(self):
