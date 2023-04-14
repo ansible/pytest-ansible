@@ -49,3 +49,7 @@ extend-ignore =
   PT006,
   PT023,
   T201,
+
+# PT007:
+pytest-parametrize-values-type = tuple
+pytest-parametrize-values-row-type = tuple

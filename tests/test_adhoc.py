@@ -18,7 +18,7 @@ except ImportError:
     EXIT_NOTESTSCOLLECTED = ExitCode.NO_TESTS_COLLECTED
 
 
-@pytest.mark.old
+@pytest.mark.old()
 def test_contacted_with_params(testdir, option):
     """FIXME"""
 
@@ -49,7 +49,7 @@ def test_contacted_with_params(testdir, option):
     assert result.parseoutcomes()["passed"] == 1
 
 
-@pytest.mark.old
+@pytest.mark.old()
 def test_contacted_with_params_and_inventory_marker(testdir, option):
     """FIXME"""
     src = f"""
@@ -75,7 +75,7 @@ def test_contacted_with_params_and_inventory_marker(testdir, option):
     assert result.parseoutcomes()["passed"] == 1
 
 
-@pytest.mark.old
+@pytest.mark.old()
 def test_contacted_with_params_and_host_pattern_marker(testdir, option):
     """FIXME"""
     src = """
@@ -106,7 +106,7 @@ def test_contacted_with_params_and_host_pattern_marker(testdir, option):
     assert result.parseoutcomes()["passed"] == 1
 
 
-@pytest.mark.old
+@pytest.mark.old()
 def test_contacted_with_params_and_inventory_host_pattern_marker(testdir, option):
     """FIXME"""
     src = f"""
@@ -132,7 +132,7 @@ def test_contacted_with_params_and_inventory_host_pattern_marker(testdir, option
     assert result.parseoutcomes()["passed"] == 1
 
 
-@pytest.mark.old
+@pytest.mark.old()
 def test_become(testdir, option):
     """Test --ansible-become* parameters.  This test doesn't actually 'sudo',
     but verifies that 'sudo' was attempted by asserting
@@ -184,7 +184,7 @@ def test_become(testdir, option):
     assert result.parseoutcomes()["passed"] == 1
 
 
-@pytest.mark.old
+@pytest.mark.old()
 def test_dark_with_params(testdir, option):
     """FIXME"""
     src = """
@@ -216,7 +216,7 @@ def test_dark_with_params(testdir, option):
     assert result.parseoutcomes()["passed"] == 1
 
 
-@pytest.mark.old
+@pytest.mark.old()
 def test_dark_with_params_and_inventory_marker(testdir, option):
     """FIXME"""
     src = f"""
@@ -242,7 +242,7 @@ def test_dark_with_params_and_inventory_marker(testdir, option):
     assert result.parseoutcomes()["passed"] == 1
 
 
-@pytest.mark.old
+@pytest.mark.old()
 def test_dark_with_params_and_host_pattern_marker(testdir, option):
     """FIXME"""
     src = """
@@ -274,7 +274,7 @@ def test_dark_with_params_and_host_pattern_marker(testdir, option):
     assert result.parseoutcomes()["passed"] == 1
 
 
-@pytest.mark.old
+@pytest.mark.old()
 def test_dark_with_debug_enabled(testdir, option):
     """Verify that when verbosity is enabled, additional output is provided upon host failure."""
     src = """

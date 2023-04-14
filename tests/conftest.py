@@ -131,7 +131,7 @@ class PyTestOption:
 
 
 @pytest.fixture(autouse=True)
-def clear_global_context():
+def _clear_global_context():
     # Reset the stored command line args
     # if context object does not exist because of old version of ansible, we don't need it
     if co is not None:

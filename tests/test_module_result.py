@@ -82,18 +82,18 @@ def module_result_changed(request):
 
 
 @pytest.fixture()
-def module_result_skipped():
+def _module_result_skipped():
     raise NotImplementedError("Coming soon!")
 
 
 @pytest.fixture()
-def module_result_unreachable():
+def _module_result_unreachable():
     raise NotImplementedError("Coming soon!")
 
 
 @pytest.mark.parametrize(
-    "fixture_name,prop,expected_result",
-    [
+    ("fixture_name", "prop", "expected_result"),
+    (
         ("module_result_ok", "is_ok", True),
         ("module_result_ok", "is_successful", True),
         ("module_result_failed", "is_failed", True),
@@ -112,7 +112,7 @@ def module_result_unreachable():
             True,
             marks=pytest.mark.skipif("True"),
         ),
-    ],
+    ),
 )
 def test_is_property(request, fixture_name, prop, expected_result):
     fixture = request.getfixturevalue(fixture_name)

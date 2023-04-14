@@ -80,7 +80,7 @@ def test_not_getattr(adhoc_result, host_pattern):
         getattr(adhoc_result, host_pattern)
 
 
-@pytest.mark.requires_ansible_v1
+@pytest.mark.requires_ansible_v1()
 def test_connection_failure_v1():
     from pytest_ansible.errors import AnsibleConnectionFailure
     from pytest_ansible.host_manager import get_host_manager
@@ -104,7 +104,7 @@ def test_connection_failure_v1():
     )
 
 
-@pytest.mark.requires_ansible_v2
+@pytest.mark.requires_ansible_v2()
 def test_connection_failure_v2():
     from pytest_ansible.errors import AnsibleConnectionFailure
     from pytest_ansible.host_manager import get_host_manager
@@ -131,7 +131,7 @@ def test_connection_failure_v2():
     )
 
 
-@pytest.mark.requires_ansible_v2
+@pytest.mark.requires_ansible_v2()
 def test_connection_failure_extra_inventory_v2():
     from pytest_ansible.errors import AnsibleConnectionFailure
     from pytest_ansible.host_manager import get_host_manager
