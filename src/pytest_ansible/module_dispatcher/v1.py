@@ -5,6 +5,7 @@ import ansible.constants
 import ansible.errors
 import ansible.utils
 from ansible.runner import Runner
+from ansible.utils import module_finder
 
 from pytest_ansible.errors import AnsibleConnectionFailure
 from pytest_ansible.has_version import has_ansible_v1
@@ -31,7 +32,7 @@ class ModuleDispatcherV1(BaseModuleDispatcher):
             else:
                 ansible.utils.module_finder.add_directory(paths)
 
-        return ansible.utils.module_finder.has_plugin(name)
+        return module_finder.has_plugin(name)
 
     def _run(self, *module_args, **complex_args):
         """Execute an ansible adhoc command returning the results in a AdHocResult object."""

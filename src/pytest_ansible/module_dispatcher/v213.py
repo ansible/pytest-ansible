@@ -5,6 +5,7 @@ import ansible.constants
 import ansible.errors
 import ansible.utils
 from ansible.cli.adhoc import AdHocCLI
+from ansible.constants import COLLECTIONS_PATHS
 from ansible.executor.task_queue_manager import TaskQueueManager
 from ansible.playbook.play import Play
 from ansible.plugins.callback import CallbackBase
@@ -205,7 +206,7 @@ class ModuleDispatcherV213(ModuleDispatcherV2):
 
         if HAS_CUSTOM_LOADER_SUPPORT:
             # Load the collection finder, unsupported, may change in future
-            init_plugin_loader(ansible.constants.COLLECTIONS_PATHS)
+            init_plugin_loader(COLLECTIONS_PATHS)
 
         # now create a task queue manager to execute the play
         tqm = None
