@@ -91,6 +91,7 @@ class ModuleDispatcherV24(ModuleDispatcherV2):
                 "Specified hosts and/or --limit does not match any hosts",
             )
 
+        # pylint: disable=no-member
         parser = CLI.base_parser(
             runas_opts=True,
             inventory_opts=True,

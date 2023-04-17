@@ -10,6 +10,7 @@ from ansible.cli import CLI
 from ansible.executor.task_queue_manager import TaskQueueManager
 from ansible.playbook.play import Play
 from ansible.plugins.callback import CallbackBase
+from ansible.plugins.loader import module_loader
 
 from pytest_ansible.errors import AnsibleConnectionFailure
 from pytest_ansible.has_version import has_ansible_v2
@@ -60,11 +61,11 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
             paths = self.options["module_path"]
             if isinstance(paths, (list, tuple, set)):
                 for path in paths:
-                    ansible.plugins.module_loader.add_directory(path)
+                    module_loader.add_directory(path)
             else:
-                ansible.plugins.module_loader.add_directory(paths)
+                module_loader.add_directory(paths)
 
-        return ansible.plugins.module_loader.has_plugin(name)
+        return module_loader.has_plugin(name)
 
     def _run(self, *module_args, **complex_args):
         """Execute an ansible adhoc command returning the result in a AdhocResult object."""
@@ -88,6 +89,7 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
                 "Specified hosts and/or --limit does not match any hosts",
             )
 
+        # pylint: disable=no-member
         parser = CLI.base_parser(
             runas_opts=True,
             inventory_opts=True,
