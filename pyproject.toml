@@ -78,7 +78,6 @@ disable = [
   "fixme",
   "import-error",
   "import-outside-toplevel",
-  "invalid-name",
   "missing-function-docstring",
   "missing-module-docstring",
   "no-name-in-module",

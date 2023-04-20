@@ -114,14 +114,14 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
         options.module_path = self.options.get("module_path")
 
         # Initialize callback to capture module JSON responses
-        cb = ResultAccumulator()
+        callback = ResultAccumulator()
 
         kwargs = {
             "inventory": self.options["inventory_manager"],
             "variable_manager": self.options["variable_manager"],
             "loader": self.options["loader"],
             "options": options,
-            "stdout_callback": cb,
+            "stdout_callback": callback,
             "passwords": {"conn_pass": None, "become_pass": None},
         }
 
@@ -157,12 +157,12 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
 
         # Raise exception if host(s) unreachable
         # FIXME - if multiple hosts were involved, should an exception be raised?
-        if cb.unreachable:
+        if callback.unreachable:
             raise AnsibleConnectionFailure(
                 "Host unreachable",
-                dark=cb.unreachable,
-                contacted=cb.contacted,
+                dark=callback.unreachable,
+                contacted=callback.contacted,
             )
 
         # Success!
-        return AdHocResult(contacted=cb.contacted)
+        return AdHocResult(contacted=callback.contacted)

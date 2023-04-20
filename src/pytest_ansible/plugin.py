@@ -166,8 +166,8 @@ def pytest_generate_tests(metafunc):
                 config=plugin.config,
                 pattern=metafunc.config.getoption("ansible_host_pattern"),
             )
-        except ansible.errors.AnsibleError as e:
-            raise pytest.UsageError(e)
+        except ansible.errors.AnsibleError as exception:
+            raise pytest.UsageError(exception)
         # Return the host name as a string
         # Return a HostManager instance where pattern=host (e.g. ansible_host.all.shell('date'))
         # metafunc.parametrize("ansible_host", iter(plugin.initialize(config=plugin.config, pattern=h) for h in
@@ -184,8 +184,8 @@ def pytest_generate_tests(metafunc):
                 config=plugin.config,
                 pattern=metafunc.config.getoption("ansible_host_pattern"),
             )
-        except ansible.errors.AnsibleError as e:
-            raise pytest.UsageError(e)
+        except ansible.errors.AnsibleError as exception:
+            raise pytest.UsageError(exception)
         # FIXME: Eeew, this shouldn't be interfacing with `hosts.options`
         groups = hosts.options["inventory_manager"].list_groups()
         extra_groups = hosts.get_extra_inventory_groups()
