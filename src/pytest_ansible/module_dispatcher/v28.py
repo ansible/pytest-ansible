@@ -132,13 +132,13 @@ class ModuleDispatcherV28(ModuleDispatcherV2):
         del adhoc
 
         # Initialize callback to capture module JSON responses
-        cb = ResultAccumulator()
+        call_back = ResultAccumulator()
 
         kwargs = {
             "inventory": self.options["inventory_manager"],
             "variable_manager": self.options["variable_manager"],
             "loader": self.options["loader"],
-            "stdout_callback": cb,
+            "stdout_callback": call_back,
             "passwords": {"conn_pass": None, "become_pass": None},
         }
 
@@ -176,12 +176,12 @@ class ModuleDispatcherV28(ModuleDispatcherV2):
 
         # Raise exception if host(s) unreachable
         # FIXME - if multiple hosts were involved, should an exception be raised?
-        if cb.unreachable:
+        if call_back.unreachable:
             raise AnsibleConnectionFailure(
                 "Host unreachable",
-                dark=cb.unreachable,
-                contacted=cb.contacted,
+                dark=call_back.unreachable,
+                contacted=call_back.contacted,
             )
 
         # Success!
-        return AdHocResult(contacted=cb.contacted)
+        return AdHocResult(contacted=call_back.contacted)
