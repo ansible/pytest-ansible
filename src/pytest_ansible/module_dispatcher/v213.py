@@ -151,26 +151,26 @@ class ModuleDispatcherV213(ModuleDispatcherV2):
         del adhoc
 
         # Initialize callbacks to capture module JSON responses
-        call_back = ResultAccumulator()
+        callback = ResultAccumulator()
 
         kwargs = {
             "inventory": self.options["inventory_manager"],
             "variable_manager": self.options["variable_manager"],
             "loader": self.options["loader"],
-            "stdout_callback": call_back,
+            "stdout_callback": callback,
             "passwords": {"conn_pass": None, "become_pass": None},
         }
 
         kwargs_extra = {}
         # If we have an extra inventory, do the same that we did for the inventory
         if "extra_inventory_manager" in self.options:
-            call_back_extra = ResultAccumulator()
+            callback_extra = ResultAccumulator()
 
             kwargs_extra = {
                 "inventory": self.options["extra_inventory_manager"],
                 "variable_manager": self.options["extra_variable_manager"],
                 "loader": self.options["extra_loader"],
-                "stdout_callback": call_back_extra,
+                "stdout_callback": callback_extra,
                 "passwords": {"conn_pass": None, "become_pass": None},
             }
 
@@ -228,24 +228,24 @@ class ModuleDispatcherV213(ModuleDispatcherV2):
 
         # Raise exception if host(s) unreachable
         # FIXME - if multiple hosts were involved, should an exception be raised?
-        if call_back.unreachable:
+        if callback.unreachable:
             raise AnsibleConnectionFailure(
                 "Host unreachable in the inventory",
-                dark=call_back.unreachable,
-                contacted=call_back.contacted,
+                dark=callback.unreachable,
+                contacted=callback.contacted,
             )
-        if "extra_inventory_manager" in self.options and call_back_extra.unreachable:
+        if "extra_inventory_manager" in self.options and callback_extra.unreachable:
             raise AnsibleConnectionFailure(
                 "Host unreachable in the extra inventory",
-                dark=call_back_extra.unreachable,
-                contacted=call_back_extra.contacted,
+                dark=callback_extra.unreachable,
+                contacted=callback_extra.contacted,
             )
 
         # Success!
         return AdHocResult(
             contacted=(
-                {**call_back.contacted, **call_back_extra.contacted}
+                {**callback.contacted, **callback_extra.contacted}
                 if "extra_inventory_manager" in self.options
-                else call_back.contacted
+                else callback.contacted
             ),
         )
