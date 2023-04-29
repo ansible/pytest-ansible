@@ -125,7 +125,6 @@ ignore = [
   "S",
   "SLF",
   "T",
-  "TCH",
   "TRY",
 ]
 target-version = "py39"
