@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import sys
 import warnings
-from collections.abc import Sequence
+from typing import TYPE_CHECKING
 
 import ansible.constants
 import ansible.errors
@@ -53,6 +53,9 @@ class ResultAccumulator(CallbackBase):
 
 class ModuleDispatcherV212(ModuleDispatcherV2):
     """Pass."""
+
+    if TYPE_CHECKING:
+        from collections.abc import Sequence
 
     required_kwargs: Sequence[str] = (
         "inventory",
