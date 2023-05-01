@@ -134,6 +134,18 @@ def pytest_addoption(parser):
         help="ask for privilege escalation password (default: %(default)s)",
     )
 
+    parser.addoption(
+        "--unit",
+        action="store_true",
+        default=False,
+        help="Run only the unit tests",
+    )
+    parser.addoption(
+        "--unit-inject-only",
+        action="store_true",
+        default=False,
+        help="Run only the unit tests and inject fixtures",
+    )
     # Add github marker to --help
     parser.addini("ansible", "Ansible integration", "args")
 
@@ -151,6 +163,9 @@ def pytest_configure(config):
 
             display = Display()
             display.verbosity = int(config.option.verbose)
+    if config.option.unit or config.option.unit_inject_only:
+        # Run the unit tests
+        pytest.main(["--pytest-ansible-unit"])
 
     assert config.pluginmanager.register(PyTestAnsiblePlugin(config), "ansible")
 
