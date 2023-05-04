@@ -1,9 +1,12 @@
 """PyTest Ansible Plugin."""
 
+import logging
+
 import ansible
 import ansible.constants
 import ansible.errors
 import ansible.utils
+import ansible.utils.display
 import pytest
 from ansible.plugins.loader import become_loader
 
@@ -15,9 +18,21 @@ from pytest_ansible.fixtures import (
 )
 from pytest_ansible.host_manager import get_host_manager
 
+from .units import inject
+
+logger = logging.getLogger(__name__)
+
 # Silence linters for imported fixtures
 # pylint: disable=pointless-statement, no-member
 (ansible_adhoc, ansible_module, ansible_facts, localhost)
+
+log_map = {
+    0: logging.CRITICAL,
+    1: logging.ERROR,
+    2: logging.WARNING,
+    3: logging.INFO,
+    4: logging.DEBUG,
+}
 
 
 def become_methods():
@@ -134,13 +149,13 @@ def pytest_addoption(parser):
         help="ask for privilege escalation password (default: %(default)s)",
     )
 
-    parser.addoption(
+    group.addoption(
         "--unit",
         action="store_true",
         default=False,
         help="Run only the unit tests",
     )
-    parser.addoption(
+    group.addoption(
         "--unit-inject-only",
         action="store_true",
         default=False,
@@ -159,13 +174,16 @@ def pytest_configure(config):
         if hasattr(ansible.utils, "VERBOSITY"):
             ansible.utils.VERBOSITY = int(config.option.verbose)
         else:
-            from ansible.utils.display import Display
+            ansible.utils.display.verbosity = int(config.option.verbose)
 
-            display = Display()
-            display.verbosity = int(config.option.verbose)
+    # Configure the logger.
+    level = log_map.get(config.option.verbose)
+    logging.basicConfig(level=level)
+    logging.debug("Logging initialized")
+
     if config.option.unit or config.option.unit_inject_only:
-        # Run the unit tests
-        pytest.main(["--pytest-ansible-unit"])
+        start_path = config.invocation_params.dir
+        inject(start_path)
 
     assert config.pluginmanager.register(PyTestAnsiblePlugin(config), "ansible")
 

@@ -6,9 +6,6 @@ import os
 import sys
 from pathlib import Path
 
-import pytest
-from _pytest.config.argparsing import Parser
-
 logger = logging.getLogger(__name__)
 
 try:
@@ -31,42 +28,6 @@ try:
     HAS_COLLECTION_FINDER = True
 except ImportError:
     HAS_COLLECTION_FINDER = False
-
-
-def pytest_addoption(parser: Parser) -> None:
-    """Add the options to the pytest command.
-
-    :param parser: The pytest parser object
-    """
-    parser.addoption(
-        "--inject-only",
-        action="store_true",
-        default=False,
-        help="Only inject the current ANSIBLE_COLLECTIONS_PATHS",
-    )
-
-
-def pytest_configure(config: pytest.Config) -> None:
-    """Configure the logger.
-
-    :param config: The pytest configuration object
-    """
-    log_map = {
-        0: logging.CRITICAL,
-        1: logging.ERROR,
-        2: logging.WARNING,
-        3: logging.INFO,
-        4: logging.DEBUG,
-    }
-    level = log_map.get(config.option.verbose)
-    logging.basicConfig(level=level)
-    logger.debug("Logging initialized")
-    if config.option.inject_only:
-        inject_only()
-    else:
-        inject(config.invocation_params.dir)
-    if config.getoption("--unit") or config.getoption("--unit-inject-only"):
-        pass
 
 
 def get_collection_name(start_path: Path) -> tuple[str | None, str | None]:
