@@ -8,7 +8,6 @@ import sys
 from pathlib import Path
 
 import pytest
-
 from pytest_ansible.units import inject, inject_only
 
 
@@ -34,7 +33,8 @@ def test_inject(
         return "namespace", "name"
 
     monkeypatch.setattr(
-        "pytest_ansible.units.get_collection_name", mock_get_collection_name
+        "pytest_ansible.units.get_collection_name",
+        mock_get_collection_name,
     )
 
     (tmp_path / "collections" / "ansible_collections").mkdir(parents=True)
