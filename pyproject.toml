@@ -43,6 +43,8 @@ changelog = "https://github.com/ansible-community/pytest-ansible/releases"
 
 [tool.mypy]
 python_version = 3.9
+ignore_missing_imports = true
+ignore_errors = true
 # strict = true
 color_output = true
 error_summary = true
@@ -88,6 +90,7 @@ disable = [
   "too-many-statements",
   "unexpected-keyword-arg",
   "unused-argument",
+  "invalid-name",
 ]
 
 [tool.pytest]
@@ -126,6 +129,8 @@ ignore = [
   "SLF",
   "T",
   "TRY",
+  "PTH",
+  "TCH",
 ]
 target-version = "py39"
 # Same as Black.

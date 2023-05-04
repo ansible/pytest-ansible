@@ -8,7 +8,7 @@ except ImportError:
     co = None
 
 
-pytest_plugins = ("pytester",)
+pytest_plugins = ["pytester"]
 
 
 ALL_HOSTS = ["another_host", "localhost", "yet_another_host"]

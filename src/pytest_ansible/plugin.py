@@ -1,11 +1,13 @@
 """PyTest Ansible Plugin."""
 
+import logging
+
 import ansible
 import ansible.constants
 import ansible.errors
 import ansible.utils
+import ansible.utils.display
 import pytest
-from ansible.plugins.loader import become_loader
 
 from pytest_ansible.fixtures import (
     ansible_adhoc,
@@ -15,16 +17,21 @@ from pytest_ansible.fixtures import (
 )
 from pytest_ansible.host_manager import get_host_manager
 
+from .units import inject, inject_only
+
+logger = logging.getLogger(__name__)
+
 # Silence linters for imported fixtures
 # pylint: disable=pointless-statement, no-member
 (ansible_adhoc, ansible_module, ansible_facts, localhost)
 
-
-def become_methods():
-    """Return string list of become methods available to ansible."""
-    if become_loader:
-        return [method.name for method in become_loader.all()]
-    return ansible.constants.BECOME_METHODS
+log_map = {
+    0: logging.CRITICAL,
+    1: logging.ERROR,
+    2: logging.WARNING,
+    3: logging.INFO,
+    4: logging.DEBUG,
+}
 
 
 def pytest_addoption(parser):
@@ -114,7 +121,7 @@ def pytest_addoption(parser):
         action="store",
         dest="ansible_become_method",
         default=ansible.constants.DEFAULT_BECOME_METHOD,
-        help=f"privilege escalation method to use (default: %(default)s), valid choices: [ {' | '.join(become_methods())} ]",
+        help="privilege escalation method to use (default: %(default)s)",
     )
 
     group.addoption(
@@ -134,6 +141,18 @@ def pytest_addoption(parser):
         help="ask for privilege escalation password (default: %(default)s)",
     )
 
+    group.addoption(
+        "--ansible-unit",
+        action="store_true",
+        default=False,
+        help="Enable support for ansible collection unit tests, inject paths and build the collection tree if needed.",
+    )
+    group.addoption(
+        "--ansible-unit-inject-only",
+        action="store_true",
+        default=False,
+        help="Enable support for ansible collection unit tests, only inject exisiting ANSIBLE_COLLECTIONS_PATHS.",
+    )
     # Add github marker to --help
     parser.addini("ansible", "Ansible integration", "args")
 
@@ -147,12 +166,20 @@ def pytest_configure(config):
         if hasattr(ansible.utils, "VERBOSITY"):
             ansible.utils.VERBOSITY = int(config.option.verbose)
         else:
-            from ansible.utils.display import Display
+            ansible.utils.display.verbosity = int(config.option.verbose)
 
-            display = Display()
-            display.verbosity = int(config.option.verbose)
+    # Configure the logger.
+    level = log_map.get(config.option.verbose)
+    logging.basicConfig(level=level)
+    logging.debug("Logging initialized")
 
     assert config.pluginmanager.register(PyTestAnsiblePlugin(config), "ansible")
+
+    if config.option.ansible_unit_inject_only:
+        inject_only()
+    elif config.option.ansible_unit:
+        start_path = config.invocation_params.dir
+        inject(start_path)
 
 
 def pytest_generate_tests(metafunc):
