@@ -8,7 +8,6 @@ import sys
 from pathlib import Path
 
 import pytest
-
 from pytest_ansible.units import inject, inject_only
 
 
