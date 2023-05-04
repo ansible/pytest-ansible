@@ -8,6 +8,7 @@ import sys
 from pathlib import Path
 
 import pytest
+
 from pytest_ansible.units import inject, inject_only
 
 
@@ -44,10 +45,10 @@ def test_inject(
         tmp_path / "collections" / "ansible_collections" / "namespace" / "name"
     ).is_dir()
     assert (
-        re.search(r"_ACF installed: \['(.*)',.*]", caplog.text).groups()[0]
+        str(tmp_path / "collections")
         == sys.path[0]
-        == str(tmp_path / "collections")
-        == re.search(r"_ACF configured paths: \['(.*)']", caplog.text).groups()[0]
+        == re.search(r"_ACF installed: \['(.*?)'.*]", caplog.text).groups()[0]
+        == re.search(r"_ACF configured paths: \['(.*?)'.*]", caplog.text).groups()[0]
     )
 
 
@@ -69,10 +70,10 @@ def test_inject_only(
 
     inject_only()
     assert (
-        re.search(r"_ACF installed: \['(.*)']", caplog.text).groups()[0]
+        str(tmp_path / "collections")
         == sys.path[0]
-        == str(tmp_path / "collections")
-        == re.search(r"_ACF configured paths: \['(.*)']", caplog.text).groups()[0]
+        == re.search(r"_ACF installed: \['(.*?)'.*]", caplog.text).groups()[0]
+        == re.search(r"_ACF configured paths: \['(.*?)'.*]", caplog.text).groups()[0]
     )
 
 
