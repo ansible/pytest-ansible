@@ -8,7 +8,6 @@ import ansible.errors
 import ansible.utils
 import ansible.utils.display
 import pytest
-from ansible.plugins.loader import become_loader
 
 from pytest_ansible.fixtures import (
     ansible_adhoc,
@@ -33,13 +32,6 @@ log_map = {
     3: logging.INFO,
     4: logging.DEBUG,
 }
-
-
-def become_methods():
-    """Return string list of become methods available to ansible."""
-    if become_loader:
-        return [method.name for method in become_loader.all()]
-    return ansible.constants.BECOME_METHODS
 
 
 def pytest_addoption(parser):
@@ -129,7 +121,7 @@ def pytest_addoption(parser):
         action="store",
         dest="ansible_become_method",
         default=ansible.constants.DEFAULT_BECOME_METHOD,
-        help=f"privilege escalation method to use (default: %(default)s), valid choices: [ {' | '.join(become_methods())} ]",
+        help="privilege escalation method to use (default: %(default)s)",
     )
 
     group.addoption(
@@ -150,16 +142,16 @@ def pytest_addoption(parser):
     )
 
     group.addoption(
-        "--unit",
+        "--ansible-unit",
         action="store_true",
         default=False,
-        help="Run only the unit tests",
+        help="Enable support for ansible collection unit tests, inject paths and build the collection tree if needed.",
     )
     group.addoption(
-        "--unit-inject-only",
+        "--ansible-unit-inject-only",
         action="store_true",
         default=False,
-        help="Run only the unit tests and inject fixtures",
+        help="Enable support for ansible collection unit tests, only inject exisiting ANSIBLE_COLLECTIONS_PATHS.",
     )
     # Add github marker to --help
     parser.addini("ansible", "Ansible integration", "args")
@@ -183,9 +175,9 @@ def pytest_configure(config):
 
     assert config.pluginmanager.register(PyTestAnsiblePlugin(config), "ansible")
 
-    if config.option.unit_inject_only:
+    if config.option.ansible_unit_inject_only:
         inject_only()
-    else:
+    elif config.option.ansible_unit:
         start_path = config.invocation_params.dir
         inject(start_path)
 

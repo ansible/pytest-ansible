@@ -40,8 +40,8 @@ def get_collection_name(start_path: Path) -> tuple[str | None, str | None]:
     logger.info("Looking for collection info in %s", info_file)
 
     try:
-        with info_file.open(encoding="utf-8") as fh:
-            galaxy_info = yaml.safe_load(fh)
+        with info_file.open(encoding="utf-8") as fhand:
+            galaxy_info = yaml.safe_load(fhand)
     except FileNotFoundError:
         logger.error("No galaxy.yml file found, plugin not activated")
         return None, None
@@ -107,9 +107,7 @@ def inject(start_path: Path) -> None:
     paths = [str(collections_dir), "~/.ansible/collections"]
     logger.info("Paths: %s", paths)
 
-    if HAS_COLLECTION_FINDER:
-        # pylint: disable=protected-access
-        _AnsibleCollectionFinder(paths=paths)._install()
+    acf_inject(paths=paths)
 
     # Inject the path for the collection into sys.path
     # This is needed for import udring mock tests
@@ -129,10 +127,24 @@ def inject(start_path: Path) -> None:
 def inject_only() -> None:
     """Inject the current ANSIBLE_COLLECTIONS_PATHS."""
     env_paths = os.environ.get("ANSIBLE_COLLECTIONS_PATHS", "")
-    for path in env_paths.split(os.pathsep):
+    path_list = env_paths.split(os.pathsep)
+    for path in path_list:
         if path:
             sys.path.insert(0, path)
     logger.debug("sys.path updated: %s", sys.path)
+    acf_inject(paths=path_list)
+
+
+def acf_inject(paths: list[str]) -> None:
+    """Inject the collection path into the AnsibleCollectionFinder.
+
+    :param paths: The paths to inject
+    """
+    # pylint: disable=protected-access
     if HAS_COLLECTION_FINDER:
-        # pylint: disable=protected-access
-        _AnsibleCollectionFinder(paths=env_paths)._install()
+        acf = _AnsibleCollectionFinder(paths=paths)
+        acf._install()
+        logger.debug("_ACF installed: %s", paths)
+        logger.debug("_ACF configured paths: %s", acf._n_configured_paths)
+    else:
+        logger.debug("_ACF not available")
