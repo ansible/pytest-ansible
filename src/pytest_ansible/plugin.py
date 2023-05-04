@@ -18,7 +18,7 @@ from pytest_ansible.fixtures import (
 )
 from pytest_ansible.host_manager import get_host_manager
 
-from .units import inject
+from .units import inject, inject_only
 
 logger = logging.getLogger(__name__)
 
@@ -181,11 +181,13 @@ def pytest_configure(config):
     logging.basicConfig(level=level)
     logging.debug("Logging initialized")
 
-    if config.option.unit or config.option.unit_inject_only:
+    assert config.pluginmanager.register(PyTestAnsiblePlugin(config), "ansible")
+
+    if config.option.unit_inject_only:
+        inject_only()
+    else:
         start_path = config.invocation_params.dir
         inject(start_path)
-
-    assert config.pluginmanager.register(PyTestAnsiblePlugin(config), "ansible")
 
 
 def pytest_generate_tests(metafunc):
