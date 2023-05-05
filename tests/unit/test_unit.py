@@ -79,5 +79,4 @@ def test_inject_only(
 def test_for_params():
     """Test for params."""
     proc = subprocess.run("pytest --help", shell=True, capture_output=True, check=False)
-    assert "--ansible-unit" in proc.stdout.decode()
     assert "--ansible-unit-inject-only" in proc.stdout.decode()

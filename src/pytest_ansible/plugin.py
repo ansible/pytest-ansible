@@ -140,18 +140,11 @@ def pytest_addoption(parser):
         default=ansible.constants.DEFAULT_BECOME_ASK_PASS,
         help="ask for privilege escalation password (default: %(default)s)",
     )
-
-    group.addoption(
-        "--ansible-unit",
-        action="store_true",
-        default=False,
-        help="Enable support for ansible collection unit tests, inject paths and build the collection tree if needed.",
-    )
     group.addoption(
         "--ansible-unit-inject-only",
         action="store_true",
         default=False,
-        help="Enable support for ansible collection unit tests, only inject exisiting ANSIBLE_COLLECTIONS_PATHS.",
+        help="Enable support for ansible collection unit tests by only injecting exisiting ANSIBLE_COLLECTIONS_PATHS.",
     )
     # Add github marker to --help
     parser.addini("ansible", "Ansible integration", "args")
@@ -177,7 +170,7 @@ def pytest_configure(config):
 
     if config.option.ansible_unit_inject_only:
         inject_only()
-    elif config.option.ansible_unit:
+    else:
         start_path = config.invocation_params.dir
         inject(start_path)
 
