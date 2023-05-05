@@ -1,0 +1,14 @@
+{
+  "configurations": [
+    // Run testing debugging in the terminal so the workspace venv is used
+    {
+      "name": "Debug tests",
+      "type": "python",
+      "request": "launch",
+      "purpose": ["debug-test"],
+      "console": "integratedTerminal",
+      "justMyCode": false
+    }
+  ],
+  "version": "0.2.0"
+}
