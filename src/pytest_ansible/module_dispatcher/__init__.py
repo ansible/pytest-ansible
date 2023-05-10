@@ -1,6 +1,6 @@
 """Define BaseModuleDispatcher class."""
 
-from collections.abc import Sequence
+from typing import Sequence
 
 from pytest_ansible.errors import AnsibleModuleError
 

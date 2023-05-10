@@ -1,5 +1,6 @@
 """Tests specific to the unit test functionality."""
 
+from __future__ import annotations
 
 import logging
 import re
