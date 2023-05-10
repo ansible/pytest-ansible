@@ -146,6 +146,12 @@ def pytest_addoption(parser):
         default=False,
         help="Enable support for ansible collection unit tests by only injecting exisiting ANSIBLE_COLLECTIONS_PATHS.",
     )
+    group.addoption(
+        "--molecule",
+        action="store_true",
+        default=False,
+        help="Enables pytest to discover molecule tests and run them.",
+    )
     # Add github marker to --help
     parser.addini("ansible", "Ansible integration", "args")
 
@@ -173,6 +179,9 @@ def pytest_configure(config):
     else:
         start_path = config.invocation_params.dir
         inject(start_path)
+
+    if config.option.molecule:
+        ()  # what to pass here confirm once
 
 
 def pytest_generate_tests(metafunc):
