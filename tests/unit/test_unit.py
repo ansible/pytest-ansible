@@ -7,7 +7,6 @@ import re
 import subprocess
 import sys
 from pathlib import Path
-from typing import Tuple  # noqa UP035
 
 import pytest
 from pytest_ansible.units import inject, inject_only
@@ -26,7 +25,7 @@ def test_inject(
     """
     caplog.set_level(logging.DEBUG)
 
-    def mock_get_collection_name(start_path: str) -> Tuple[str, str]:  # noqa UP006
+    def mock_get_collection_name(start_path: str) -> tuple[str, str]:
         """Mock the get_collection_name function.
 
         :param start_path: The path to the root of the collection

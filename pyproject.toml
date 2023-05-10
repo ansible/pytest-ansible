@@ -133,7 +133,7 @@ ignore = [
   "PTH",
   "TCH",
 ]
-target-version = "py39"
+target-version = "py38"
 # Same as Black.
 line-length = 88
 

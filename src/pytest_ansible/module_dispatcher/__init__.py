@@ -1,6 +1,6 @@
 """Define BaseModuleDispatcher class."""
 
-from typing import Sequence  # noqa: UP035
+from typing import Sequence
 
 from pytest_ansible.errors import AnsibleModuleError
 
