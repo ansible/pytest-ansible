@@ -31,6 +31,14 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 
+def pytest_collection_modifyitems(config, items):
+    if not config.getoption("--molecule"):
+        skip_molecule = pytest.mark.skip(reason="Molecule tests are disabled")
+        for item in items:
+            if "molecule" in item.keywords:
+                item.add_marker(skip_molecule)
+
+
 def molecule_pytest_configure(config):
     """Pytest hook for loading our specific configuration."""
     interesting_env_vars = [

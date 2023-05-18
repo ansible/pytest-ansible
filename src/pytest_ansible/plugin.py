@@ -200,8 +200,7 @@ def pytest_configure(config):
         start_path = config.invocation_params.dir
         inject(start_path)
 
-    if config.option.molecule:
-        ()  # what to pass here confirm once
+    # if config.option.molecule:
 
 
 def pytest_collect_file(
