@@ -60,6 +60,14 @@ def pytest_addoption(parser):
     )
 
 
+def pytest_collection_modifyitems(config, items):
+    if not config.getoption("--molecule"):
+        skip_molecule = pytest.mark.skip(reason="Molecule tests are disabled")
+        for item in items:
+            if "molecule" in item.keywords:
+                item.add_marker(skip_molecule)
+
+
 def molecule_pytest_configure(config):
     """Pytest hook for loading our specific configuration."""
     interesting_env_vars = [
@@ -215,7 +223,6 @@ class MoleculeItem(pytest.Item):
         folders = folder.parts
         cwd = os.path.abspath(os.path.join(folder, "../.."))
         scenario = folders[-1]
-        # role = folders[-3]  # noqa
 
         cmd = [sys.executable, "-m", "molecule"]
         if self.config.option.molecule_base_config:
@@ -248,27 +255,34 @@ class MoleculeItem(pytest.Item):
             cmd.extend(shlex.split(opts))
 
         print(f"running: {' '.join(quote(arg) for arg in cmd)} (from {cwd})")
-        try:
-            # Workaround for STDOUT/STDERR line ordering issue:
-            # https://github.com/pytest-dev/pytest/issues/5449
-
-            with subprocess.Popen(
-                cmd,
-                cwd=cwd,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                universal_newlines=True,
-            ) as proc:
-                for line in proc.stdout:
-                    print(line, end="")
-                proc.wait()
-                if proc.returncode != 0:
-                    pytest.fail(
-                        f"Error code {proc.returncode} returned by: {' '.join(cmd)}",
-                        pytrace=False,
-                    )
-        except subprocess.CalledProcessError as exc:
-            pytest.fail(f"Exception {exc} returned by: {' '.join(cmd)}", pytrace=False)
+        if self.config.getoption("--molecule"):  # Check if --molecule option is enabled
+            try:
+                # Workaround for STDOUT/STDERR line ordering issue:
+                # https://github.com/pytest-dev/pytest/issues/5449
+                with subprocess.Popen(
+                    cmd,
+                    cwd=cwd,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                    universal_newlines=True,
+                ) as proc:
+                    for line in proc.stdout:
+                        print(line, end="")
+                    proc.wait()
+                    if proc.returncode != 0:
+                        pytest.fail(
+                            f"Error code {proc.returncode} returned by: {' '.join(cmd)}",
+                            pytrace=False,
+                        )
+            except subprocess.CalledProcessError as exc:
+                pytest.fail(
+                    f"Exception {exc} returned by: {' '.join(cmd)}",
+                    pytrace=False,
+                )
+        else:
+            pytest.skip(
+                "Molecule tests are disabled",
+            )  # Skip the test if --molecule option is not enabled
 
     def reportinfo(self):
         """Return representation of test location when in verbose mode."""
@@ -279,5 +293,5 @@ class MoleculeItem(pytest.Item):
         return f"{self.name}[{self.molecule_driver}]"
 
 
-class MoleculeError(Exception):
+class MoleculeExceptionError(Exception):
     """Custom exception for error reporting."""
