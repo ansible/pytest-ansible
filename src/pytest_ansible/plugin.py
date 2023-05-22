@@ -172,6 +172,25 @@ def pytest_addoption(parser):
         default=None,
         help="Commit to use as a reference for this test. If the role wasn't",
     )
+
+    group.addoption(
+        "molecule_unavailable_driver",
+        action="store",
+        default=None,
+        help="What marker to add to molecule scenarios when driver is ",
+    )
+    group.addoption(
+        "molecule_base_config",
+        action="store",
+        default=None,
+        help="Path to the molecule base config file. The value of this option is ",
+    )
+    group.addoption(
+        "skip_no_git_change",
+        action="store",
+        default=None,
+        help="Commit to use as a reference for this test. If the role wasn't",
+    )
     # Add github marker to --help
     parser.addini("ansible", "Ansible integration", "args")
 
@@ -200,7 +219,8 @@ def pytest_configure(config):
         start_path = config.invocation_params.dir
         inject(start_path)
 
-    # if config.option.molecule:
+    if config.option.molecule:
+        inject(start_path)
 
 
 def pytest_collect_file(

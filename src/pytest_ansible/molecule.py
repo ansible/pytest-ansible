@@ -27,6 +27,11 @@ try:
 except ImportError:
     ansible_version = None
 
+    :param start_path: The path to the root of the collection
+    :returns: A tuple of the namespace and name
+    """
+    info_file = start_path / "galaxy.yml"
+    logger.info("Looking for collection info in %s", info_file)
 
 logger = logging.getLogger(__name__)
 
