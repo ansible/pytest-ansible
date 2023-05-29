@@ -1,4 +1,5 @@
 import pytest
+
 from pytest_ansible.has_version import has_ansible_v1, has_ansible_v24
 
 try:
