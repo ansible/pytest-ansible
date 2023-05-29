@@ -24,35 +24,6 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-def get_collection_name(start_path: Path) -> tuple[str | None, str | None]:
-    """Get the collection namespace and name from the galaxy.yml file.
-
-    :param start_path: The path to the root of the collection
-    :returns: A tuple of the namespace and name
-    """
-    info_file = start_path / "galaxy.yml"
-    logger.info("Looking for collection info in %s", info_file)
-
-    try:
-        with info_file.open(encoding="utf-8") as fhand:
-            galaxy_info = yaml.safe_load(fhand)
-    except FileNotFoundError:
-        logger.error("No galaxy.yml file found, plugin not activated")
-        return None, None
-
-    try:
-        namespace = galaxy_info["namespace"]
-        name = galaxy_info["name"]
-    except KeyError:
-        logger.error("galaxy.yml file does not contain namespace and name")
-        return None, None
-
-    logger.debug("galaxy.yml file found, plugin activated")
-    logger.info("Collection namespace: %s", namespace)
-    logger.info("Collection name: %s", name)
-    return namespace, name
-
-
 def pytest_collection_modifyitems(config, items):
     if not config.getoption("--molecule"):
         skip_molecule = pytest.mark.skip(reason="Molecule tests are disabled")

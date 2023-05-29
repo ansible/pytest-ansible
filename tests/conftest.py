@@ -149,3 +149,44 @@ def hosts():
     from pytest_ansible.host_manager import get_host_manager
 
     return get_host_manager(inventory=",".join(ALL_HOSTS), connection="local")
+
+
+@pytest.fixture(scope="session")
+def molecule_scenario(request):
+    """
+    Fixture that returns the value of the "--molecule" option from the pytest configuration.
+
+    :param request: pytest request object
+    :return: Value of the "--molecule" option
+    """
+    return request.config.getoption("--molecule")
+
+
+@pytest.fixture(scope="session")
+def molecule_ansible(ansible_playbook):
+    """
+    Fixture that returns the `ansible_playbook` fixture.
+
+    :param ansible_playbook: The `ansible_playbook` fixture
+    :return: The `ansible_playbook` fixture
+    """
+    return ansible_playbook
+
+
+@pytest.hookimpl(tryfirst=True, hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    """
+    Pytest hook that modifies the test item by setting the `molecule_ansible` fixture
+    for specific fixtures ("ansible_module", "ansible_inventory") when the report
+    matches the call.
+
+    :param item: Pytest test item
+    :param call: Test execution call (setup, call, teardown)
+    """
+    outcome = yield
+    rep = outcome.get_result()
+    if rep.when == call:
+        for fixture in ("ansible_module", "ansible_inventory"):
+            if fixture in item.fixturenames:
+                setattr(item, fixture, molecule_ansible)
+                break

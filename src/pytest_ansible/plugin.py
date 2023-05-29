@@ -148,13 +148,6 @@ def pytest_addoption(parser):
     )
 
     group.addoption(
-        "--ansible-unit-inject-only",
-        action="store_true",
-        default=False,
-        help="Enable support for ansible collection unit tests by only injecting exisiting ANSIBLE_COLLECTIONS_PATHS.",
-    )
-
-    group.addoption(
         "--molecule",
         action="store_true",
         default=False,
@@ -162,19 +155,19 @@ def pytest_addoption(parser):
     )
 
     group.addoption(
-        "molecule_unavailable_driver",
+        "--molecule_unavailable_driver",
         action="store",
         default=None,
         help="What marker to add to molecule scenarios when driver is ",
     )
     group.addoption(
-        "molecule_base_config",
+        "--molecule_base_config",
         action="store",
         default=None,
         help="Path to the molecule base config file. The value of this option is ",
     )
     group.addoption(
-        "skip_no_git_change",
+        "--skip_no_git_change",
         action="store",
         default=None,
         help="Commit to use as a reference for this test. If the role wasn't",
