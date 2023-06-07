@@ -8,9 +8,7 @@ import shlex
 import subprocess
 import sys
 import warnings
-from pathlib import Path
 from shlex import quote
-from typing import TYPE_CHECKING
 
 import pkg_resources
 import pytest
@@ -18,18 +16,7 @@ import yaml
 from molecule.api import drivers
 from molecule.config import ansible_version
 
-if TYPE_CHECKING:
-    from _pytest.nodes import Node
-
 logger = logging.getLogger(__name__)
-
-
-def pytest_collection_modifyitems(config, items):
-    if not config.getoption("--molecule"):
-        skip_molecule = pytest.mark.skip(reason="Molecule tests are disabled")
-        for item in items:
-            if "molecule" in item.keywords:
-                item.add_marker(skip_molecule)
 
 
 def molecule_pytest_configure(config):
@@ -103,18 +90,6 @@ def molecule_pytest_configure(config):
                 )
                 # we do not re-raise this exception because missing or broken
                 # selinux bindings are not guaranteed to fail molecule execution.
-
-
-def pytest_collect_file(
-    parent: pytest.Collector,
-    file_path: Path | None,
-) -> Node | None:
-    """Transform each found molecule.yml into a pytest test."""
-    if file_path and file_path.is_symlink():
-        return None
-    if file_path and file_path.name == "molecule.yml":
-        return MoleculeFile.from_parent(path=file_path, parent=parent)
-    return None
 
 
 class MoleculeFile(pytest.File):

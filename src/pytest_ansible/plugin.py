@@ -1,6 +1,9 @@
 """PyTest Ansible Plugin."""
+from __future__ import annotations
 
 import logging
+from pathlib import Path
+from typing import TYPE_CHECKING
 
 import ansible
 import ansible.constants
@@ -17,7 +20,11 @@ from pytest_ansible.fixtures import (
 )
 from pytest_ansible.host_manager import get_host_manager
 
+from .molecule import MoleculeFile
 from .units import inject, inject_only
+
+if TYPE_CHECKING:
+    from _pytest.nodes import Node
 
 logger = logging.getLogger(__name__)
 
@@ -148,13 +155,6 @@ def pytest_addoption(parser):
     )
 
     group.addoption(
-        "--molecule",
-        action="store_true",
-        default=False,
-        help="Enables pytest to discover molecule tests and run them.",
-    )
-
-    group.addoption(
         "--molecule_unavailable_driver",
         action="store",
         default=None,
@@ -200,8 +200,17 @@ def pytest_configure(config):
         start_path = config.invocation_params.dir
         inject(start_path)
 
-    if config.option.molecule:
-        inject(start_path)
+
+def pytest_collect_file(
+    parent: pytest.Collector,
+    file_path: Path | None,
+) -> Node | None:
+    """Transform each found molecule.yml into a pytest test."""
+    if file_path and file_path.is_symlink():
+        return None
+    if file_path and file_path.name == "molecule.yml":
+        return MoleculeFile.from_parent(path=file_path, parent=parent)
+    return None
 
 
 def pytest_generate_tests(metafunc):
