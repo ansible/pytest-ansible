@@ -202,8 +202,8 @@ def pytest_configure(config):
 
 
 def pytest_collect_file(
-    parent: pytest.Collector,
     file_path: Path | None,
+    parent: pytest.Collector,
 ) -> Node | None:
     """Transform each found molecule.yml into a pytest test."""
     if file_path and file_path.is_symlink():

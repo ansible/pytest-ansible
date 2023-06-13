@@ -152,17 +152,6 @@ def hosts():
 
 
 @pytest.fixture(scope="session")
-def molecule_scenario(request):
-    """
-    Fixture that returns the value of the "--molecule" option from the pytest configuration.
-
-    :param request: pytest request object
-    :return: Value of the "--molecule" option
-    """
-    return request.config.getoption("--molecule")
-
-
-@pytest.fixture(scope="session")
 def molecule_ansible(ansible_playbook):
     """
     Fixture that returns the `ansible_playbook` fixture.
