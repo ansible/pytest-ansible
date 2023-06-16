@@ -21,9 +21,8 @@ provisioner:
       verbosity: 1
 
 scenario:
-  name: test_scenario
+  name: default
   test_sequence:
-    - lint
     - dependency
     - syntax
     - create

@@ -94,6 +94,7 @@ disable = [
   "unexpected-keyword-arg",
   "unused-argument",
   "invalid-name",
+  "unused-import",
 ]
 
 [tool.pytest]

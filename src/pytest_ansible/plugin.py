@@ -19,8 +19,8 @@ from pytest_ansible.fixtures import (
     localhost,
 )
 from pytest_ansible.host_manager import get_host_manager
+from pytest_ansible.molecule import MoleculeFile
 
-from .molecule import MoleculeFile
 from .units import inject, inject_only
 
 if TYPE_CHECKING:
@@ -206,6 +206,16 @@ def pytest_collect_file(
     parent: pytest.Collector,
 ) -> Node | None:
     """Transform each found molecule.yml into a pytest test."""
+    has_molecule = False
+    try:
+        from .molecule import Molecule  # noqa: F401
+
+        has_molecule = True
+    except ImportError:
+        pass
+
+    if not has_molecule:
+        return None
     if file_path and file_path.is_symlink():
         return None
     if file_path and file_path.name == "molecule.yml":

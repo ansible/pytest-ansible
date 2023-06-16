@@ -2,6 +2,7 @@
 # pylint: disable=protected-access
 from __future__ import annotations
 
+import importlib
 import logging
 import os
 import shlex
@@ -14,8 +15,18 @@ import pkg_resources
 import pytest
 import yaml
 
-from molecule.api import drivers
-from molecule.config import ansible_version
+try:
+    from molecule.api import drivers
+except ImportError:
+    drivers = None
+
+
+try:
+    molecule_config = importlib.import_module("molecule.config")
+    ansible_version = molecule_config.ansible_version
+except ImportError:
+    ansible_version = None
+
 
 logger = logging.getLogger(__name__)
 
