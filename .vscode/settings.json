@@ -8,7 +8,7 @@
   "editor.formatOnSave": true,
   "isort.check": false,
   "prettier.enable": false,
-  "python.formatting.provider": "none",
+  "python.formatting.provider": "black",
   "python.linting.flake8Enabled": true,
   "python.linting.mypyEnabled": true,
   "python.linting.pylintEnabled": true,
