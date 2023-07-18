@@ -42,7 +42,7 @@ pytest \
 
 ## Inventory
 
-Using ansible first starts with defining your inventory. This can be done
+Using ansible first starts with defining your inventory. This can be done in
 several ways, but to start, we'll use the `ansible_adhoc` fixture.
 
 ```python
