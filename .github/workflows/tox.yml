@@ -33,7 +33,7 @@ jobs:
           other_names: |
             lint
             pkg
-            devel
+            py310-devel
           platforms: linux
 
   build:
