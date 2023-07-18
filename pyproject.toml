@@ -95,7 +95,7 @@ disable = [
   "invalid-name",
 ]
 
-[tool.pytest]
+[tool.pytest.ini_options]
 minversion = 6.0
 addopts = ["-v", "--tb=native"]
 markers = [
