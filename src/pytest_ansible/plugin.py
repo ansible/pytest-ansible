@@ -151,7 +151,7 @@ def pytest_addoption(parser):
         "--ansible-unit-inject-only",
         action="store_true",
         default=False,
-        help="Enable support for ansible collection unit tests by only injecting exisiting ANSIBLE_COLLECTIONS_PATHS.",
+        help="Enable support for ansible collection unit tests by only injecting exisiting ANSIBLE_COLLECTIONS_PATH.",
     )
 
     group.addoption(

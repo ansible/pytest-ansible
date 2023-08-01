@@ -102,7 +102,7 @@ def inject(start_path: Path) -> None:
 
     logger.info("Collections dir: %s", collections_dir)
 
-    # TODO: Make this a configuration option, check COLLECTIONS_PATHS
+    # TODO: Make this a configuration option, check COLLECTIONS_PATH
     # Add the user location for any dependencies
     paths = [str(collections_dir), "~/.ansible/collections"]
     logger.info("Paths: %s", paths)
@@ -121,12 +121,12 @@ def inject(start_path: Path) -> None:
     # Set the environment variable as courtesy for integration tests
     env_paths = os.pathsep.join(paths)
     logger.info("Setting ANSIBLE_COLLECTIONS_PATH to %s", env_paths)
-    os.environ["ANSIBLE_COLLECTIONS_PATHS"] = env_paths
+    os.environ["ANSIBLE_COLLECTIONS_PATH"] = env_paths
 
 
 def inject_only() -> None:
-    """Inject the current ANSIBLE_COLLECTIONS_PATHS."""
-    env_paths = os.environ.get("ANSIBLE_COLLECTIONS_PATHS", "")
+    """Inject the current ANSIBLE_COLLECTIONS_PATH."""
+    env_paths = os.environ.get("ANSIBLE_COLLECTIONS_PATH", "")
     path_list = env_paths.split(os.pathsep)
     for path in path_list:
         if path:
