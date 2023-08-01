@@ -64,7 +64,7 @@ def test_inject_only(
     :param caplog: The pytest caplog fixture
     """
     caplog.set_level(logging.DEBUG)
-    monkeypatch.setenv("ANSIBLE_COLLECTIONS_PATHS", str(tmp_path / "collections"))
+    monkeypatch.setenv("ANSIBLE_COLLECTIONS_PATH", str(tmp_path / "collections"))
 
     (tmp_path / "collections" / "ansible_collections").mkdir(parents=True)
 
