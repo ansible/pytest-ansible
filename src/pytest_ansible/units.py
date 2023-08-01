@@ -119,14 +119,17 @@ def inject(start_path: Path) -> None:
     # e.g. ansible-galaxy collection install etc
 
     # Set the environment variable as courtesy for integration tests
+
+    envvar_name = determine_envvar()
     env_paths = os.pathsep.join(paths)
-    logger.info("Setting ANSIBLE_COLLECTIONS_PATH to %s", env_paths)
-    os.environ["ANSIBLE_COLLECTIONS_PATH"] = env_paths
+    logger.info("Setting %s to %s", envvar_name, env_paths)
+    os.environ[envvar_name] = env_paths
 
 
 def inject_only() -> None:
-    """Inject the current ANSIBLE_COLLECTIONS_PATH."""
-    env_paths = os.environ.get("ANSIBLE_COLLECTIONS_PATH", "")
+    """Inject the current ANSIBLE_COLLECTIONS_PATH(S)."""
+    envvar_name = determine_envvar()
+    env_paths = os.environ.get(envvar_name, "")
     path_list = env_paths.split(os.pathsep)
     for path in path_list:
         if path:
@@ -148,3 +151,17 @@ def acf_inject(paths: list[str]) -> None:
         logger.debug("_ACF configured paths: %s", acf._n_configured_paths)
     else:
         logger.debug("_ACF not available")
+
+
+def determine_envvar() -> str:
+    """Use the existence of the AnsibleCollectionFinder to determine
+    the ansible version.
+
+    ansible 2.9 did not have AnsibleCollectionFinder and did not support ANSIBLE_COLLECTIONS_PATH
+    later versions do.
+
+    :returns: The appropriate environment variable to use
+    """
+    if not HAS_COLLECTION_FINDER:
+        return "ANSIBLE_COLLECTIONS_PATHS"
+    return "ANSIBLE_COLLECTIONS_PATH"
