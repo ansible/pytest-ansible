@@ -19,8 +19,8 @@ from pytest_ansible.fixtures import (
     localhost,
 )
 from pytest_ansible.host_manager import get_host_manager
-from pytest_ansible.molecule import MoleculeFile
 
+from .molecule import MoleculeFile
 from .units import inject, inject_only
 
 if TYPE_CHECKING:
