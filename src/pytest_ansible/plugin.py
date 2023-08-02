@@ -1,6 +1,9 @@
 """PyTest Ansible Plugin."""
+from __future__ import annotations
 
 import logging
+from pathlib import Path
+from typing import TYPE_CHECKING
 
 import ansible
 import ansible.constants
@@ -17,7 +20,11 @@ from pytest_ansible.fixtures import (
 )
 from pytest_ansible.host_manager import get_host_manager
 
+from .molecule import MoleculeFile
 from .units import inject, inject_only
+
+if TYPE_CHECKING:
+    from _pytest.nodes import Node
 
 logger = logging.getLogger(__name__)
 
@@ -146,6 +153,44 @@ def pytest_addoption(parser):
         default=False,
         help="Enable support for ansible collection unit tests by only injecting exisiting ANSIBLE_COLLECTIONS_PATH.",
     )
+
+    group.addoption(
+        "--molecule_unavailable_driver",
+        action="store",
+        default=None,
+        help="What marker to add to molecule scenarios when driver is ",
+    )
+    group.addoption(
+        "--molecule_base_config",
+        action="store",
+        default=None,
+        help="Path to the molecule base config file. The value of this option is ",
+    )
+    group.addoption(
+        "--skip_no_git_change",
+        action="store",
+        default=None,
+        help="Commit to use as a reference for this test. If the role wasn't",
+    )
+
+    group.addoption(
+        "--molecule_unavailable_driver",
+        action="store",
+        default=None,
+        help="What marker to add to molecule scenarios when driver is ",
+    )
+    group.addoption(
+        "--molecule_base_config",
+        action="store",
+        default=None,
+        help="Path to the molecule base config file. The value of this option is ",
+    )
+    group.addoption(
+        "--skip_no_git_change",
+        action="store",
+        default=None,
+        help="Commit to use as a reference for this test. If the role wasn't",
+    )
     # Add github marker to --help
     parser.addini("ansible", "Ansible integration", "args")
 
@@ -173,6 +218,21 @@ def pytest_configure(config):
     else:
         start_path = config.invocation_params.dir
         inject(start_path)
+
+    if config.option.molecule:
+        inject(start_path)
+
+
+def pytest_collect_file(
+    file_path: Path | None,
+    parent: pytest.Collector,
+) -> Node | None:
+    """Transform each found molecule.yml into a pytest test."""
+    if file_path and file_path.is_symlink():
+        return None
+    if file_path and file_path.name == "molecule.yml":
+        return MoleculeFile.from_parent(path=file_path, parent=parent)
+    return None
 
 
 def pytest_generate_tests(metafunc):
