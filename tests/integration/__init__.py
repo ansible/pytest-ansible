@@ -1,1 +1,1 @@
-"""Molecule Tests"""
+"""Integration Tests"""
