@@ -13,8 +13,8 @@ repos:
   - repo: meta
     hooks:
       - id: check-useless-excludes
-  - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: "v0.0.263"
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: "v0.0.276"
     hooks:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix]
@@ -54,7 +54,7 @@ repos:
           - ansible-core
           - pytest
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.2.0
+    rev: v1.4.1
     hooks:
       - id: mypy
         # empty args needed in order to match mypy cli behavior
@@ -64,7 +64,7 @@ repos:
           - ansible-core
           - types-pkg_resources
   - repo: https://github.com/jazzband/pip-tools
-    rev: 6.13.0
+    rev: 6.14.0
     hooks:
       - id: pip-compile
         name: lock
