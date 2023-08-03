@@ -13,7 +13,6 @@ from shlex import quote
 import pkg_resources
 import pytest
 import yaml
-
 from molecule.api import drivers
 from molecule.config import ansible_version
 
