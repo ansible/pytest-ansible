@@ -334,10 +334,10 @@ def pytest_generate_tests(metafunc):
             ids=[scenario.scenario_name for scenario in scenarios],
 =======
         rootpath = metafunc.config.rootpath
-        molecule_root = rootpath / "extentions"
+        molecule_root = rootpath / "extensions"
         scenarios_path = molecule_root / "molecule"
         if not scenarios_path.exists():
-            pytest.exit(f"No molecule extention directory found: {scenarios_path}")
+            pytest.exit(f"No molecule extension directory found: {scenarios_path}")
 
         scenarios = []
         scenario_names = []
