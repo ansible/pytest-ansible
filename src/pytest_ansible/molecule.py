@@ -234,3 +234,33 @@ class MoleculeItem(pytest.Item):
 
 class MoleculeExceptionError(Exception):
     """Custom exception for error reporting."""
+
+
+class MoleculeScenario:
+    """Molecule subprocess wrapper."""
+
+    # pylint: disable=too-few-public-methods
+
+    def __init__(self, molecule_root, scenario_name):
+        """Initialize the MoleculeScenarion class.
+
+        :param molecule_root: The root directory for 'molecule'
+        :param scenario_name: The name of the molecule scenario
+        """
+        self.molecule_root = molecule_root
+        self.scenario_name = scenario_name
+
+    def test(self) -> subprocess.CompletedProcess:
+        """Run molecule test for the scenario.
+
+        :returns: The completed process
+        """
+        proc = subprocess.run(
+            args=[sys.executable, "-m", "molecule", "test", "-s", self.scenario_name],
+            capture_output=False,
+            check=False,
+            cwd=self.molecule_root,
+            shell=False,
+            text=True,
+        )
+        return proc

@@ -21,7 +21,7 @@ from pytest_ansible.fixtures import (
 from pytest_ansible.host_manager import get_host_manager
 
 try:
-    from .molecule import MoleculeFile
+    from .molecule import MoleculeFile, MoleculeScenario
 
     HAS_MOLECULE = True
 except ImportError:
@@ -267,6 +267,30 @@ def pytest_generate_tests(metafunc):
         # Return a ModuleDispatcher instance representing the group (e.g. ansible_group.shell('date'))
         metafunc.parametrize("ansible_group", iter(hosts[g] for g in groups))
         metafunc.parametrize("ansible_group", iter(hosts[g] for g in extra_groups))
+
+    if "molecule_scenario" in metafunc.fixturenames:
+        rootpath = metafunc.config.rootpath
+        molecule_root = rootpath / "extentions"
+        scenarios_path = molecule_root / "molecule"
+        if not scenarios_path.exists():
+            pytest.exit(f"No molecule extention directory found: {scenarios_path}")
+
+        scenarios = []
+        scenario_names = []
+        for directory in scenarios_path.iterdir():
+            if (directory / "molecule.yml").exists():
+                scenarios.append(
+                    MoleculeScenario(
+                        molecule_root=molecule_root, scenario_name=directory.name
+                    )
+                )
+                scenario_names.append(directory.name)
+
+        metafunc.parametrize(
+            "molecule_scenario",
+            scenarios,
+            ids=scenario_names,
+        )
 
 
 class PyTestAnsiblePlugin:
