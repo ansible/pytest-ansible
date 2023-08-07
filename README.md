@@ -5,13 +5,11 @@
 [![License](https://img.shields.io/pypi/l/pytest-ansible.svg)](https://pypi.python.org/pypi/pytest-ansible/)
 [![Supported Python Versions](https://img.shields.io/pypi/pyversions/pytest-ansible.svg)](https://pypi.python.org/pypi/pytest-ansible/)
 
-This repository contains a plugin for `pytest` which adds several fixtures
-for running `ansible` modules, or inspecting `ansible_facts`. While one
-can simply call out to `ansible` using the `subprocess` module, having to
-parse stdout to determine the outcome of the operation is unpleasant and prone
-to error. With `pytest-ansible`, modules return JSON data which you can
-inspect and act on, much like with an ansible
-[playbook](http://docs.ansible.com/playbooks.html).
+This repository now extends its support to two additional plugins `pytest-molecule` and `pytest-ansible-units`. These plugins enhance the functionality of the pytest framework by providing specialized features for Ansible testing workflows. The repository includes a `pytest` plugin that introduces fixtures for executing `ansible` modules and examining `ansible_facts`. Unlike using the `subprocess` module to call ansible and parsing stdout for outcomes, the `pytest-ansible` plugin offers improved reliability by returning JSON data from modules which you can inspect and act on, much like with an ansible [playbook](https://docs.ansible.com/ansible/latest/cli/ansible-playbook.html).
+
+The [pytest-molecule](https://github.com/ansible-community/pytest-molecule) plugin enables `pytest` discovery of all `molecule.yml` files inside the codebase and runs them as `pytest` tests. It enables you to include Molecule scenarios as part of your pytest test suite, allowing you to thoroughly test your Ansible roles and playbooks across different scenarios and environments. Once you install `pytest-ansible` you should be able to just run `pytest` in order to run `molecule` on all roles and scenarios.
+
+The [pytest-ansible-units](https://github.com/ansible-community/pytest-ansible-units) plugin allows ansible collection's unit tests to be run with only `pytest`. It offers a focused approach to testing individual Ansible modules. With this plugin, you can write and execute unit tests specifically for Ansible modules, ensuring the accuracy and reliability of your module code. This is particularly useful for verifying the correctness of module behavior in isolation.
 
 ## Installation
 
@@ -36,7 +34,12 @@ pytest \
     [--become] \
     [--become-user <username>] \
     [--become-method <method>] \
+    [--ask-become-pass] \
     [--limit <limit>] \
+    [--ansible-unit-inject-only] \
+    [--molecule] \
+    [--molecule-unavailable-driver] \ 
+    [--skip-no-git-change] \
     [--check]
 ```
 
