@@ -255,7 +255,7 @@ class MoleculeScenario:
 
         :returns: The completed process
         """
-        proc = subprocess.run(
+        return subprocess.run(
             args=[sys.executable, "-m", "molecule", "test", "-s", self.scenario_name],
             capture_output=False,
             check=False,
@@ -263,4 +263,3 @@ class MoleculeScenario:
             shell=False,
             text=True,
         )
-        return proc

@@ -35,6 +35,7 @@ def test_scenario(molecule_scenario):
     proc = molecule_scenario.test()
     assert proc.returncode == 0
 ```
+
 The `molecule_scenario` fixture provides parameterized molecule scenarios discovered in the collection's `extensions/molecule` directory.
 
 `molecule test -s <scenario>` will be run for each scenario and a completed subprocess returned from the `test()` call.
@@ -42,7 +43,6 @@ The `molecule_scenario` fixture provides parameterized molecule scenarios discov
 Legacy:
 
 Run molecule with the `--molecule` command line parameter to inject each molecule directory found in the current working directory. Each scenarion will be injected as an external test in the the tests available for pytest.
-
 
 ## Fixtures and helpers for use in tests
 

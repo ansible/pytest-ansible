@@ -281,8 +281,9 @@ def pytest_generate_tests(metafunc):
             if (directory / "molecule.yml").exists():
                 scenarios.append(
                     MoleculeScenario(
-                        molecule_root=molecule_root, scenario_name=directory.name
-                    )
+                        molecule_root=molecule_root,
+                        scenario_name=directory.name,
+                    ),
                 )
                 scenario_names.append(directory.name)
 
