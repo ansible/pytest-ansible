@@ -23,7 +23,7 @@ pip install pytest-ansible
 
 Molecule scenarios can be tested using 2 different methods.
 
-Recommended:
+**Recommended:**
 
 Add a `test_molecule.py` file to the `tests` directory of the ansible collection:
 
@@ -40,7 +40,7 @@ The `molecule_scenario` fixture provides parameterized molecule scenarios discov
 
 `molecule test -s <scenario>` will be run for each scenario and a completed subprocess returned from the `test()` call.
 
-Legacy:
+**Legacy:**
 
 Run molecule with the `--molecule` command line parameter to inject each molecule directory found in the current working directory. Each scenarion will be injected as an external test in the the tests available for pytest.
 
