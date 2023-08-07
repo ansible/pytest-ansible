@@ -21,6 +21,7 @@ pip install pytest-ansible
 
 ## Running molecule scenarios using pytest
 
+<<<<<<< HEAD
 Molecule scenarios can be tested using 2 different methods if molecule is installed.
 
 **Recommended:**
@@ -61,6 +62,31 @@ Represents the default scenario found in the `extension/molecule/default` direct
 
 Run molecule with the `--molecule` command line parameter to inject each molecule directory found in the current working directory. Each scenarion will be injected as an external test in the the tests available for pytest.
 
+=======
+Molecule scenarios can be tested using 2 different methods.
+
+Recommended:
+
+Add a `test_molecule.py` file to the `tests` directory of the ansible collection:
+
+```
+# Tests for molecule scnearios
+
+def test_scenario(molecule_scenario):
+    """Run molecule for each scenario"""
+    proc = molecule_scenario.test()
+    assert proc.returncode == 0
+```
+The `molecule_scenario` fixture provides parameterized molecule scenarios discovered in the collection's `extensions/molecule` directory.
+
+`molecule test -s <scenario>` will be run for each scenario and a completed subprocess returned from the `test()` call.
+
+Legacy:
+
+Run molecule with the `--molecule` command line parameter to inject each molecule directory found in the current working directory. Each scenarion will be injected as an external test in the the tests available for pytest.
+
+
+>>>>>>> a6e3b10 (Improved molecule support)
 ## Fixtures and helpers for use in tests
 
 ### Usage
