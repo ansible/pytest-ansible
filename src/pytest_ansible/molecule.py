@@ -242,7 +242,7 @@ class MoleculeScenario:
     # pylint: disable=too-few-public-methods
 
     def __init__(self, molecule_root, scenario_name):
-        """Initialize the MoleculeScenarion class.
+        """Initialize the MoleculeScenario class.
 
         :param molecule_root: The root directory for 'molecule'
         :param scenario_name: The name of the molecule scenario
