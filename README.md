@@ -38,7 +38,7 @@ pytest \
     [--limit <limit>] \
     [--ansible-unit-inject-only] \
     [--molecule] \
-    [--molecule-unavailable-driver] \ 
+    [--molecule-unavailable-driver] \
     [--skip-no-git-change] \
     [--check]
 ```
