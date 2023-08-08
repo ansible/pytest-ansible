@@ -1,6 +1,7 @@
 """PyTest Ansible Plugin."""
 from __future__ import annotations
 
+import contextlib
 import logging
 import subprocess
 from pathlib import Path
@@ -28,8 +29,6 @@ try:
 except ImportError:
     HAS_MOLECULE = False
 
-
-import contextlib
 
 from .units import inject, inject_only
 
