@@ -37,8 +37,8 @@ def test_molecule_disabled() -> None:
         shell=True,
         text=True,
     )
-    assert proc.returncode == 0
-    assert "SKIPPED (Molecule" in proc.stdout
+    assert proc.returncode == 4
+    assert "ERROR: found no collectors" in proc.stdout
 
 
 def test_molecule_runtest() -> None:
