@@ -241,13 +241,13 @@ class MoleculeScenario:
 
     # pylint: disable=too-few-public-methods
 
-    def __init__(self, molecule_root, scenario_name):
+    def __init__(self, molecule_parent, scenario_name):
         """Initialize the MoleculeScenario class.
 
-        :param molecule_root: The root directory for 'molecule'
+        :param molecule_parent: The parent directory of 'molecule'
         :param scenario_name: The name of the molecule scenario
         """
-        self.molecule_root = molecule_root
+        self.molecule_parent = molecule_parent
         self.scenario_name = scenario_name
 
     def test(self) -> subprocess.CompletedProcess:
@@ -259,7 +259,7 @@ class MoleculeScenario:
             args=[sys.executable, "-m", "molecule", "test", "-s", self.scenario_name],
             capture_output=False,
             check=False,
-            cwd=self.molecule_root,
+            cwd=self.molecule_parent,
             shell=False,
             text=True,
         )

@@ -7,6 +7,7 @@ import subprocess
 import sys
 
 import pytest
+from pytest_ansible.molecule import MoleculeScenario
 
 
 def test_molecule_collect() -> None:
@@ -56,3 +57,12 @@ def test_molecule_runtest() -> None:
     assert "collected 1 item" in proc.stdout
     assert "tests/fixtures/molecule/default/molecule.yml::test " in proc.stdout
     assert "1 passed" in proc.stdout
+
+
+def test_molecule_fixture(molecule_scenario: MoleculeScenario) -> None:
+    """Test the scenario fixture.
+
+    :param molecule_scenario: One scenario
+    """
+    assert molecule_scenario.scenario_name in ["fixtures-default", "extensions-default"]
+    molecule_scenario.test()

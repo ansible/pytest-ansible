@@ -10,6 +10,7 @@ import ansible.constants
 import ansible.errors
 import ansible.utils
 import ansible.utils.display
+import pathspec
 import pytest
 
 from pytest_ansible.fixtures import (
@@ -270,27 +271,36 @@ def pytest_generate_tests(metafunc):
 
     if "molecule_scenario" in metafunc.fixturenames:
         rootpath = metafunc.config.rootpath
-        molecule_root = rootpath / "extensions"
-        scenarios_path = molecule_root / "molecule"
-        if not scenarios_path.exists():
-            pytest.exit(f"No molecule extension directory found: {scenarios_path}")
+        gitignore = rootpath / ".gitignore"
+        if gitignore.exists():
+            with gitignore.open() as fhand:
+                content = fhand.read()
+        else:
+            content = ""
 
+        spec = pathspec.GitIgnoreSpec.from_lines(content.splitlines())
+        matches = spec.match_tree(rootpath)
+        ignored = [rootpath / match for match in matches]
         scenarios = []
-        scenario_names = []
-        for directory in scenarios_path.iterdir():
-            if (directory / "molecule.yml").exists():
-                scenarios.append(
-                    MoleculeScenario(
-                        molecule_root=molecule_root,
-                        scenario_name=directory.name,
-                    ),
-                )
-                scenario_names.append(directory.name)
 
+        for fs_entry in rootpath.glob("**/molecule/*/molecule.yml"):
+            if fs_entry in ignored:
+                continue
+
+            scenario = fs_entry.parent
+            molecule_parent = scenario.parent.parent
+            scenarios.append(
+                MoleculeScenario(
+                    molecule_parent=molecule_parent,
+                    scenario_name=f"{molecule_parent.name}-{scenario.name}",
+                ),
+            )
+        if not scenarios:
+            pytest.exit(f"No molecule scenarions found in: {rootpath}")
         metafunc.parametrize(
             "molecule_scenario",
             scenarios,
-            ids=scenario_names,
+            ids=[scenario.scenario_name for scenario in scenarios],
         )
 
 
