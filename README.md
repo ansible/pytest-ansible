@@ -43,39 +43,14 @@ def test_integration(molecule_scenario: MoleculeScenario) -> None:
     assert proc.returncode == 0
 ```
 
-The `molecule_scenario` fixture provides parameterized molecule scenarios discovered in the collection's `extensions/molecule` directory.
+The `molecule_scenario` fixture provides parameterized molecule scenarios discovered in the collection's `extensions/molecule` directory, as well as other directories within the collection.
 
 `molecule test -s <scenario>` will be run for each scenario and a completed subprocess returned from the `test()` call.
 
 **Legacy:**
 
-Run molecule with the `--molecule` command line parameter to inject each molecule directory found in the current working directory. Each scenarion will be injected as an external test in the the tests available for pytest.
+Run molecule with the `--molecule` command line parameter to inject each molecule directory found in the current working directory. Each scenario will be injected as an external test in the the tests available for pytest. Due to the nature of this approach, the molecule scenarios are not represented as python tests and may not show in the IDE's pytest test tree.
 
-=======
-Molecule scenarios can be tested using 2 different methods.
-
-Recommended:
-
-Add a `test_molecule.py` file to the `tests` directory of the ansible collection:
-
-```
-# Tests for molecule scnearios
-
-def test_scenario(molecule_scenario):
-    """Run molecule for each scenario"""
-    proc = molecule_scenario.test()
-    assert proc.returncode == 0
-```
-The `molecule_scenario` fixture provides parameterized molecule scenarios discovered in the collection's `extensions/molecule` directory.
-
-`molecule test -s <scenario>` will be run for each scenario and a completed subprocess returned from the `test()` call.
-
-Legacy:
-
-Run molecule with the `--molecule` command line parameter to inject each molecule directory found in the current working directory. Each scenarion will be injected as an external test in the the tests available for pytest.
-
-
->>>>>>> a6e3b10 (Improved molecule support)
 ## Fixtures and helpers for use in tests
 
 ### Usage
