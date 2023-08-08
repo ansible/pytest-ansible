@@ -8,8 +8,9 @@ import shlex
 import subprocess
 import sys
 import warnings
-from shlex import quote
 from pathlib import Path
+from shlex import quote
+
 import pkg_resources
 import pytest
 import yaml
