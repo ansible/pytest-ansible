@@ -7,6 +7,8 @@ import subprocess
 import sys
 from typing import TYPE_CHECKING
 
+from typing import TYPE_CHECKING
+
 import pytest
 
 if TYPE_CHECKING:

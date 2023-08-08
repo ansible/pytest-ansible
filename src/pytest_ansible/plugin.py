@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+import shutil
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -31,6 +32,10 @@ try:
 =======
     from .molecule import MoleculeFile, MoleculeScenario
 >>>>>>> a6e3b10 (Improved molecule support)
+
+    HAS_MOLECULE = True
+except ImportError:
+    HAS_MOLECULE = False
 
     HAS_MOLECULE = True
 except ImportError:
@@ -228,6 +233,7 @@ def pytest_collect_file(
     """Transform each found molecule.yml into a pytest test."""
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
     if not parent.config.option.molecule:
         return None
@@ -238,6 +244,8 @@ def pytest_collect_file(
         return None
 >>>>>>> 30be9f2 (README.md update, avoid import errors)
 =======
+=======
+>>>>>>> 58547bf (README.md update, avoid import errors)
     if not HAS_MOLECULE:
         return None
 =======
@@ -247,7 +255,12 @@ def pytest_collect_file(
     if not HAS_MOLECULE:
         pytest.exit("molecule not installed or found.")
 >>>>>>> 014be7c (Avoid import error if molecule is not installed (#157))
+<<<<<<< HEAD
 >>>>>>> 1709304 (Avoid import error if molecule is not installed (#157))
+=======
+=======
+>>>>>>> 9ae1405 (README.md update, avoid import errors)
+>>>>>>> 58547bf (README.md update, avoid import errors)
     if file_path and file_path.is_symlink():
         return None
     if file_path and file_path.name == "molecule.yml":
@@ -296,8 +309,13 @@ def pytest_generate_tests(metafunc):
 
     if "molecule_scenario" in metafunc.fixturenames:
 <<<<<<< HEAD
+<<<<<<< HEAD
         if not HAS_MOLECULE:
             pytest.exit("molecule not installed or found.")
+=======
+        if not HAS_MOLECULE:
+            pytest.exit(f"molecule not installed or found.")
+>>>>>>> 9ae1405 (README.md update, avoid import errors)
 
         # Find all molecule scenarios not gitignored
         # Replace this with molecule --list in the future if json output is available
