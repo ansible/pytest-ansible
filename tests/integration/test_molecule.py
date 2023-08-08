@@ -13,7 +13,7 @@ def test_molecule_collect() -> None:
     """Test pytest collection of molecule scenarios."""
     try:
         proc = subprocess.run(
-            "pytest --collect-only",
+            "pytest --molecule --collect-only",
             capture_output=True,
             shell=True,
             check=True,
