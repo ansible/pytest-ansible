@@ -25,7 +25,7 @@ Molecule scenarios can be tested using 2 different methods.
 
 **Recommended:**
 
-Add a `test_molecule.py` file to the `tests` directory of the ansible collection:
+Add a `test_integration.py` file to the `tests/integration` directory of the ansible collection:
 
 ```
 """Tests for molecule scenarios."""
