@@ -21,8 +21,7 @@ pip install pytest-ansible
 
 ## Running molecule scenarios using pytest
 
-<<<<<<< HEAD
-Molecule scenarios can be tested using 2 different methods if molecule is installed if molecule is installed.
+Molecule scenarios can be tested using 2 different methods if molecule is installed.
 
 **Recommended:**
 
