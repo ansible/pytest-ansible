@@ -20,7 +20,6 @@ from pytest_ansible.fixtures import (
 )
 from pytest_ansible.host_manager import get_host_manager
 
-
 try:
     from .molecule import MoleculeFile
 
