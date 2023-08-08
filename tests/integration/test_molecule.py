@@ -67,5 +67,6 @@ def test_molecule_fixture(molecule_scenario: MoleculeScenario) -> None:
 
     :param molecule_scenario: One scenario
     """
-    assert molecule_scenario.scenario_name in ["fixtures-default", "extensions-default"]
+    assert molecule_scenario.test_id in ["fixtures-default", "extensions-default"]
+    assert molecule_scenario.name == "default"
     molecule_scenario.test()

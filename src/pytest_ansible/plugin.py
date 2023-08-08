@@ -304,8 +304,8 @@ def pytest_generate_tests(metafunc):
             molecule_parent = scenario.parent.parent
             scenarios.append(
                 MoleculeScenario(
-                    molecule_parent=molecule_parent,
-                    scenario_name=scenario.name,
+                    parent_directory=molecule_parent,
+                    name=scenario.name,
                     test_id=f"{molecule_parent.name}-{scenario.name}",
                 ),
             )
