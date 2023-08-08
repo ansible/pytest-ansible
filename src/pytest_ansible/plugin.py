@@ -306,7 +306,8 @@ def pytest_generate_tests(metafunc):
             scenarios.append(
                 MoleculeScenario(
                     molecule_parent=molecule_parent,
-                    scenario_name=f"{molecule_parent.name}-{scenario.name}",
+                    scenario_name=scenario.name,
+                    test_id=f"{molecule_parent.name}-{scenario.name}",
                 ),
             )
         if not scenarios:
@@ -314,7 +315,7 @@ def pytest_generate_tests(metafunc):
         metafunc.parametrize(
             "molecule_scenario",
             scenarios,
-            ids=[scenario.scenario_name for scenario in scenarios],
+            ids=[scenario.test_id for scenario in scenarios],
         )
 
 

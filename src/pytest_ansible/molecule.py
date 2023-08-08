@@ -9,7 +9,7 @@ import subprocess
 import sys
 import warnings
 from shlex import quote
-
+from pathlib import Path
 import pkg_resources
 import pytest
 import yaml
@@ -241,14 +241,16 @@ class MoleculeScenario:
 
     # pylint: disable=too-few-public-methods
 
-    def __init__(self, molecule_parent, scenario_name):
+    def __init__(self, molecule_parent: Path, scenario_name: str, test_id: str):
         """Initialize the MoleculeScenario class.
 
         :param molecule_parent: The parent directory of 'molecule'
         :param scenario_name: The name of the molecule scenario
+        :param test_id: The test id
         """
         self.molecule_parent = molecule_parent
         self.scenario_name = scenario_name
+        self.test_id = test_id
 
     def test(self) -> subprocess.CompletedProcess:
         """Run molecule test for the scenario.
