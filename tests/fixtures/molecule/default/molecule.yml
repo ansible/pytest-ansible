@@ -3,8 +3,8 @@
 #   name: galaxy
 #   state: present
 
-# driver:
-#   name: delegated
+driver:
+  name: delegated
 
 platforms:
   - name: instance
