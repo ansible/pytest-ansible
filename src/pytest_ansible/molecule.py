@@ -241,7 +241,6 @@ class MoleculeScenario:
 
     # pylint: disable=too-few-public-methods
 
-<<<<<<< HEAD
     def __init__(self, molecule_parent, scenario_name):
         """Initialize the MoleculeScenario class.
 
@@ -249,15 +248,6 @@ class MoleculeScenario:
         :param scenario_name: The name of the molecule scenario
         """
         self.molecule_parent = molecule_parent
-=======
-    def __init__(self, molecule_root, scenario_name):
-        """Initialize the MoleculeScenarion class.
-
-        :param molecule_root: The root directory for 'molecule'
-        :param scenario_name: The name of the molecule scenario
-        """
-        self.molecule_root = molecule_root
->>>>>>> a6e3b10 (Improved molecule support)
         self.scenario_name = scenario_name
 
     def test(self) -> subprocess.CompletedProcess:
@@ -265,7 +255,6 @@ class MoleculeScenario:
 
         :returns: The completed process
         """
-<<<<<<< HEAD
         return subprocess.run(
             args=[sys.executable, "-m", "molecule", "test", "-s", self.scenario_name],
             capture_output=False,
@@ -274,14 +263,3 @@ class MoleculeScenario:
             shell=False,
             text=True,
         )
-=======
-        proc = subprocess.run(
-            args=[sys.executable, "-m", "molecule", "test", "-s", self.scenario_name],
-            capture_output=False,
-            check=False,
-            cwd=self.molecule_root,
-            shell=False,
-            text=True,
-        )
-        return proc
->>>>>>> a6e3b10 (Improved molecule support)
