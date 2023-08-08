@@ -6,8 +6,12 @@ import os
 import subprocess
 import sys
 
+from typing import TYPE_CHECKING
+
 import pytest
-from pytest_ansible.molecule import MoleculeScenario
+
+if TYPE_CHECKING:
+    from pytest_ansible.molecule import MoleculeScenario
 
 
 def test_molecule_collect() -> None:

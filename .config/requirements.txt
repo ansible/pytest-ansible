@@ -29,6 +29,7 @@ markupsafe==2.1.3
 mdurl==0.1.2
 molecule==5.1.0
 packaging==23.0
+pathspec==0.11.2
 pluggy==1.0.0
 pycparser==2.21
 pygments==2.16.1

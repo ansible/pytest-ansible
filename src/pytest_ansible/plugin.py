@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+import shutil
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -218,11 +219,16 @@ def pytest_collect_file(
     parent: pytest.Collector,
 ) -> Node | None:
     """Transform each found molecule.yml into a pytest test."""
+<<<<<<< HEAD
 
     if not parent.config.option.molecule:
         return None
     if not HAS_MOLECULE:
         pytest.exit("molecule not installed or found.")
+=======
+    if not HAS_MOLECULE:
+        return None
+>>>>>>> 30be9f2 (README.md update, avoid import errors)
     if file_path and file_path.is_symlink():
         return None
     if file_path and file_path.name == "molecule.yml":
@@ -270,6 +276,11 @@ def pytest_generate_tests(metafunc):
         metafunc.parametrize("ansible_group", iter(hosts[g] for g in extra_groups))
 
     if "molecule_scenario" in metafunc.fixturenames:
+        if not HAS_MOLECULE:
+            pytest.exit(f"molecule not installed or found.")
+
+        # Find all molecule scenarios not gitignored
+        # Replace this with molecule --list in the future if json output is available
         rootpath = metafunc.config.rootpath
         gitignore = rootpath / ".gitignore"
         if gitignore.exists():
