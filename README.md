@@ -45,13 +45,14 @@ def test_integration(molecule_scenario: MoleculeScenario) -> None:
 
 The `molecule_scenario` fixture provides parameterized molecule scenarios discovered in the collection's `extensions/molecule` directory, as well as other directories.
 
-The generated test names include the molecule parent directory and the name of the scenario. 
+The generated test names include the molecule parent directory and the name of the scenario.
 
 For example:
 
 ```
 extensions-default
 ```
+
 Represents the default scenario found in the `extension/molecule/default` directory.
 
 `molecule test -s <scenario>` will be run for each scenario and a completed subprocess returned from the `test()` call.

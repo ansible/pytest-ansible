@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import logging
-import shutil
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -277,7 +276,7 @@ def pytest_generate_tests(metafunc):
 
     if "molecule_scenario" in metafunc.fixturenames:
         if not HAS_MOLECULE:
-            pytest.exit(f"molecule not installed or found.")
+            pytest.exit("molecule not installed or found.")
 
         # Find all molecule scenarios not gitignored
         # Replace this with molecule --list in the future if json output is available
