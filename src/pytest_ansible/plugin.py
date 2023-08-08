@@ -10,8 +10,8 @@ import ansible.constants
 import ansible.errors
 import ansible.utils
 import ansible.utils.display
-import pathspec
 import pytest
+import subprocess
 
 from pytest_ansible.fixtures import (
     ansible_adhoc,
@@ -276,22 +276,27 @@ def pytest_generate_tests(metafunc):
         # Find all molecule scenarios not gitignored
         # Replace this with molecule --list in the future if json output is available
         rootpath = metafunc.config.rootpath
-        gitignore = rootpath / ".gitignore"
-        if gitignore.exists():
-            with gitignore.open() as fhand:
-                content = fhand.read()
-        else:
-            content = ""
 
-        spec = pathspec.GitIgnoreSpec.from_lines(content.splitlines())
-        matches = spec.match_tree(rootpath)
-        ignored = [rootpath / match for match in matches]
         scenarios = []
 
-        for fs_entry in rootpath.glob("**/molecule/*/molecule.yml"):
-            if fs_entry in ignored:
-                continue
+        candidates = list(rootpath.glob("**/molecule/*/molecule.yml"))
+        command = ["git", "check-ignore"] + candidates
+        try:
+            proc = subprocess.run(
+                args=command, capture_output=True, check=True, text=True, shell=False
+            )
+        except (subprocess.CalledProcessError, FileNotFoundError):
+            pass
 
+        try:
+            ignored = proc.stdout.splitlines()
+            scenario_paths = [
+                candidate for candidate in candidates if str(candidate) not in ignored
+            ]
+        except NameError:
+            scenario_paths = candidates
+
+        for fs_entry in scenario_paths:
             scenario = fs_entry.parent
             molecule_parent = scenario.parent.parent
             scenarios.append(

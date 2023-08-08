@@ -1,3 +1,2 @@
 coverage
 pytest>=6,<8.0.0
-pathspec
