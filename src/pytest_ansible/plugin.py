@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+import subprocess
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -11,7 +12,6 @@ import ansible.errors
 import ansible.utils
 import ansible.utils.display
 import pytest
-import subprocess
 
 from pytest_ansible.fixtures import (
     ansible_adhoc,
@@ -28,6 +28,8 @@ try:
 except ImportError:
     HAS_MOLECULE = False
 
+
+import contextlib
 
 from .units import inject, inject_only
 
@@ -281,12 +283,14 @@ def pytest_generate_tests(metafunc):
 
         candidates = list(rootpath.glob("**/molecule/*/molecule.yml"))
         command = ["git", "check-ignore"] + candidates
-        try:
+        with contextlib.suppress(subprocess.CalledProcessError, FileNotFoundError):
             proc = subprocess.run(
-                args=command, capture_output=True, check=True, text=True, shell=False
+                args=command,
+                capture_output=True,
+                check=True,
+                text=True,
+                shell=False,
             )
-        except (subprocess.CalledProcessError, FileNotFoundError):
-            pass
 
         try:
             ignored = proc.stdout.splitlines()
