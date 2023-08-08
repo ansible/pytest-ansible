@@ -22,7 +22,11 @@ from pytest_ansible.fixtures import (
 from pytest_ansible.host_manager import get_host_manager
 
 try:
+<<<<<<< HEAD
     from .molecule import MoleculeFile, MoleculeScenario
+=======
+    from .molecule import MoleculeFile
+>>>>>>> 014be7c (Avoid import error if molecule is not installed (#157))
 
     HAS_MOLECULE = True
 except ImportError:
@@ -219,6 +223,7 @@ def pytest_collect_file(
 ) -> Node | None:
     """Transform each found molecule.yml into a pytest test."""
 <<<<<<< HEAD
+<<<<<<< HEAD
 
     if not parent.config.option.molecule:
         return None
@@ -228,6 +233,17 @@ def pytest_collect_file(
     if not HAS_MOLECULE:
         return None
 >>>>>>> 30be9f2 (README.md update, avoid import errors)
+=======
+    if not HAS_MOLECULE:
+        return None
+=======
+
+    if not parent.config.option.molecule:
+        return None
+    if not HAS_MOLECULE:
+        pytest.exit("molecule not installed or found.")
+>>>>>>> 014be7c (Avoid import error if molecule is not installed (#157))
+>>>>>>> 1709304 (Avoid import error if molecule is not installed (#157))
     if file_path and file_path.is_symlink():
         return None
     if file_path and file_path.name == "molecule.yml":
