@@ -23,23 +23,12 @@ from pytest_ansible.fixtures import (
 from pytest_ansible.host_manager import get_host_manager
 
 try:
-<<<<<<< HEAD
-<<<<<<< HEAD
     from .molecule import MoleculeFile, MoleculeScenario
-=======
-    from .molecule import MoleculeFile
->>>>>>> 014be7c (Avoid import error if molecule is not installed (#157))
-=======
-    from .molecule import MoleculeFile, MoleculeScenario
->>>>>>> a6e3b10 (Improved molecule support)
 
     HAS_MOLECULE = True
 except ImportError:
     HAS_MOLECULE = False
 
-    HAS_MOLECULE = True
-except ImportError:
-    HAS_MOLECULE = False
 
 from .units import inject, inject_only
 
@@ -231,36 +220,10 @@ def pytest_collect_file(
     parent: pytest.Collector,
 ) -> Node | None:
     """Transform each found molecule.yml into a pytest test."""
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-
     if not parent.config.option.molecule:
         return None
     if not HAS_MOLECULE:
         pytest.exit("molecule not installed or found.")
-=======
-    if not HAS_MOLECULE:
-        return None
->>>>>>> 30be9f2 (README.md update, avoid import errors)
-=======
-=======
->>>>>>> 58547bf (README.md update, avoid import errors)
-    if not HAS_MOLECULE:
-        return None
-=======
-
-    if not parent.config.option.molecule:
-        return None
-    if not HAS_MOLECULE:
-        pytest.exit("molecule not installed or found.")
->>>>>>> 014be7c (Avoid import error if molecule is not installed (#157))
-<<<<<<< HEAD
->>>>>>> 1709304 (Avoid import error if molecule is not installed (#157))
-=======
-=======
->>>>>>> 9ae1405 (README.md update, avoid import errors)
->>>>>>> 58547bf (README.md update, avoid import errors)
     if file_path and file_path.is_symlink():
         return None
     if file_path and file_path.name == "molecule.yml":
@@ -308,14 +271,8 @@ def pytest_generate_tests(metafunc):
         metafunc.parametrize("ansible_group", iter(hosts[g] for g in extra_groups))
 
     if "molecule_scenario" in metafunc.fixturenames:
-<<<<<<< HEAD
-<<<<<<< HEAD
         if not HAS_MOLECULE:
             pytest.exit("molecule not installed or found.")
-=======
-        if not HAS_MOLECULE:
-            pytest.exit(f"molecule not installed or found.")
->>>>>>> 9ae1405 (README.md update, avoid import errors)
 
         # Find all molecule scenarios not gitignored
         # Replace this with molecule --list in the future if json output is available
@@ -350,29 +307,6 @@ def pytest_generate_tests(metafunc):
             "molecule_scenario",
             scenarios,
             ids=[scenario.scenario_name for scenario in scenarios],
-=======
-        rootpath = metafunc.config.rootpath
-        molecule_root = rootpath / "extensions"
-        scenarios_path = molecule_root / "molecule"
-        if not scenarios_path.exists():
-            pytest.exit(f"No molecule extension directory found: {scenarios_path}")
-
-        scenarios = []
-        scenario_names = []
-        for directory in scenarios_path.iterdir():
-            if (directory / "molecule.yml").exists():
-                scenarios.append(
-                    MoleculeScenario(
-                        molecule_root=molecule_root, scenario_name=directory.name
-                    )
-                )
-                scenario_names.append(directory.name)
-
-        metafunc.parametrize(
-            "molecule_scenario",
-            scenarios,
-            ids=scenario_names,
->>>>>>> a6e3b10 (Improved molecule support)
         )
 
 
