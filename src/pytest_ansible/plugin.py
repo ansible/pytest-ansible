@@ -20,7 +20,13 @@ from pytest_ansible.fixtures import (
 )
 from pytest_ansible.host_manager import get_host_manager
 
-from .molecule import MoleculeFile
+try:
+    from .molecule import MoleculeFile
+
+    HAS_MOLECULE = True
+except ImportError:
+    HAS_MOLECULE = False
+
 from .units import inject, inject_only
 
 if TYPE_CHECKING:
@@ -211,6 +217,11 @@ def pytest_collect_file(
     parent: pytest.Collector,
 ) -> Node | None:
     """Transform each found molecule.yml into a pytest test."""
+
+    if not parent.config.option.molecule:
+        return None
+    if not HAS_MOLECULE:
+        pytest.exit("molecule not installed or found.")
     if file_path and file_path.is_symlink():
         return None
     if file_path and file_path.name == "molecule.yml":

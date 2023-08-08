@@ -13,7 +13,7 @@ def test_molecule_collect() -> None:
     """Test pytest collection of molecule scenarios."""
     try:
         proc = subprocess.run(
-            "pytest --collect-only",
+            "pytest --molecule --collect-only",
             capture_output=True,
             shell=True,
             check=True,
@@ -37,8 +37,8 @@ def test_molecule_disabled() -> None:
         shell=True,
         text=True,
     )
-    assert proc.returncode == 0
-    assert "SKIPPED (Molecule" in proc.stdout
+    assert proc.returncode == 4
+    assert "ERROR: found no collectors" in proc.stdout
 
 
 def test_molecule_runtest() -> None:
