@@ -1,0 +1,31 @@
+---
+# dependency:
+#   name: galaxy
+#   state: present
+
+# driver:
+#   name: delegated
+
+platforms:
+  - name: instance
+
+# verifier:
+#   name: ansible
+
+provisioner:
+  name: ansible
+  # log: true
+  # config_options:
+  #   defaults:
+  #     interpreter_python: auto
+  #     verbosity: 1
+
+scenario:
+  name: default
+  test_sequence:
+    # - dependency
+    # - syntax
+    # - create
+    # - prepare
+    - converge
+    # - verify

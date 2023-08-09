@@ -5,8 +5,12 @@ from __future__ import annotations
 import os
 import subprocess
 import sys
+from typing import TYPE_CHECKING
 
 import pytest
+
+if TYPE_CHECKING:
+    from pytest_ansible.molecule import MoleculeScenario
 
 
 def test_molecule_collect() -> None:
@@ -56,3 +60,13 @@ def test_molecule_runtest() -> None:
     assert "collected 1 item" in proc.stdout
     assert "tests/fixtures/molecule/default/molecule.yml::test " in proc.stdout
     assert "1 passed" in proc.stdout
+
+
+def test_molecule_fixture(molecule_scenario: MoleculeScenario) -> None:
+    """Test the scenario fixture.
+
+    :param molecule_scenario: One scenario
+    """
+    assert molecule_scenario.test_id in ["fixtures-default", "extensions-default"]
+    assert molecule_scenario.name == "default"
+    molecule_scenario.test()

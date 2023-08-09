@@ -8,6 +8,7 @@ import shlex
 import subprocess
 import sys
 import warnings
+from pathlib import Path
 from shlex import quote
 
 import pkg_resources
@@ -234,3 +235,34 @@ class MoleculeItem(pytest.Item):
 
 class MoleculeExceptionError(Exception):
     """Custom exception for error reporting."""
+
+
+class MoleculeScenario:
+    """Molecule subprocess wrapper."""
+
+    # pylint: disable=too-few-public-methods
+
+    def __init__(self, name: str, parent_directory: Path, test_id: str):
+        """Initialize the MoleculeScenario class.
+
+        :param molecule_parent: The parent directory of 'molecule'
+        :param scenario_name: The name of the molecule scenario
+        :param test_id: The test id
+        """
+        self.parent_directory = parent_directory
+        self.name = name
+        self.test_id = test_id
+
+    def test(self) -> subprocess.CompletedProcess:
+        """Run molecule test for the scenario.
+
+        :returns: The completed process
+        """
+        return subprocess.run(
+            args=[sys.executable, "-m", "molecule", "test", "-s", self.name],
+            capture_output=False,
+            check=False,
+            cwd=self.parent_directory,
+            shell=False,
+            text=True,
+        )

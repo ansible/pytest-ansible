@@ -19,7 +19,41 @@ Install this plugin using `pip`
 pip install pytest-ansible
 ```
 
-## Usage
+## Running molecule scenarios using pytest
+
+Molecule scenarios can be tested using 2 different methods if molecule is installed.
+
+**Recommended:**
+
+Add a `test_integration.py` file to the `tests/integration` directory of the ansible collection:
+
+```
+"""Tests for molecule scenarios."""
+from __future__ import absolute_import, division, print_function
+
+from pytest_ansible.molecule import MoleculeScenario
+
+
+def test_integration(molecule_scenario: MoleculeScenario) -> None:
+    """Run molecule for each scenario.
+
+    :param molecule_scenario: The molecule scenario object
+    """
+    proc = molecule_scenario.test()
+    assert proc.returncode == 0
+```
+
+The `molecule_scenario` fixture provides parameterized molecule scenarios discovered in the collection's `extensions/molecule` directory, as well as other directories within the collection.
+
+`molecule test -s <scenario>` will be run for each scenario and a completed subprocess returned from the `test()` call.
+
+**Legacy:**
+
+Run molecule with the `--molecule` command line parameter to inject each molecule directory found in the current working directory. Each scenario will be injected as an external test in the the tests available for pytest. Due to the nature of this approach, the molecule scenarios are not represented as python tests and may not show in the IDE's pytest test tree.
+
+## Fixtures and helpers for use in tests
+
+### Usage
 
 Once installed, the following `pytest` command-line parameters are available:
 
@@ -43,7 +77,7 @@ pytest \
     [--check]
 ```
 
-## Inventory
+### Inventory
 
 Using ansible first starts with defining your inventory. This can be done in
 several ways, but to start, we'll use the `ansible_adhoc` fixture.
@@ -85,7 +119,7 @@ tests. To accomplish this, the fixture `ansible_adhoc` allows you to customize
 the inventory parameters. Read on for more detail on using the `ansible_adhoc`
 fixture.
 
-## Extra Inventory
+### Extra Inventory
 
 Using ansible first starts with defining your extra inventory. This feature was added in version 2.3.0, and is intended
 to allow the user to work with two different inventories. This can be done in several ways, but to start,
@@ -97,7 +131,7 @@ For example,
 pytest --inventory my_inventory.ini --extra-inventory my_second_inventory.ini --host-pattern host_in_second_inventory
 ```
 
-### Fixture `ansible_adhoc`
+#### Fixture `ansible_adhoc`
 
 The `ansible_adhoc` fixture returns a function used to initialize
 a `HostManager` object. The `ansible_adhoc` fixture will default to parameters
@@ -151,7 +185,7 @@ def test_host_manager(ansible_adhoc):
         a_host.ping()
 ```
 
-### Fixture `localhost`
+#### Fixture `localhost`
 
 The `localhost` fixture is a convenience fixture that surfaces
 a `ModuleDispatcher` instance for ansible host running `pytest`. This is
@@ -179,7 +213,7 @@ def test_do_something_cloudy(localhost, ansible_adhoc):
     localhost.ec2(**params)
 ```
 
-### Fixture `ansible_module`
+#### Fixture `ansible_module`
 
 The `ansible_module` fixture allows tests and fixtures to call [ansible
 modules](http://docs.ansible.com/modules.html). Unlike the `ansible_adhoc`
@@ -224,7 +258,7 @@ def test_sshd_config(ansible_module):
     # do other stuff ...
 ```
 
-### Fixture `ansible_facts`
+#### Fixture `ansible_facts`
 
 The `ansible_facts` fixture returns a JSON structure representing the system
 facts for the associated inventory. Sample fact data is available in the
@@ -256,7 +290,7 @@ def test_terminate_us_east_1_instances(ansible_adhoc):
             '''do some testing'''
 ```
 
-### Parameterizing with `pytest.mark.ansible`
+#### Parameterizing with `pytest.mark.ansible`
 
 Perhaps the `--ansible-inventory=<inventory>` includes many systems, but you
 only wish to interact with a subset. The `pytest.mark.ansible` marker can be
@@ -306,7 +340,7 @@ class Test_Local(object):
         '''do some testing'''
 ```
 
-### Inspecting results
+#### Inspecting results
 
 When using the `ansible_adhoc`, `localhost` or `ansible_module` fixtures, the
 object returned will be an instance of class `AdHocResult`. The
@@ -371,7 +405,7 @@ The contents of the JSON returned by an ansible module differs from module to
 module. For guidance, consult the documentation and examples for the specific
 [ansible module](http://docs.ansible.com/modules_by_category.html).
 
-### Exception handling
+#### Exception handling
 
 If `ansible` is unable to connect to any inventory, an exception will be raised.
 

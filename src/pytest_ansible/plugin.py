@@ -1,7 +1,9 @@
 """PyTest Ansible Plugin."""
 from __future__ import annotations
 
+import contextlib
 import logging
+import subprocess
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -21,11 +23,12 @@ from pytest_ansible.fixtures import (
 from pytest_ansible.host_manager import get_host_manager
 
 try:
-    from .molecule import MoleculeFile
+    from .molecule import MoleculeFile, MoleculeScenario
 
     HAS_MOLECULE = True
 except ImportError:
     HAS_MOLECULE = False
+
 
 from .units import inject, inject_only
 
@@ -217,7 +220,6 @@ def pytest_collect_file(
     parent: pytest.Collector,
 ) -> Node | None:
     """Transform each found molecule.yml into a pytest test."""
-
     if not parent.config.option.molecule:
         return None
     if not HAS_MOLECULE:
@@ -267,6 +269,53 @@ def pytest_generate_tests(metafunc):
         # Return a ModuleDispatcher instance representing the group (e.g. ansible_group.shell('date'))
         metafunc.parametrize("ansible_group", iter(hosts[g] for g in groups))
         metafunc.parametrize("ansible_group", iter(hosts[g] for g in extra_groups))
+
+    if "molecule_scenario" in metafunc.fixturenames:
+        if not HAS_MOLECULE:
+            pytest.exit("molecule not installed or found.")
+
+        # Find all molecule scenarios not gitignored
+        # Replace this with molecule --list in the future if json output is available
+        rootpath = metafunc.config.rootpath
+
+        scenarios = []
+
+        candidates = list(rootpath.glob("**/molecule/*/molecule.yml"))
+        command = ["git", "check-ignore"] + candidates
+        with contextlib.suppress(subprocess.CalledProcessError, FileNotFoundError):
+            proc = subprocess.run(
+                args=command,
+                capture_output=True,
+                check=True,
+                text=True,
+                shell=False,
+            )
+
+        try:
+            ignored = proc.stdout.splitlines()
+            scenario_paths = [
+                candidate for candidate in candidates if str(candidate) not in ignored
+            ]
+        except NameError:
+            scenario_paths = candidates
+
+        for fs_entry in scenario_paths:
+            scenario = fs_entry.parent
+            molecule_parent = scenario.parent.parent
+            scenarios.append(
+                MoleculeScenario(
+                    parent_directory=molecule_parent,
+                    name=scenario.name,
+                    test_id=f"{molecule_parent.name}-{scenario.name}",
+                ),
+            )
+        if not scenarios:
+            pytest.exit(f"No molecule scenarions found in: {rootpath}")
+        metafunc.parametrize(
+            "molecule_scenario",
+            scenarios,
+            ids=[scenario.test_id for scenario in scenarios],
+        )
 
 
 class PyTestAnsiblePlugin:
