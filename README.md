@@ -101,63 +101,7 @@ HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test
 
 ## Molecule Scenario Integration
 
-The `pytest-molecule` plugin enables pytest discovery of all `molecule.yml` files inside the codebase and runs them as pytest tests. It allows you to include Molecule scenarios as part of your pytest test suite, allowing you to thoroughly test your Ansible roles and playbooks across different scenarios and environments. Once you install `pytest-ansible`, you should be able to just run `pytest` to execute Molecule on all roles and scenarios.
-
-To run Molecule scenarios using pytest, follow these steps:
-
-1. Install the `pytest-ansible` plugin using pip:
-
-```
-pip install pytest-ansible
-```
-
-2. Execute pytest to run Molecule scenarios: `pytest`
-3. You can use markers and other pytest features to control which scenarios are run and how they are executed.
-
-**Note**: Optionally you can define `MOLECULE_OPTS` for passing extra parameters to
-each molecule call.
-
-Discovered tests do have molecule `driver` and `platforms` added as
-[markers](https://doc.pytest.org/en/latest/example/markers.html), so you can selectively limit which test types to run:
-
-```
-    # Lists all tests that uses docker
-    $ pytest --collect-only -m docker
-
-    # Runs scenarios with platform named centos7 and delegated driver:
-    $ pytest -m delegated -m centos7
-```
-
-If the molecule scenario does not contain information about the driver, the
-test associated with it gets a `no_driver` mark.
-
-Please note that at this moment molecule will run the entire scenario if the
-markers are platforms, this is not _yet_ a way to limit which platforms are
-executed inside a specific scenario.
-
-All tests are added the `molecule` marker.
-
-This plugin also adds a new pytest option named
-`--molecule-unavailable-driver=skip` which can be used to tell it what to do
-when molecule drivers are not loading. Current default is `None` but you
-can choose marks like `skip` or `xfail`.
-
-The plugin adds `--skip-no-git-change` option which an be used to skip tests
-on unchanged roles according to `git diff` result and thus can only be used
-only when running pytest inside a git repository. It takes one argument and old
-refspec used as a reference. For instance calling:
-`pytest --skip-no-git-change HEAD^` will result in molecule of roles that
-weren't changed in the last commit being skipped.
-
-## Using xfail and skip markers
-
-If you need to skip or ignore a particular scenario, just add either `xfail`
-or `skip` to markers list inside its config file.
-
-```
-    markers:
-      - xfail  # broken scenario, pytest will run it but ignore the result
-```
+This functionality assists in running Molecule `scenarios` using `pytest`. It enables pytest discovery of all `molecule.yml` files inside the codebase and runs them as pytest tests. It allows you to include Molecule scenarios as part of your pytest test suite, allowing you to thoroughly test your Ansible roles and playbooks across different scenarios and environments.
 
 ## Running molecule scenarios using pytest
 
@@ -190,6 +134,16 @@ The `molecule_scenario` fixture provides parameterized molecule scenarios discov
 **Legacy:**
 
 Run molecule with the `--molecule` command line parameter to inject each molecule directory found in the current working directory. Each scenario will be injected as an external test in the the tests available for pytest. Due to the nature of this approach, the molecule scenarios are not represented as python tests and may not show in the IDE's pytest test tree.
+
+To run Molecule scenarios using pytest, follow these steps:
+
+1. Install the `pytest-ansible` plugin using pip:
+
+```
+pip install pytest-ansible
+```
+
+2. Execute pytest to run Molecule scenarios: `pytest`
 
 ## Ansible Integration for Pytest Tests
 
