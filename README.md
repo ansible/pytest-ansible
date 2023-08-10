@@ -5,18 +5,158 @@
 [![License](https://img.shields.io/pypi/l/pytest-ansible.svg)](https://pypi.python.org/pypi/pytest-ansible/)
 [![Supported Python Versions](https://img.shields.io/pypi/pyversions/pytest-ansible.svg)](https://pypi.python.org/pypi/pytest-ansible/)
 
-This repository now extends its support to two additional plugins `pytest-molecule` and `pytest-ansible-units`. These plugins enhance the functionality of the pytest framework by providing specialized features for Ansible testing workflows. The repository includes a `pytest` plugin that introduces fixtures for executing `ansible` modules and examining `ansible_facts`. Unlike using the `subprocess` module to call ansible and parsing stdout for outcomes, the `pytest-ansible` plugin offers improved reliability by returning JSON data from modules which you can inspect and act on, much like with an ansible [playbook](https://docs.ansible.com/ansible/latest/cli/ansible-playbook.html).
+The `pytest-ansible` plugin is designed to provide seamless integration between `pytest` and `Ansible`, allowing you to efficiently run and test Ansible-related tasks and scenarios within your pytest test suite. This plugin enhances the testing workflow by offering three distinct pieces of functionality:
 
-The [pytest-molecule](https://github.com/ansible-community/pytest-molecule) plugin enables `pytest` discovery of all `molecule.yml` files inside the codebase and runs them as `pytest` tests. It enables you to include Molecule scenarios as part of your pytest test suite, allowing you to thoroughly test your Ansible roles and playbooks across different scenarios and environments. Once you install `pytest-ansible` you should be able to just run `pytest` in order to run `molecule` on all roles and scenarios.
+1. **Unit Testing for Ansible Collections**:
+   This feature aids in running unit tests for `Ansible collections` using `pytest`. It allows you to validate the behavior of your Ansible `modules` and `roles` in isolation, ensuring that each component functions as expected.
 
-The [pytest-ansible-units](https://github.com/ansible-community/pytest-ansible-units) plugin allows ansible collection's unit tests to be run with only `pytest`. It offers a focused approach to testing individual Ansible modules. With this plugin, you can write and execute unit tests specifically for Ansible modules, ensuring the accuracy and reliability of your module code. This is particularly useful for verifying the correctness of module behavior in isolation.
+2. **Molecule Scenario Integration**:
+   The plugin assists in running Molecule `scenarios` using `pytest`. This integration streamlines the testing of Ansible roles and playbooks across different environments, making it easier to identify and fix issues across diverse setups.
+
+3. **Ansible Integration for Pytest Tests**:
+   With this functionality, you can seamlessly use `Ansible` from within your `pytest` tests. This opens up possibilities to interact with Ansible components and perform tasks like provisioning resources, testing configurations, and more, all while leveraging the power and flexibility of pytest.
 
 ## Installation
 
-Install this plugin using `pip`
+Install this plugin using `pip`:
 
-```bash
+```
 pip install pytest-ansible
+```
+
+## Getting Started
+
+### Unit Testing for Ansible Collections
+
+The `pytest-ansible-units` plugin allows ansible collection's unit tests to be run with only `pytest`. It offers a focused approach to testing individual Ansible modules. With this plugin, you can write and execute unit tests specifically for Ansible modules, ensuring the accuracy and reliability of your module code. This is particularly useful for verifying the correctness of module behavior in isolation.
+
+To use `pytest-ansible-units`, follow these steps:
+
+1. Install the plugin using pip:
+
+```
+pip install pytest-ansible
+```
+
+2. Ensure you have Python 3.8 or greater, ansible-core, and pyyaml installed.
+
+3. Depending on your preferred directory structure, you can clone collections into the appropriate paths.
+
+   - **Collection Tree Approach**: The preferred approach is to clone the collections being developed into it's proper collection tree path. This eliminates the need for any
+     symlinks and other collections being developed can be cloned into the same tree structure.
+
+     ```
+     git clone <repo> collections/ansible_collections/<namespace>/<name>
+     ```
+
+     Note: Run `pytest` in the root of the collection directory, adjacent to the collection's `galaxy.yml` file.
+
+   - **Shallow Tree Approach**:
+
+     ```
+     git clone <repo>
+     ```
+
+     Notes:
+
+     - Run `pytest` in the root of the collection directory, adjacent to the collection's `galaxy.yml` file.
+     - A collections directory will be created in the repository directory, and collection content will be linked into it.
+
+4. Execute the unit tests using pytest: `pytest tests`
+
+### Help
+
+The following may be added to the collections' `pyproject.toml` file to limit warnings and set the default path for the collection's tests
+
+```
+[tool.pytest.ini_options]
+testpaths = [
+    "tests",
+]
+filterwarnings = [
+    'ignore:AnsibleCollectionFinder has already been configured',
+]
+```
+
+Information from the `galaxy.yml` file is used to build the `collections` directory structure and link the contents. The `galaxy.yml` file should reflect the correct collection namespace and name.
+
+One way to detect issues without running the tests is to run:
+
+```
+pytest --collect-only
+```
+
+The follow errors may be seen:
+
+```
+E   ModuleNotFoundError: No module named 'ansible_collections'
+```
+
+- Check the `galaxy.yml` file for an accurate namespace and name
+- Ensure `pytest` is being run from the collection's root directory, adjacent to the `galaxy.yml`
+
+```
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+```
+
+## Molecule Scenario Integration
+
+The `pytest-molecule` plugin enables pytest discovery of all `molecule.yml` files inside the codebase and runs them as pytest tests. It allows you to include Molecule scenarios as part of your pytest test suite, allowing you to thoroughly test your Ansible roles and playbooks across different scenarios and environments. Once you install `pytest-ansible`, you should be able to just run `pytest` to execute Molecule on all roles and scenarios.
+
+To run Molecule scenarios using pytest, follow these steps:
+
+1. Install the `pytest-ansible` plugin using pip:
+
+```
+pip install pytest-ansible
+```
+
+2. Execute pytest to run Molecule scenarios: `pytest`
+3. You can use markers and other pytest features to control which scenarios are run and how they are executed.
+
+**Note**: Optionally you can define `MOLECULE_OPTS` for passing extra parameters to
+each molecule call.
+
+Discovered tests do have molecule `driver` and `platforms` added as
+[markers](https://doc.pytest.org/en/latest/example/markers.html), so you can selectively limit which test types to run:
+
+```
+    # Lists all tests that uses docker
+    $ pytest --collect-only -m docker
+
+    # Runs scenarios with platform named centos7 and delegated driver:
+    $ pytest -m delegated -m centos7
+```
+
+If the molecule scenario does not contain information about the driver, the
+test associated with it gets a `no_driver` mark.
+
+Please note that at this moment molecule will run the entire scenario if the
+markers are platforms, this is not _yet_ a way to limit which platforms are
+executed inside a specific scenario.
+
+All tests are added the `molecule` marker.
+
+This plugin also adds a new pytest option named
+`--molecule-unavailable-driver=skip` which can be used to tell it what to do
+when molecule drivers are not loading. Current default is `None` but you
+can choose marks like `skip` or `xfail`.
+
+The plugin adds `--skip-no-git-change` option which an be used to skip tests
+on unchanged roles according to `git diff` result and thus can only be used
+only when running pytest inside a git repository. It takes one argument and old
+refspec used as a reference. For instance calling:
+`pytest --skip-no-git-change HEAD^` will result in molecule of roles that
+weren't changed in the last commit being skipped.
+
+## Using xfail and skip markers
+
+If you need to skip or ignore a particular scenario, just add either `xfail`
+or `skip` to markers list inside its config file.
+
+```
+    markers:
+      - xfail  # broken scenario, pytest will run it but ignore the result
 ```
 
 ## Running molecule scenarios using pytest
@@ -51,7 +191,18 @@ The `molecule_scenario` fixture provides parameterized molecule scenarios discov
 
 Run molecule with the `--molecule` command line parameter to inject each molecule directory found in the current working directory. Each scenario will be injected as an external test in the the tests available for pytest. Due to the nature of this approach, the molecule scenarios are not represented as python tests and may not show in the IDE's pytest test tree.
 
+## Ansible Integration for Pytest Tests
+
+The `ansible_module`, `ansible_adhoc`, `localhost`, and `ansible_facts` fixtures are provided to help you integrate Ansible functionalities into your pytest tests. These fixtures allow you to interact with Ansible modules, run commands on localhost, fetch Ansible facts, and more.
+
 ## Fixtures and helpers for use in tests
+
+Here's a quick overview of the available fixtures:
+
+- `ansible_module`: Allows you to call Ansible modules directly within your test functions.
+- `ansible_adhoc`: Provides a function to initialize a `HostManager` object to work with Ansible inventory.
+- `localhost`: A convenience fixture for running Ansible modules that typically run on the local machine.
+- `ansible_facts`: Returns a JSON structure representing system facts for the associated inventory.
 
 ### Usage
 
@@ -435,3 +586,18 @@ def test_inventory_unreachable(ansible_module):
     for (host, result) in dark.items():
         assert result['failed'] == True
 ```
+
+## Contributing
+
+Contributions are very welcome. Tests can be run with [tox](https://tox.wiki/en/latest/), please ensure
+the coverage at least stays the same before you submit a pull request.
+
+## License
+
+Distributed under the terms of the [MIT](https://opensource.org/license/mit/) license, "pytest-ansible" is free
+and open source software
+
+## Issues
+
+If you encounter any problems, please [file an issue](https://github.com/pycontribs/pytest-ansible/issues) along with a detailed
+description.
