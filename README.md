@@ -101,7 +101,7 @@ HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test
 
 ## Molecule Scenario Integration
 
-This functionality assists in running Molecule `scenarios` using `pytest`. It enables pytest discovery of all `molecule.yml` files inside the codebase and runs them as pytest tests. It allows you to include Molecule scenarios as part of your pytest test suite, allowing you to thoroughly test your Ansible roles and playbooks across different scenarios and environments. 
+This functionality assists in running Molecule `scenarios` using `pytest`. It enables pytest discovery of all `molecule.yml` files inside the codebase and runs them as pytest tests. It allows you to include Molecule scenarios as part of your pytest test suite, allowing you to thoroughly test your Ansible roles and playbooks across different scenarios and environments.
 
 ## Running molecule scenarios using pytest
 
