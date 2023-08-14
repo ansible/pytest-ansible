@@ -301,7 +301,7 @@ def test_dark_with_debug_enabled(testdir, option):
     )
     assert result.ret == EXIT_TESTSFAILED
     assert result.parseoutcomes()["failed"] == 1
-    # FIXME - the following doesn't work on ansible-v2
+    # TODO: - the following doesn't work on ansible-v2  # noqa: TD002, FIX002, TD003
     # result.stdout.fnmatch_lines([
     #     '*REMOTE_MODULE ping',
     #     '*EXEC ssh *',

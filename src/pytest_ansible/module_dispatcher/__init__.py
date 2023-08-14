@@ -33,7 +33,6 @@ class BaseModuleDispatcher:
         Raise `AnsibleModuleError` when no such module exists.
         """
         if not self.has_module(name):
-            # TODO: should we just raise an AttributeError, or a more
             raise AnsibleModuleError(
                 f"The module {name} was not found in configured module paths.",
             )

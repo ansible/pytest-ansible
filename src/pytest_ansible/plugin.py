@@ -262,7 +262,8 @@ def pytest_generate_tests(metafunc):
             )
         except ansible.errors.AnsibleError as exception:
             raise pytest.UsageError(exception)
-        # FIXME: Eeew, this shouldn't be interfacing with `hosts.options`
+        # FIXME: Eeew, this shouldn't be interfacing with `hosts.options`  # noqa: TD001, TD002, FIX001
+        # https://github.com/ansible-community/pytest-ansible/issues/151
         groups = hosts.options["inventory_manager"].list_groups()
         extra_groups = hosts.get_extra_inventory_groups()
         # Return the group name as a string
@@ -336,7 +337,8 @@ class PyTestAnsiblePlugin:
             if not hasattr(item, "fixturenames"):
                 continue
             if any(fixture.startswith("ansible_") for fixture in item.fixturenames):
-                # TODO - ignore if they are using a marker
+                # TODO: - ignore if they are using a marker  # noqa: TD002, FIX002
+                # https://github.com/ansible-community/pytest-ansible/issues/152
                 # if marker and 'inventory' in marker.kwargs:
                 uses_ansible_fixtures = True
                 break
