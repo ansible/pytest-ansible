@@ -102,7 +102,8 @@ def inject(start_path: Path) -> None:
 
     logger.info("Collections dir: %s", collections_dir)
 
-    # TODO: Make this a configuration option, check COLLECTIONS_PATH
+    # TODO: Make this a configuration option, check COLLECTIONS_PATH  # noqa: TD002, FIX002
+    # https://github.com/ansible-community/pytest-ansible/issues/153
     # Add the user location for any dependencies
     paths = [str(collections_dir), "~/.ansible/collections"]
     logger.info("Paths: %s", paths)
@@ -113,10 +114,6 @@ def inject(start_path: Path) -> None:
     # This is needed for import udring mock tests
     sys.path.insert(0, str(collections_dir))
     logger.debug("sys.path updated: %s", sys.path)
-
-    # TODO: Should we install any collection dependencies as well?
-    # or let the developer do that?
-    # e.g. ansible-galaxy collection install etc
 
     # Set the environment variable as courtesy for integration tests
 

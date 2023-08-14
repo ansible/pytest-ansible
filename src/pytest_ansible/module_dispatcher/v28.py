@@ -175,7 +175,6 @@ class ModuleDispatcherV28(ModuleDispatcherV2):
                 tqm.cleanup()
 
         # Raise exception if host(s) unreachable
-        # FIXME - if multiple hosts were involved, should an exception be raised?
         if callback.unreachable:
             raise AnsibleConnectionFailure(
                 "Host unreachable",

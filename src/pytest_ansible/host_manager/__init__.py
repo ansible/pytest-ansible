@@ -151,5 +151,6 @@ def get_host_manager(*args, **kwargs):
     else:
         from .v1 import HostManagerV1 as HostManager
 
-    # TODO - figure out how to surface the parser defaults here too
+    # TODO: figure out how to surface the parser defaults here too. # noqa: TD002, FIX002
+    # https://github.com/ansible-community/pytest-ansible/issues/150
     return HostManager(*args, **kwargs)
