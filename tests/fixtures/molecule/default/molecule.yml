@@ -4,7 +4,7 @@
 #   state: present
 
 driver:
-  name: delegated
+  name: default
 
 platforms:
   - name: instance
