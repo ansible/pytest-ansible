@@ -428,11 +428,3 @@ class PyTestAnsiblePlugin:
 
         if errors:
             raise pytest.UsageError(*errors)
-
-
-# The test case to demonstrate the functionality
-@pytest.mark.ansible_ignore()
-def test_with_ignored_marker():
-    """Test case with ignored marker."""
-    # Your test code here
-    assert True
