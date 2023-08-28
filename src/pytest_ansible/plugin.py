@@ -337,7 +337,7 @@ class PyTestAnsiblePlugin:
             if not hasattr(item, "fixturenames"):
                 continue
             if any(fixture.startswith("ansible_") for fixture in item.fixturenames):
-                marker = item.get_closest_marker("ansible_ignore")
+                marker = item.get_closest_marker("ansible")
                 if marker is None:
                     uses_ansible_fixtures = True
                     break
@@ -428,3 +428,11 @@ class PyTestAnsiblePlugin:
 
         if errors:
             raise pytest.UsageError(*errors)
+
+
+# The test case to demonstrate the functionality
+@pytest.mark.ansible_ignore()
+def test_with_ignored_marker():
+    """Test case with ignored marker."""
+    # Your test code here
+    assert True
