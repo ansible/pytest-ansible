@@ -260,7 +260,7 @@ def pytest_generate_tests(metafunc):
         except ansible.errors.AnsibleError as exception:
             raise pytest.UsageError(exception)
 
-        # Fetch groups using the inventory manager
+        # Fetch groups using inventory manager
         inventory_manager = hosts.options["inventory_manager"]
         groups = inventory_manager.list_groups()
         extra_groups = hosts.get_extra_inventory_groups()
