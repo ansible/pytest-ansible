@@ -277,17 +277,6 @@ def test_params_required_without_inventory_with_host_pattern_v2(testdir, option)
     result = testdir.runpytest(*[*option.args, "--ansible-host-pattern", "all"])
     assert result.ret == EXIT_OK
 
-    # TODO - validate the following warning message
-    # [WARNING]: provided hosts list is empty, only localhost is available
-    # pylint: disable=using-constant-test
-    if False:
-        result.stderr.fnmatch_lines(
-            [
-                "*[WARNING]: Host file not found: /etc/ansible/hosts*",
-                "*provided hosts list is empty, only localhost is available",
-            ],
-        )
-
 
 def test_param_override_with_marker(testdir):
     src = """
