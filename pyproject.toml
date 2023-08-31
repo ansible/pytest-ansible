@@ -93,6 +93,7 @@ disable = [
   "unexpected-keyword-arg",
   "unused-argument",
   "invalid-name",
+  "too-few-public-methods",
 ]
 
 [tool.pytest.ini_options]
