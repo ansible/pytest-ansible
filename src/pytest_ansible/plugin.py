@@ -337,11 +337,10 @@ class PyTestAnsiblePlugin:
             if not hasattr(item, "fixturenames"):
                 continue
             if any(fixture.startswith("ansible_") for fixture in item.fixturenames):
-                # TODO: - ignore if they are using a marker  # noqa: TD002, FIX002
-                # https://github.com/ansible-community/pytest-ansible/issues/152
-                # if marker and 'inventory' in marker.kwargs:
-                uses_ansible_fixtures = True
-                break
+                marker = item.get_closest_marker("ansible")
+                if marker is None:
+                    uses_ansible_fixtures = True
+                    break
 
         if uses_ansible_fixtures:
             # assert required --ansible-* parameters were used

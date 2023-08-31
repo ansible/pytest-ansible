@@ -61,6 +61,7 @@ def test_molecule_runtest() -> None:
         assert "collected 1 item" in proc.stdout
         assert "tests/fixtures/molecule/default/molecule.yml::test " in proc.stdout
         assert "1 passed" in proc.stdout
+
     except subprocess.CalledProcessError as exc:
         print(exc.stdout)
         print(exc.stderr)
