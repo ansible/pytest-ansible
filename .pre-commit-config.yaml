@@ -14,13 +14,13 @@ repos:
     hooks:
       - id: check-useless-excludes
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: "v0.0.276"
+    rev: "v0.0.287"
     hooks:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix]
   - repo: https://github.com/pre-commit/mirrors-prettier
     # keep it before yamllint
-    rev: v3.0.0-alpha.9-for-vscode
+    rev: v3.0.3
     hooks:
       - id: prettier
         always_run: true
@@ -29,12 +29,12 @@ repos:
           - prettier-plugin-toml
           - prettier-plugin-sort-json
   - repo: https://github.com/psf/black
-    rev: 23.3.0
+    rev: 23.7.0
     hooks:
       - id: black
         language_version: python3
   - repo: https://github.com/pycqa/flake8.git
-    rev: 6.0.0
+    rev: 6.1.0
     hooks:
       - id: flake8
         language_version: python3
@@ -45,7 +45,7 @@ repos:
           - flake8-pytest-style>=1.7.2
           - flake8-future-annotations>=0.0.3
   - repo: https://github.com/pycqa/pylint
-    rev: v3.0.0a6
+    rev: v3.0.0a7
     hooks:
       - id: pylint
         args:
@@ -54,7 +54,7 @@ repos:
           - ansible-core
           - pytest
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.4.1
+    rev: v1.5.1
     hooks:
       - id: mypy
         # empty args needed in order to match mypy cli behavior
@@ -64,7 +64,7 @@ repos:
           - ansible-core
           - types-pkg_resources
   - repo: https://github.com/jazzband/pip-tools
-    rev: 6.14.0
+    rev: 7.3.0
     hooks:
       - id: pip-compile
         name: lock
