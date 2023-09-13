@@ -1,5 +1,4 @@
-"""The pytest-ansible initialization.
-"""
+"""The pytest-ansible initialization."""
 
 __version__ = "2.3.0"
 __author__ = "James Laska"
