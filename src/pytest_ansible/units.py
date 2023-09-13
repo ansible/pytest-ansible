@@ -102,23 +102,26 @@ def inject(start_path: Path) -> None:
 
     logger.info("Collections dir: %s", collections_dir)
 
-    # TODO: Make this a configuration option, check COLLECTIONS_PATH  # noqa: TD002, FIX002
-    # https://github.com/ansible-community/pytest-ansible/issues/153
-    # Add the user location for any dependencies
-    paths = [str(collections_dir), "~/.ansible/collections"]
-    logger.info("Paths: %s", paths)
+    # Configuration option for additional collection paths
+    additional_collections_paths = [os.path.expanduser("~/.ansible/collections")]
 
-    acf_inject(paths=paths)
+    # Check if the environment variable is set for additional paths
+    if "COLLECTIONS_PATH" in os.environ and "COLLECTIONS_PATHS" in os.environ:
+        additional_collections_paths.extend(
+            os.environ.get("COLLECTIONS_PATH", "").split(os.pathsep)
+            + os.environ.get("COLLECTIONS_PATHS", "").split(os.pathsep),
+        )
+    logger.info("Additional Collections Paths: %s", additional_collections_paths)
+
+    acf_inject(paths=[str(collections_dir)] + additional_collections_paths)
 
     # Inject the path for the collection into sys.path
-    # This is needed for import udring mock tests
     sys.path.insert(0, str(collections_dir))
     logger.debug("sys.path updated: %s", sys.path)
 
-    # Set the environment variable as courtesy for integration tests
-
+    # Set the environment variable as a courtesy for integration tests
     envvar_name = determine_envvar()
-    env_paths = os.pathsep.join(paths)
+    env_paths = os.pathsep.join([str(collections_dir)] + additional_collections_paths)
     logger.info("Setting %s to %s", envvar_name, env_paths)
     os.environ[envvar_name] = env_paths
 
