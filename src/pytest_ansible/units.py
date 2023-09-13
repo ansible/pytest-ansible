@@ -106,11 +106,11 @@ def inject(start_path: Path) -> None:
     additional_collections_paths = [os.path.expanduser("~/.ansible/collections")]
 
     # Check if the environment variable is set for additional paths
-    if "COLLECTIONS_PATH" in os.environ:
+    if "COLLECTIONS_PATH" in os.environ and "COLLECTIONS_PATHS" in os.environ:
         additional_collections_paths.extend(
-            os.environ["COLLECTIONS_PATH"].split(os.pathsep),
+            os.environ.get("COLLECTIONS_PATH", "").split(os.pathsep)
+            + os.environ.get("COLLECTIONS_PATHS", "").split(os.pathsep),
         )
-
     logger.info("Additional Collections Paths: %s", additional_collections_paths)
 
     acf_inject(paths=[str(collections_dir)] + additional_collections_paths)
