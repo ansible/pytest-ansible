@@ -246,7 +246,7 @@ def pytest_generate_tests(metafunc):
             raise pytest.UsageError(exception)
 
         # Return the host name as a string
-        metafunc.parametrize("ansible_host", hosts.keys())
+        metafunc.parametrize("ansible_host", iter(hosts[h] for h in hosts))
 
     if "ansible_group" in metafunc.fixturenames:
         # assert required --ansible-* parameters were used
@@ -259,15 +259,11 @@ def pytest_generate_tests(metafunc):
             )
         except ansible.errors.AnsibleError as exception:
             raise pytest.UsageError(exception)
-
-        # Fetch groups using inventory manager
-        inventory_manager = hosts.options["inventory_manager"]
-        groups = inventory_manager.list_groups()
+        groups = hosts.options["inventory_manager"].list_groups()
         extra_groups = hosts.get_extra_inventory_groups()
-
-        # Return the group names as strings
-        group_names = groups + extra_groups
-        metafunc.parametrize("ansible_group", group_names)
+        # Return the group name as a string
+        metafunc.parametrize("ansible_group", iter(hosts[g] for g in groups))
+        metafunc.parametrize("ansible_group", iter(hosts[g] for g in extra_groups))
 
     if "molecule_scenario" in metafunc.fixturenames:
         if not HAS_MOLECULE:
