@@ -9,9 +9,7 @@ def ansible_adhoc(request):
     plugin = request.config.pluginmanager.getplugin("ansible")
 
     def init_host_mgr(**kwargs):
-        return plugin.initialize(request.config, 
-            request, 
-            **kwargs)
+        return plugin.initialize(request.config, request, **kwargs)
 
     return init_host_mgr
 
