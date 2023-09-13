@@ -244,11 +244,8 @@ def pytest_generate_tests(metafunc):
             )
         except ansible.errors.AnsibleError as exception:
             raise pytest.UsageError(exception)
+
         # Return the host name as a string
-        # Return a HostManager instance where pattern=host (e.g. ansible_host.all.shell('date'))
-        # metafunc.parametrize("ansible_host", iter(plugin.initialize(config=plugin.config, pattern=h) for h in
-        #                                           hosts.keys()))
-        # Return a ModuleDispatcher instance representing `host` (e.g. ansible_host.shell('date'))
         metafunc.parametrize("ansible_host", iter(hosts[h] for h in hosts))
 
     if "ansible_group" in metafunc.fixturenames:
@@ -262,12 +259,9 @@ def pytest_generate_tests(metafunc):
             )
         except ansible.errors.AnsibleError as exception:
             raise pytest.UsageError(exception)
-        # FIXME: Eeew, this shouldn't be interfacing with `hosts.options`  # noqa: TD001, TD002, FIX001
-        # https://github.com/ansible-community/pytest-ansible/issues/151
         groups = hosts.options["inventory_manager"].list_groups()
         extra_groups = hosts.get_extra_inventory_groups()
         # Return the group name as a string
-        # Return a ModuleDispatcher instance representing the group (e.g. ansible_group.shell('date'))
         metafunc.parametrize("ansible_group", iter(hosts[g] for g in groups))
         metafunc.parametrize("ansible_group", iter(hosts[g] for g in extra_groups))
 
@@ -276,7 +270,6 @@ def pytest_generate_tests(metafunc):
             pytest.exit("molecule not installed or found.")
 
         # Find all molecule scenarios not gitignored
-        # Replace this with molecule --list in the future if json output is available
         rootpath = metafunc.config.rootpath
 
         scenarios = []
@@ -311,7 +304,7 @@ def pytest_generate_tests(metafunc):
                 ),
             )
         if not scenarios:
-            pytest.exit(f"No molecule scenarions found in: {rootpath}")
+            pytest.exit(f"No molecule scenarios found in: {rootpath}")
         metafunc.parametrize(
             "molecule_scenario",
             scenarios,
