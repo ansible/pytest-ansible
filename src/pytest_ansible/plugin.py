@@ -4,7 +4,6 @@ from __future__ import annotations
 import contextlib
 import logging
 import subprocess
-from pathlib import Path
 from typing import TYPE_CHECKING
 
 import ansible
@@ -33,6 +32,8 @@ except ImportError:
 from .units import inject, inject_only
 
 if TYPE_CHECKING:
+    from pathlib import Path
+
     from _pytest.nodes import Node
 
 logger = logging.getLogger(__name__)

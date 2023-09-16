@@ -93,17 +93,15 @@ def inject(start_path: Path) -> None:
 
         # If it's here, we will trust it was from this
         if not name_dir.is_dir():
-            os.makedirs(name_dir, exist_ok=True)
+            name_dir.mkdir(parents=True, exist_ok=True)
 
             for entry in start_path.iterdir():
                 if entry.name == "collections":
                     continue
                 os.symlink(entry, name_dir / entry.name)
 
-    logger.info("Collections dir: %s", collections_dir)
-
     # Configuration option for additional collection paths
-    additional_collections_paths = [os.path.expanduser("~/.ansible/collections")]
+    additional_collections_paths = [Path("~/.ansible/collections").expanduser()]
 
     # Check if the environment variable is set for additional paths
     if "COLLECTIONS_PATH" in os.environ and "COLLECTIONS_PATHS" in os.environ:
@@ -121,6 +119,8 @@ def inject(start_path: Path) -> None:
 
     # Set the environment variable as a courtesy for integration tests
     envvar_name = determine_envvar()
+    # Assuming additional_collections_paths is a list of PosixPath objects
+    additional_collections_paths = [str(path) for path in additional_collections_paths]
     env_paths = os.pathsep.join([str(collections_dir)] + additional_collections_paths)
     logger.info("Setting %s to %s", envvar_name, env_paths)
     os.environ[envvar_name] = env_paths
