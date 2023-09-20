@@ -38,10 +38,10 @@ keywords = ["ansible", "testing", "pytest"]
 pytest-ansible = 'pytest_ansible.plugin'
 
 [project.urls]
-homepage = "https://github.com/ansible-community/pytest-ansible"
-documentation = "https://github.com/ansible-community/pytest-ansible"
-repository = "https://github.com/ansible-community/pytest-ansible"
-changelog = "https://github.com/ansible-community/pytest-ansible/releases"
+homepage = "https://github.com/ansible/pytest-ansible"
+documentation = "https://github.com/ansible/pytest-ansible"
+repository = "https://github.com/ansible/pytest-ansible"
+changelog = "https://github.com/ansible/pytest-ansible/releases"
 
 [tool.mypy]
 python_version = 3.9
