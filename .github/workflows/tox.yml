@@ -38,6 +38,7 @@ jobs:
 
   build:
     name: ${{ matrix.name }}
+    environment: test
     runs-on: ${{ matrix.os || 'ubuntu-22.04' }}
     # Failure of 'devel' job should not mark the whole workflow as failed
     continue-on-error: ${{ contains(matrix.name, 'devel') && true || false }}
