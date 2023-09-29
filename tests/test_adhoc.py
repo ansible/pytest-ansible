@@ -215,8 +215,6 @@ def test_dark_with_params(testdir, option):
             "unreachable",
         ],
     )
-    print("\n".join(result.stdout.lines))
-    print("\n".join(result.stderr.lines))
     assert result.ret == EXIT_OK
     assert result.parseoutcomes()["passed"] == 1
 
@@ -301,7 +299,3 @@ def test_dark_with_debug_enabled(testdir, option):
     )
     assert result.ret == EXIT_TESTSFAILED
     assert result.parseoutcomes()["failed"] == 1
-    # TODO: - the following doesn't work on ansible-v2  # noqa: TD002, FIX002, TD003
-    # result.stdout.fnmatch_lines([
-    #     '*REMOTE_MODULE ping',
-    #     '*EXEC ssh *',

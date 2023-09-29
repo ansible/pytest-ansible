@@ -79,7 +79,6 @@ disable = [
   "preferred-module",
   # Temporarily disabled until we fix them:
   "duplicate-code",
-  "fixme",
   "import-error",
   "import-outside-toplevel",
   "missing-function-docstring",
@@ -120,7 +119,6 @@ ignore = [
   "D",
   "EM",
   "FBT",
-  "FIX",
   "INP",
   "ISC",
   "PGH",
@@ -132,10 +130,7 @@ ignore = [
   "S",
   "SLF",
   "T",
-  "TD",
   "TRY",
-  "PTH",
-  "TCH",
 ]
 target-version = "py37"
 # Same as Black.

@@ -6,10 +6,14 @@ import logging
 import re
 import subprocess
 import sys
-from pathlib import Path
+from typing import TYPE_CHECKING
 
-import pytest
 from pytest_ansible.units import inject, inject_only
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
+    import pytest
 
 
 def test_inject(

@@ -9,7 +9,6 @@ import subprocess
 import sys
 import warnings
 from pathlib import Path
-from shlex import quote
 
 import pkg_resources
 import pytest
@@ -77,7 +76,7 @@ def molecule_pytest_configure(config):
         )
 
         # validate selinux availability
-        if sys.platform == "linux" and os.path.isfile("/etc/selinux/config"):
+        if sys.platform == "linux" and Path("/etc/selinux/config").is_file():
             try:
                 import selinux  # noqa pylint: disable=unused-import,import-error,import-outside-toplevel
             except ImportError:
@@ -105,7 +104,7 @@ class MoleculeFile(pytest.File):
 
     def __str__(self):
         """Return test name string representation."""
-        return str(self.path.relative_to(os.getcwd()))
+        return str(self.path.relative_to(Path.cwd()))
 
 
 class MoleculeItem(pytest.Item):
@@ -119,7 +118,7 @@ class MoleculeItem(pytest.Item):
         self.funcargs = {}
         super().__init__(name, parent)
         moleculeyml = self.path
-        with open(str(moleculeyml), encoding="utf-8") as stream:
+        with Path(moleculeyml).open(encoding="utf-8") as stream:
             # If the molecule.yml file is empty, YAML loader returns None. To
             # simplify things down the road, we replace None with an empty
             # dict.
@@ -161,7 +160,7 @@ class MoleculeItem(pytest.Item):
         """Perform effective test run."""
         folder = self.path.parent
         folders = folder.parts
-        cwd = os.path.abspath(os.path.join(folder, "../.."))
+        cwd = (Path(folder) / "../..").resolve()
         scenario = folders[-1]
 
         cmd = [sys.executable, "-m", "molecule"]
@@ -194,7 +193,6 @@ class MoleculeItem(pytest.Item):
         if opts:
             cmd.extend(shlex.split(opts))
 
-        print(f"running: {' '.join(quote(arg) for arg in cmd)} (from {cwd})")
         if self.config.getoption("--molecule"):  # Check if --molecule option is enabled
             try:
                 # Workaround for STDOUT/STDERR line ordering issue:
