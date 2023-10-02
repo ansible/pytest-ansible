@@ -18,12 +18,10 @@ from pytest_ansible.has_version import has_ansible_v213
 from pytest_ansible.module_dispatcher.v2 import ModuleDispatcherV2
 from pytest_ansible.results import AdHocResult
 
-
 # pylint: disable=ungrouped-imports, wrong-import-position
 if not has_ansible_v213:
     msg = "Only supported with ansible-2.13 and newer"
     raise ImportError(msg)
-
 
 HAS_CUSTOM_LOADER_SUPPORT = True
 
@@ -99,7 +97,7 @@ class ModuleDispatcherV213(ModuleDispatcherV2):
 
         # Assert hosts matching the provided pattern exist
         hosts = self.options["inventory_manager"].list_hosts()
-        if "extra_inventory_manager" in self.options:
+        if self.options.get('extra_inventory_manager', None):
             extra_hosts = self.options["extra_inventory_manager"].list_hosts()
         else:
             extra_hosts = []
@@ -112,7 +110,7 @@ class ModuleDispatcherV213(ModuleDispatcherV2):
         hosts = self.options["inventory_manager"].list_hosts(
             self.options["host_pattern"],
         )
-        if "extra_inventory_manager" in self.options:
+        if self.options.get('extra_inventory_manager', None):
             self.options["extra_inventory_manager"].subset(self.options.get("subset"))
             extra_hosts = self.options["extra_inventory_manager"].list_hosts()
         else:
@@ -134,12 +132,12 @@ class ModuleDispatcherV213(ModuleDispatcherV2):
             args.append(verbosity_syntax)
         args.extend([self.options["host_pattern"]])
         for argument in (
-            "connection",
-            "user",
-            "become",
-            "become_method",
-            "become_user",
-            "module_path",
+                "connection",
+                "user",
+                "become",
+                "become_method",
+                "become_user",
+                "module_path",
         ):
             arg_value = self.options.get(argument)
             argument = argument.replace("_", "-")
@@ -173,7 +171,7 @@ class ModuleDispatcherV213(ModuleDispatcherV2):
 
         kwargs_extra = {}
         # If we have an extra inventory, do the same that we did for the inventory
-        if "extra_inventory_manager" in self.options:
+        if self.options.get('extra_inventory_manager', None):
             callback_extra = ResultAccumulator()
 
             kwargs_extra = {
@@ -207,7 +205,7 @@ class ModuleDispatcherV213(ModuleDispatcherV2):
             loader=self.options["loader"],
         )
         play_extra = None
-        if "extra_inventory_manager" in self.options:
+        if self.options.get('extra_inventory_manager', None):
             play_extra = Play().load(
                 play_ds,
                 variable_manager=self.options["extra_variable_manager"],
@@ -227,7 +225,7 @@ class ModuleDispatcherV213(ModuleDispatcherV2):
             if tqm:
                 tqm.cleanup()
 
-        if "extra_inventory_manager" in self.options:
+        if self.options.get('extra_inventory_manager', None):
             tqm_extra = None
             try:
                 tqm_extra = TaskQueueManager(**kwargs_extra)
@@ -244,10 +242,9 @@ class ModuleDispatcherV213(ModuleDispatcherV2):
                 dark=callback.unreachable,
                 contacted=callback.contacted,
             )
-        if "extra_inventory_manager" in self.options and callback_extra.unreachable:
-            msg = "Host unreachable in the extra inventory"
+        if self.options.get('extra_inventory_manager', None) and callback_extra.unreachable:
             raise AnsibleConnectionFailure(
-                msg,
+                "Host unreachable in the extra inventory",
                 dark=callback_extra.unreachable,
                 contacted=callback_extra.contacted,
             )
@@ -256,7 +253,7 @@ class ModuleDispatcherV213(ModuleDispatcherV2):
         return AdHocResult(
             contacted=(
                 {**callback.contacted, **callback_extra.contacted}
-                if "extra_inventory_manager" in self.options
+                if self.options.get('extra_inventory_manager', None)
                 else callback.contacted
             ),
         )

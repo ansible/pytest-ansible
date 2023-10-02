@@ -26,7 +26,7 @@ class HostManagerV213(BaseHostManager):
             loader=self.options["loader"],
             inventory=self.options["inventory_manager"],
         )
-        if "extra_inventory" in self.options:
+        if self.options.get('extra_inventory', None):
             self.options["extra_loader"] = DataLoader()
             self.options["extra_inventory_manager"] = InventoryManager(
                 loader=self.options["extra_loader"],

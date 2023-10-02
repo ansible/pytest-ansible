@@ -87,8 +87,12 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
 
         # Assert hosts matching the provided pattern exist
         hosts = self.options["inventory_manager"].list_hosts()
+        if self.options.get('extra_inventory_manager', None):
+            extra_hosts = self.options["extra_inventory_manager"].list_hosts()
+        else:
+            extra_hosts = []
         no_hosts = False
-        if len(hosts) == 0:
+        if len(hosts + extra_hosts) == 0:
             no_hosts = True
             warnings.warn("provided hosts list is empty, only localhost is available")
 
@@ -96,10 +100,15 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
         hosts = self.options["inventory_manager"].list_hosts(
             self.options["host_pattern"],
         )
-        if len(hosts) == 0 and not no_hosts:
-            msg = "Specified hosts and/or --limit does not match any hosts"
+
+        if self.options.get('extra_inventory_manager', None):
+            self.options["extra_inventory_manager"].subset(self.options.get("subset"))
+            extra_hosts = self.options["extra_inventory_manager"].list_hosts()
+        else:
+            extra_hosts = []
+        if len(hosts + extra_hosts) == 0 and not no_hosts:
             raise ansible.errors.AnsibleError(
-                msg,
+                "Specified hosts and/or --limit does not match any hosts.",
             )
 
         # pylint: disable=no-member
@@ -138,6 +147,19 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
             "passwords": {"conn_pass": None, "become_pass": None},
         }
 
+        kwargs_extra = {}
+        # If we have an extra inventory, do the same that we did for the inventory
+        if self.options.get('extra_inventory_manager', None):
+            callback_extra = ResultAccumulator()
+
+            kwargs_extra = {
+                "inventory": self.options["extra_inventory_manager"],
+                "variable_manager": self.options["extra_variable_manager"],
+                "loader": self.options["extra_loader"],
+                "stdout_callback": callback_extra,
+                "passwords": {"conn_pass": None, "become_pass": None},
+            }
+
         # create a pseudo-play to execute the specified module via a single task
         play_ds = {
             "name": "pytest-ansible",
@@ -159,6 +181,14 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
             loader=self.options["loader"],
         )
 
+        play_extra = None
+        if self.options.get('extra_inventory_manager', None):
+            play_extra = Play().load(
+                play_ds,
+                variable_manager=self.options["extra_variable_manager"],
+                loader=self.options["extra_loader"],
+            )
+
         # now create a task queue manager to execute the play
         tqm = None
         try:
@@ -167,6 +197,15 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
         finally:
             if tqm:
                 tqm.cleanup()
+
+        if self.options.get('extra_inventory_manager', None):
+            tqm_extra = None
+            try:
+                tqm_extra = TaskQueueManager(**kwargs_extra)
+                tqm_extra.run(play_extra)
+            finally:
+                if tqm_extra:
+                    tqm_extra.cleanup()
 
         # Raise exception if host(s) unreachable
         if callback.unreachable:
@@ -177,5 +216,18 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
                 contacted=callback.contacted,
             )
 
+        if self.options.get('extra_inventory_manager', None) and callback_extra.unreachable:
+            raise AnsibleConnectionFailure(
+                "Host unreachable in the extra inventory",
+                dark=callback_extra.unreachable,
+                contacted=callback_extra.contacted,
+            )
+
         # Success!
-        return AdHocResult(contacted=callback.contacted)
+        return AdHocResult(
+                contacted=(
+                    {**callback.contacted, **callback_extra.contacted}
+                    if self.options.get('extra_inventory_manager', None)
+                    else callback.contacted
+                ),
+            )

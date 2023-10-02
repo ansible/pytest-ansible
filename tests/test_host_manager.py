@@ -1,7 +1,9 @@
 import pytest
 
 from conftest import (
+    ALL_EXTRA_HOSTS,
     ALL_HOSTS,
+    EXTRA_HOST_POSITIVE_PATTERNS,
     NEGATIVE_HOST_PATTERNS,
     NEGATIVE_HOST_SLICES,
     POSITIVE_HOST_PATTERNS,
@@ -14,61 +16,117 @@ pytestmark = [
 ]
 
 
-def test_host_manager_len(hosts):
-    assert len(hosts) == len(ALL_HOSTS)
+@pytest.mark.parametrize("include_extra_inventory", (True, False))
+def test_host_manager_len(hosts, include_extra_inventory):
+    _hosts = hosts(include_extra_inventory=include_extra_inventory)
+    assert len(_hosts) == len(ALL_HOSTS) + len(
+        ALL_EXTRA_HOSTS if include_extra_inventory else [],
+    )
 
 
-def test_host_manager_keys(hosts):
-    sorted_keys = hosts.keys()
+@pytest.mark.parametrize("include_extra_inventory", (True, False))
+def test_host_manager_keys(hosts, include_extra_inventory):
+    _hosts = hosts(include_extra_inventory=include_extra_inventory)
+    sorted_keys = _hosts.keys()
     sorted_keys.sort()
-    assert sorted_keys == ALL_HOSTS
+    for key in sorted_keys:
+        assert key in ALL_HOSTS + (ALL_EXTRA_HOSTS if include_extra_inventory else [])
 
 
-@pytest.mark.parametrize(("host_pattern", "num_hosts"), POSITIVE_HOST_PATTERNS)
-def test_host_manager_contains(host_pattern, num_hosts, hosts):
-    assert host_pattern in hosts, f"{host_pattern} not in hosts"
+@pytest.mark.parametrize(
+    ("host_pattern", "num_hosts"),
+    POSITIVE_HOST_PATTERNS + EXTRA_HOST_POSITIVE_PATTERNS,
+)
+@pytest.mark.parametrize("include_extra_inventory", (True, False))
+def test_host_manager_contains(host_pattern, num_hosts, hosts, include_extra_inventory):
+    _hosts = hosts(include_extra_inventory=include_extra_inventory)
+    if not include_extra_inventory and host_pattern.startswith("extra"):
+        assert host_pattern not in _hosts, f"{host_pattern} in hosts"
+    else:
+        assert host_pattern in _hosts, f"{host_pattern} not in hosts"
 
 
 @pytest.mark.parametrize(("host_pattern", "num_hosts"), NEGATIVE_HOST_PATTERNS)
-def test_host_manager_not_contains(host_pattern, num_hosts, hosts):
-    assert host_pattern not in hosts
+@pytest.mark.parametrize("include_extra_inventory", (True, False))
+def test_host_manager_not_contains(
+    host_pattern,
+    num_hosts,
+    hosts,
+    include_extra_inventory,
+):
+    _hosts = hosts(include_extra_inventory=include_extra_inventory)
+    assert host_pattern not in _hosts
 
 
-@pytest.mark.parametrize(("host_pattern", "num_hosts"), POSITIVE_HOST_PATTERNS)
-def test_host_manager_getitem(host_pattern, num_hosts, hosts):
-    assert hosts[host_pattern]
+@pytest.mark.parametrize(
+    ("host_pattern", "num_hosts"),
+    POSITIVE_HOST_PATTERNS + EXTRA_HOST_POSITIVE_PATTERNS,
+)
+@pytest.mark.parametrize("include_extra_inventory", (True, False))
+def test_host_manager_getitem(host_pattern, num_hosts, hosts, include_extra_inventory):
+    _hosts = hosts(include_extra_inventory=include_extra_inventory)
+    if not include_extra_inventory and host_pattern.startswith("extra"):
+        assert host_pattern not in _hosts
+    else:
+        assert _hosts[host_pattern]
 
 
 @pytest.mark.parametrize(("host_pattern", "num_hosts"), NEGATIVE_HOST_PATTERNS)
-def test_host_manager_not_getitem(host_pattern, num_hosts, hosts):
+@pytest.mark.parametrize("include_extra_inventory", (True, False))
+def test_host_manager_not_getitem(
+    host_pattern,
+    num_hosts,
+    hosts,
+    include_extra_inventory,
+):
+    _hosts = hosts(include_extra_inventory=include_extra_inventory)
     with pytest.raises(KeyError):
-        assert hosts[host_pattern]
+        assert _hosts[host_pattern]
 
 
-@pytest.mark.parametrize(("host_pattern", "num_hosts"), POSITIVE_HOST_PATTERNS)
-def test_host_manager_getattr(host_pattern, num_hosts, hosts):
-    assert hasattr(hosts, host_pattern)
+@pytest.mark.parametrize(
+    ("host_pattern", "num_hosts"),
+    POSITIVE_HOST_PATTERNS + EXTRA_HOST_POSITIVE_PATTERNS,
+)
+@pytest.mark.parametrize("include_extra_inventory", (True, False))
+def test_host_manager_getattr(host_pattern, num_hosts, hosts, include_extra_inventory):
+    _hosts = hosts(include_extra_inventory=include_extra_inventory)
+    if not include_extra_inventory and host_pattern.startswith("extra"):
+        assert not hasattr(_hosts, host_pattern)
+    else:
+        assert hasattr(_hosts, host_pattern)
 
 
 @pytest.mark.parametrize(("host_slice", "num_hosts"), POSITIVE_HOST_SLICES)
-def test_host_manager_slice(host_slice, num_hosts, hosts):
+@pytest.mark.parametrize("include_extra_inventory", (True, False))
+def test_host_manager_slice(host_slice, num_hosts, hosts, include_extra_inventory):
+    _hosts = hosts(include_extra_inventory=include_extra_inventory)
     assert (
-        len(hosts[host_slice]) == num_hosts
-    ), f"{len(hosts[host_slice])} != {num_hosts} for {host_slice}"
+        len(_hosts[host_slice]) == num_hosts[include_extra_inventory]
+    ), f"{len(_hosts[host_slice])} != {num_hosts} for {host_slice}"
 
 
 # pylint: disable=pointless-statement
 @pytest.mark.parametrize("host_slice", NEGATIVE_HOST_SLICES)
-def test_not_slice(host_slice, hosts):
+@pytest.mark.parametrize("include_extra_inventory", (True, False))
+def test_host_manager_not_slice(host_slice, hosts, include_extra_inventory):
+    _hosts = hosts(include_extra_inventory=include_extra_inventory)
     with pytest.raises(KeyError):
-        hosts[host_slice]
+        _hosts[host_slice]
 
 
 @pytest.mark.parametrize(("host_pattern", "num_hosts"), NEGATIVE_HOST_PATTERNS)
-def test_host_manager_not_getattr(host_pattern, num_hosts, hosts):
-    assert not hasattr(hosts, host_pattern)
+@pytest.mark.parametrize("include_extra_inventory", (True, False))
+def test_host_manager_not_getattr(
+    host_pattern,
+    num_hosts,
+    hosts,
+    include_extra_inventory,
+):
+    _hosts = hosts(include_extra_inventory=include_extra_inventory)
+    assert not hasattr(_hosts, host_pattern)
     with pytest.raises(AttributeError):
-        getattr(hosts, host_pattern)
+        getattr(_hosts, host_pattern)
 
 
 def test_defaults(request):

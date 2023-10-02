@@ -161,7 +161,7 @@ class ModuleDispatcherV212(ModuleDispatcherV2):
 
         kwargs_extra = {}
         # If we have an extra inventory, do the same that we did for the inventory
-        if "extra_inventory_manager" in self.options:
+        if self.options.get('extra_inventory_manager', None):
             callback_extra = ResultAccumulator()
 
             kwargs_extra = {
@@ -196,7 +196,7 @@ class ModuleDispatcherV212(ModuleDispatcherV2):
         )
 
         play_extra = None
-        if "extra_inventory_manager" in self.options:
+        if self.options.get('extra_inventory_manager', None):
             play_extra = Play().load(
                 play_ds,
                 variable_manager=self.options["extra_variable_manager"],
@@ -212,7 +212,7 @@ class ModuleDispatcherV212(ModuleDispatcherV2):
             if tqm:
                 tqm.cleanup()
 
-        if "extra_inventory_manager" in self.options:
+        if self.options.get('extra_inventory_manager', None):
             tqm_extra = None
             try:
                 tqm_extra = TaskQueueManager(**kwargs_extra)
@@ -229,7 +229,8 @@ class ModuleDispatcherV212(ModuleDispatcherV2):
                 dark=callback.unreachable,
                 contacted=callback.contacted,
             )
-        if "extra_inventory_manager" in self.options and callback_extra.unreachable:
+
+        if self.options.get('extra_inventory_manager', None) and callback_extra.unreachable:
             msg = "Host unreachable in the extra inventory"
             raise AnsibleConnectionFailure(
                 msg,
@@ -241,7 +242,7 @@ class ModuleDispatcherV212(ModuleDispatcherV2):
         return AdHocResult(
             contacted=(
                 {**callback.contacted, **callback_extra.contacted}
-                if "extra_inventory_manager" in self.options
+                if self.options.get('extra_inventory_manager', None)
                 else callback.contacted
             ),
         )
