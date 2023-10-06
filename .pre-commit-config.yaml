@@ -13,8 +13,28 @@ repos:
   - repo: meta
     hooks:
       - id: check-useless-excludes
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: check-merge-conflict
+      - id: check-symlinks
+      - id: debug-statements
+      - id: end-of-file-fixer
+      - id: no-commit-to-branch
+        args: [--branch, main]
+      - id: trailing-whitespace
+  - repo: https://github.com/asottile/add-trailing-comma.git
+    rev: v3.1.0
+    hooks:
+      - id: add-trailing-comma
+        args:
+          - --py36-plus
+  - repo: https://github.com/Lucas-C/pre-commit-hooks.git
+    rev: v1.5.4
+    hooks:
+      - id: remove-tabs
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: "v0.0.287"
+    rev: "v0.0.292"
     hooks:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix]
@@ -29,7 +49,7 @@ repos:
           - prettier-plugin-toml
           - prettier-plugin-sort-json
   - repo: https://github.com/psf/black
-    rev: 23.7.0
+    rev: 23.9.1
     hooks:
       - id: black
         language_version: python3
@@ -45,7 +65,7 @@ repos:
           - flake8-pytest-style>=1.7.2
           - flake8-future-annotations>=0.0.3
   - repo: https://github.com/pycqa/pylint
-    rev: v3.0.0a7
+    rev: v3.0.1
     hooks:
       - id: pylint
         args:
@@ -59,6 +79,10 @@ repos:
       - id: mypy
         # empty args needed in order to match mypy cli behavior
         # args: [--strict]
+        args:
+          - src
+          - tests
+        pass_filenames: false
         additional_dependencies:
           - pytest
           - ansible-core
