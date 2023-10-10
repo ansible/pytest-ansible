@@ -2,11 +2,13 @@ from __future__ import annotations
 
 import sys
 import warnings
+
 from typing import TYPE_CHECKING
 
 import ansible.constants
 import ansible.errors
 import ansible.utils
+
 from ansible.cli.adhoc import AdHocCLI
 from ansible.executor.task_queue_manager import TaskQueueManager
 from ansible.playbook.play import Play
@@ -18,9 +20,11 @@ from pytest_ansible.has_version import has_ansible_v212
 from pytest_ansible.module_dispatcher.v2 import ModuleDispatcherV2
 from pytest_ansible.results import AdHocResult
 
+
 # pylint: disable=ungrouped-imports, wrong-import-position
 if not has_ansible_v212:
-    raise ImportError("Only supported with ansible-2.12 and newer")
+    msg = "Only supported with ansible-2.12 and newer"
+    raise ImportError(msg)
 
 
 # pylint: enable=ungrouped-imports
@@ -96,8 +100,9 @@ class ModuleDispatcherV212(ModuleDispatcherV2):
             self.options["host_pattern"],
         )
         if len(hosts) == 0 and not no_hosts:
+            msg = "Specified hosts and/or --limit does not match any hosts"
             raise ansible.errors.AnsibleError(
-                "Specified hosts and/or --limit does not match any hosts",
+                msg,
             )
 
         # Pass along cli options
@@ -212,14 +217,16 @@ class ModuleDispatcherV212(ModuleDispatcherV2):
 
         # Raise exception if host(s) unreachable
         if callback.unreachable:
+            msg = "Host unreachable in the inventory"
             raise AnsibleConnectionFailure(
-                "Host unreachable in the inventory",
+                msg,
                 dark=callback.unreachable,
                 contacted=callback.contacted,
             )
         if "extra_inventory_manager" in self.options and callback_extra.unreachable:
+            msg = "Host unreachable in the extra inventory"
             raise AnsibleConnectionFailure(
-                "Host unreachable in the extra inventory",
+                msg,
                 dark=callback_extra.unreachable,
                 contacted=callback_extra.contacted,
             )

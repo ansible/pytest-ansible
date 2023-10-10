@@ -1,5 +1,7 @@
 import pytest
+
 from pytest_ansible.results import ModuleResult
+
 
 positive_host_patterns = {
     "all": 2,
@@ -81,12 +83,14 @@ def module_result_changed(request):
 
 @pytest.fixture()
 def _module_result_skipped():
-    raise NotImplementedError("Coming soon!")
+    msg = "Coming soon!"
+    raise NotImplementedError(msg)
 
 
 @pytest.fixture()
 def _module_result_unreachable():
-    raise NotImplementedError("Coming soon!")
+    msg = "Coming soon!"
+    raise NotImplementedError(msg)
 
 
 @pytest.mark.parametrize(

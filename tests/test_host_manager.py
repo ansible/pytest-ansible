@@ -1,4 +1,5 @@
 import pytest
+
 from ansible.errors import AnsibleError
 from conftest import (
     ALL_HOSTS,
@@ -7,6 +8,7 @@ from conftest import (
     POSITIVE_HOST_PATTERNS,
     POSITIVE_HOST_SLICES,
 )
+
 
 pytestmark = [
     pytest.mark.unit,

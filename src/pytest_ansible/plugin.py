@@ -4,6 +4,7 @@ from __future__ import annotations
 import contextlib
 import logging
 import subprocess
+
 from typing import TYPE_CHECKING
 
 import ansible
@@ -21,6 +22,7 @@ from pytest_ansible.fixtures import (
 )
 from pytest_ansible.host_manager import get_host_manager
 
+
 try:
     from .molecule import MoleculeFile, MoleculeScenario
 
@@ -30,6 +32,7 @@ except ImportError:
 
 
 from .units import inject, inject_only
+
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -276,7 +279,7 @@ def pytest_generate_tests(metafunc):
         scenarios = []
 
         candidates = list(rootpath.glob("**/molecule/*/molecule.yml"))
-        command = ["git", "check-ignore"] + candidates
+        command = ["git", "check-ignore", *candidates]
         with contextlib.suppress(subprocess.CalledProcessError, FileNotFoundError):
             proc = subprocess.run(
                 args=command,

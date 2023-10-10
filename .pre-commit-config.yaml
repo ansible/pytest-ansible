@@ -53,17 +53,6 @@ repos:
     hooks:
       - id: black
         language_version: python3
-  - repo: https://github.com/pycqa/flake8.git
-    rev: 6.1.0
-    hooks:
-      - id: flake8
-        language_version: python3
-        additional_dependencies:
-          - flake8-2020>=1.6.0
-          - flake8-docstrings>=1.5.0
-          - flake8-print>=5.0
-          - flake8-pytest-style>=1.7.2
-          - flake8-future-annotations>=0.0.3
   - repo: https://github.com/pycqa/pylint
     rev: v3.0.1
     hooks:
