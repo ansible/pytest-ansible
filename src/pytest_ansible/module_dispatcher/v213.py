@@ -29,7 +29,7 @@ HAS_CUSTOM_LOADER_SUPPORT = True
 try:
     # init_plugin_loader was introduced in Ansible-core change here, v2.15
     # https://github.com/ansible/ansible/pull/78915
-    # Whenever a new vXYZ.py dispather module is introduced, make this static import
+    # Whenever a new vXYZ.py dispatcher module is introduced, make this static import
     # pylint: disable=ungrouped-imports
     from ansible.plugins.loader import init_plugin_loader
 except ImportError:

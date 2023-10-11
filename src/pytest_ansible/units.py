@@ -42,8 +42,8 @@ def get_collection_name(start_path: Path) -> tuple[str | None, str | None]:
     logger.info("Looking for collection info in %s", info_file)
 
     try:
-        with info_file.open(encoding="utf-8") as fhand:
-            galaxy_info = yaml.safe_load(fhand)
+        with info_file.open(encoding="utf-8") as file_handler:
+            galaxy_info = yaml.safe_load(file_handler)
     except FileNotFoundError:
         logger.error("No galaxy.yml file found, plugin not activated")
         return None, None

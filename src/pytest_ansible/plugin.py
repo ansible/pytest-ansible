@@ -164,7 +164,7 @@ def pytest_addoption(parser):
         "--ansible-unit-inject-only",
         action="store_true",
         default=False,
-        help="Enable support for ansible collection unit tests by only injecting exisiting ANSIBLE_COLLECTIONS_PATH.",
+        help="Enable support for ansible collection unit tests by only injecting existing ANSIBLE_COLLECTIONS_PATH.",
     )
     group.addoption(
         "--molecule",
@@ -323,7 +323,7 @@ class PyTestAnsiblePlugin:
         """Initialize plugin."""
         self.config = config
 
-    def pytest_report_header(self, config, startdir):
+    def pytest_report_header(self):
         """Return the version of ansible."""
         return f"ansible: {ansible.__version__}"
 

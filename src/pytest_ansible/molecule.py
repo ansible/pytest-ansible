@@ -120,8 +120,8 @@ class MoleculeItem(pytest.Item):
         """Construct MoleculeItem."""
         self.funcargs = {}
         super().__init__(name, parent)
-        moleculeyml = self.path
-        with Path(moleculeyml).open(encoding="utf-8") as stream:
+        molecule_yml = self.path
+        with Path(molecule_yml).open(encoding="utf-8") as stream:
             # If the molecule.yml file is empty, YAML loader returns None. To
             # simplify things down the road, we replace None with an empty
             # dict.
@@ -227,7 +227,7 @@ class MoleculeItem(pytest.Item):
 
     def reportinfo(self):
         """Return representation of test location when in verbose mode."""
-        return self.fspath, 0, f"usecase: {self.name}"
+        return self.fspath, 0, f"use_case: {self.name}"
 
     def __str__(self) -> str:
         """Return name of the test."""

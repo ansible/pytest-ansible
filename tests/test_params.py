@@ -192,7 +192,7 @@ def test_params_required_with_bogus_inventory_v1(testdir, option):
     or parse_version(ansible.__version__) >= parse_version("2.4.0"),
     reason="requires ansible >= 2.0 and < 2.4",
 )
-def test_params_required_with_bogus_inventory_v2(testdir, option, recwarn):
+def test_params_required_with_bogus_inventory_v2(testdir, option):
     src = """
         import pytest
         def test_func(ansible_module):
@@ -207,7 +207,7 @@ def test_params_required_with_bogus_inventory_v2(testdir, option, recwarn):
     ) as mock_exists:
         result = testdir.runpytest(
             *[
-                "-vvvvvs",
+                *option.args,
                 "--ansible-inventory",
                 "bogus",
                 "--ansible-host-pattern",
@@ -224,7 +224,7 @@ def test_params_required_with_bogus_inventory_v2(testdir, option, recwarn):
 
 @pytest.mark.requires_ansible_v24()
 @pytest.mark.skipif(has_ansible_v28, reason="requires ansible < 2.8")
-def test_params_required_with_bogus_inventory_v24(testdir, option, recwarn):
+def test_params_required_with_bogus_inventory_v24(testdir, option):
     src = """
         import pytest
         def test_func(ansible_module):
@@ -239,7 +239,13 @@ def test_params_required_with_bogus_inventory_v24(testdir, option, recwarn):
     testdir.makepyfile(src)
 
     result = testdir.runpytest(
-        *["-vvvvvs", "--ansible-inventory", "bogus", "--ansible-host-pattern", "all"],
+        *[
+            *option.args,
+            "--ansible-inventory",
+            "bogus",
+            "--ansible-host-pattern",
+            "all",
+        ],
     )
 
     # Assert pytest exit code
@@ -282,7 +288,7 @@ def test_params_required_without_inventory_with_host_pattern_v2(testdir, option)
     assert result.ret == EXIT_OK
 
 
-def test_param_override_with_marker(testdir):
+def test_param_override_with_marker(testdir, option):
     src = """
         import pytest
         @pytest.mark.ansible(inventory='local,', connection='local', host_pattern='all')
@@ -292,7 +298,7 @@ def test_param_override_with_marker(testdir):
     testdir.makepyfile(src)
     result = testdir.runpytest(
         *[
-            "-vvvvvs",
+            *option.args,
             "--tb",
             "native",
             "--ansible-inventory",
