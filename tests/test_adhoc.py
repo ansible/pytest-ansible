@@ -170,7 +170,7 @@ def test_become(testdir, option):
                         'to create when becoming an unprivileged user')
                 else:
                     assert 'msg' in result, "Missing expected field in JSON response: msg"
-                    assert 'sudo: unknown user: asdfasdf' in result['msg']
+                    assert 'sudo: unknown user: unknown_user' in result['msg']
         """
 
     testdir.makepyfile(src)
@@ -183,7 +183,7 @@ def test_become(testdir, option):
             "localhost",  # run against a single host
             "--ansible-become",  # Enable become support
             "--ansible-become-user",
-            "asdfasdf",  # Connect as asdfasdf
+            "unknown_user",  # Connect as unknown_user
         ],
     )
     assert result.ret == EXIT_OK

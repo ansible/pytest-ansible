@@ -47,7 +47,7 @@ def test_molecule_disabled() -> None:
 
 
 def test_molecule_runtest() -> None:
-    """Test running the molecule scenarion via pytest."""
+    """Test running the molecule scenario via pytest."""
     try:
         proc = subprocess.run(
             f"{sys.executable} -m pytest --molecule tests/fixtures/molecule/default/molecule.yml",

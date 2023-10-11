@@ -263,7 +263,7 @@ def test_uptime(ansible_adhoc):
 
 The `HostManager` object returned by the `ansible_adhoc()` function provides
 numerous ways of calling ansible modules against some, or all, of the
-inventory. The following demonstates sample usage.
+inventory. The following demonstrates sample usage.
 
 ```python
 def test_host_manager(ansible_adhoc):
@@ -301,11 +301,11 @@ such as cloud modules (ec2, gce etc...).
 def test_do_something_cloudy(localhost, ansible_adhoc):
     """Deploy an ec2 instance using multiple fixtures."""
     params = dict(
-        key_name='somekey',
+        key_name='some_key',
         instance_type='t2.micro',
         image='ami-123456',
         wait=True,
-        group='webserver',
+        group='webservers',
         count=1,
         vpc_subnet_id='subnet-29e63245',
         assign_public_ip=True,
@@ -395,7 +395,7 @@ def test_terminate_us_east_1_instances(ansible_adhoc):
             '''do some testing'''
 ```
 
-#### Parameterizing with `pytest.mark.ansible`
+#### Parameterize with `pytest.mark.ansible`
 
 Perhaps the `--ansible-inventory=<inventory>` includes many systems, but you
 only wish to interact with a subset. The `pytest.mark.ansible` marker can be
@@ -477,7 +477,7 @@ def test_adhoc_result(ansible_adhoc):
     # With __getattr__
     assert contacted.localhost.is_successful
 
-    # Or __gettem__
+    # Or __getitem__
     assert contacted['localhost'].is_successful
 ```
 
@@ -488,7 +488,7 @@ on that use by way of the `ModuleResult` interface. The `ModuleResult`
 class represents the dictionary returned by the ansible module for a particular
 host. The contents of the dictionary depend on the module called.
 
-The `ModuleResult` interface provides some convenient proprerties to
+The `ModuleResult` interface provides some convenient properties to
 determine the success of the module call. Examples are included below.
 
 ```python

@@ -1,0 +1,23 @@
+dictionaryDefinitions:
+  - name: words
+    path: .config/dictionary.txt
+    addWords: true
+dictionaries:
+  - bash
+  - networking-terms
+  - python
+  - words
+  - en_US
+ignorePaths:
+  # All dot files in the root
+  - \.*
+  # This file
+  - cspell.config.yaml
+  # The shared file for tool configuration
+  - pyproject.toml
+  # requirements files
+  - .config/requirements*
+  # The tox configuration file
+  - tox.ini
+languageSettings:
+  - languageId: python
