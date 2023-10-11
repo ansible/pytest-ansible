@@ -43,6 +43,26 @@ documentation = "https://github.com/ansible/pytest-ansible"
 repository = "https://github.com/ansible/pytest-ansible"
 changelog = "https://github.com/ansible/pytest-ansible/releases"
 
+[tool.coverage.paths]
+source = ["src", ".tox/*/site-packages"]
+
+[tool.coverage.report]
+exclude_lines = ["pragma: no cover", "if TYPE_CHECKING:"]
+# Increase it just so it would pass on any single-python run
+fail_under = 44
+skip_covered = true
+skip_empty = true
+# During development we might remove code (files) with coverage data, and we dont want to fail:
+ignore_errors = true
+show_missing = true
+
+[tool.coverage.run]
+# branch = true
+concurrency = ["multiprocessing", "thread"]
+data_file = ".tox/.coverage"
+parallel = true
+source = ["pytest_ansible"]
+
 [tool.mypy]
 python_version = 3.9
 ignore_missing_imports = true
