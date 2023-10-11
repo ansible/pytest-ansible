@@ -1,8 +1,7 @@
 [build-system]
 requires = [
   "setuptools >= 63.0.0", # required by pyproject+setuptools_scm integration
-  "setuptools_scm[toml] >= 7.0.5", # required for "no-local-version" scheme
-
+  "setuptools_scm[toml] >= 7.0.5" # required for "no-local-version" scheme
 ]
 build-backend = "setuptools.build_meta"
 
@@ -13,9 +12,9 @@ dynamic = ["version", "dependencies", "optional-dependencies"]
 name = "pytest-ansible"
 description = "Plugin for pytest to simplify calling ansible modules from tests or fixtures"
 readme = "README.md"
-authors = [{ "name" = "Ansible by Red Hat", "email" = "info@ansible.com" }]
-maintainers = [{ "name" = "Ansible by Red Hat", "email" = "info@ansible.com" }]
-license = { text = "MIT" }
+authors = [{"name" = "Ansible by Red Hat", "email" = "info@ansible.com"}]
+maintainers = [{"name" = "Ansible by Red Hat", "email" = "info@ansible.com"}]
+license = {text = "MIT"}
 classifiers = [
   'Development Status :: 5 - Production/Stable',
   'Intended Audience :: Developers',
@@ -31,6 +30,7 @@ classifiers = [
   'Programming Language :: Python :: 3.9',
   'Programming Language :: Python :: 3.10',
   'Programming Language :: Python :: 3.11',
+  'Programming Language :: Python :: 3.12'
 ]
 keywords = ["ansible", "testing", "pytest"]
 
@@ -81,11 +81,11 @@ module = ["ansible.*"]
 ignore_missing_imports = true
 ignore_errors = true
 
-[tool.pylint.MAIN]
-extension-pkg-allow-list = ["black.parsing"]
-
 [tool.pylint.IMPORTS]
 preferred-modules = ["py:pathlib", "unittest:pytest"]
+
+[tool.pylint.MAIN]
+extension-pkg-allow-list = ["black.parsing"]
 
 [tool.pylint."MESSAGES CONTROL"]
 # increase from default is 50 which is too aggressive
@@ -112,7 +112,7 @@ disable = [
   "unexpected-keyword-arg",
   "unused-argument",
   "invalid-name",
-  "too-few-public-methods",
+  "too-few-public-methods"
 ]
 
 [tool.pytest.ini_options]
@@ -124,7 +124,7 @@ markers = [
   "ansible_v1_xfail",
   "requires_ansible_v1",
   "requires_ansible_v2",
-  "requires_ansible_v24",
+  "requires_ansible_v24"
 ]
 
 [tool.ruff]
@@ -151,7 +151,7 @@ ignore = [
   "S",
   "SLF",
   "T",
-  "TRY",
+  "TRY"
 ]
 target-version = "py37"
 # Same as Black.
@@ -160,18 +160,18 @@ line-length = 88
 [tool.ruff.flake8-pytest-style]
 parametrize-values-type = "tuple"
 
-[tool.ruff.per-file-ignores]
-"tests/**" = ["S101"]
-
 [tool.ruff.isort]
 known-first-party = ["pytest_ansible"]
 lines-after-imports = 2 # Ensures consistency for cases when there's variable vs function/class definitions after imports
 lines-between-types = 1 # Separate import/from with 1 line
 
+[tool.ruff.per-file-ignores]
+"tests/**" = ["S101"]
+
 [tool.setuptools.dynamic]
-optional-dependencies.test = { file = [".config/requirements-test.txt"] }
-optional-dependencies.lock = { file = [".config/requirements-lock.txt"] }
-dependencies = { file = [".config/requirements.in"] }
+dependencies = {file = [".config/requirements.in"]}
+optional-dependencies.test = {file = [".config/requirements-test.txt"]}
+optional-dependencies.lock = {file = [".config/requirements-lock.txt"]}
 
 [tool.setuptools_scm]
 local_scheme = "no-local-version"

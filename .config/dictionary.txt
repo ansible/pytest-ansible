@@ -44,3 +44,4 @@ runpytest_subprocess
 parseoutcomes
 runpytest
 errlines
+codecov
