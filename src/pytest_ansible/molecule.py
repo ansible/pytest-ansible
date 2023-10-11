@@ -8,13 +8,16 @@ import shlex
 import subprocess
 import sys
 import warnings
+
 from pathlib import Path
 
 import pkg_resources
 import pytest
 import yaml
+
 from molecule.api import drivers
 from molecule.config import ansible_version
+
 
 logger = logging.getLogger(__name__)
 
@@ -102,7 +105,7 @@ class MoleculeFile(pytest.File):
         else:
             yield MoleculeItem("test", self)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return test name string representation."""
         return str(self.path.relative_to(Path.cwd()))
 
@@ -113,7 +116,7 @@ class MoleculeItem(pytest.Item):
     Pytest supports multiple tests per file, molecule only one "test".
     """
 
-    def __init__(self, name, parent):
+    def __init__(self, name, parent) -> None:
         """Construct MoleculeItem."""
         self.funcargs = {}
         super().__init__(name, parent)
@@ -226,7 +229,7 @@ class MoleculeItem(pytest.Item):
         """Return representation of test location when in verbose mode."""
         return self.fspath, 0, f"usecase: {self.name}"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return name of the test."""
         return f"{self.name}[{self.molecule_driver}]"
 
@@ -240,7 +243,7 @@ class MoleculeScenario:
 
     # pylint: disable=too-few-public-methods
 
-    def __init__(self, name: str, parent_directory: Path, test_id: str):
+    def __init__(self, name: str, parent_directory: Path, test_id: str) -> None:
         """Initialize the MoleculeScenario class.
 
         :param molecule_parent: The parent directory of 'molecule'

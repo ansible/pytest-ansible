@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import warnings
+
 from typing import TYPE_CHECKING
 
 import ansible.constants
 import ansible.errors
 import ansible.utils
+
 from ansible.cli import CLI
 from ansible.executor.task_queue_manager import TaskQueueManager
 from ansible.playbook.play import Play
@@ -17,8 +19,10 @@ from pytest_ansible.has_version import has_ansible_v2
 from pytest_ansible.module_dispatcher import BaseModuleDispatcher
 from pytest_ansible.results import AdHocResult
 
+
 if not has_ansible_v2:
-    raise ImportError("Only supported with ansible-2.* and newer")
+    msg = "Only supported with ansible-2.* and newer"
+    raise ImportError(msg)
 
 
 class ResultAccumulator(CallbackBase):
@@ -88,8 +92,9 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
             self.options["host_pattern"],
         )
         if len(hosts) == 0 and not no_hosts:
+            msg = "Specified hosts and/or --limit does not match any hosts"
             raise ansible.errors.AnsibleError(
-                "Specified hosts and/or --limit does not match any hosts",
+                msg,
             )
 
         # pylint: disable=no-member
@@ -160,8 +165,9 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
 
         # Raise exception if host(s) unreachable
         if callback.unreachable:
+            msg = "Host unreachable"
             raise AnsibleConnectionFailure(
-                "Host unreachable",
+                msg,
                 dark=callback.unreachable,
                 contacted=callback.contacted,
             )

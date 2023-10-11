@@ -14,7 +14,7 @@ class HostManagerV24(BaseHostManager):
         super().__init__(*args, **kwargs)
         self._dispatcher = ModuleDispatcherV24
 
-    def initialize_inventory(self):
+    def initialize_inventory(self) -> None:
         self.options["loader"] = DataLoader()
         self.options["inventory_manager"] = InventoryManager(
             loader=self.options["loader"],

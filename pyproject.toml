@@ -108,10 +108,11 @@ markers = [
 ]
 
 [tool.ruff]
+required-version = "0.0.292"
 select = ["ALL"]
 ignore = [
   "E501", # we use black
-  # temporary disabled until we fix them:
+# temporary disabled until we fix them:
   "ANN",
   "ARG",
   "B",
@@ -141,6 +142,11 @@ parametrize-values-type = "tuple"
 
 [tool.ruff.per-file-ignores]
 "tests/**" = ["S101"]
+
+[tool.ruff.isort]
+known-first-party = ["pytest_ansible"]
+lines-after-imports = 2 # Ensures consistency for cases when there's variable vs function/class definitions after imports
+lines-between-types = 1 # Separate import/from with 1 line
 
 [tool.setuptools.dynamic]
 optional-dependencies.test = { file = [".config/requirements-test.txt"] }

@@ -1,4 +1,5 @@
 import pytest
+
 from conftest import NEGATIVE_HOST_PATTERNS, POSITIVE_HOST_PATTERNS
 
 

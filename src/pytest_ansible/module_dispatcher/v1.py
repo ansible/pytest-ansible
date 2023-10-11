@@ -4,6 +4,7 @@ import ansible
 import ansible.constants
 import ansible.errors
 import ansible.utils
+
 from ansible.runner import Runner
 from ansible.utils import module_finder
 
@@ -12,8 +13,10 @@ from pytest_ansible.has_version import has_ansible_v1
 from pytest_ansible.module_dispatcher import BaseModuleDispatcher
 from pytest_ansible.results import AdHocResult
 
+
 if not has_ansible_v1:
-    raise ImportError("Only supported with ansible < 2.0")
+    msg = "Only supported with ansible < 2.0"
+    raise ImportError(msg)
 
 
 class ModuleDispatcherV1(BaseModuleDispatcher):
@@ -54,8 +57,9 @@ class ModuleDispatcherV1(BaseModuleDispatcher):
             self.options["host_pattern"],
         )
         if len(hosts) == 0 and not no_hosts:
+            msg = "Specified hosts and/or --limit does not match any hosts"
             raise ansible.errors.AnsibleError(
-                "Specified hosts and/or --limit does not match any hosts",
+                msg,
             )
 
         # Build module runner object
@@ -78,8 +82,9 @@ class ModuleDispatcherV1(BaseModuleDispatcher):
         results = runner.run()
 
         if "dark" in results and results["dark"]:
+            msg = "Host unreachable"
             raise AnsibleConnectionFailure(
-                "Host unreachable",
+                msg,
                 dark=results["dark"],
                 contacted=results["contacted"],
             )

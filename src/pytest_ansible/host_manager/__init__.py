@@ -60,7 +60,8 @@ class BaseHostManager:
         """Raise a TypeError if any required kwargs are missing."""
         for kwarg in self._required_kwargs:
             if kwarg not in self.options:
-                raise TypeError(f"Missing required keyword argument '{kwarg}'")
+                msg = f"Missing required keyword argument '{kwarg}'"
+                raise TypeError(msg)
 
     def has_matching_inventory(self, host_pattern):
         """Return whether any matching ansible inventory is found for the provided host_pattern."""
@@ -96,7 +97,8 @@ class BaseHostManager:
     def __getattr__(self, attr):
         """Return a ModuleDispatcher instance described the provided `attr`."""
         if not self.has_matching_inventory(attr):
-            raise AttributeError(f"type HostManager has no attribute '{attr}'")
+            msg = f"type HostManager has no attribute '{attr}'"
+            raise AttributeError(msg)
         self.options["host_pattern"] = attr
         return self._dispatcher(**self.options)
 
@@ -131,7 +133,8 @@ class BaseHostManager:
         return self.has_matching_inventory(item)
 
     def initialize_inventory(self):
-        raise NotImplementedError("Must be implemented by sub-class")
+        msg = "Must be implemented by sub-class"
+        raise NotImplementedError(msg)
 
 
 def get_host_manager(*args, **kwargs):

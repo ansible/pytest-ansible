@@ -1,8 +1,11 @@
 from types import GeneratorType
 
 import pytest
+
 from conftest import ALL_HOSTS
+
 from pytest_ansible.results import ModuleResult
+
 
 invalid_hosts = ["none", "all", "*", "local*"]
 

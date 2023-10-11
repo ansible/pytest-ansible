@@ -4,7 +4,9 @@ from __future__ import annotations
 import logging
 import os
 import sys
+
 from pathlib import Path
+
 
 logger = logging.getLogger(__name__)
 
@@ -111,7 +113,7 @@ def inject(start_path: Path) -> None:
         )
     logger.info("Additional Collections Paths: %s", additional_collections_paths)
 
-    acf_inject(paths=[str(collections_dir)] + additional_collections_paths)
+    acf_inject(paths=[str(collections_dir), *additional_collections_paths])
 
     # Inject the path for the collection into sys.path
     sys.path.insert(0, str(collections_dir))
@@ -121,7 +123,7 @@ def inject(start_path: Path) -> None:
     envvar_name = determine_envvar()
     # Assuming additional_collections_paths is a list of PosixPath objects
     additional_collections_paths = [str(path) for path in additional_collections_paths]
-    env_paths = os.pathsep.join([str(collections_dir)] + additional_collections_paths)
+    env_paths = os.pathsep.join([str(collections_dir), *additional_collections_paths])
     logger.info("Setting %s to %s", envvar_name, env_paths)
     os.environ[envvar_name] = env_paths
 

@@ -57,7 +57,8 @@ class AdHocResult:
         """Return a ModuleResult instance matching the provided `attr`."""
         if attr in self.contacted:
             return ModuleResult(**self.contacted[attr])
-        raise AttributeError(f"type AdHocResult has no attribute '{attr}'")
+        msg = f"type AdHocResult has no attribute '{attr}'"
+        raise AttributeError(msg)
 
     def __len__(self) -> int:
         """Return the number of contacted hosts."""
