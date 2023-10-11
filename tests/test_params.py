@@ -1,11 +1,15 @@
 import re
 import sys
+
 from unittest import mock
 
 import ansible
 import pytest
+
 from pkg_resources import parse_version
+
 from pytest_ansible.has_version import has_ansible_v28
+
 
 # pylint: disable=unused-import
 try:

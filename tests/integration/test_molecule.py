@@ -5,9 +5,11 @@ from __future__ import annotations
 import os
 import subprocess
 import sys
+
 from typing import TYPE_CHECKING
 
 import pytest
+
 
 if TYPE_CHECKING:
     from pytest_ansible.molecule import MoleculeScenario
@@ -32,7 +34,6 @@ def test_molecule_collect() -> None:
 
 def test_molecule_disabled() -> None:
     """Ensure the lack of --molecule disables molecule support."""
-
     proc = subprocess.run(
         f"{sys.executable} -m pytest tests/fixtures/molecule/default/molecule.yml",
         capture_output=True,
@@ -47,7 +48,6 @@ def test_molecule_disabled() -> None:
 
 def test_molecule_runtest() -> None:
     """Test running the molecule scenarion via pytest."""
-
     try:
         proc = subprocess.run(
             f"{sys.executable} -m pytest --molecule tests/fixtures/molecule/default/molecule.yml",

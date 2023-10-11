@@ -33,8 +33,9 @@ class BaseModuleDispatcher:
         Raise `AnsibleModuleError` when no such module exists.
         """
         if not self.has_module(name):
+            msg = f"The module {name} was not found in configured module paths."
             raise AnsibleModuleError(
-                f"The module {name} was not found in configured module paths.",
+                msg,
             )
         self.options["module_name"] = name
         return self._run
@@ -43,12 +44,15 @@ class BaseModuleDispatcher:
         """Raise a TypeError if any required kwargs are missing."""
         for kwarg in self.required_kwargs:
             if kwarg not in self.options:
-                raise TypeError(f"Missing required keyword argument '{kwarg}'")
+                msg = f"Missing required keyword argument '{kwarg}'"
+                raise TypeError(msg)
 
     def has_module(self, name):
         """Return whether ansible provides the requested module."""
-        raise RuntimeError("Must be implemented by a sub-class")
+        msg = "Must be implemented by a sub-class"
+        raise RuntimeError(msg)
 
     def _run(self, *args, **kwargs):
         """Raise a runtime error, unless implemented by sub-classes."""
-        raise RuntimeError("Must be implemented by a sub-class")
+        msg = "Must be implemented by a sub-class"
+        raise RuntimeError(msg)

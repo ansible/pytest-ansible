@@ -5,9 +5,9 @@ from pytest_ansible.plugin import PyTestAnsiblePlugin, pytest_generate_tests
 
 
 class MockItem:
-    """Mock class for item object"""
+    """Mock class for item object."""
 
-    def __init__(self, fixturenames, marker=None):
+    def __init__(self, fixturenames, marker=None) -> None:
         self.fixturenames = fixturenames
         self.marker = marker
 
@@ -16,7 +16,7 @@ class MockItem:
 
 
 class MockConfig:
-    """Mock class for config object"""
+    """Mock class for config object."""
 
     options = {}
 
@@ -26,7 +26,7 @@ class MockConfig:
     def getoption(self, option_name):
         return self.options.get(option_name)
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.options = {
             "ansible_host_pattern": "localhost",
             "ansible_inventory": "/etc/ansible/hosts",
@@ -34,16 +34,16 @@ class MockConfig:
 
 
 class MockPluginManager:
-    """Mock class for pluginmanager object"""
+    """Mock class for pluginmanager object."""
 
     def getplugin(self, name):
         return MagicMock()
 
 
 class MockMetafunc:
-    """Mock class for metafunc object"""
+    """Mock class for metafunc object."""
 
-    def __init__(self, fixturenames):
+    def __init__(self, fixturenames) -> None:
         self.fixturenames = fixturenames
         self.config = MockConfig()
         self.parametrize = MagicMock()
