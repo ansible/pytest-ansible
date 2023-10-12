@@ -3,8 +3,6 @@ codecov:
   require_ci_to_pass: true
 comment: false
 coverage:
+  range: 43..100
   status:
     patch: false
-    project:
-      default:
-        threshold: 0.3%
