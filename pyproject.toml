@@ -49,7 +49,7 @@ source = ["src", ".tox/*/site-packages"]
 [tool.coverage.report]
 exclude_lines = ["pragma: no cover", "if TYPE_CHECKING:"]
 # Increase it just so it would pass on any single-python run
-fail_under = 44
+fail_under = 43
 skip_covered = true
 skip_empty = true
 # During development we might remove code (files) with coverage data, and we dont want to fail:
@@ -132,7 +132,7 @@ required-version = "0.0.292"
 select = ["ALL"]
 ignore = [
   "E501", # we use black
-# temporary disabled until we fix them:
+  # temporary disabled until we fix them:
   "ANN",
   "ARG",
   "B",

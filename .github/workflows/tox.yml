@@ -101,6 +101,11 @@ jobs:
       - name: tox -e ${{ matrix.passed_name }}
         run: python3 -m tox -e ${{ matrix.passed_name }}
 
+      - name: Combine coverage data
+        if: ${{ startsWith(matrix.passed_name, 'py') }}
+        # produce a single .coverage file at repo root
+        run: tox -e coverage
+
       - name: Upload coverage data
         if: ${{ startsWith(matrix.passed_name, 'py') }}
         uses: codecov/codecov-action@v4.0.0-beta.3
