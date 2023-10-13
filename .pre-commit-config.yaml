@@ -58,6 +58,10 @@ repos:
     hooks:
       - id: cspell
         name: Spell check with cspell
+  - repo: https://github.com/python-jsonschema/check-jsonschema
+    rev: 0.27.0
+    hooks:
+      - id: check-github-workflows
   - repo: https://github.com/pycqa/pylint
     rev: v3.0.1
     hooks:
