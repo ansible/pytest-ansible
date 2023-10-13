@@ -18,8 +18,8 @@ env:
   PY_COLORS: 1
 
 jobs:
-  pre:
-    name: pre
+  prepare:
+    name: prepare
     runs-on: ubuntu-22.04
     outputs:
       matrix: ${{ steps.generate_matrix.outputs.matrix }}
@@ -42,13 +42,13 @@ jobs:
     runs-on: ${{ matrix.os || 'ubuntu-22.04' }}
     # Failure of 'devel' job should not mark the whole workflow as failed
     continue-on-error: ${{ contains(matrix.name, 'devel') && true || false }}
-    needs: pre
+    needs: prepare
     defaults:
       run:
         shell: ${{ matrix.shell || 'bash'}}
     strategy:
       fail-fast: false
-      matrix: ${{ fromJson(needs.pre.outputs.matrix) }}
+      matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
       # max-parallel: 5
       # The matrix testing goal is to cover the *most likely* environments
       # which are expected to be used by users in production. Avoid adding a
@@ -108,7 +108,7 @@ jobs:
 
       - name: Upload coverage data
         if: ${{ startsWith(matrix.passed_name, 'py') }}
-        uses: codecov/codecov-action@v4.0.0-beta.3
+        uses: codecov/codecov-action@v3
         with:
           name: ${{ matrix.passed_name }}
           fail_ci_if_error: false # see https://github.com/codecov/codecov-action/issues/598
