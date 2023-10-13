@@ -67,7 +67,7 @@ source = ["pytest_ansible"]
 python_version = 3.9
 ignore_missing_imports = true
 ignore_errors = true
-# strict = true
+strict = true
 color_output = true
 error_summary = true
 # Temporary disabled until we fix them:

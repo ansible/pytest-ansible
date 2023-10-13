@@ -74,11 +74,8 @@ repos:
     rev: v1.6.0
     hooks:
       - id: mypy
-        # empty args needed in order to match mypy cli behavior
-        args:
-          - --strict
-          - src
-          - tests
+        # Do not modify args to match mypy cli/ide behavior, use config if needed.
+        args: ["."]
         pass_filenames: false
         additional_dependencies:
           - pytest
