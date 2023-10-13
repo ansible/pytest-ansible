@@ -18,11 +18,14 @@ repos:
     hooks:
       - id: check-merge-conflict
       - id: check-symlinks
-      - id: debug-statements
       - id: end-of-file-fixer
       - id: no-commit-to-branch
         args: [--branch, main]
       - id: trailing-whitespace
+      - id: mixed-line-ending
+      - id: check-executables-have-shebangs
+      - id: debug-statements
+        language_version: python3
   - repo: https://github.com/asottile/add-trailing-comma.git
     rev: v3.1.0
     hooks:
@@ -72,8 +75,8 @@ repos:
     hooks:
       - id: mypy
         # empty args needed in order to match mypy cli behavior
-        # args: [--strict]
         args:
+          - --strict
           - src
           - tests
         pass_filenames: false
