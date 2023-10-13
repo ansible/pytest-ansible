@@ -31,6 +31,7 @@ classifiers = [
   'Programming Language :: Python :: 3.9',
   'Programming Language :: Python :: 3.10',
   'Programming Language :: Python :: 3.11',
+  'Programming Language :: Python :: 3.12'
 ]
 keywords = ["ansible", "testing", "pytest"]
 
@@ -67,7 +68,7 @@ source = ["pytest_ansible"]
 python_version = 3.9
 ignore_missing_imports = true
 ignore_errors = true
-# strict = true
+strict = true
 color_output = true
 error_summary = true
 # Temporary disabled until we fix them:

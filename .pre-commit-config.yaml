@@ -18,11 +18,14 @@ repos:
     hooks:
       - id: check-merge-conflict
       - id: check-symlinks
-      - id: debug-statements
       - id: end-of-file-fixer
       - id: no-commit-to-branch
         args: [--branch, main]
       - id: trailing-whitespace
+      - id: mixed-line-ending
+      - id: check-executables-have-shebangs
+      - id: debug-statements
+        language_version: python3
   - repo: https://github.com/asottile/add-trailing-comma.git
     rev: v3.1.0
     hooks:
@@ -58,6 +61,10 @@ repos:
     hooks:
       - id: cspell
         name: Spell check with cspell
+  - repo: https://github.com/python-jsonschema/check-jsonschema
+    rev: 0.27.0
+    hooks:
+      - id: check-github-workflows
   - repo: https://github.com/pycqa/pylint
     rev: v3.0.1
     hooks:
@@ -71,11 +78,8 @@ repos:
     rev: v1.6.0
     hooks:
       - id: mypy
-        # empty args needed in order to match mypy cli behavior
-        # args: [--strict]
-        args:
-          - src
-          - tests
+        # Do not modify args to match mypy cli/ide behavior, use config if needed.
+        args: ["."]
         pass_filenames: false
         additional_dependencies:
           - pytest
