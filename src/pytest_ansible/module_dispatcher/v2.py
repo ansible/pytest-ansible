@@ -87,7 +87,7 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
 
         # Assert hosts matching the provided pattern exist
         hosts = self.options["inventory_manager"].list_hosts()
-        if self.options.get('extra_inventory_manager', None):
+        if self.options.get("extra_inventory_manager", None):
             extra_hosts = self.options["extra_inventory_manager"].list_hosts()
         else:
             extra_hosts = []
@@ -101,7 +101,7 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
             self.options["host_pattern"],
         )
 
-        if self.options.get('extra_inventory_manager', None):
+        if self.options.get("extra_inventory_manager", None):
             self.options["extra_inventory_manager"].subset(self.options.get("subset"))
             extra_hosts = self.options["extra_inventory_manager"].list_hosts()
         else:
@@ -149,7 +149,7 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
 
         kwargs_extra = {}
         # If we have an extra inventory, do the same that we did for the inventory
-        if self.options.get('extra_inventory_manager', None):
+        if self.options.get("extra_inventory_manager", None):
             callback_extra = ResultAccumulator()
 
             kwargs_extra = {
@@ -182,7 +182,7 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
         )
 
         play_extra = None
-        if self.options.get('extra_inventory_manager', None):
+        if self.options.get("extra_inventory_manager", None):
             play_extra = Play().load(
                 play_ds,
                 variable_manager=self.options["extra_variable_manager"],
@@ -198,7 +198,7 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
             if tqm:
                 tqm.cleanup()
 
-        if self.options.get('extra_inventory_manager', None):
+        if self.options.get("extra_inventory_manager", None):
             tqm_extra = None
             try:
                 tqm_extra = TaskQueueManager(**kwargs_extra)
@@ -216,7 +216,10 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
                 contacted=callback.contacted,
             )
 
-        if self.options.get('extra_inventory_manager', None) and callback_extra.unreachable:
+        if (
+            self.options.get("extra_inventory_manager", None)
+            and callback_extra.unreachable
+        ):
             raise AnsibleConnectionFailure(
                 "Host unreachable in the extra inventory",
                 dark=callback_extra.unreachable,
@@ -225,9 +228,9 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
 
         # Success!
         return AdHocResult(
-                contacted=(
-                    {**callback.contacted, **callback_extra.contacted}
-                    if self.options.get('extra_inventory_manager', None)
-                    else callback.contacted
-                ),
-            )
+            contacted=(
+                {**callback.contacted, **callback_extra.contacted}
+                if self.options.get("extra_inventory_manager", None)
+                else callback.contacted
+            ),
+        )

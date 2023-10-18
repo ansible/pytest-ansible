@@ -1,22 +1,20 @@
-"""Fixme."""
 from ansible.inventory.manager import InventoryManager
 from ansible.parsing.dataloader import DataLoader
 from ansible.vars.manager import VariableManager
 
 from pytest_ansible.host_manager import BaseHostManager
-from pytest_ansible.module_dispatcher.v213 import ModuleDispatcherV213
+from pytest_ansible.module_dispatcher.v29 import ModuleDispatcherV29
 
 
-class HostManagerV213(BaseHostManager):
+class HostManagerV29(BaseHostManager):
     """Fixme."""
 
     def __init__(self, *args, **kwargs) -> None:
         """Fixme."""
         super().__init__(*args, **kwargs)
-        self._dispatcher = ModuleDispatcherV213
+        self._dispatcher = ModuleDispatcherV29
 
     def initialize_inventory(self):
-        """Fixme."""
         self.options["loader"] = DataLoader()
         self.options["inventory_manager"] = InventoryManager(
             loader=self.options["loader"],

@@ -2,7 +2,7 @@ from types import GeneratorType
 
 import pytest
 
-from conftest import ALL_HOSTS, ALL_EXTRA_HOSTS
+from conftest import ALL_EXTRA_HOSTS, ALL_HOSTS
 
 from pytest_ansible.results import ModuleResult
 
@@ -20,17 +20,22 @@ def adhoc_result(request, hosts):
     def create_hosts():
         _hosts = hosts(include_extra_inventory=request.param)
         return _hosts.all.ping(), request.param
+
     return create_hosts
 
 
 def test_len(adhoc_result):
     adhoc_result_ret, include_extra_inv = adhoc_result()
-    assert len(adhoc_result_ret) == len(ALL_HOSTS) + len(ALL_EXTRA_HOSTS if include_extra_inv else [])
+    assert len(adhoc_result_ret) == len(ALL_HOSTS) + len(
+        ALL_EXTRA_HOSTS if include_extra_inv else []
+    )
 
 
 def test_keys(adhoc_result):
     adhoc_result_ret, include_extra_inv = adhoc_result()
-    assert set(adhoc_result_ret) == set(ALL_HOSTS + (ALL_EXTRA_HOSTS if include_extra_inv else []))
+    assert set(adhoc_result_ret) == set(
+        ALL_HOSTS + (ALL_EXTRA_HOSTS if include_extra_inv else [])
+    )
 
 
 def test_items(adhoc_result):

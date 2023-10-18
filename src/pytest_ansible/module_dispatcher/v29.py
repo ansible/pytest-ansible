@@ -1,4 +1,3 @@
-"""Fixme."""
 import sys
 import warnings
 
@@ -7,33 +6,25 @@ import ansible.errors
 import ansible.utils
 
 from ansible.cli.adhoc import AdHocCLI
-from ansible.constants import COLLECTIONS_PATHS
 from ansible.executor.task_queue_manager import TaskQueueManager
 from ansible.playbook.play import Play
 from ansible.plugins.callback import CallbackBase
 from ansible.plugins.loader import module_loader
 
 from pytest_ansible.errors import AnsibleConnectionFailure
-from pytest_ansible.has_version import has_ansible_v213
+from pytest_ansible.has_version import has_ansible_v29
 from pytest_ansible.module_dispatcher.v2 import ModuleDispatcherV2
 from pytest_ansible.results import AdHocResult
 
 
 # pylint: disable=ungrouped-imports, wrong-import-position
-if not has_ansible_v213:
-    msg = "Only supported with ansible-2.13 and newer"
+
+if not has_ansible_v29:
+    msg = "Only supported with ansible-2.9 and newer"
     raise ImportError(msg)
 
-HAS_CUSTOM_LOADER_SUPPORT = True
 
-try:
-    # init_plugin_loader was introduced in Ansible-core change here, v2.15
-    # https://github.com/ansible/ansible/pull/78915
-    # Whenever a new vXYZ.py dispatcher module is introduced, make this static import
-    # pylint: disable=ungrouped-imports
-    from ansible.plugins.loader import init_plugin_loader
-except ImportError:
-    HAS_CUSTOM_LOADER_SUPPORT = False
+# pylint: enable=ungrouped-imports
 
 
 class ResultAccumulator(CallbackBase):
@@ -46,26 +37,22 @@ class ResultAccumulator(CallbackBase):
         self.unreachable = {}
 
     def v2_runner_on_failed(self, result, *args, **kwargs):
-        """Fixme."""
         result2 = {"failed": True}
         result2.update(result._result)
         self.contacted[result._host.get_name()] = result2
 
     def v2_runner_on_ok(self, result):
-        """Fixme."""
         self.contacted[result._host.get_name()] = result._result
 
     def v2_runner_on_unreachable(self, result):
-        """Fixme."""
         self.unreachable[result._host.get_name()] = result._result
 
     @property
     def results(self):
-        """Fixme."""
         return {"contacted": self.contacted, "unreachable": self.unreachable}
 
 
-class ModuleDispatcherV213(ModuleDispatcherV2):
+class ModuleDispatcherV29(ModuleDispatcherV2):
     """Pass."""
 
     required_kwargs = (
@@ -77,12 +64,11 @@ class ModuleDispatcherV213(ModuleDispatcherV2):
     )
 
     def has_module(self, name):
-        """Fixme."""
         # Make sure we parse module_path and pass it to the loader,
         # otherwise, only built-in modules will work.
         if "module_path" in self.options:
             paths = self.options["module_path"]
-            if isinstance(paths, list | tuple | set):
+            if isinstance(paths, (list, tuple, set)):
                 for path in paths:
                     module_loader.add_directory(path)
             else:
@@ -98,12 +84,8 @@ class ModuleDispatcherV213(ModuleDispatcherV2):
 
         # Assert hosts matching the provided pattern exist
         hosts = self.options["inventory_manager"].list_hosts()
-        if self.options.get("extra_inventory_manager", None):
-            extra_hosts = self.options["extra_inventory_manager"].list_hosts()
-        else:
-            extra_hosts = []
         no_hosts = False
-        if len(hosts + extra_hosts) == 0:
+        if len(hosts) == 0:
             no_hosts = True
             warnings.warn("provided hosts list is empty, only localhost is available")
 
@@ -111,13 +93,8 @@ class ModuleDispatcherV213(ModuleDispatcherV2):
         hosts = self.options["inventory_manager"].list_hosts(
             self.options["host_pattern"],
         )
-        if self.options.get("extra_inventory_manager", None):
-            self.options["extra_inventory_manager"].subset(self.options.get("subset"))
-            extra_hosts = self.options["extra_inventory_manager"].list_hosts()
-        else:
-            extra_hosts = []
-        if len(hosts + extra_hosts) == 0 and not no_hosts:
-            msg = "Specified hosts and/or --limit does not match any hosts."
+        if len(hosts) == 0 and not no_hosts:
+            msg = "Specified hosts and/or --limit does not match any hosts"
             raise ansible.errors.AnsibleError(
                 msg,
             )
@@ -213,10 +190,6 @@ class ModuleDispatcherV213(ModuleDispatcherV2):
                 loader=self.options["extra_loader"],
             )
 
-        if HAS_CUSTOM_LOADER_SUPPORT:
-            # Load the collection finder, unsupported, may change in future
-            init_plugin_loader(COLLECTIONS_PATHS)
-
         # now create a task queue manager to execute the play
         tqm = None
         try:
@@ -237,9 +210,8 @@ class ModuleDispatcherV213(ModuleDispatcherV2):
 
         # Raise exception if host(s) unreachable
         if callback.unreachable:
-            msg = "Host unreachable in the inventory"
             raise AnsibleConnectionFailure(
-                msg,
+                "Host unreachable in the inventory",
                 dark=callback.unreachable,
                 contacted=callback.contacted,
             )
