@@ -19,5 +19,7 @@ ignorePaths:
   - .config/requirements*
   # The tox configuration file
   - tox.ini
+  - mkdocs.yml
+  - "*.svg"
 languageSettings:
   - languageId: python

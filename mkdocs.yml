@@ -1,0 +1,98 @@
+---
+site_name: Ansible Pytest Documentation
+site_url: https://pytest-ansible.readthedocs.io/
+repo_url: https://github.com/ansible/pytest-ansible
+edit_uri: blob/main/docs/
+copyright: Copyright © 2023 Red Hat, Inc.
+docs_dir: docs
+strict: true
+
+theme:
+  name: ansible
+  features:
+    - content.code.copy
+    - content.action.edit
+    - navigation.expand
+    - navigation.sections
+    - navigation.instant
+    - navigation.indexes
+    - navigation.tracking
+    - toc.integrate
+
+extra:
+  social:
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/pytest-ansible/
+      name: PyPI
+    - icon: fontawesome/solid/scroll
+      link: https://github.com/ansible/pytest-ansible/releases
+      name: Releases
+    - icon: simple/mastodon
+      link: https://fosstodon.org/@ansible
+      name: Mastodon
+    - icon: simple/matrix
+      link: https://matrix.to/#/#devtools:ansible.com
+      name: Matrix
+    - icon: fontawesome/solid/comments
+      link: https://github.com/ansible/pytest-ansible/discussions
+      name: Discussions
+    - icon: fontawesome/brands/github-alt
+      link: https://github.com/ansible/pytest-ansible
+      name: GitHub
+
+nav:
+  - Home: index.md
+
+plugins:
+  - autorefs
+  - markdown-exec
+  - material/search:
+      separator: '[\s\-,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
+  - material/social
+  - material/tags
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+          options:
+            # Sphinx is for historical reasons, but we could consider switching if needed
+            # https://mkdocstrings.github.io/griffe/docstrings/
+            docstring_style: sphinx
+            merge_init_into_class: yes
+            show_submodules: yes
+          import:
+            - url: https://docs.ansible.com/ansible/latest/objects.inv
+              domains: [py, std]
+
+markdown_extensions:
+  - markdown_include.include:
+      base_path: docs
+  - admonition
+  - def_list
+  - footnotes
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+  - pymdownx.magiclink:
+      repo_url_shortener: true
+      repo_url_shorthand: true
+      social_url_shorthand: true
+      social_url_shortener: true
+      user: facelessuser
+      repo: pymdown-extensions
+      normalize_issue_symbols: true
+  - pymdownx.tabbed:
+      alternate_style: true
+  - toc:
+      toc_depth: 2
+      permalink: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+        - name: python
+          class: python
+          validator: !!python/name:markdown_exec.validator
+          format: !!python/name:markdown_exec.formatter

@@ -160,11 +160,11 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-
-
 # In contrast to the entries above this line which largely come from
 # the github default, the following have been inidividually rationalized
 # and should all have detailed explanations
 
 # Version created and populated by setuptools_scm
 /src/pytest_ansible/_version.py
+
+.DS_Store
