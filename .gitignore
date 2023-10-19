@@ -168,3 +168,4 @@ cython_debug/
 /src/pytest_ansible/_version.py
 
 .DS_Store
+_readthedocs
