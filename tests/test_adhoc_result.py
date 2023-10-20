@@ -7,7 +7,12 @@ from conftest import ALL_HOSTS
 from pytest_ansible.results import ModuleResult
 
 
-invalid_hosts = ["none", "all", "*", "local*"]
+invalid_hosts = [
+    pytest.param("none"),
+    pytest.param("all"),
+    pytest.param("*", id="glob"),
+    pytest.param("local*", id="glob2"),
+]
 
 
 @pytest.fixture()
