@@ -28,18 +28,18 @@ def test_importerror_requires_v1():
 
 
 @pytest.mark.parametrize(("host_pattern", "num_hosts"), POSITIVE_HOST_PATTERNS)
-def test_len(host_pattern, num_hosts, hosts):
+def test_dispatcher_len(host_pattern, num_hosts, hosts):
     assert len(getattr(hosts, host_pattern)) == num_hosts
 
 
 @pytest.mark.parametrize(("host_pattern", "num_hosts"), POSITIVE_HOST_PATTERNS)
-def test_contains(host_pattern, num_hosts, hosts):
+def test_dispatcher_contains(host_pattern, num_hosts, hosts):
     assert host_pattern in hosts.all
     assert host_pattern in hosts["all"]
 
 
 @pytest.mark.parametrize(("host_pattern", "num_hosts"), NEGATIVE_HOST_PATTERNS)
-def test_not_contains(host_pattern, num_hosts, hosts):
+def test_dispatcher_not_contains(host_pattern, num_hosts, hosts):
     assert host_pattern not in hosts.all
     assert host_pattern not in hosts["all"]
 

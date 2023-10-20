@@ -16,39 +16,40 @@ pytest_plugins = ["pytester"]
 ALL_HOSTS = ["another_host", "localhost", "yet_another_host"]
 
 POSITIVE_HOST_PATTERNS = [
-    ("all", 3),
-    ("*", 3),
-    ("localhost", 1),
-    ("local*", 1),
-    ("local*,&*host", 1),
-    ("!localhost", 2),
-    ("all[0]", 1),
-    ("all[-1]", 1),
-    pytest.param("*[0-1]", 1, marks=pytest.mark.requires_ansible_v1()),
-    pytest.param("*[0-1]", 2, marks=pytest.mark.requires_ansible_v2()),
+    pytest.param("all", 3, id="0"),
+    pytest.param("*", 3, id="1"),
+    pytest.param("localhost", 1, id="2"),
+    pytest.param("local*", 1, id="3"),
+    pytest.param("local*,&*host", 1, id="4"),
+    pytest.param("!localhost", 2, id="5"),
+    pytest.param("all[0]", 1, id="6"),
+    pytest.param("all[-1]", 1, id="7"),
+    pytest.param("*[0-1]", 1, marks=pytest.mark.requires_ansible_v1(), id="8"),
+    pytest.param("*[0-1]", 2, marks=pytest.mark.requires_ansible_v2(), id="9"),
     pytest.param(
         "*[0:1]",
         2,
         marks=pytest.mark.requires_ansible_v2(),
+        id="10",
     ),  # this is confusing, but how host slicing works on v2
-    pytest.param("*[0:]", 3, marks=pytest.mark.requires_ansible_v2()),
+    pytest.param("*[0:]", 3, marks=pytest.mark.requires_ansible_v2(), id="11"),
 ]
 
 NEGATIVE_HOST_PATTERNS = [
-    ("none", 0),
-    ("all[8:]", 0),
+    pytest.param("none", 0, id="0"),
+    pytest.param("all[8:]", 0, id="1"),
 ]
 
 POSITIVE_HOST_SLICES = [
-    (slice(0, 0), 1),
-    pytest.param(slice(0, 1), 1, marks=pytest.mark.requires_ansible_v1()),
-    pytest.param(slice(0, 1), 2, marks=pytest.mark.requires_ansible_v2()),
-    pytest.param(slice(0, 2), 2, marks=pytest.mark.requires_ansible_v1()),
-    pytest.param(slice(0, 2), 3, marks=pytest.mark.requires_ansible_v2()),
-    (slice(0), 1),
-    (slice(1), 1),
-    (slice(2), 1),
-    (slice(3), 1),
+    pytest.param(slice(0, 0), 1, id="0"),
+    pytest.param(slice(0, 1), 1, marks=pytest.mark.requires_ansible_v1(), id="1"),
+    pytest.param(slice(0, 1), 2, marks=pytest.mark.requires_ansible_v2(), id="2"),
+    pytest.param(slice(0, 2), 2, marks=pytest.mark.requires_ansible_v1(), id="3"),
+    pytest.param(slice(0, 2), 3, marks=pytest.mark.requires_ansible_v2(), id="4"),
+    pytest.param(slice(0), 1, id="5"),
+    pytest.param(slice(1), 1, id="6"),
+    pytest.param(slice(2), 1, id="7"),
+    pytest.param(slice(3), 1, id="8"),
 ]
 
 NEGATIVE_HOST_SLICES = [
