@@ -66,6 +66,7 @@ pycparser==2.21
 pygments==2.16.1
 pymdown-extensions==10.3
 pytest==7.4.2
+pytest-plus==0.6.0
 python-dateutil==2.8.2
 python-slugify==8.0.1
 pyyaml==6.0.1
