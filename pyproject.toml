@@ -31,7 +31,7 @@ classifiers = [
   'Programming Language :: Python :: 3.9',
   'Programming Language :: Python :: 3.10',
   'Programming Language :: Python :: 3.11',
-  'Programming Language :: Python :: 3.12'
+  'Programming Language :: Python :: 3.12',
 ]
 keywords = ["ansible", "testing", "pytest"]
 
@@ -135,7 +135,7 @@ markers = [
 ]
 
 [tool.ruff]
-required-version = "0.0.292"
+required-version = "0.1.1"
 select = ["ALL"]
 ignore = [
   "E501", # we use black
