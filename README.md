@@ -26,6 +26,16 @@ testing workflow by offering three distinct pieces of functionality:
    provisioning resources, testing configurations, and more, all while
    leveraging the power and flexibility of pytest.
 
+## Supported Ansible
+
+Pytest Ansible will only support versions of **python** and **ansible-core**
+which are under
+[active upstream support](https://docs.ansible.com/ansible/latest/reference_appendices/release_and_maintenance.html#release-schedule)
+which currently translates to:
+
+- Python 3.9 or newer
+- Ansible-core 2.14 or newer
+
 ## Installation
 
 Install this plugin using `pip`:
