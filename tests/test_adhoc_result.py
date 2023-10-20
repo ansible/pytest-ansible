@@ -85,30 +85,6 @@ def test_not_getattr(adhoc_result, host_pattern):
         getattr(adhoc_result, host_pattern)
 
 
-@pytest.mark.requires_ansible_v1()
-def test_connection_failure_v1():
-    from pytest_ansible.errors import AnsibleConnectionFailure
-    from pytest_ansible.host_manager import get_host_manager
-
-    hosts = get_host_manager(inventory="unknown.example.com,", connection="smart")
-    with pytest.raises(AnsibleConnectionFailure) as exc_info:
-        hosts.all.ping()
-    # Assert message
-    assert exc_info.value.message == "Host unreachable"
-    # Assert contacted
-    assert exc_info.value.contacted == {}
-    # Assert dark
-    assert "unknown.example.com" in exc_info.value.dark
-    # Assert unreachable
-    assert "failed" in exc_info.value.dark["unknown.example.com"]
-    assert exc_info.value.dark["unknown.example.com"]["failed"]
-    # Assert msg
-    assert "msg" in exc_info.value.dark["unknown.example.com"]
-    assert exc_info.value.dark["unknown.example.com"]["msg"].startswith(
-        "SSH Error: ssh: Could not resolve hostname" + " unknown.example.com:",
-    )
-
-
 @pytest.mark.requires_ansible_v2()
 def test_connection_failure_v2():
     from pytest_ansible.errors import AnsibleConnectionFailure

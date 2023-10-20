@@ -1,6 +1,5 @@
 import pytest
 
-from ansible.errors import AnsibleError
 from conftest import (
     ALL_HOSTS,
     NEGATIVE_HOST_PATTERNS,
@@ -72,8 +71,6 @@ def test_host_manager_not_getattr(host_pattern, num_hosts, hosts):
         getattr(hosts, host_pattern)
 
 
-# This should probably be made more generic for all options (and moved elsewhere)
-@pytest.mark.ansible_v1_xfail(raises=AnsibleError)
 def test_defaults(request):
     from ansible.constants import DEFAULT_TRANSPORT
 

@@ -3,6 +3,6 @@ codecov:
   require_ci_to_pass: true
 comment: false
 coverage:
-  range: 53..100
+  range: 60..100
   status:
     patch: false
