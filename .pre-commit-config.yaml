@@ -26,18 +26,12 @@ repos:
       - id: check-executables-have-shebangs
       - id: debug-statements
         language_version: python3
-  - repo: https://github.com/asottile/add-trailing-comma.git
-    rev: v3.1.0
-    hooks:
-      - id: add-trailing-comma
-        args:
-          - --py36-plus
   - repo: https://github.com/Lucas-C/pre-commit-hooks.git
     rev: v1.5.4
     hooks:
       - id: remove-tabs
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: "v0.0.292"
+    rev: "v0.1.1"
     hooks:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix]
@@ -52,12 +46,12 @@ repos:
           - prettier-plugin-toml
           - prettier-plugin-sort-json
   - repo: https://github.com/psf/black
-    rev: 23.9.1
+    rev: 23.10.0
     hooks:
       - id: black
         language_version: python3
   - repo: https://github.com/streetsidesoftware/cspell-cli
-    rev: v7.3.1
+    rev: v7.3.2
     hooks:
       - id: cspell
         name: Spell check with cspell
@@ -66,7 +60,7 @@ repos:
     hooks:
       - id: check-github-workflows
   - repo: https://github.com/jsh9/pydoclint
-    rev: 0.3.4
+    rev: 0.3.7
     hooks:
       - id: pydoclint
         args:
@@ -81,7 +75,7 @@ repos:
           - ansible-core
           - pytest
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.6.0
+    rev: v1.6.1
     hooks:
       - id: mypy
         # Do not modify args to match mypy cli/ide behavior, use config if needed.
