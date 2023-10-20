@@ -50,7 +50,7 @@ def test_molecule_runtest() -> None:
     """Test running the molecule scenario via pytest."""
     try:
         proc = subprocess.run(
-            f"{sys.executable} -m pytest --molecule tests/fixtures/molecule/default/molecule.yml",
+            f"{sys.executable} -m pytest -v --molecule tests/fixtures/molecule/default/molecule.yml",
             capture_output=True,
             check=True,
             env={"PATH": os.environ["PATH"]},

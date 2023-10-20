@@ -122,7 +122,7 @@ disable = [
 
 [tool.pytest.ini_options]
 minversion = 6.0
-addopts = ["-v", "--tb=native"]
+addopts = ["--tb=native"]
 markers = [
   "old",
   "unit",
