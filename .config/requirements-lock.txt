@@ -4,10 +4,19 @@
 #
 #    pip-compile --no-annotate --output-file=.config/requirements-lock.txt --strip-extras --unsafe-package=ruamel-yaml-clib pyproject.toml
 #
+ansible-core==2.15.5
+cffi==1.16.0
+cryptography==41.0.4
 exceptiongroup==1.1.3
+importlib-resources==5.0.7
 iniconfig==2.0.0
+jinja2==3.1.2
+markupsafe==2.1.3
 packaging==23.2
 pluggy==1.3.0
+pycparser==2.21
 pytest==7.4.2
+pyyaml==6.0.1
+resolvelib==1.0.1
 setuptools==68.2.2
 tomli==2.0.1
