@@ -158,7 +158,7 @@ ignore = [
   "T",
   "TRY",
 ]
-target-version = "py37"
+target-version = "py39"
 # Same as Black.
 line-length = 88
 
