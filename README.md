@@ -53,7 +53,7 @@ To use `pytest-ansible-units`, follow these steps:
 pip install pytest-ansible
 ```
 
-2. Ensure you have Python 3.8 or greater, ansible-core, and pyyaml installed.
+2. Ensure you have Python 3.9 or greater, ansible-core, and pyyaml installed.
 
 3. Depending on your preferred directory structure, you can clone collections
    into the appropriate paths.
