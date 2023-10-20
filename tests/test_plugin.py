@@ -127,7 +127,7 @@ def test_pytest_collection_modifyitems_without_marker():
     mock_config.setoption("ansible_inventory", "some_inventory")
 
     plugin = PyTestAnsiblePlugin(mock_config)
-    items = [MockItem(fixturenames=["ansible_fixture"])]
+    items = [MockItem(fixturenames=["ansible_adhoc"])]
 
     # Without the marker, ensure that assert_required_ansible_parameters is called
     with mock.patch.object(plugin, "assert_required_ansible_parameters") as mock_assert:
