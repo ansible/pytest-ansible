@@ -156,11 +156,9 @@ def acf_inject(paths: list[str]) -> None:
 
 
 def determine_envvar() -> str:
-    """Use the existence of the AnsibleCollectionFinder to determine
-    the ansible version.
+    """Use the existence of the AnsibleCollectionFinder to determine the ansible version.
 
-    ansible 2.9 did not have AnsibleCollectionFinder and did not support ANSIBLE_COLLECTIONS_PATH
-    later versions do.
+    Ansible 2.9 did not have AnsibleCollectionFinder and did not support ANSIBLE_COLLECTIONS_PATH later versions do.
 
     :returns: The appropriate environment variable to use
     """

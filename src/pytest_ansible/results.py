@@ -12,28 +12,34 @@ class ModuleResult(dict):
 
     @property
     def is_ok(self):
+        """Fixme."""
         return not (
             self.is_changed or self.is_unreachable or self.is_skipped or self.is_failed
         )
 
     @property
     def is_changed(self):
+        """Fixme."""
         return self._check_key("changed")
 
     @property
     def is_unreachable(self):
+        """Fixme."""
         return self._check_key("unreachable")
 
     @property
     def is_skipped(self):
+        """Fixme."""
         return self._check_key("skipped")
 
     @property
     def is_failed(self):
+        """Fixme."""
         return self._check_key("failed") or self.get("rc", 0) != 0
 
     @property
     def is_successful(self):
+        """Fixme."""
         return not (self.is_failed or self.is_unreachable)
 
 

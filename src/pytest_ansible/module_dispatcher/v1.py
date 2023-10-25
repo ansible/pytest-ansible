@@ -1,3 +1,4 @@
+"""Fixme."""
 import warnings
 
 import ansible
@@ -25,6 +26,7 @@ class ModuleDispatcherV1(BaseModuleDispatcher):
     required_kwargs = ("inventory", "inventory_manager", "host_pattern")
 
     def has_module(self, name):
+        """Fixme."""
         # Make sure we parse module_path and pass it to the loader,
         # otherwise, only built-in modules will work.
         if "module_path" in self.options:

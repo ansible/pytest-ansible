@@ -33,6 +33,7 @@ class BaseHostManager:
         pass
 
     def get_extra_inventory_hosts(self, host_pattern=None):
+        """Fixme."""
         try:
             if host_pattern is None:
                 extra_inventory_hosts = [
@@ -50,6 +51,7 @@ class BaseHostManager:
         return extra_inventory_hosts
 
     def get_extra_inventory_groups(self):
+        """Fixme."""
         try:
             extra_inventory_groups = self.options["extra_inventory_manager"].groups
         except KeyError:
@@ -103,6 +105,7 @@ class BaseHostManager:
         return self._dispatcher(**self.options)
 
     def keys(self):
+        """Fixme."""
         inventory_hosts = [
             h.name for h in self.options["inventory_manager"].list_hosts()
         ]
@@ -133,6 +136,7 @@ class BaseHostManager:
         return self.has_matching_inventory(item)
 
     def initialize_inventory(self):
+        """Fixme."""
         msg = "Must be implemented by sub-class"
         raise NotImplementedError(msg)
 

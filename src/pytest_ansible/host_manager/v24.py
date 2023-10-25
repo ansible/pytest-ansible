@@ -1,3 +1,4 @@
+"""Fixme."""
 from ansible.inventory.manager import InventoryManager
 from ansible.parsing.dataloader import DataLoader
 from ansible.vars.manager import VariableManager
@@ -15,6 +16,7 @@ class HostManagerV24(BaseHostManager):
         self._dispatcher = ModuleDispatcherV24
 
     def initialize_inventory(self) -> None:
+        """Fixme."""
         self.options["loader"] = DataLoader()
         self.options["inventory_manager"] = InventoryManager(
             loader=self.options["loader"],
