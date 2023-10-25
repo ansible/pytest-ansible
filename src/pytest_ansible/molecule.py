@@ -20,6 +20,7 @@ from molecule.config import ansible_version
 
 
 logger = logging.getLogger(__name__)
+counter = 0
 
 
 def molecule_pytest_configure(config):
@@ -100,10 +101,13 @@ class MoleculeFile(pytest.File):
 
     def collect(self):
         """Test generator."""
+        # pylint: disable=global-statement
+        global counter
         if hasattr(MoleculeItem, "from_parent"):
-            yield MoleculeItem.from_parent(name="test", parent=self)
+            yield MoleculeItem.from_parent(name=f"test{counter}", parent=self)
         else:
-            yield MoleculeItem("test", self)
+            yield MoleculeItem(f"test{counter}", self)
+        counter += 1
 
     def __str__(self) -> str:
         """Return test name string representation."""

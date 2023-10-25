@@ -29,7 +29,7 @@ def test_molecule_collect() -> None:
         pytest.fail(exc.stderr)
 
     assert proc.returncode == 0
-    assert "test[default]" in proc.stdout
+    assert "test1[default]" in proc.stdout
 
 
 def test_molecule_disabled() -> None:
