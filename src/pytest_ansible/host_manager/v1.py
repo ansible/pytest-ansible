@@ -1,3 +1,4 @@
+"""Fixme."""
 from ansible.inventory import Inventory
 
 from pytest_ansible.host_manager import BaseHostManager
@@ -13,7 +14,9 @@ class HostManagerV1(BaseHostManager):
         self._dispatcher = ModuleDispatcherV1
 
     def keys(self):
+        """Fixme."""
         return list(self.options["inventory_manager"].list_hosts())
 
     def initialize_inventory(self):
+        """Fixme."""
         self.options["inventory_manager"] = Inventory(self.options["inventory"])

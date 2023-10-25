@@ -1,3 +1,4 @@
+"""Fixme."""
 from __future__ import annotations
 
 import warnings
@@ -35,15 +36,18 @@ class ResultAccumulator(CallbackBase):
         self.unreachable = {}
 
     def v2_runner_on_failed(self, result, *args, **kwargs):
+        """Fixme."""
         self.contacted[result._host.get_name()] = result._result
 
     v2_runner_on_ok = v2_runner_on_failed
 
     def v2_runner_on_unreachable(self, result):
+        """Fixme."""
         self.unreachable[result._host.get_name()] = result._result
 
     @property
     def results(self):
+        """Fixme."""
         return {"contacted": self.contacted, "unreachable": self.unreachable}
 
 
@@ -62,6 +66,7 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
     )
 
     def has_module(self, name):
+        """Fixme."""
         # Make sure we parse module_path and pass it to the loader,
         # otherwise, only built-in modules will work.
         if "module_path" in self.options:
