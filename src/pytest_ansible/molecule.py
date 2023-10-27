@@ -2,6 +2,7 @@
 # pylint: disable=protected-access
 from __future__ import annotations
 
+import importlib.util
 import logging
 import os
 import shlex
@@ -15,8 +16,15 @@ import pkg_resources
 import pytest
 import yaml
 
-from molecule.api import drivers
-from molecule.config import ansible_version
+from ansible_compat.config import ansible_version
+
+
+# Do not add molecule imports here as it does have side effects due to console
+# redirection. We need to do these as lazy as possible.
+
+
+molecule_spec = importlib.util.find_spec("molecule")
+HAS_MOLECULE = molecule_spec is not None
 
 
 logger = logging.getLogger(__name__)
@@ -62,6 +70,8 @@ def molecule_pytest_configure(config):
         warnings.filterwarnings("ignore", category=DeprecationWarning)
 
         config.option.molecule = {}
+        from molecule.api import drivers
+
         for driver in map(str, drivers()):
             config.addinivalue_line(
                 "markers",

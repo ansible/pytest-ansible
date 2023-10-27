@@ -22,15 +22,7 @@ from pytest_ansible.fixtures import (
 )
 from pytest_ansible.host_manager import get_host_manager
 
-
-try:
-    from .molecule import MoleculeFile, MoleculeScenario
-
-    HAS_MOLECULE = True
-except ImportError:
-    HAS_MOLECULE = False
-
-
+from .molecule import HAS_MOLECULE, MoleculeFile, MoleculeScenario
 from .units import inject, inject_only
 
 
@@ -228,7 +220,10 @@ def pytest_collect_file(
     if not parent.config.option.molecule:
         return None
     if not HAS_MOLECULE:
-        pytest.exit("molecule not installed or found.")
+        pytest.exit(
+            f"molecule not installed or found, unable to collect test {file_path}",
+        )
+        return None
     if file_path and file_path.is_symlink():
         return None
     if file_path and file_path.name == "molecule.yml":
