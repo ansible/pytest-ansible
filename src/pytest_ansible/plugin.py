@@ -52,6 +52,7 @@ log_map = {
     3: logging.INFO,
     4: logging.DEBUG,
 }
+OUR_FIXTURES = ("ansible_adhoc", "ansible_module", "ansible_facts")
 
 
 def pytest_addoption(parser):
@@ -333,11 +334,23 @@ class PyTestAnsiblePlugin:
         for item in items:
             if not hasattr(item, "fixturenames"):
                 continue
-            if any(fixture.startswith("ansible_") for fixture in item.fixturenames):
-                marker = item.get_closest_marker("ansible")
-                if marker is None:
+
+            for fixture_name in item.fixturenames:
+                if fixture_name in OUR_FIXTURES:
                     uses_ansible_fixtures = True
                     break
+
+                # ignore any normal fixtures that have definitions to avoid miss activations
+                if (
+                    hasattr(item, "_fixtureinfo")
+                    and hasattr(item._fixtureinfo, "name2fixturedefs")
+                    and fixture_name in item._fixtureinfo.name2fixturedefs
+                ):
+                    continue
+                logger.error(
+                    "Found %s fixture which seem to have no definition.",
+                    fixture_name,
+                )
 
         if uses_ansible_fixtures:
             # assert required --ansible-* parameters were used
