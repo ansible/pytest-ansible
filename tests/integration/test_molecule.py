@@ -43,7 +43,7 @@ def test_molecule_disabled() -> None:
         text=True,
     )
     assert proc.returncode == 4
-    assert "ERROR: found no collectors" in proc.stdout
+    assert "ERROR: found no collectors" in proc.stderr
 
 
 def test_molecule_runtest() -> None:
