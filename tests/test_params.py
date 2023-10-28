@@ -1,14 +1,7 @@
-import re
 import sys
-
-from unittest import mock
 
 import ansible
 import pytest
-
-from pkg_resources import parse_version
-
-from pytest_ansible.has_version import has_ansible_v28
 
 
 # pylint: disable=unused-import
@@ -156,122 +149,6 @@ def test_params_required_with_inventory_without_host_pattern(testdir, option):
     result.stderr.fnmatch_lines(
         [
             "ERROR: Missing required parameter --ansible-host-pattern/--host-pattern",
-        ],
-    )
-
-
-@pytest.mark.requires_ansible_v1()
-def test_params_required_with_bogus_inventory_v1(testdir, option):
-    src = """
-        import pytest
-        def test_func(ansible_module):
-            assert True
-    """
-    testdir.makepyfile(src)
-    with mock.patch("os.path.exists", return_value=False) as mock_exists:
-        result = testdir.runpytest(
-            *["--ansible-inventory", "bogus", "--ansible-host-pattern", "all"],
-        )
-
-    # Assert pytest exit code
-    assert result.ret == EXIT_TESTSFAILED
-
-    # Assert expected error output
-    result.stdout.fnmatch_lines(
-        [
-            "*Unable to find an inventory file, specify one with -i ?",
-        ],
-    )
-
-    # Assert mock open called on provided file
-    mock_exists.assert_any_call("bogus")
-
-
-@pytest.mark.skipif(
-    parse_version(ansible.__version__) < parse_version("2.0.0")
-    or parse_version(ansible.__version__) >= parse_version("2.4.0"),
-    reason="requires ansible >= 2.0 and < 2.4",
-)
-def test_params_required_with_bogus_inventory_v2(testdir, option):
-    src = """
-        import pytest
-        def test_func(ansible_module):
-            with pytest.warns(UserWarning, match="provided hosts list is empty, only localhost is available"):
-                ansible_module.ping()
-    """
-    testdir.makepyfile(src)
-
-    with mock.patch(
-        "ansible.parsing.dataloader.DataLoader.path_exists",
-        return_value=False,
-    ) as mock_exists:
-        result = testdir.runpytest(
-            *[
-                *option.args,
-                "--ansible-inventory",
-                "bogus",
-                "--ansible-host-pattern",
-                "all",
-            ],
-        )
-
-    # Assert pytest exit code
-    assert result.ret == EXIT_OK
-
-    # Assert mock open called on provided file
-    mock_exists.assert_any_call("bogus")
-
-
-@pytest.mark.requires_ansible_v24()
-@pytest.mark.skipif(has_ansible_v28, reason="requires ansible < 2.8")
-def test_params_required_with_bogus_inventory_v24(testdir, option):
-    src = """
-        import pytest
-        def test_func(ansible_module):
-            with pytest.warns(UserWarning) as record:
-                ansible_module.ping()
-            # Ensure at least one warning in the queue
-            assert len(record) >= 1
-            # Ensure the latest warning is the ansible localhost warning
-            assert record[0].message.args[0] == "provided hosts list is empty, only localhost is available"
-
-    """
-    testdir.makepyfile(src)
-
-    result = testdir.runpytest(
-        *[
-            *option.args,
-            "--ansible-inventory",
-            "bogus",
-            "--ansible-host-pattern",
-            "all",
-        ],
-    )
-
-    # Assert pytest exit code
-    assert result.ret == EXIT_OK
-
-    # There appear to be '\n' newline characters within the output.  Using the join on errlines flattens the string for
-    # easier comparison.
-    assert re.search(
-        r"Unable to parse .*/bogus as an inventory source",
-        " ".join(result.errlines),
-    )
-
-
-@pytest.mark.requires_ansible_v1()
-def test_params_required_without_inventory_with_host_pattern_v1(testdir, option):
-    src = """
-        import pytest
-        def test_func(ansible_module):
-            assert True
-    """
-    testdir.makepyfile(src)
-    result = testdir.runpytest(*[*option.args, "--ansible-host-pattern", "all"])
-    assert result.ret == EXIT_TESTSFAILED
-    result.stdout.fnmatch_lines(
-        [
-            "*Unable to find an inventory file, specify one with -i ?",
         ],
     )
 

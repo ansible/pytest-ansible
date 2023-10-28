@@ -14,16 +14,10 @@ def test_runtime_error():
         bmd._run("foo")
 
 
-# pylint: disable=unused-import
-@pytest.mark.requires_ansible_v1()
-def test_importerror_requires_v2():
-    with pytest.raises(ImportError):
-        import pytest_ansible.module_dispatcher.v2  # NOQA
-
-
 @pytest.mark.requires_ansible_v2()
 def test_importerror_requires_v1():
     with pytest.raises(ImportError):
+        # pylint: disable=unused-import
         import pytest_ansible.module_dispatcher.v1  # NOQA
 
 

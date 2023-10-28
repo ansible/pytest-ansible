@@ -48,7 +48,7 @@ source = ["src", ".tox/*/site-packages"]
 [tool.coverage.report]
 exclude_lines = ["pragma: no cover", "if TYPE_CHECKING:"]
 # Increase it just so it would pass on any single-python run
-fail_under = 43
+fail_under = 60
 skip_covered = true
 skip_empty = true
 # During development we might remove code (files) with coverage data, and we dont want to fail:
@@ -123,14 +123,7 @@ disable = [
 [tool.pytest.ini_options]
 minversion = 6.0
 addopts = ["--tb=native"]
-markers = [
-  "old",
-  "unit",
-  "ansible_v1_xfail",
-  "requires_ansible_v1",
-  "requires_ansible_v2",
-  "requires_ansible_v24",
-]
+markers = ["old", "unit", "requires_ansible_v2"]
 
 [tool.ruff]
 required-version = "0.1.1"
