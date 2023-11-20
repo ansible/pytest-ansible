@@ -41,7 +41,10 @@ extra:
       name: GitHub
 
 nav:
-  - Home: index.md
+  - User Guide:
+      - home: index.md
+      - installing.md
+      - getting_started.md
 
 plugins:
   - autorefs
