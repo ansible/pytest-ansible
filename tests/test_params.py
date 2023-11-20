@@ -1,5 +1,3 @@
-import sys
-
 import ansible
 import pytest
 
@@ -21,12 +19,6 @@ except ImportError:
     EXIT_USAGEERROR = ExitCode.USAGE_ERROR
     EXIT_INTERRUPTED = ExitCode.INTERRUPTED
     EXIT_NOTESTSCOLLECTED = ExitCode.NO_TESTS_COLLECTED
-
-# pylint: disable=unused-import
-if sys.version_info[0] == 2:
-    import __builtin__ as builtins
-else:
-    import builtins  # NOQA
 
 
 def test_plugin_help(testdir):
