@@ -106,9 +106,10 @@ jobs:
         if: ${{ startsWith(matrix.passed_name, 'py') }}
         # produce a single .coverage file at repo root
         run: tox -e coverage
+        id: combine
 
       - name: Upload coverage data
-        if: ${{ startsWith(matrix.passed_name, 'py') }}
+        if: ${{ startsWith(matrix.passed_name, 'py') && (success() || steps.combine.conclusion == 'failure') }}
         uses: codecov/codecov-action@v3
         with:
           name: ${{ matrix.passed_name }}
@@ -117,6 +118,7 @@ jobs:
           verbose: true # optional (default = false)
 
       - name: Archive logs
+        if: always()
         uses: actions/upload-artifact@v3
         with:
           name: logs.zip
