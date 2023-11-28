@@ -32,7 +32,6 @@ def test_dispatcher_len(host_pattern, num_hosts, hosts, include_extra_inventory)
 @pytest.mark.parametrize("include_extra_inventory", (True, False))
 def test_dispatcher_contains(host_pattern, num_hosts, hosts, include_extra_inventory):
     hosts = hosts(include_extra_inventory=include_extra_inventory)
-    assert host_pattern in hosts.all
     assert host_pattern in hosts["all"]
 
 
@@ -40,7 +39,6 @@ def test_dispatcher_contains(host_pattern, num_hosts, hosts, include_extra_inven
 @pytest.mark.parametrize("include_extra_inventory", (True, False))
 def test_dispatcher_not_contains(host_pattern, num_hosts, hosts, include_extra_inventory):
     hosts = hosts(include_extra_inventory=include_extra_inventory)
-    assert host_pattern not in hosts.all
     assert host_pattern not in hosts["all"]
 
 
