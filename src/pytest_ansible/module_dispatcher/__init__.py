@@ -21,19 +21,19 @@ class BaseModuleDispatcher:
         """Return the number of hosts that match the `host_pattern`."""
         try:
             extra_inventory_hosts = self.options["extra_inventory_manager"].list_hosts(
-                self.options["host_pattern"]
+                self.options["host_pattern"],
             )
         except KeyError:
             extra_inventory_hosts = []
         return len(
-            self.options["inventory_manager"].list_hosts(self.options["host_pattern"])
+            self.options["inventory_manager"].list_hosts(self.options["host_pattern"]),
         ) + len(extra_inventory_hosts)
 
     def __contains__(self, item) -> bool:
         """Return the whether the inventory or extra_inventory contains a host matching the provided `item`."""
         try:
             extra_inventory_hosts = self.options["extra_inventory_manager"].list_hosts(
-                item
+                item,
             )
         except KeyError:
             extra_inventory_hosts = []

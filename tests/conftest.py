@@ -28,19 +28,9 @@ POSITIVE_HOST_PATTERNS = [
     pytest.param("!localhost", {True: 5, False: 2}, id="5"),
     pytest.param("all[0]", {True: 2, False: 1}, id="6"),
     pytest.param("all[-1]", {True: 2, False: 1}, id="7"),
-    pytest.param(
-        "*[0:1]",
-        {True: 4, False: 2},
-        marks=pytest.mark.requires_ansible_v2(),
-        id="8",
-    ),
+    pytest.param("*[0:1]", {True: 4, False: 2}, marks=pytest.mark.requires_ansible_v2(), id="8"),
     # this is confusing, but how host slicing works on v2
-    pytest.param(
-        "*[0:]",
-        {True: 6, False: 3},
-        marks=pytest.mark.requires_ansible_v2(),
-        id="9",
-    ),
+    pytest.param("*[0:]", {True: 6, False: 3}, marks=pytest.mark.requires_ansible_v2(), id="9")
 ]
 
 EXTRA_HOST_POSITIVE_PATTERNS = [
@@ -48,14 +38,12 @@ EXTRA_HOST_POSITIVE_PATTERNS = [
     pytest.param(
         "extra-hosts",
         {True: 1, False: 0},
-        marks=pytest.mark.requires_ansible_v2(),
-        id="10",
+        marks=pytest.mark.requires_ansible_v2(), id="10",
     ),
     pytest.param(
         "extra-hosts_extra",
         {True: 1, False: 0},
-        marks=pytest.mark.requires_ansible_v2(),
-        id="11",
+        marks=pytest.mark.requires_ansible_v2(), id="11",
     ),
     pytest.param(
         "extra-host*",

@@ -27,14 +27,14 @@ def adhoc_result(request, hosts):
 def test_len(adhoc_result):
     adhoc_result_ret, include_extra_inv = adhoc_result()
     assert len(adhoc_result_ret) == len(ALL_HOSTS) + len(
-        ALL_EXTRA_HOSTS if include_extra_inv else []
+        ALL_EXTRA_HOSTS if include_extra_inv else [],
     )
 
 
 def test_keys(adhoc_result):
     adhoc_result_ret, include_extra_inv = adhoc_result()
     assert set(adhoc_result_ret) == set(
-        ALL_HOSTS + (ALL_EXTRA_HOSTS if include_extra_inv else [])
+        ALL_HOSTS + (ALL_EXTRA_HOSTS if include_extra_inv else []),
     )
 
 
