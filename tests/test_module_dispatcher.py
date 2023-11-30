@@ -21,25 +21,40 @@ def test_importerror_requires_v1():
         import pytest_ansible.module_dispatcher.v1  # NOQA
 
 
-@pytest.mark.parametrize(("host_pattern", "num_hosts"), POSITIVE_HOST_PATTERNS)
-@pytest.mark.parametrize("include_extra_inventory", (True, False))
+@pytest.mark.parametrize(
+    ("host_pattern", "num_hosts"),
+    POSITIVE_HOST_PATTERNS,
+)
+@pytest.mark.parametrize(
+    "include_extra_inventory",
+    (True, False),
+)
 def test_dispatcher_len(host_pattern, num_hosts, hosts, include_extra_inventory):
     hosts = hosts(include_extra_inventory=include_extra_inventory)
     assert len(getattr(hosts, host_pattern)) == num_hosts[include_extra_inventory]
 
 
-@pytest.mark.parametrize(("host_pattern", "num_hosts"), POSITIVE_HOST_PATTERNS)
-@pytest.mark.parametrize("include_extra_inventory", (True, False))
+@pytest.mark.parametrize(
+    ("host_pattern", "num_hosts"),
+    POSITIVE_HOST_PATTERNS,
+)
+@pytest.mark.parametrize(
+    "include_extra_inventory",
+    (True, False),
+)
 def test_dispatcher_contains(host_pattern, num_hosts, hosts, include_extra_inventory):
     hosts = hosts(include_extra_inventory=include_extra_inventory)
     assert host_pattern in hosts["all"]
 
 
-@pytest.mark.parametrize(("host_pattern", "num_hosts"), NEGATIVE_HOST_PATTERNS)
-@pytest.mark.parametrize("include_extra_inventory", (True, False))
-def test_dispatcher_not_contains(
-    host_pattern, num_hosts, hosts, include_extra_inventory
-):
+@pytest.mark.parametrize(
+    ("host_pattern", "num_hosts"),
+    NEGATIVE_HOST_PATTERNS,)
+@pytest.mark.parametrize(
+    "include_extra_inventory",
+    (True, False),
+)
+def test_dispatcher_not_contains(host_pattern, num_hosts, hosts, include_extra_inventory):
     hosts = hosts(include_extra_inventory=include_extra_inventory)
     assert host_pattern not in hosts["all"]
 

@@ -18,17 +18,9 @@ from ansible.plugins.loader import module_loader
 
 from pytest_ansible.errors import AnsibleConnectionFailure
 from pytest_ansible.has_version import has_ansible_v212
-from pytest_ansible.module_dispatcher.v2 import ModuleDispatcherV2
 from pytest_ansible.results import AdHocResult
 
-
-# pylint: disable=ungrouped-imports, wrong-import-position
-if not has_ansible_v212:
-    msg = "Only supported with ansible-2.12 and newer"
-    raise ImportError(msg)
-
-
-# pylint: enable=ungrouped-imports
+from pytest_ansible.module_dispatcher import BaseModuleDispatcher
 
 
 class ResultAccumulator(CallbackBase):
@@ -60,7 +52,7 @@ class ResultAccumulator(CallbackBase):
         return {"contacted": self.contacted, "unreachable": self.unreachable}
 
 
-class ModuleDispatcherV212(ModuleDispatcherV2):
+class ModuleDispatcherV212(BaseModuleDispatcher):
     """Pass."""
 
     if TYPE_CHECKING:
@@ -73,6 +65,13 @@ class ModuleDispatcherV212(ModuleDispatcherV2):
         "host_pattern",
         "loader",
     )
+
+    def __init__(self, **kwargs) -> None:
+        """Fixme."""
+        super().__init__(**kwargs)
+        if not has_ansible_v212:
+            msg = "Only supported with ansible-2.12 and newer"
+            raise ImportError(msg)
 
     def has_module(self, name):
         """Fixme."""
