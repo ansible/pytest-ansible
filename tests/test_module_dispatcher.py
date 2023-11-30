@@ -37,7 +37,9 @@ def test_dispatcher_contains(host_pattern, num_hosts, hosts, include_extra_inven
 
 @pytest.mark.parametrize(("host_pattern", "num_hosts"), NEGATIVE_HOST_PATTERNS)
 @pytest.mark.parametrize("include_extra_inventory", (True, False))
-def test_dispatcher_not_contains(host_pattern, num_hosts, hosts, include_extra_inventory):
+def test_dispatcher_not_contains(
+    host_pattern, num_hosts, hosts, include_extra_inventory
+):
     hosts = hosts(include_extra_inventory=include_extra_inventory)
     assert host_pattern not in hosts["all"]
 

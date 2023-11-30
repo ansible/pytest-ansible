@@ -2,6 +2,7 @@ import pytest
 
 from pytest_ansible.host_manager import get_host_manager
 
+
 try:
     from ansible.utils import context_objects as co
 except ImportError:
@@ -25,11 +26,17 @@ POSITIVE_HOST_PATTERNS = [
     pytest.param("all[0]", {True: 2, False: 1}, id="6"),
     pytest.param("all[-1]", {True: 2, False: 1}, id="7"),
     pytest.param(
-        "*[0:1]", {True: 4, False: 2}, marks=pytest.mark.requires_ansible_v2(), id="8"
+        "*[0:1]",
+        {True: 4, False: 2},
+        marks=pytest.mark.requires_ansible_v2(),
+        id="8",
     ),
     # this is confusing, but how host slicing works on v2
     pytest.param(
-        "*[0:]", {True: 6, False: 3}, marks=pytest.mark.requires_ansible_v2(), id="9"
+        "*[0:]",
+        {True: 6, False: 3},
+        marks=pytest.mark.requires_ansible_v2(),
+        id="9",
     ),
 ]
 

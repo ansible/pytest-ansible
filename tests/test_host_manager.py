@@ -49,7 +49,10 @@ def test_host_manager_contains(host_pattern, num_hosts, hosts, include_extra_inv
 @pytest.mark.parametrize(("host_pattern", "num_hosts"), NEGATIVE_HOST_PATTERNS)
 @pytest.mark.parametrize("include_extra_inventory", (True, False))
 def test_host_manager_not_contains(
-    host_pattern, num_hosts, hosts, include_extra_inventory
+    host_pattern,
+    num_hosts,
+    hosts,
+    include_extra_inventory,
 ):
     _hosts = hosts(include_extra_inventory=include_extra_inventory)
     assert host_pattern not in _hosts
@@ -71,7 +74,10 @@ def test_host_manager_getitem(host_pattern, num_hosts, hosts, include_extra_inve
 @pytest.mark.parametrize(("host_pattern", "num_hosts"), NEGATIVE_HOST_PATTERNS)
 @pytest.mark.parametrize("include_extra_inventory", (True, False))
 def test_host_manager_not_getitem(
-    host_pattern, num_hosts, hosts, include_extra_inventory
+    host_pattern,
+    num_hosts,
+    hosts,
+    include_extra_inventory,
 ):
     _hosts = hosts(include_extra_inventory=include_extra_inventory)
     with pytest.raises(KeyError):
@@ -112,7 +118,10 @@ def test_host_manager_not_slice(host_slice, hosts, include_extra_inventory):
 @pytest.mark.parametrize(("host_pattern", "num_hosts"), NEGATIVE_HOST_PATTERNS)
 @pytest.mark.parametrize("include_extra_inventory", (True, False))
 def test_host_manager_not_getattr(
-    host_pattern, num_hosts, hosts, include_extra_inventory
+    host_pattern,
+    num_hosts,
+    hosts,
+    include_extra_inventory,
 ):
     _hosts = hosts(include_extra_inventory=include_extra_inventory)
     assert not hasattr(_hosts, host_pattern)
