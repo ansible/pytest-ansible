@@ -10,6 +10,17 @@ updates:
       - dependabot-deps-updates
       - skip-changelog
     versioning-strategy: lockfile-only
+    groups:
+      runtime:
+        patterns:
+          - ansible-core
+          - pytest
+      dev:
+        patterns:
+          - "*"
+        exclude-patterns:
+          - ansible-core
+          - pytest
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
