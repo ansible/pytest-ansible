@@ -149,7 +149,7 @@ def test_become(testdir, option):
         import ansible
         import re
         import os
-        from pkg_resources import parse_version
+        from packaging.version import parse as parse_version
 
         @pytest.mark.ansible(inventory='{option.inventory}', host_pattern='localhost')
         def test_func(ansible_module):

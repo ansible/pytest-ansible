@@ -77,7 +77,6 @@ requests==2.31.0
 resolvelib==1.0.1
 rich==13.6.0
 rpds-py==0.10.6
-setuptools==68.2.2
 six==1.16.0
 soupsieve==2.5
 subprocess-tee==0.4.1
