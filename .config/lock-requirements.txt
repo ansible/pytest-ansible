@@ -6,9 +6,9 @@
 #
 ansible-core==2.15.5
 cffi==1.16.0
-cryptography==41.0.4
-exceptiongroup==1.1.3
-importlib-resources==5.0.7
+cryptography==41.0.7
+exceptiongroup==1.2.0
+importlib-resources==6.1.1
 iniconfig==2.0.0
 jinja2==3.1.2
 markupsafe==2.1.3
