@@ -1,7 +1,7 @@
 """Fixme."""
 import ansible
 
-from pkg_resources import parse_version
+from packaging.version import parse as parse_version
 
 
 has_ansible_v2 = parse_version(ansible.__version__) >= parse_version("2.0.0")

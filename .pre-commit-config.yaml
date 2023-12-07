@@ -84,7 +84,7 @@ repos:
         additional_dependencies:
           - pytest
           - ansible-core
-          - types-pkg_resources
+          - packaging
   - repo: https://github.com/jazzband/pip-tools
     rev: 7.3.0
     hooks:

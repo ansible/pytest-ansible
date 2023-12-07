@@ -10,9 +10,9 @@ import subprocess
 import sys
 import warnings
 
+from importlib.metadata import version
 from pathlib import Path
 
-import pkg_resources
 import pytest
 import yaml
 
@@ -46,9 +46,9 @@ def molecule_pytest_configure(config):
     # Add extra information that may be key for debugging failures
     if hasattr(config, "_metadata"):
         for package in ["molecule"]:
-            config._metadata["Packages"][package] = pkg_resources.get_distribution(
+            config._metadata["Packages"][package] = version(
                 package,
-            ).version
+            )
 
         if "Tools" not in config._metadata:
             config._metadata["Tools"] = {}
