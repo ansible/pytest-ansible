@@ -14,12 +14,14 @@ updates:
         patterns:
           - ansible-core
           - pytest
+          - pytest-plus
       dev:
         patterns:
           - "*"
         exclude-patterns:
           - ansible-core
           - pytest
+          - pytest-plus
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
