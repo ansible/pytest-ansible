@@ -79,12 +79,12 @@ jobs:
             examples/playbooks/collections/ansible_collections
           key: galaxy-${{ hashFiles('examples/playbooks/collections/requirements.yml') }}
 
-      - name: Set up Python ${{ matrix.python_version || '3.9' }}
+      - name: Set up Python ${{ matrix.python_version || '3.10' }}
         if: "!contains(matrix.shell, 'wsl')"
         uses: actions/setup-python@v5
         with:
           cache: pip
-          python-version: ${{ matrix.python_version || '3.9' }}
+          python-version: ${{ matrix.python_version || '3.10' }}
 
       - name: Install tox
         run: |
