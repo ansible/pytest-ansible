@@ -6,7 +6,7 @@
 #
 ansible-core==2.15.5
 cffi==1.16.0
-cryptography==41.0.4
+cryptography==41.0.6
 exceptiongroup==1.1.3
 importlib-resources==5.0.7
 iniconfig==2.0.0
