@@ -17,7 +17,7 @@ To use `pytest-ansible`, follow these steps:
 pip install pytest-ansible
 ```
 
-2. Ensure you have Python 3.9 or greater, ansible-core, and pytest installed.
+2. Ensure you have Python 3.10 or greater, ansible-core, and pytest installed.
 
 3. Depending on your preferred directory structure, you can clone collections
    into the appropriate paths.

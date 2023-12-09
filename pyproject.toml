@@ -8,7 +8,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 # https://peps.python.org/pep-0621/#readme
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dynamic = ["version", "dependencies", "optional-dependencies"]
 name = "pytest-ansible"
 description = "Plugin for pytest to simplify calling ansible modules from tests or fixtures"
@@ -26,7 +26,6 @@ classifiers = [
   'Topic :: Utilities',
   'Programming Language :: Python',
   'Programming Language :: Python :: 3',
-  'Programming Language :: Python :: 3.9',
   'Programming Language :: Python :: 3.10',
   'Programming Language :: Python :: 3.11',
   'Programming Language :: Python :: 3.12',
@@ -63,7 +62,7 @@ parallel = true
 source = ["pytest_ansible"]
 
 [tool.mypy]
-python_version = 3.9
+python_version = 3.10
 ignore_missing_imports = true
 ignore_errors = true
 strict = true
@@ -151,7 +150,7 @@ ignore = [
   "T",
   "TRY",
 ]
-target-version = "py39"
+target-version = "py310"
 # Same as Black.
 line-length = 88
 

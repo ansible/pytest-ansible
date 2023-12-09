@@ -33,7 +33,7 @@ which are under
 [active upstream support](https://docs.ansible.com/ansible/latest/reference_appendices/release_and_maintenance.html#release-schedule)
 which currently translates to:
 
-- Python 3.9 or newer
+- Python 3.10 or newer
 - Ansible-core 2.14 or newer
 
 ## Installation
@@ -63,7 +63,7 @@ To use `pytest-ansible-units`, follow these steps:
 pip install pytest-ansible
 ```
 
-2. Ensure you have Python 3.9 or greater, ansible-core, and pyyaml installed.
+2. Ensure you have Python 3.10 or greater, ansible-core, and pyyaml installed.
 
 3. Depending on your preferred directory structure, you can clone collections
    into the appropriate paths.

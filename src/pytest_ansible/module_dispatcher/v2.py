@@ -71,7 +71,7 @@ class ModuleDispatcherV2(BaseModuleDispatcher):
         # otherwise, only built-in modules will work.
         if "module_path" in self.options:
             paths = self.options["module_path"]
-            if isinstance(paths, (list, tuple, set)):
+            if isinstance(paths, list | tuple | set):
                 for path in paths:
                     module_loader.add_directory(path)
             else:
