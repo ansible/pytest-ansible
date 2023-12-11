@@ -94,7 +94,9 @@ def test_host_manager_getitem(host_pattern, num_hosts, hosts, include_extra_inve
     "include_extra_inventory",
     (True, False),
 )
-def test_host_manager_not_getitem(host_pattern, num_hosts, hosts, include_extra_inventory):
+def test_host_manager_not_getitem(
+    host_pattern, num_hosts, hosts, include_extra_inventory
+):
     _hosts = hosts(include_extra_inventory=include_extra_inventory)
     with pytest.raises(KeyError):
         assert _hosts[host_pattern]
@@ -154,7 +156,9 @@ def test_host_manager_not_slice(host_slice, hosts, include_extra_inventory):
     "include_extra_inventory",
     (True, False),
 )
-def test_host_manager_not_getattr(host_pattern, num_hosts, hosts, include_extra_inventory):
+def test_host_manager_not_getattr(
+    host_pattern, num_hosts, hosts, include_extra_inventory
+):
     _hosts = hosts(include_extra_inventory=include_extra_inventory)
     assert not hasattr(_hosts, host_pattern)
     with pytest.raises(AttributeError):

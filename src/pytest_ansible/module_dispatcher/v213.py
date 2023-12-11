@@ -15,9 +15,9 @@ from ansible.plugins.loader import module_loader
 
 from pytest_ansible.errors import AnsibleConnectionFailure
 from pytest_ansible.has_version import has_ansible_v213
+from pytest_ansible.module_dispatcher import BaseModuleDispatcher
 from pytest_ansible.results import AdHocResult
 
-from pytest_ansible.module_dispatcher import BaseModuleDispatcher
 
 HAS_CUSTOM_LOADER_SUPPORT = True
 
