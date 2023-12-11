@@ -53,7 +53,10 @@ def test_dispatcher_contains(host_pattern, num_hosts, hosts, include_extra_inven
     (True, False),
 )
 def test_dispatcher_not_contains(
-    host_pattern, num_hosts, hosts, include_extra_inventory
+    host_pattern,
+    num_hosts,
+    hosts,
+    include_extra_inventory,
 ):
     hosts = hosts(include_extra_inventory=include_extra_inventory)
     assert host_pattern not in hosts["all"]
