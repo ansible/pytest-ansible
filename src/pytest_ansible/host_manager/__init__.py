@@ -3,7 +3,6 @@
 import ansible
 
 from pytest_ansible.has_version import (
-    has_ansible_v2,
     has_ansible_v212,
     has_ansible_v213,
 )
@@ -144,8 +143,6 @@ def get_host_manager(*args, **kwargs):
         from pytest_ansible.host_manager.v213 import HostManagerV213 as HostManager
     elif has_ansible_v212:
         from pytest_ansible.host_manager.v212 import HostManagerV212 as HostManager
-    elif has_ansible_v2:
-        from pytest_ansible.host_manager.v2 import HostManagerV2 as HostManager
     else:
         raise RuntimeError("Unable to find any supported HostManager")
 

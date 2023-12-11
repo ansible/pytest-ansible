@@ -19,13 +19,28 @@ class BaseModuleDispatcher:
 
     def __len__(self) -> int:
         """Return the number of hosts that match the `host_pattern`."""
+        try:
+            extra_inventory_hosts = self.options["extra_inventory_manager"].list_hosts(
+                self.options["host_pattern"],
+            )
+        except KeyError:
+            extra_inventory_hosts = []
         return len(
             self.options["inventory_manager"].list_hosts(self.options["host_pattern"]),
-        )
+        ) + len(extra_inventory_hosts)
 
     def __contains__(self, item) -> bool:
-        """Return the whether the inventory contains a host matching the provided `item`."""
-        return len(self.options["inventory_manager"].list_hosts(item)) > 0
+        """Return the whether the inventory or extra_inventory contains a host matching the provided `item`."""
+        try:
+            extra_inventory_hosts = self.options["extra_inventory_manager"].list_hosts(
+                item,
+            )
+        except KeyError:
+            extra_inventory_hosts = []
+        return (
+            len(self.options["inventory_manager"].list_hosts(item))
+            + len(extra_inventory_hosts)
+        ) > 0
 
     def __getattr__(self, name):
         """Run the ansible module matching the provided `name`.

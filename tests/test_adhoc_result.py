@@ -2,7 +2,7 @@ from types import GeneratorType
 
 import pytest
 
-from conftest import ALL_HOSTS
+from conftest import ALL_EXTRA_HOSTS, ALL_HOSTS
 
 from pytest_ansible.results import ModuleResult
 
@@ -15,74 +15,102 @@ invalid_hosts = [
 ]
 
 
-@pytest.fixture()
-def adhoc_result(hosts):
-    return hosts.all.ping()
+@pytest.fixture(params=[True, False])
+def adhoc_result(request, hosts):
+    def create_hosts():
+        _hosts = hosts(include_extra_inventory=request.param)
+        return _hosts.all.ping(), request.param
+
+    return create_hosts
 
 
 def test_len(adhoc_result):
-    assert len(adhoc_result) == len(ALL_HOSTS)
+    adhoc_result_ret, include_extra_inv = adhoc_result()
+    assert len(adhoc_result_ret) == len(ALL_HOSTS) + len(
+        ALL_EXTRA_HOSTS if include_extra_inv else [],
+    )
 
 
 def test_keys(adhoc_result):
-    assert set(adhoc_result) == set(ALL_HOSTS)
+    adhoc_result_ret, include_extra_inv = adhoc_result()
+    assert set(adhoc_result_ret) == set(
+        ALL_HOSTS + (ALL_EXTRA_HOSTS if include_extra_inv else []),
+    )
 
 
 def test_items(adhoc_result):
-    items = adhoc_result.items()
+    adhoc_result_ret, include_extra_inv = adhoc_result()
+    items = adhoc_result_ret.items()
     assert isinstance(items, GeneratorType)
     count = 0
     for count, item in enumerate(items, 1):
         assert isinstance(item, tuple)
         assert isinstance(item[0], str)
         assert isinstance(item[1], ModuleResult)
-    assert count == len(ALL_HOSTS)
+    assert count == len(ALL_HOSTS + (ALL_EXTRA_HOSTS if include_extra_inv else []))
 
 
 def test_values(adhoc_result):
-    values = adhoc_result.values()
+    adhoc_result_ret, include_extra_inv = adhoc_result()
+    values = adhoc_result_ret.values()
     assert isinstance(values, list)
     # assure that it is a copy
-    assert values is not adhoc_result.contacted.values()
+    assert values is not adhoc_result_ret.contacted.values()
     count = 0
     for count, val in enumerate(values, 1):
         assert isinstance(val, ModuleResult)
-    assert count == len(ALL_HOSTS)
+    assert count == len(ALL_HOSTS) + len(ALL_EXTRA_HOSTS if include_extra_inv else [])
 
 
-@pytest.mark.parametrize("host", ALL_HOSTS)
+@pytest.mark.parametrize("host", ALL_HOSTS + ALL_EXTRA_HOSTS)
 def test_contains(adhoc_result, host):
-    assert host in adhoc_result
+    adhoc_result_ret, include_extra_inv = adhoc_result()
+    if not include_extra_inv and host in ALL_EXTRA_HOSTS:
+        assert host not in adhoc_result_ret
+    else:
+        assert host in adhoc_result_ret
 
 
 @pytest.mark.parametrize("host", invalid_hosts)
 def test_not_contains(adhoc_result, host):
-    assert host not in adhoc_result
+    adhoc_result_ret, dummy = adhoc_result()
+    assert host not in adhoc_result_ret
 
 
-@pytest.mark.parametrize("host_pattern", ALL_HOSTS)
+@pytest.mark.parametrize("host_pattern", ALL_HOSTS + ALL_EXTRA_HOSTS)
 def test_getitem(adhoc_result, host_pattern):
-    assert adhoc_result[host_pattern]
-    assert isinstance(adhoc_result[host_pattern], ModuleResult)
+    adhoc_result_ret, include_extra_inv = adhoc_result()
+    if not include_extra_inv and host_pattern in ALL_EXTRA_HOSTS:
+        with pytest.raises(KeyError):
+            assert adhoc_result_ret[host_pattern]
+    else:
+        assert adhoc_result_ret[host_pattern]
+        assert isinstance(adhoc_result_ret[host_pattern], ModuleResult)
 
 
 @pytest.mark.parametrize("host_pattern", invalid_hosts)
 def test_not_getitem(adhoc_result, host_pattern):
+    adhoc_result_ret, dummy = adhoc_result()
     with pytest.raises(KeyError):
-        assert adhoc_result[host_pattern]
+        assert adhoc_result_ret[host_pattern]
 
 
-@pytest.mark.parametrize("host_pattern", ALL_HOSTS)
+@pytest.mark.parametrize("host_pattern", ALL_HOSTS + ALL_EXTRA_HOSTS)
 def test_getattr(adhoc_result, host_pattern):
-    assert hasattr(adhoc_result, host_pattern)
-    assert isinstance(adhoc_result[host_pattern], ModuleResult)
+    adhoc_result_ret, include_extra_inv = adhoc_result()
+    if not include_extra_inv and host_pattern in ALL_EXTRA_HOSTS:
+        assert not hasattr(adhoc_result_ret, host_pattern)
+    else:
+        assert hasattr(adhoc_result_ret, host_pattern)
+        assert isinstance(adhoc_result_ret[host_pattern], ModuleResult)
 
 
 @pytest.mark.parametrize("host_pattern", invalid_hosts)
 def test_not_getattr(adhoc_result, host_pattern):
-    assert not hasattr(adhoc_result, host_pattern)
+    adhoc_result_ret, dummy = adhoc_result()
+    assert not hasattr(adhoc_result_ret, host_pattern)
     with pytest.raises(AttributeError):
-        getattr(adhoc_result, host_pattern)
+        getattr(adhoc_result_ret, host_pattern)
 
 
 @pytest.mark.requires_ansible_v2()
