@@ -169,7 +169,7 @@ lines-between-types = 1 # Separate import/from with 1 line
 optional-dependencies.docs = { file = [".config/docs-requirements.txt"] }
 optional-dependencies.test = { file = [".config/test-requirements.txt"] }
 optional-dependencies.lock = { file = [".config/lock-requirements.txt"] }
-dependencies = { file = [".config/requirements.txt"] }
+dependencies = { file = [".config/requirements.in"] }
 
 [tool.setuptools_scm]
 local_scheme = "no-local-version"
