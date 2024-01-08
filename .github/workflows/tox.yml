@@ -36,7 +36,7 @@ jobs:
             pkg
             py310-devel
             docs
-          platforms: linux
+          platforms: linux,macos
 
   build:
     name: ${{ matrix.name }}
