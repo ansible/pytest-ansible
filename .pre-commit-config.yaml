@@ -31,13 +31,13 @@ repos:
     hooks:
       - id: remove-tabs
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: "v0.1.7"
+    rev: "v0.1.9"
     hooks:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix]
   - repo: https://github.com/pre-commit/mirrors-prettier
     # keep it before yamllint
-    rev: v4.0.0-alpha.3-1
+    rev: v4.0.0-alpha.8
     hooks:
       - id: prettier
         always_run: true
@@ -46,12 +46,12 @@ repos:
           - prettier-plugin-toml
           - prettier-plugin-sort-json
   - repo: https://github.com/psf/black
-    rev: 23.11.0
+    rev: 23.12.1
     hooks:
       - id: black
         language_version: python3
   - repo: https://github.com/streetsidesoftware/cspell-cli
-    rev: v8.1.1
+    rev: v8.2.1
     hooks:
       - id: cspell
         name: Spell check with cspell
@@ -66,7 +66,7 @@ repos:
         args:
           - "--config=pyproject.toml"
   - repo: https://github.com/pycqa/pylint
-    rev: v3.0.1
+    rev: v3.0.3
     hooks:
       - id: pylint
         args:
@@ -75,7 +75,7 @@ repos:
           - ansible-core
           - pytest
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.7.1
+    rev: v1.8.0
     hooks:
       - id: mypy
         # Do not modify args to match mypy cli/ide behavior, use config if needed.
