@@ -31,7 +31,7 @@ repos:
     hooks:
       - id: remove-tabs
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: "v0.1.9"
+    rev: "v0.1.11"
     hooks:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix]
@@ -51,7 +51,7 @@ repos:
       - id: black
         language_version: python3
   - repo: https://github.com/streetsidesoftware/cspell-cli
-    rev: v8.2.1
+    rev: v8.3.0
     hooks:
       - id: cspell
         name: Spell check with cspell
@@ -104,19 +104,19 @@ repos:
         name: deps
         alias: deps
         always_run: true
-        entry: pip-compile --resolver=backtracking -q --no-annotate --output-file=.config/requirements.txt pyproject.toml --extra docs --extra test --strip-extras --unsafe-package ruamel-yaml-clib
-        files: ^.config\/.*requirements.*$
+        entry: pip-compile --resolver=backtracking -q --no-annotate --output-file=.config/constraints.txt pyproject.toml --extra docs --extra test --strip-extras --unsafe-package ruamel-yaml-clib
+        files: ^.config\/.*(requirements|constraints).*$
         language: python
         language_version: "3.10" # minimal we support officially
         pass_filenames: false
         additional_dependencies:
           - pip>=22.3.1
       - id: pip-compile
-        entry: pip-compile --resolver=backtracking -q --no-annotate --output-file=.config/requirements.txt pyproject.toml --extra docs --extra test --strip-extras --unsafe-package ruamel-yaml-clib --upgrade
+        entry: pip-compile --resolver=backtracking -q --no-annotate --output-file=.config/constraints.txt pyproject.toml --extra docs --extra test --strip-extras --unsafe-package ruamel-yaml-clib --upgrade
         language: python
         always_run: true
         pass_filenames: false
-        files: ^.config\/.*requirements.*$
+        files: ^.config\/.*(requirements|constraints).*$
         alias: up
         stages: [manual]
         language_version: "3.10" # minimal we support officially
