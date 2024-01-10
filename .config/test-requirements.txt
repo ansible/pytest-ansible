@@ -1,4 +1,4 @@
 ansible-core
 coverage
 molecule
-pytest-plus>=0.6.0
+pytest-plus>=0.6.1
