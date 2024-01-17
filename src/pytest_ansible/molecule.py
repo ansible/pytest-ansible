@@ -9,15 +9,12 @@ import shlex
 import subprocess
 import sys
 import warnings
-
 from importlib.metadata import version
 from pathlib import Path
 
 import pytest
 import yaml
-
 from ansible_compat.config import ansible_version
-
 
 # Do not add molecule imports here as it does have side effects due to console
 # redirection. We need to do these as lazy as possible.
@@ -203,7 +200,8 @@ class MoleculeItem(pytest.Item):
                     + exc.output,
                 )
 
-        cmd.extend((self.name, "-s", scenario))
+        # cmd.extend((self.name, "-s", scenario))
+        cmd.extend(("test", "-s", scenario))
         # We append the additional options to molecule call, allowing user to
         # control how molecule is called by pytest-molecule
         opts = os.environ.get("MOLECULE_OPTS")
