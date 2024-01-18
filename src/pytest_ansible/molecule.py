@@ -203,7 +203,7 @@ class MoleculeItem(pytest.Item):
                     + exc.output,
                 )
 
-        cmd.extend((self.name, "-s", scenario))
+        cmd.extend(("test", "-s", scenario))
         # We append the additional options to molecule call, allowing user to
         # control how molecule is called by pytest-molecule
         opts = os.environ.get("MOLECULE_OPTS")
