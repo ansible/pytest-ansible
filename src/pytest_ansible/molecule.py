@@ -140,8 +140,8 @@ class MoleculeItem(pytest.Item):
         scenario_molecule_yml = self.path
         data_scenario = self.yaml_loader(scenario_molecule_yml)
         # check if there is a global molecule config
-        global_molecule_yml = os.getcwd() + "/.config/molecule/config.yml"
-        if os.path.exists(global_molecule_yml):
+        global_molecule_yml = Path.getcwd() + "/.config/molecule/config.yml"
+        if Path.exists(global_molecule_yml):
             data_global = self.yaml_loader(global_molecule_yml)
             data = data_global | data_scenario
         else:
@@ -180,7 +180,7 @@ class MoleculeItem(pytest.Item):
             self.add_marker(self.config.option.molecule_unavailable_driver)
 
     def yaml_loader(self, filepath) -> dict:
-        """Loads a yaml file at a given filepath
+        """Load a yaml file at a given filepath.
 
         Args:
         ----
@@ -190,9 +190,8 @@ class MoleculeItem(pytest.Item):
         -------
             dict: The yaml file as a dict
         """
-        with open(filepath) as file_descriptor:
-            data = yaml.safe_load(file_descriptor) or {}
-        return data
+        with Path.open(filepath) as file_descriptor:
+            return yaml.safe_load(file_descriptor) or {}
 
     def runtest(self):
         """Perform effective test run."""
