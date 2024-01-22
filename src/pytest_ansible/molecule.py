@@ -10,12 +10,15 @@ import shlex
 import subprocess
 import sys
 import warnings
+
 from importlib.metadata import version
 from pathlib import Path
 
 import pytest
 import yaml
+
 from ansible_compat.config import ansible_version
+
 
 # Do not add molecule imports here as it does have side effects due to console
 # redirection. We need to do these as lazy as possible.
@@ -176,20 +179,20 @@ class MoleculeItem(pytest.Item):
         ):
             self.add_marker(self.config.option.molecule_unavailable_driver)
 
-
     def yaml_loader(self, filepath) -> dict:
         """Loads a yaml file at a given filepath
-        
+
         Args:
+        ----
             filepath (str): Path to the yaml file
 
         Returns:
+        -------
             dict: The yaml file as a dict
         """
-        with open(filepath,'r')as file_descriptor:
+        with open(filepath) as file_descriptor:
             data = yaml.safe_load(file_descriptor) or {}
         return data
-
 
     def runtest(self):
         """Perform effective test run."""
