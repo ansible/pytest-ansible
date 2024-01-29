@@ -31,7 +31,7 @@ repos:
     hooks:
       - id: remove-tabs
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: "v0.1.11"
+    rev: "v0.1.15"
     hooks:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix]
@@ -46,7 +46,7 @@ repos:
           - prettier-plugin-toml
           - prettier-plugin-sort-json
   - repo: https://github.com/psf/black
-    rev: 23.12.1
+    rev: 24.1.1
     hooks:
       - id: black
         language_version: python3
@@ -60,7 +60,7 @@ repos:
     hooks:
       - id: check-github-workflows
   - repo: https://github.com/jsh9/pydoclint
-    rev: 0.3.8
+    rev: 0.3.9
     hooks:
       - id: pydoclint
         args:
@@ -92,7 +92,7 @@ repos:
         name: lock
         alias: lock
         always_run: true
-        entry: pip-compile --upgrade --resolver=backtracking -q --no-annotate --output-file=.config/lock-requirements.txt pyproject.toml --strip-extras --unsafe-package ruamel-yaml-clib
+        entry: pip-compile --upgrade --resolver=backtracking -q --no-annotate --output-file=.config/requirements-lock.txt pyproject.toml --strip-extras
         files: ^.config\/.*requirements.*$
         language: python
         language_version: "3.10" # minimal we support officially
@@ -107,7 +107,7 @@ repos:
         files: ^.config\/.*(requirements|constraints).*$
         language_version: "3.10" # minimal we support officially
       - id: pip-compile
-        entry: pip-compile --resolver=backtracking -q --no-annotate --output-file=.config/constraints.txt pyproject.toml --extra docs --extra test --strip-extras --unsafe-package ruamel-yaml-clib --upgrade
+        entry: pip-compile --resolver=backtracking -q --no-annotate --output-file=.config/constraints.txt pyproject.toml --all-extras --strip-extras --upgrade
         language: python
         always_run: true
         pass_filenames: false

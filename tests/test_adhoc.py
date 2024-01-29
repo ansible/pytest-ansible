@@ -129,7 +129,7 @@ def test_contacted_with_params_and_inventory_host_pattern_marker(testdir, option
         *[
             *option.args,
             "--ansible-inventory",
-            "/dev/null",
+            str(option.inventory),
             "--ansible-host-pattern",
             "unreachable",
         ],
