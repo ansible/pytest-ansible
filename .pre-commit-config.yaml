@@ -103,14 +103,9 @@ repos:
       - id: pip-compile
         name: deps
         alias: deps
-        always_run: true
-        entry: pip-compile --resolver=backtracking -q --no-annotate --output-file=.config/constraints.txt pyproject.toml --extra docs --extra test --strip-extras --unsafe-package ruamel-yaml-clib
+        entry: pip-compile --no-annotate --output-file=.config/constraints.txt --all-extras --strip-extras pyproject.toml
         files: ^.config\/.*(requirements|constraints).*$
-        language: python
         language_version: "3.10" # minimal we support officially
-        pass_filenames: false
-        additional_dependencies:
-          - pip>=22.3.1
       - id: pip-compile
         entry: pip-compile --resolver=backtracking -q --no-annotate --output-file=.config/constraints.txt pyproject.toml --extra docs --extra test --strip-extras --unsafe-package ruamel-yaml-clib --upgrade
         language: python
