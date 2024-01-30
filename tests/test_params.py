@@ -21,9 +21,9 @@ except ImportError:
     EXIT_NOTESTSCOLLECTED = ExitCode.NO_TESTS_COLLECTED
 
 
-def test_plugin_help(testdir):
+def test_plugin_help(pytester):
     """Verifies expected output from of pytest --help."""
-    result = testdir.runpytest("--help")
+    result = pytester.runpytest("--help")
     result.stdout.fnmatch_lines(
         [
             # Check for the github args section header
@@ -45,9 +45,9 @@ def test_plugin_help(testdir):
     )
 
 
-def test_plugin_markers(testdir):
+def test_plugin_markers(pytester):
     """Verifies expected output from of pytest --markers."""
-    result = testdir.runpytest("--markers")
+    result = pytester.runpytest("--markers")
     result.stdout.fnmatch_lines(
         [
             "@pytest.mark.ansible(*args): Ansible integration",
@@ -55,22 +55,22 @@ def test_plugin_markers(testdir):
     )
 
 
-def test_report_header(testdir, option):
+def test_report_header(pytester, option):
     """Verify the expected ansible version in the pytest report header."""
-    result = testdir.runpytest(*option.args)
+    result = pytester.runpytest(*option.args)
     assert result.ret == EXIT_NOTESTSCOLLECTED
     result.stdout.fnmatch_lines([f"ansible: {ansible.__version__}"])
 
 
-def test_params_not_required_when_not_using_fixture(testdir, option):
+def test_params_not_required_when_not_using_fixture(pytester, option):
     """Verify the ansible parameters are not required if the fixture is not used."""
     src = """
         import pytest
         def test_func():
             assert True
     """
-    testdir.makepyfile(src)
-    result = testdir.runpytest(*option.args)
+    pytester.makepyfile(src)
+    result = pytester.runpytest(*option.args)
     assert result.ret == EXIT_OK
 
 
@@ -82,7 +82,7 @@ def test_params_not_required_when_not_using_fixture(testdir, option):
         "ansible_facts",
     ),
 )
-def test_params_required_when_using_fixture(testdir, option, fixture_name):
+def test_params_required_when_using_fixture(pytester, option, fixture_name):
     """Verify the ansible parameters are required if the fixture is used."""
     src = f"""
         import pytest
@@ -90,8 +90,8 @@ def test_params_required_when_using_fixture(testdir, option, fixture_name):
             {fixture_name}
         """
 
-    testdir.makepyfile(src)
-    result = testdir.runpytest(*option.args)
+    pytester.makepyfile(src)
+    result = pytester.runpytest(*option.args)
     assert result.ret == EXIT_USAGEERROR
     result.stderr.fnmatch_lines(
         [
@@ -119,24 +119,24 @@ def test_params_required_when_using_fixture(testdir, option, fixture_name):
         "--module-path",
     ),
 )
-def test_param_requires_value(testdir, required_value_parameter):
+def test_param_requires_value(pytester, required_value_parameter):
     """Verifies failure when not providing a value to a parameter that requires a value."""
-    result = testdir.runpytest(*[required_value_parameter])
+    result = pytester.runpytest(*[required_value_parameter])
     assert result.ret == EXIT_USAGEERROR
     result.stderr.fnmatch_lines(
         [f"*: error: argument *{required_value_parameter}*: expected one argument"],
     )
 
 
-def test_params_required_with_inventory_without_host_pattern(testdir, option):
+def test_params_required_with_inventory_without_host_pattern(pytester, option):
     """Verify that a host pattern is required when an inventory is supplied."""
     src = """
         import pytest
         def test_func(ansible_module):
             assert True
     """
-    testdir.makepyfile(src)
-    result = testdir.runpytest(*[*option.args, "--ansible-inventory", "local,"])
+    pytester.makepyfile(src)
+    result = pytester.runpytest(*[*option.args, "--ansible-inventory", "local,"])
     assert result.ret == EXIT_USAGEERROR
     result.stderr.fnmatch_lines(
         [
@@ -146,26 +146,26 @@ def test_params_required_with_inventory_without_host_pattern(testdir, option):
 
 
 @pytest.mark.requires_ansible_v2()
-def test_params_required_without_inventory_with_host_pattern_v2(testdir, option):
+def test_params_required_without_inventory_with_host_pattern_v2(pytester, option):
     src = """
         import pytest
         def test_func(ansible_module):
             assert True
     """
-    testdir.makepyfile(src)
-    result = testdir.runpytest(*[*option.args, "--ansible-host-pattern", "all"])
+    pytester.makepyfile(src)
+    result = pytester.runpytest(*[*option.args, "--ansible-host-pattern", "all"])
     assert result.ret == EXIT_OK
 
 
-def test_param_override_with_marker(testdir, option):
+def test_param_override_with_marker(pytester, option):
     src = """
         import pytest
         @pytest.mark.ansible(inventory='local,', connection='local', host_pattern='all')
         def test_func(ansible_module):
             ansible_module.ping()
     """
-    testdir.makepyfile(src)
-    result = testdir.runpytest(
+    pytester.makepyfile(src)
+    result = pytester.runpytest(
         *[
             *option.args,
             "--tb",

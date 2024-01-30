@@ -21,7 +21,7 @@ except ImportError:
 
 
 @pytest.mark.old()
-def test_contacted_with_params(testdir, option):
+def test_contacted_with_params(pytester, option):
     """FIXME."""
     src = """
         import pytest
@@ -36,8 +36,8 @@ def test_contacted_with_params(testdir, option):
                 assert result['ping'] == 'pong'
 
     """
-    testdir.makepyfile(src)
-    result = testdir.runpytest_subprocess(
+    pytester.makepyfile(src)
+    result = pytester.runpytest_subprocess(
         *[
             *option.args,
             "--ansible-inventory",
@@ -51,7 +51,7 @@ def test_contacted_with_params(testdir, option):
 
 
 @pytest.mark.old()
-def test_contacted_with_params_and_inventory_marker(testdir, option):
+def test_contacted_with_params_and_inventory_marker(pytester, option):
     """FIXME."""
     src = f"""
         import pytest
@@ -68,8 +68,8 @@ def test_contacted_with_params_and_inventory_marker(testdir, option):
 
         """
 
-    testdir.makepyfile(src)
-    result = testdir.runpytest_subprocess(
+    pytester.makepyfile(src)
+    result = pytester.runpytest_subprocess(
         *[*option.args, "--ansible-host-pattern", "local"],
     )
     assert result.ret == EXIT_OK
@@ -77,7 +77,7 @@ def test_contacted_with_params_and_inventory_marker(testdir, option):
 
 
 @pytest.mark.old()
-def test_contacted_with_params_and_host_pattern_marker(testdir, option):
+def test_contacted_with_params_and_host_pattern_marker(pytester, option):
     """FIXME."""
     src = """
         import pytest
@@ -93,8 +93,8 @@ def test_contacted_with_params_and_host_pattern_marker(testdir, option):
                 assert result['ping'] == 'pong'
 
     """
-    testdir.makepyfile(src)
-    result = testdir.runpytest_subprocess(
+    pytester.makepyfile(src)
+    result = pytester.runpytest_subprocess(
         *[
             *option.args,
             "--ansible-inventory",
@@ -108,7 +108,7 @@ def test_contacted_with_params_and_host_pattern_marker(testdir, option):
 
 
 @pytest.mark.old()
-def test_contacted_with_params_and_inventory_host_pattern_marker(testdir, option):
+def test_contacted_with_params_and_inventory_host_pattern_marker(pytester, option):
     """FIXME."""
     src = f"""
         import pytest
@@ -124,8 +124,8 @@ def test_contacted_with_params_and_inventory_host_pattern_marker(testdir, option
                 assert result['ping'] == 'pong'
         """
 
-    testdir.makepyfile(src)
-    result = testdir.runpytest_subprocess(
+    pytester.makepyfile(src)
+    result = pytester.runpytest_subprocess(
         *[
             *option.args,
             "--ansible-inventory",
@@ -139,7 +139,7 @@ def test_contacted_with_params_and_inventory_host_pattern_marker(testdir, option
 
 
 @pytest.mark.old()
-def test_become(testdir, option):
+def test_become(pytester, option):
     """Test --ansible-become* parameters.  This test doesn't actually 'sudo',
     but verifies that 'sudo' was attempted by asserting
     '--ansible-become-user' fails as expected.
@@ -173,8 +173,8 @@ def test_become(testdir, option):
                     assert 'sudo: unknown user: unknown_user' in result['msg']
         """
 
-    testdir.makepyfile(src)
-    result = testdir.runpytest_subprocess(
+    pytester.makepyfile(src)
+    result = pytester.runpytest_subprocess(
         *option.args
         + [
             "--ansible-inventory",
@@ -191,7 +191,7 @@ def test_become(testdir, option):
 
 
 @pytest.mark.old()
-def test_dark_with_params(testdir, option):
+def test_dark_with_params(pytester, option):
     """FIXME."""
     src = """
         import pytest
@@ -206,8 +206,8 @@ def test_dark_with_params(testdir, option):
             # assert dark hosts ...
             assert exc_info.value.dark
     """
-    testdir.makepyfile(src)
-    result = testdir.runpytest_subprocess(
+    pytester.makepyfile(src)
+    result = pytester.runpytest_subprocess(
         *[
             *option.args,
             "--ansible-inventory",
@@ -221,7 +221,7 @@ def test_dark_with_params(testdir, option):
 
 
 @pytest.mark.old()
-def test_dark_with_params_and_inventory_marker(testdir, option):
+def test_dark_with_params_and_inventory_marker(pytester, option):
     """FIXME."""
     src = f"""
         import pytest
@@ -238,8 +238,8 @@ def test_dark_with_params_and_inventory_marker(testdir, option):
             assert exc_info.value.dark
         """
 
-    testdir.makepyfile(src)
-    result = testdir.runpytest_subprocess(
+    pytester.makepyfile(src)
+    result = pytester.runpytest_subprocess(
         *[*option.args, "--ansible-host-pattern", "unreachable"],
     )
     assert result.ret == EXIT_OK
@@ -247,7 +247,7 @@ def test_dark_with_params_and_inventory_marker(testdir, option):
 
 
 @pytest.mark.old()
-def test_dark_with_params_and_host_pattern_marker(testdir, option):
+def test_dark_with_params_and_host_pattern_marker(pytester, option):
     """FIXME."""
     src = """
         import pytest
@@ -264,8 +264,8 @@ def test_dark_with_params_and_host_pattern_marker(testdir, option):
             # assert dark hosts ...
             assert exc_info.value.dark
     """
-    testdir.makepyfile(src)
-    result = testdir.runpytest_subprocess(
+    pytester.makepyfile(src)
+    result = pytester.runpytest_subprocess(
         *[
             *option.args,
             "--ansible-inventory",
@@ -279,7 +279,7 @@ def test_dark_with_params_and_host_pattern_marker(testdir, option):
 
 
 @pytest.mark.old()
-def test_dark_with_debug_enabled(testdir, option):
+def test_dark_with_debug_enabled(pytester, option):
     """Verify that when verbosity is enabled, additional output is provided upon host failure."""
     src = """
         import pytest
@@ -287,8 +287,8 @@ def test_dark_with_debug_enabled(testdir, option):
         def test_func(ansible_module):
             ansible_module.ping()
     """
-    testdir.makepyfile(src)
-    result = testdir.runpytest_subprocess(
+    pytester.makepyfile(src)
+    result = pytester.runpytest_subprocess(
         *[
             *option.args,
             "--ansible-inventory",

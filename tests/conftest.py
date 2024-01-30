@@ -113,11 +113,11 @@ def pytest_runtest_setup(item):
 class PyTestOption:
     """Helper class that provides methods for creating and managing an inventory file."""
 
-    def __init__(self, config, testdir) -> None:
+    def __init__(self, config, pytester) -> None:
         self.config = config
 
         # Create inventory file
-        self.inventory = testdir.makefile(
+        self.inventory = pytester.makefile(
             ".ini",
             inventory="""
             [local]
@@ -155,11 +155,11 @@ def _clear_global_context():
 
 
 @pytest.fixture()
-def option(request, testdir):
+def option(request, pytester):
     """Returns an instance of PyTestOption to help tests pass parameters and
     use a common inventory file.
     """
-    return PyTestOption(request.config, testdir)
+    return PyTestOption(request.config, pytester)
 
 
 @pytest.fixture()
