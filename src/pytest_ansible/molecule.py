@@ -1,4 +1,5 @@
 """pytest-molecule plugin implementation."""
+
 # pylint: disable=protected-access
 from __future__ import annotations
 
