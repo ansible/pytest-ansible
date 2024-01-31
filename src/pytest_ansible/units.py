@@ -1,4 +1,5 @@
 """Setup the collection for testing."""
+
 from __future__ import annotations
 
 import logging
