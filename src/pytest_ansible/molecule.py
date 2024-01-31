@@ -189,6 +189,7 @@ class MoleculeItem(pytest.Item):
         Returns:
         -------
             dict: The yaml file as a dict
+
         """
         with Path.open(filepath) as file_descriptor:
             return yaml.safe_load(file_descriptor) or {}
