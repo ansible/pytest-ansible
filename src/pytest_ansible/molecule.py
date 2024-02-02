@@ -10,12 +10,15 @@ import shlex
 import subprocess
 import sys
 import warnings
+
 from importlib.metadata import version
 from pathlib import Path
 
 import pytest
 import yaml
+
 from ansible_compat.config import ansible_version
+
 
 # Do not add molecule imports here as it does have side effects due to console
 # redirection. We need to do these as lazy as possible.
