@@ -10,15 +10,12 @@ import shlex
 import subprocess
 import sys
 import warnings
-
 from importlib.metadata import version
 from pathlib import Path
 
 import pytest
 import yaml
-
 from ansible_compat.config import ansible_version
-
 
 # Do not add molecule imports here as it does have side effects due to console
 # redirection. We need to do these as lazy as possible.
@@ -140,11 +137,10 @@ class MoleculeItem(pytest.Item):
         scenario_molecule_yml = self.path
         data_scenario = self.yaml_loader(scenario_molecule_yml)
         # check if there is a global molecule config
-        global_molecule_yml = Path.cwd() + "/.config/molecule/config.yml"
-        if Path.exists(global_molecule_yml):
-            data_global = self.yaml_loader(global_molecule_yml)
+        try:
+            data_global = self.yaml_loader(Path.cwd() + "/.config/molecule/config.yml")
             data = data_global | data_scenario
-        else:
+        except Exception as e:
             data = data_scenario
 
         # we add the driver as mark
