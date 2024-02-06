@@ -5,4 +5,4 @@ comment: false
 coverage:
   range: 60..100
   status:
-    patch: false
+    patch: true # we want github annotations
