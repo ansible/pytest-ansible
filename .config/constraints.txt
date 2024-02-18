@@ -19,11 +19,11 @@ click==8.1.7
 click-help-colors==0.9.4
 colorama==0.4.6
 coverage==7.4.1
-cryptography==42.0.2
+cryptography==42.0.3
 csscompressor==0.9.5
 cssselect2==0.7.0
 defusedxml==0.7.1
-dnspython==2.5.0
+dnspython==2.6.0
 enrich==1.2.7
 exceptiongroup==1.2.0
 ghp-import==2.1.0
@@ -59,7 +59,7 @@ packaging==23.2
 paginate==0.5.6
 pathspec==0.12.1
 pillow==10.2.0
-pipdeptree==2.13.2
+pipdeptree==2.14.0
 platformdirs==4.2.0
 pluggy==1.4.0
 pycparser==2.21
@@ -76,7 +76,7 @@ regex==2023.12.25
 requests==2.31.0
 resolvelib==1.0.1
 rich==13.7.0
-rpds-py==0.17.1
+rpds-py==0.18.0
 six==1.16.0
 soupsieve==2.5
 subprocess-tee==0.4.1
