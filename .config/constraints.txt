@@ -19,7 +19,7 @@ click==8.1.7
 click-help-colors==0.9.4
 colorama==0.4.6
 coverage==7.4.1
-cryptography==42.0.2
+cryptography==42.0.4
 csscompressor==0.9.5
 cssselect2==0.7.0
 defusedxml==0.7.1
