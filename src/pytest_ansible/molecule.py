@@ -142,9 +142,7 @@ class MoleculeItem(pytest.Item):
         # check if there is a global molecule config
         try:
             data_global = self.yaml_loader(
-                os.path.join(
-                    Path.cwd(), "/.config/molecule/config.yml"
-                ),  # noqa: PTH118
+                os.path.join(Path.cwd(), "/.config/molecule/config.yml")  # noqa: PTH118,COM812
             )
             data = data_global | data_scenario
         except FileNotFoundError:
