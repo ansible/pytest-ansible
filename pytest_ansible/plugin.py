@@ -165,7 +165,7 @@ class PyTestAnsiblePlugin:
         """Initialize plugin."""
         self.config = config
 
-    def pytest_report_header(self, config, startdir):
+    def pytest_report_header(self, config, start_path):
         """Return the version of ansible."""
         return 'ansible: %s' % ansible.__version__
 
