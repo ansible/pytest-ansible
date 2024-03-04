@@ -1,7 +1,5 @@
 tox
-pytest<6.0.0
+pytest
 coverage
 coveralls
 mock
-pylama
-pylama_pylint
