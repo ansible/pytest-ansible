@@ -1,0 +1,42 @@
+---
+site_name: Ansible Pytest Documentation
+site_url: https://ansible.readthedocs.io/projects/pytest-ansible/
+repo_url: https://github.com/ansible/pytest-ansible
+edit_uri: blob/main/docs/
+copyright: Copyright © 2023 Red Hat, Inc.
+docs_dir: docs
+strict: true
+
+
+extra:
+  social:
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/pytest-ansible/
+      name: PyPI
+    - icon: fontawesome/solid/scroll
+      link: https://github.com/ansible/pytest-ansible/releases
+      name: Releases
+    - icon: simple/mastodon
+      link: https://fosstodon.org/@ansible
+      name: Mastodon
+    - icon: simple/matrix
+      link: https://matrix.to/#/#devtools:ansible.com
+      name: Matrix
+    - icon: fontawesome/solid/comments
+      link: https://github.com/ansible/pytest-ansible/discussions
+      name: Discussions
+    - icon: fontawesome/brands/github-alt
+      link: https://github.com/ansible/pytest-ansible
+      name: GitHub
+
+nav:
+  - User Guide:
+      - home: index.md
+
+markdown_extensions:
+  - admonition
+  - def_list
+  - footnotes
+  - toc:
+      toc_depth: 2
+      permalink: true
