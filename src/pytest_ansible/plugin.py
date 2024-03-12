@@ -343,7 +343,7 @@ class PyTestAnsiblePlugin:
                     and fixture_name in item._fixtureinfo.name2fixturedefs
                 ):
                     continue
-                if fixture_name == 'request':
+                if fixture_name == "request":
                     continue  # reserved name, from pytest
                 logger.error(
                     "Found %s fixture which seem to have no definition.",
