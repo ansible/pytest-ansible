@@ -135,44 +135,55 @@ class MoleculeItem(pytest.Item):
         """Construct MoleculeItem."""
         self.funcargs = {}
         super().__init__(name, parent)
-        molecule_yml = self.path
-        with Path(molecule_yml).open(encoding="utf-8") as stream:
-            # If the molecule.yml file is empty, YAML loader returns None. To
-            # simplify things down the road, we replace None with an empty
-            # dict.
-            data = yaml.load(stream, Loader=yaml.SafeLoader) or {}
 
-            # we add the driver as mark
-            self.molecule_driver = data.get("driver", {}).get("name", "no_driver")
-            self.add_marker(self.molecule_driver)
+        # Determine molecule scenario
+        scenario_molecule_yml = self.path
+        data_scenario = self.yaml_loader(scenario_molecule_yml)
+        # check if there is a global molecule config
+        try:
+            data_global = self.yaml_loader(
+                Path(Path.cwd()) / ".config/molecule/config.yml",
+            )
+            data = data_global | data_scenario
+        except FileNotFoundError:
+            data = data_scenario
 
-            # check for known markers and add them
-            markers = data.get("markers", [])
-            if "xfail" in markers:
-                self.add_marker(
-                    pytest.mark.xfail(
-                        reason="Marked as broken by scenario configuration.",
-                    ),
-                )
-            if "skip" in markers:
-                self.add_marker(
-                    pytest.mark.skip(reason="Disabled by scenario configuration."),
-                )
+        # we add the driver as mark
+        self.molecule_driver = data.get("driver", {}).get("name", "no_driver")
+        self.add_marker(self.molecule_driver)
 
-            # we also add platforms as marks
-            for platform in data.get("platforms", []):
-                platform_name = platform["name"]
-                self.config.addinivalue_line(
-                    "markers",
-                    f"{platform_name}: molecule platform name is {platform_name}",
-                )
-                self.add_marker(platform_name)
-            self.add_marker("molecule")
-            if (
-                self.config.option.molecule_unavailable_driver
-                and not self.config.option.molecule[self.molecule_driver]["available"]
-            ):
-                self.add_marker(self.config.option.molecule_unavailable_driver)
+        # check for known markers and add them
+        markers = data.get("markers", [])
+        if "xfail" in markers:
+            self.add_marker(
+                pytest.mark.xfail(
+                    reason="Marked as broken by scenario configuration.",
+                ),
+            )
+        if "skip" in markers:
+            self.add_marker(
+                pytest.mark.skip(reason="Disabled by scenario configuration."),
+            )
+
+        # we also add platforms as marks
+        for platform in data.get("platforms", []):
+            platform_name = platform["name"]
+            self.config.addinivalue_line(
+                "markers",
+                f"{platform_name}: molecule platform name is {platform_name}",
+            )
+            self.add_marker(platform_name)
+        self.add_marker("molecule")
+        if (
+            self.config.option.molecule_unavailable_driver
+            and not self.config.option.molecule[self.molecule_driver]["available"]
+        ):
+            self.add_marker(self.config.option.molecule_unavailable_driver)
+
+    def yaml_loader(self, filepath: str) -> dict:
+        """Load a yaml file at a given filepath."""
+        with Path.open(filepath, encoding="utf-8") as file_descriptor:
+            return yaml.safe_load(file_descriptor) or {}
 
     def runtest(self):
         """Perform effective test run."""
