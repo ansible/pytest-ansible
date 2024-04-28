@@ -18,7 +18,7 @@ markupsafe==2.1.5
 packaging==24.0
 pluggy==1.5.0
 pycparser==2.22
-pytest==8.1.1
+pytest==8.2.0
 pyyaml==6.0.1
 referencing==0.34.0
 resolvelib==1.0.1
