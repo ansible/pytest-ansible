@@ -40,7 +40,8 @@ jobs:
 
   build:
     name: ${{ matrix.name }}
-    environment: test
+    permissions:
+      id-token: write # codecov
     runs-on: ${{ matrix.os || 'ubuntu-22.04' }}
     # Failure of 'devel' job should not mark the whole workflow as failed
     continue-on-error: ${{ contains(matrix.name, 'devel') && true || false }}
@@ -115,8 +116,8 @@ jobs:
         with:
           name: ${{ matrix.passed_name }}
           fail_ci_if_error: true
-          token: ${{ secrets.CODECOV_TOKEN }}
           verbose: true # optional (default = false)
+          use_oidc: true # cspell:ignore oidc
 
       - name: Archive logs
         if: always()
