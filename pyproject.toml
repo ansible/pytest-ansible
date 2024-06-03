@@ -6,7 +6,7 @@ requires = [
 ]
 
 [project]
-authors = [{"name" = "Ansible by Red Hat", "email" = "info@ansible.com"}]
+authors = [{"email" = "info@ansible.com", "name" = "Ansible by Red Hat"}]
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Intended Audience :: Developers",
@@ -25,7 +25,7 @@ description = "Plugin for pytest to simplify calling ansible modules from tests 
 dynamic = ["version", "dependencies", "optional-dependencies"]
 keywords = ["ansible", "testing", "pytest"]
 license = {text = "MIT"}
-maintainers = [{"name" = "Ansible by Red Hat", "email" = "info@ansible.com"}]
+maintainers = [{"email" = "info@ansible.com", "name" = "Ansible by Red Hat"}]
 name = "pytest-ansible"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -34,10 +34,10 @@ requires-python = ">=3.10"
 pytest-ansible = "pytest_ansible.plugin"
 
 [project.urls]
-homepage = "https://github.com/ansible/pytest-ansible"
-documentation = "https://github.com/ansible/pytest-ansible"
-repository = "https://github.com/ansible/pytest-ansible"
 changelog = "https://github.com/ansible/pytest-ansible/releases"
+documentation = "https://github.com/ansible/pytest-ansible"
+homepage = "https://github.com/ansible/pytest-ansible"
+repository = "https://github.com/ansible/pytest-ansible"
 
 [tool.black]
 line-length = 100
@@ -62,8 +62,8 @@ files = ["src", "tests"]
 strict = true
 
 [[tool.mypy.overrides]]
-module = "ansible.*,selinux"
 ignore_missing_imports = true
+module = "ansible.*,selinux"
 
 [tool.pylint]
 
@@ -332,7 +332,6 @@ lines-between-types = 1 # Separate import/from with 1 line
 
 [tool.ruff.lint.per-file-ignores]
 "_version.py" = ["SIM108"]
-"tests/**" = ["SLF001", "S101", "S602", "T201"]
 "src/pytest_ansible/errors.py" = ["ANN001", "ANN101"]
 "src/pytest_ansible/fixtures.py" = ["ANN001", "ANN003", "ANN201", "ANN202", "E501"]
 "src/pytest_ansible/host_manager/base.py" = ["ANN001", "ANN002", "ANN003", "ANN101", "ANN201", "ANN202", "ANN204", "ARG002", "EM101", "TRY003"]
@@ -346,6 +345,7 @@ lines-between-types = 1 # Separate import/from with 1 line
 "src/pytest_ansible/plugin.py" = ["ANN001", "ANN003", "ANN101", "ANN201", "ANN202", "ANN205", "ARG002", "B018", "B904", "E501", "S101", "SLF001"]
 "src/pytest_ansible/results.py" = ["ANN001", "ANN003", "ANN101", "ANN201", "ANN202", "ANN204", "E501", "S101"]
 "src/pytest_ansible/units.py" = ["E501", "SLF001", "TRY400"]
+"tests/**" = ["SLF001", "S101", "S602", "T201"]
 "tests/conftest.py" = ["ANN001", "ANN101", "ANN201", "ANN202", "D100", "D102", "D103", "D107", "D205", "FBT002", "INP001"]
 "tests/integration/test_molecule.py" = ["E501", "PLR2004", "S607"]
 "tests/test_adhoc.py" = ["ANN001", "ANN201", "D100", "D205", "E501", "INP001", "RUF005"]
