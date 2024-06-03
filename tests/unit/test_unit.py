@@ -47,9 +47,7 @@ def test_inject(
     (tmp_path / "collections" / "ansible_collections").mkdir(parents=True)
 
     inject(tmp_path)
-    assert (
-        tmp_path / "collections" / "ansible_collections" / "namespace" / "name"
-    ).is_dir()
+    assert (tmp_path / "collections" / "ansible_collections" / "namespace" / "name").is_dir()
     assert (
         str(tmp_path / "collections")
         == sys.path[0]

@@ -27,57 +27,51 @@ invalid_hosts = ("none", "all", "*", "local*")
 @pytest.fixture()
 def module_result_ok(request):
     return ModuleResult(
-        **{
-            "invocation": {"module_name": "debug", "module_args": {"msg": "testing"}},
-            "msg": "testing",
-            "changed": False,
-            "_ansible_verbose_always": True,
-            "_ansible_no_log": False,
-        },
+        invocation={"module_name": "debug", "module_args": {"msg": "testing"}},
+        msg="testing",
+        changed=False,
+        _ansible_verbose_always=True,
+        _ansible_no_log=False,
     )
 
 
 @pytest.fixture()
 def module_result_failed():
     return ModuleResult(
-        **{
-            "invocation": {"module_name": "fail", "module_args": {}},
-            "failed": True,
-            "changed": False,
-            "_ansible_no_log": False,
-            "msg": "Failed as requested from task",
-        },
+        invocation={"module_name": "fail", "module_args": {}},
+        failed=True,
+        changed=False,
+        _ansible_no_log=False,
+        msg="Failed as requested from task",
     )
 
 
 @pytest.fixture()
 def module_result_changed(request):
     return ModuleResult(
-        **{
-            "changed": True,
-            "end": "2016-06-17 21:32:54.877597",
-            "_ansible_no_log": False,
-            "stdout": "Fri Jun 17 21:32:54 EDT 2016",
-            "cmd": ["date"],
-            "rc": 0,
-            "start": "2016-06-17 21:32:54.873429",
-            "stderr": "",
-            "delta": "0:00:00.004168",
-            "invocation": {
-                "module_name": "command",
-                "module_args": {
-                    "creates": None,
-                    "executable": None,
-                    "_uses_shell": False,
-                    "_raw_params": "date",
-                    "removes": None,
-                    "warn": True,
-                    "chdir": None,
-                },
+        changed=True,
+        end="2016-06-17 21:32:54.877597",
+        _ansible_no_log=False,
+        stdout="Fri Jun 17 21:32:54 EDT 2016",
+        cmd=["date"],
+        rc=0,
+        start="2016-06-17 21:32:54.873429",
+        stderr="",
+        delta="0:00:00.004168",
+        invocation={
+            "module_name": "command",
+            "module_args": {
+                "creates": None,
+                "executable": None,
+                "_uses_shell": False,
+                "_raw_params": "date",
+                "removes": None,
+                "warn": True,
+                "chdir": None,
             },
-            "stdout_lines": ["Fri Jun 17 21:32:54 EDT 2016"],
-            "warnings": [],
         },
+        stdout_lines=["Fri Jun 17 21:32:54 EDT 2016"],
+        warnings=[],
     )
 
 

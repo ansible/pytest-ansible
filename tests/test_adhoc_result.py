@@ -3,7 +3,6 @@ from types import GeneratorType
 import pytest
 
 from conftest import ALL_EXTRA_HOSTS, ALL_HOSTS
-
 from pytest_ansible.results import ModuleResult
 
 
@@ -128,15 +127,12 @@ def test_connection_failure_v2():
     # Assert dark
     assert "unknown.example.com" in exc_info.value.dark
     # Assert unreachable
-    assert (
-        "unreachable" in exc_info.value.dark["unknown.example.com"]
-    ), exc_info.value.dark.keys()
+    assert "unreachable" in exc_info.value.dark["unknown.example.com"], exc_info.value.dark.keys()
     assert exc_info.value.dark["unknown.example.com"]["unreachable"]
     # Assert msg
     assert "msg" in exc_info.value.dark["unknown.example.com"]
     assert (
-        "Failed to connect to the host via ssh"
-        in exc_info.value.dark["unknown.example.com"]["msg"]
+        "Failed to connect to the host via ssh" in exc_info.value.dark["unknown.example.com"]["msg"]
     )
 
 

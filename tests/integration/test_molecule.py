@@ -44,9 +44,7 @@ def test_molecule_disabled() -> None:
     )
     assert proc.returncode == 4
     # First check is for pytest 7 behavior, second for pytest >=8
-    assert (
-        "ERROR: found no collectors" in proc.stderr or "ERROR: not found" in proc.stderr
-    )
+    assert "ERROR: found no collectors" in proc.stderr or "ERROR: not found" in proc.stderr
 
 
 def test_molecule_runtest() -> None:

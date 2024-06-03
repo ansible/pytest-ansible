@@ -379,9 +379,7 @@ class PyTestAnsiblePlugin:
 
         # normalize ansible.ansible_become options
         kwargs["become"] = kwargs.get("become") or ansible.constants.DEFAULT_BECOME
-        kwargs["become_user"] = (
-            kwargs.get("become_user") or ansible.constants.DEFAULT_BECOME_USER
-        )
+        kwargs["become_user"] = kwargs.get("become_user") or ansible.constants.DEFAULT_BECOME_USER
         kwargs["ask_become_pass"] = (
             kwargs.get("ask_become_pass") or ansible.constants.DEFAULT_BECOME_ASK_PASS
         )

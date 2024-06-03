@@ -229,10 +229,7 @@ class ModuleDispatcherV212(BaseModuleDispatcher):
                 contacted=callback.contacted,
             )
 
-        if (
-            self.options.get("extra_inventory_manager", None)
-            and callback_extra.unreachable
-        ):
+        if self.options.get("extra_inventory_manager", None) and callback_extra.unreachable:
             msg = "Host unreachable in the extra inventory"
             raise AnsibleConnectionFailure(
                 msg,

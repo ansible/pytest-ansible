@@ -40,6 +40,9 @@ documentation = "https://github.com/ansible/pytest-ansible"
 repository = "https://github.com/ansible/pytest-ansible"
 changelog = "https://github.com/ansible/pytest-ansible/releases"
 
+[tool.black]
+line-length = 100
+
 [tool.coverage.report]
 exclude_lines = ["if TYPE_CHECKING:", "pragma: no cover"]
 fail_under = 68
@@ -113,45 +116,50 @@ addopts = ["--tb=native"]
 markers = ["old", "unit", "requires_ansible_v2"]
 
 [tool.ruff]
-select = ["ALL"]
-ignore = [
-  "E501", # we use black
-  "D203", # incompatible with D211
-  "D213", # incompatible with D212
-  # temporary disabled until we fix them:
-  "ANN",
-  "ARG",
-  "B",
-  "C",
-  "EM",
-  "FBT",
-  "INP",
-  "ISC",
-  "PGH",
-  "PIE",
-  "PLC",
-  "PLR",
-  "PLW",
-  "RUF",
-  "S",
-  "SLF",
-  "T",
-  "TRY"
-]
+builtins = ["__"]
+fix = true
+line-length = 100
 target-version = "py310"
-# Same as Black.
-line-length = 88
 
-[tool.ruff.flake8-pytest-style]
+[tool.ruff.lint]
+select = ["ALL"]
+
+[tool.ruff.lint.flake8-pytest-style]
 parametrize-values-type = "tuple"
 
-[tool.ruff.isort]
-known-first-party = ["pytest_ansible"]
+[tool.ruff.lint.isort]
 lines-after-imports = 2 # Ensures consistency for cases when there's variable vs function/class definitions after imports
 lines-between-types = 1 # Separate import/from with 1 line
 
-[tool.ruff.per-file-ignores]
-"tests/**" = ["S101", "D"]
+[tool.ruff.lint.per-file-ignores]
+"_version.py" = ["SIM108"]
+"tests/**" = ["SLF001", "S101", "S602", "T201"]
+"src/pytest_ansible/errors.py" = ['ANN001', 'ANN101']
+"src/pytest_ansible/fixtures.py" = ['ANN001', 'ANN003', 'ANN201', 'ANN202', 'E501']
+"src/pytest_ansible/host_manager/__init__.py" = ['ANN001', 'ANN002', 'ANN003', 'ANN101', 'ANN201', 'ANN202', 'ANN204', 'ARG002', 'EM101', 'TRY003']
+"src/pytest_ansible/host_manager/v212.py" = ['ANN002', 'ANN003', 'ANN101', 'ANN201']
+"src/pytest_ansible/host_manager/v213.py" = ['ANN002', 'ANN003', 'ANN101', 'ANN201']
+"src/pytest_ansible/module_dispatcher/__init__.py" = ['ANN001', 'ANN002', 'ANN003', 'ANN101', 'ANN201', 'ANN202', 'ANN204', 'ARG002', 'E501']
+"src/pytest_ansible/module_dispatcher/v212.py" = ['ANN001', 'ANN002', 'ANN003', 'ANN101', 'ANN201', 'ANN202', 'ARG002', 'B028', 'C901', 'PLR0912', 'PLR0915', 'PLW2901', 'SLF001']
+"src/pytest_ansible/module_dispatcher/v213.py" = ['ANN001', 'ANN002', 'ANN003', 'ANN101', 'ANN201', 'ANN202', 'ARG002', 'B028', 'C901', 'EM101', 'PLR0912', 'PLR0915', 'PLW2901', 'SLF001', 'TRY003']
+"src/pytest_ansible/molecule.py" = ['ANN001', 'ANN101', 'ANN201', 'PGH004', 'PLW0603', 'S603', 'S607', 'SLF001', 'T201']
+"src/pytest_ansible/plugin.py" = ['ANN001', 'ANN003', 'ANN101', 'ANN201', 'ANN202', 'ANN205', 'ARG002', 'B018', 'B904', 'E501', 'S101', 'SLF001']
+"src/pytest_ansible/results.py" = ['ANN001', 'ANN003', 'ANN101', 'ANN201', 'ANN202', 'ANN204', 'E501', 'S101']
+"src/pytest_ansible/units.py" = ['E501', 'SLF001', 'TRY400']
+"tests/conftest.py" = ['ANN001', 'ANN101', 'ANN201', 'ANN202', 'D100', 'D102', 'D103', 'D107', 'D205', 'FBT002', 'INP001']
+"tests/integration/test_molecule.py" = ['E501', 'PLR2004', 'S607']
+"tests/test_adhoc.py" = ['ANN001', 'ANN201', 'D100', 'D205', 'E501', 'INP001', 'RUF005']
+"tests/test_adhoc_result.py" = ['ANN001', 'ANN201', 'ANN202', 'B007', 'D100', 'D103', 'INP001']
+"tests/test_fixtures.py" = ['ANN001', 'ANN201', 'D100', 'D103', 'INP001', 'PGH003']
+"tests/test_host_manager.py" = ['ANN001', 'ANN201', 'ARG001', 'D100', 'D103', 'INP001']
+"tests/test_module_dispatcher.py" = ['ANN001', 'ANN201', 'ARG001', 'D100', 'D103', 'E501', 'INP001', 'PGH004']
+"tests/test_module_result.py" = ['ANN001', 'ANN201', 'ANN202', 'ARG001', 'D100', 'D103', 'E501', 'INP001']
+"tests/test_params.py" = ['ANN001', 'ANN201', 'D100', 'D103', 'E501', 'INP001']
+"tests/test_plugin.py" = ['ANN001', 'ANN101', 'ANN201', 'ARG002', 'D100', 'D102', 'D103', 'D107', 'INP001', 'PLR2004', 'RUF012']
+"tests/unit/test_unit.py" = ['ANN201', 'ARG001', 'S607']
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
 
 [tool.setuptools.dynamic]
 dependencies = {file = [".config/requirements.in"]}
