@@ -18,7 +18,7 @@ def test_runtime_error():
 def test_importerror_requires_v1():
     with pytest.raises(ImportError):
         # pylint: disable=unused-import
-        import pytest_ansible.module_dispatcher.v1  # noqa: F401
+        import pytest_ansible.module_dispatcher.v1  # noqa: F401 # pylint: disable=import-error, no-name-in-module
 
 
 @pytest.mark.parametrize(

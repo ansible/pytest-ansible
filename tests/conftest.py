@@ -1,6 +1,6 @@
 import pytest
 
-from pytest_ansible.host_manager import get_host_manager
+from pytest_ansible.host_manager.utils import get_host_manager
 
 
 try:
@@ -104,12 +104,10 @@ def pytest_runtest_setup(item):
             item.add_marker(
                 pytest.xfail(
                     reason="expected failure on >= ansible-2.*",
-                    raises=mark.kwargs.get("raises"),
                 ),
             )
 
 
-# pylint: disable=too-few-public-methods
 class PyTestOption:
     """Helper class that provides methods for creating and managing an inventory file."""
 

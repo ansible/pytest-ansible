@@ -3,8 +3,8 @@
 import pytest
 
 
-@pytest.fixture()
-def ansible_adhoc(request):
+@pytest.fixture(name="ansible_adhoc")
+def fixture_ansible_adhoc(request):
     """Return an inventory initialization method."""
     plugin = request.config.pluginmanager.getplugin("ansible")
 
@@ -14,8 +14,8 @@ def ansible_adhoc(request):
     return init_host_mgr
 
 
-@pytest.fixture()
-def ansible_module(ansible_adhoc):
+@pytest.fixture(name="ansible_module")
+def fixture_ansible_module(ansible_adhoc):
     """Return a subclass of BaseModuleDispatcher."""
     host_mgr = ansible_adhoc()
     return getattr(host_mgr, host_mgr.options["host_pattern"])

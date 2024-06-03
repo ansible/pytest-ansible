@@ -146,7 +146,6 @@ def acf_inject(paths: list[str]) -> None:
 
     :param paths: The paths to inject
     """
-    # pylint: disable=protected-access
     if HAS_COLLECTION_FINDER:
         acf = _AnsibleCollectionFinder(paths=paths)
         acf._install()

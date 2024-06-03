@@ -172,7 +172,7 @@ def test_host_manager_not_getattr(
 
 
 def test_defaults(request):
-    from ansible.constants import DEFAULT_TRANSPORT
+    from ansible.constants import DEFAULT_TRANSPORT  # pylint: disable=no-name-in-module
 
     plugin = request.config.pluginmanager.getplugin("ansible")
     hosts = plugin.initialize(config=request.config, request=request)

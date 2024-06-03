@@ -80,6 +80,9 @@ repos:
         args:
           - --output-format=colorized
         additional_dependencies:
+          - ansible-compat
+          - ansible-core
+          - molecule
           - pytest
           - pyyaml
           - setuptools

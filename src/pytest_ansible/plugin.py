@@ -16,12 +16,12 @@ import ansible.utils.display
 import pytest
 
 from pytest_ansible.fixtures import (
-    ansible_adhoc,
     ansible_facts,
-    ansible_module,
+    fixture_ansible_adhoc,
+    fixture_ansible_module,
     localhost,
 )
-from pytest_ansible.host_manager import get_host_manager
+from pytest_ansible.host_manager.utils import get_host_manager
 
 from .molecule import HAS_MOLECULE, MoleculeFile, MoleculeScenario
 from .units import inject, inject_only
@@ -36,7 +36,7 @@ logger = logging.getLogger(__name__)
 
 # Silence linters for imported fixtures
 # pylint: disable=pointless-statement, no-member
-(ansible_adhoc, ansible_module, ansible_facts, localhost)
+(fixture_ansible_adhoc, fixture_ansible_module, ansible_facts, localhost)
 
 log_map = {
     0: logging.CRITICAL,
