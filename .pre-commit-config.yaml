@@ -3,40 +3,31 @@ ci:
   # format compatible with commitlint
   autoupdate_commit_msg: "chore: pre-commit autoupdate"
   autoupdate_schedule: monthly
-  autofix_commit_msg: |
-    chore: auto fixes from pre-commit.com hooks
+  autofix_commit_msg: "chore: auto fixes from pre-commit.com hooks"
 
-    for more information, see https://pre-commit.ci
-  skip:
-    - pip-compile
 repos:
-  - repo: meta
-    hooks:
-      - id: check-useless-excludes
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.6.0
     hooks:
       - id: check-merge-conflict
       - id: check-symlinks
-      - id: end-of-file-fixer
-      - id: no-commit-to-branch
-        args: [--branch, main]
-      - id: trailing-whitespace
-      - id: mixed-line-ending
-      - id: check-executables-have-shebangs
       - id: debug-statements
-        language_version: python3
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+
+  - repo: https://github.com/asottile/add-trailing-comma.git
+    rev: v3.1.0
+    hooks:
+      - id: add-trailing-comma
+        args:
+          - --py36-plus
+
   - repo: https://github.com/Lucas-C/pre-commit-hooks.git
     rev: v1.5.5
     hooks:
       - id: remove-tabs
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: "v0.4.7"
-    hooks:
-      - id: ruff
-        args: [--fix, --exit-non-zero-on-fix]
+
   - repo: https://github.com/pre-commit/mirrors-prettier
-    # keep it before yamllint
     rev: v4.0.0-alpha.8
     hooks:
       - id: prettier
@@ -45,75 +36,73 @@ repos:
           - prettier
           - prettier-plugin-toml
           - prettier-plugin-sort-json
+
   - repo: https://github.com/psf/black
     rev: 24.4.2
     hooks:
       - id: black
-        language_version: python3
+
+  - repo: https://github.com/pappasam/toml-sort
+    rev: v0.23.1
+    hooks:
+      - id: toml-sort-fix
+
+  - repo: https://github.com/tox-dev/tox-ini-fmt
+    rev: 1.3.1
+    hooks:
+      - id: tox-ini-fmt
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.5
+    hooks:
+      - id: ruff
+        args:
+          - --exit-non-zero-on-fix
+
   - repo: https://github.com/streetsidesoftware/cspell-cli
     rev: v8.8.2
     hooks:
       - id: cspell
         name: Spell check with cspell
-  - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.28.4
-    hooks:
-      - id: check-github-workflows
-  - repo: https://github.com/jsh9/pydoclint
-    rev: 0.4.2
-    hooks:
-      - id: pydoclint
-        args:
-          - "--config=pyproject.toml"
-  - repo: https://github.com/pycqa/pylint
+
+  # - repo: https://github.com/pycqa/flake8
+  #   rev: 7.0.0
+  #   hooks:
+  #     - id: flake8
+  #       name: flake8(pydoclint)
+  #       additional_dependencies:
+  #         - pydoclint[flake8]
+
+  - repo: https://github.com/pycqa/pylint.git
     rev: v3.2.2
     hooks:
       - id: pylint
         args:
           - --output-format=colorized
         additional_dependencies:
-          - ansible-core
           - pytest
-  - repo: https://github.com/pre-commit/mirrors-mypy
+          - pyyaml
+          - setuptools
+          - subprocess_tee
+
+  - repo: https://github.com/pre-commit/mirrors-mypy.git
     rev: v1.10.0
     hooks:
       - id: mypy
-        # Do not modify args to match mypy cli/ide behavior, use config if needed.
-        args: ["."]
-        pass_filenames: false
         additional_dependencies:
           - pytest
-          - ansible-core
-          - packaging
+          - subprocess_tee
+          - types-setuptools
+        # Override default pre-commit '--ignore-missing-imports'
+        args: [--strict]
+
   - repo: https://github.com/jazzband/pip-tools
     rev: 7.4.1
     hooks:
       - id: pip-compile
-        name: lock
-        alias: lock
-        always_run: true
-        entry: pip-compile --upgrade --resolver=backtracking -q --no-annotate --output-file=.config/requirements-lock.txt pyproject.toml --strip-extras
-        files: ^.config\/.*requirements.*$
-        language: python
-        language_version: "3.10" # minimal we support officially
-        pass_filenames: false
-        stages: [manual]
-        additional_dependencies:
-          - pip>=22.3.1
-      - id: pip-compile
         name: deps
         alias: deps
-        entry: pip-compile --no-annotate --output-file=.config/constraints.txt --all-extras --strip-extras pyproject.toml
-        files: ^.config\/.*(requirements|constraints).*$
-        language_version: "3.10" # minimal we support officially
-      - id: pip-compile
-        entry: pip-compile --resolver=backtracking -q --no-annotate --output-file=.config/constraints.txt pyproject.toml --all-extras --strip-extras --upgrade
-        language: python
-        always_run: true
-        pass_filenames: false
-        files: ^.config\/.*(requirements|constraints).*$
-        alias: up
         stages: [manual]
+        entry: pip-compile .config/requirements.in --upgrade --all-extras --no-annotate --strip-extras --output-file=.config/constraints.txt pyproject.toml
+        files: ^.config\/.*requirements.*$
         language_version: "3.10" # minimal we support officially
-        additional_dependencies:
-          - pip>=22.3.1
