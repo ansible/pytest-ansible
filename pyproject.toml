@@ -318,6 +318,11 @@ fail-on = [
   "useless-suppression"
 ]
 
+[tool.pytest.ini_options]
+minversion = 6.0
+addopts = ["--tb=native"]
+markers = ["old", "unit", "requires_ansible_v2"]
+
 [tool.ruff]
 builtins = ["__"]
 fix = true
