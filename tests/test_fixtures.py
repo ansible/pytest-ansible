@@ -10,7 +10,7 @@ def test_ansible_adhoc(pytester, option):
     src = """
         import pytest
         import types
-        from pytest_ansible.host_manager import BaseHostManager
+        from pytest_ansible.host_manager.base import BaseHostManager
         def test_func(ansible_adhoc):
             assert isinstance(ansible_adhoc, types.FunctionType)
             assert isinstance(ansible_adhoc(), BaseHostManager)
