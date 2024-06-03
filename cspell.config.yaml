@@ -7,19 +7,18 @@ dictionaries:
   - networking-terms
   - python
   - words
-  - en_US
+  - "!aws"
+  - "!backwards-compatibility"
+  - "!cryptocurrencies"
+  - "!cpp"
 ignorePaths:
-  # All dot files in the root
-  - \.*
-  # This file
-  - cspell.config.yaml
-  # The shared file for tool configuration
-  - pyproject.toml
-  # requirements files
   - .config/requirements*
-  # The tox configuration file
-  - tox.ini
+  - \.*
+  - cspell.config.yaml
   - mkdocs.yml
-  - "*.svg"
+  - pyproject.toml
+  - tox.ini
+
 languageSettings:
   - languageId: python
+    allowCompoundWords: false
