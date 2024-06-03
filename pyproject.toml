@@ -43,7 +43,7 @@ repository = "https://github.com/ansible/pytest-ansible"
 line-length = 100
 
 [tool.coverage.report]
-exclude_lines = ["if TYPE_CHECKING:", "pragma: no cover"]
+exclude_also = ["if TYPE_CHECKING:", "pragma: no cover"]
 fail_under = 68
 ignore_errors = true
 show_missing = true
@@ -327,7 +327,7 @@ select = ["ALL"]
 parametrize-values-type = "tuple"
 
 [tool.ruff.lint.isort]
-lines-after-imports = 2 # Ensures consistency for cases when there"s variable vs function/class definitions after imports
+lines-after-imports = 2 # Ensures consistency for cases when there's variable vs function/class definitions after imports
 lines-between-types = 1 # Separate import/from with 1 line
 
 [tool.ruff.lint.per-file-ignores]
