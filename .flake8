@@ -1,0 +1,31 @@
+[flake8]
+allow-init-docstring = True
+arg-type-hints-in-docstring = False
+check-return-types = False
+select = DOC
+show-filenames-in-every-violation-message = True
+skip-checking-short-docstrings = False
+filename =
+    */src/**/*.py
+    */tests/**/*.py
+style = google
+per-file-ignores =
+    src/pytest_ansible/errors.py: DOC101,DOC103,DOC106,DOC107
+    src/pytest_ansible/fixtures.py: DOC101,DOC103,DOC106,DOC107,DOC201
+    src/pytest_ansible/host_manager/__init__.py: DOC101,DOC103,DOC106,DOC107,DOC201,DOC501
+    src/pytest_ansible/host_manager/v212.py: DOC101,DOC103,DOC106
+    src/pytest_ansible/host_manager/v213.py: DOC101,DOC103,DOC106
+    src/pytest_ansible/module_dispatcher/__init__.py: DOC101,DOC103,DOC106,DOC107,DOC201,DOC501
+    src/pytest_ansible/module_dispatcher/v212.py: DOC101,DOC103,DOC106,DOC107,DOC201,DOC501
+    src/pytest_ansible/module_dispatcher/v213.py: DOC101,DOC103,DOC106,DOC107,DOC201,DOC501
+    src/pytest_ansible/molecule.py: DOC101,DOC103,DOC106,DOC107,DOC201,DOC402,DOC404
+    src/pytest_ansible/plugin.py: DOC101,DOC103,DOC106,DOC107,DOC201,DOC501
+    src/pytest_ansible/results.py: DOC101,DOC103,DOC106,DOC107,DOC201,DOC402,DOC404,DOC501
+    src/pytest_ansible/units.py: DOC101,DOC103,DOC201
+    tests/conftest.py: DOC101,DOC103,DOC106,DOC107,DOC201
+    tests/integration/test_molecule.py: DOC101,DOC103
+    tests/test_adhoc.py: DOC101,DOC103,DOC106,DOC107
+    tests/test_module_dispatcher.py: DOC101,DOC103,DOC106,DOC107
+    tests/test_params.py: DOC101,DOC103,DOC106,DOC107
+    tests/test_plugin.py: DOC101,DOC103,DOC106,DOC107
+    tests/unit/test_unit.py: DOC101,DOC103,DOC201
