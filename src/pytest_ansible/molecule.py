@@ -1,3 +1,5 @@
+# mypy: disable-error-code="arg-type,call-overload,no-untyped-def,type-arg,union-attr,var-annotated"
+
 """pytest-molecule plugin implementation."""
 
 from __future__ import annotations

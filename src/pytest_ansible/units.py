@@ -1,3 +1,5 @@
+# mypy: disable-error-code="arg-type,list-item,misc"
+
 """Setup the collection for testing."""
 
 from __future__ import annotations

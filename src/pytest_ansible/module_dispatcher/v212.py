@@ -1,3 +1,4 @@
+# mypy: disable-error-code="misc,no-untyped-def,var-annotated"
 """Fixme."""
 
 from __future__ import annotations
@@ -73,7 +74,7 @@ class ModuleDispatcherV212(BaseModuleDispatcher):
             msg = "Only supported with ansible-2.12 and newer"
             raise ImportError(msg)
 
-    def has_module(self, name):
+    def has_module(self, name):  # type: ignore[no-untyped-def]
         """Fixme."""
         # Make sure we parse module_path and pass it to the loader,
         # otherwise, only built-in modules will work.

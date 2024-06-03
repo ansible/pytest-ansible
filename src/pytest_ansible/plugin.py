@@ -1,3 +1,5 @@
+# mypy: disable-error-code="no-untyped-call,no-untyped-def"
+
 """PyTest Ansible Plugin."""
 
 from __future__ import annotations

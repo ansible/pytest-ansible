@@ -1,6 +1,8 @@
+ansible-core
 black
 coverage[toml]
 flake8
+molecule
 mypy
 pip-tools
 pre-commit
@@ -12,5 +14,3 @@ ruff
 toml-sort
 tox
 types-PyYAML
-molecule
-ansible-core

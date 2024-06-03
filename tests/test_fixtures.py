@@ -1,3 +1,5 @@
+# mypy: disable-error-code="attr-defined,no-untyped-def"
+
 try:
     from _pytest.main import EXIT_OK  # type: ignore
 except ImportError:

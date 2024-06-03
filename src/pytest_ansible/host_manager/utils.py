@@ -1,15 +1,13 @@
+# mypy: disable-error-code="assignment,no-untyped-def"
+
 """Host manager related utilities."""
 
-from typing import TYPE_CHECKING
-
-
-if TYPE_CHECKING:
-    from pytest_ansible.host_manager import HostManager
 
 from pytest_ansible.has_version import has_ansible_v212, has_ansible_v213
+from pytest_ansible.host_manager.base import BaseHostManager
 
 
-def get_host_manager(*args, **kwargs) -> "HostManager":
+def get_host_manager(*args, **kwargs) -> BaseHostManager:
     """Initialize and return a HostManager instance.
 
     Args:

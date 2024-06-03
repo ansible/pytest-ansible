@@ -1,5 +1,7 @@
 """Fixme."""
 
+# mypy: disable-error-code="no-untyped-call,no-untyped-def,type-arg"
+
 
 class ModuleResult(dict):
     """Fixme."""

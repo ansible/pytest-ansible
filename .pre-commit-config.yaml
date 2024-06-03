@@ -86,15 +86,16 @@ repos:
           - pytest
           - pyyaml
           - setuptools
-          - subprocess_tee
 
   - repo: https://github.com/pre-commit/mirrors-mypy.git
     rev: v1.10.0
     hooks:
       - id: mypy
         additional_dependencies:
+          - ansible-compat
+          - molecule
           - pytest
-          - subprocess_tee
+          - types-pyyaml
           - types-setuptools
         # Override default pre-commit '--ignore-missing-imports'
         args: [--strict]

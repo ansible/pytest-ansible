@@ -59,22 +59,12 @@ parallel = true
 source_pkgs = ["pytest_ansible"]
 
 [tool.mypy]
-python_version = "3.10"
-ignore_missing_imports = true
-ignore_errors = true
+files = ["src", "tests"]
 strict = true
-color_output = true
-error_summary = true
-# Temporary disabled until we fix them:
-disallow_untyped_calls = false
-disallow_untyped_defs = false
-disallow_any_generics = false
-disable_error_code = ["var-annotated", "attr-defined"]
 
 [[tool.mypy.overrides]]
-module = ["ansible.*"]
+module = "ansible.*,selinux"
 ignore_missing_imports = true
-ignore_errors = true
 
 [tool.pylint]
 

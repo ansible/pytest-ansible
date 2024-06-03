@@ -1,3 +1,5 @@
+# mypy: disable-error-code="no-untyped-def,union-attr"
+
 """Tests specific to the unit test functionality."""
 
 from __future__ import annotations
