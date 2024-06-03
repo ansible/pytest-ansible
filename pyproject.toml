@@ -378,7 +378,7 @@ git_describe_command = [
   "v*.*"
 ]
 local_scheme = "no-local-version"
-write_to = "src/pytest-ansible/_version.py"
+write_to = "src/pytest_ansible/_version.py"
 
 [tool.tomlsort]
 in_place = true
