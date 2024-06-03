@@ -34,7 +34,7 @@ jobs:
           other_names: |
             lint
             pkg
-            py310-devel
+            py310-milestone
             docs
           platforms: linux,macos
 
