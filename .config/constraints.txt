@@ -80,7 +80,7 @@ paginate==0.5.6
 pathspec==0.12.1
 pillow==10.3.0
 pip-tools==7.4.1
-pipdeptree==2.21.0
+pipdeptree==2.22.0
 platformdirs==4.2.2
 pluggy==1.5.0
 pre-commit==3.7.1
