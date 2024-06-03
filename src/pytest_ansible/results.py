@@ -13,9 +13,7 @@ class ModuleResult(dict):
     @property
     def is_ok(self):
         """Fixme."""
-        return not (
-            self.is_changed or self.is_unreachable or self.is_skipped or self.is_failed
-        )
+        return not (self.is_changed or self.is_unreachable or self.is_skipped or self.is_failed)
 
     @property
     def is_changed(self):

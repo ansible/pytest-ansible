@@ -38,8 +38,7 @@ class BaseModuleDispatcher:
         except KeyError:
             extra_inventory_hosts = []
         return (
-            len(self.options["inventory_manager"].list_hosts(item))
-            + len(extra_inventory_hosts)
+            len(self.options["inventory_manager"].list_hosts(item)) + len(extra_inventory_hosts)
         ) > 0
 
     def __getattr__(self, name):

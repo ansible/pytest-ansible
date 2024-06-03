@@ -102,9 +102,7 @@ class BaseHostManager:
 
     def keys(self):
         """Fixme."""
-        inventory_hosts = [
-            h.name for h in self.options["inventory_manager"].list_hosts()
-        ]
+        inventory_hosts = [h.name for h in self.options["inventory_manager"].list_hosts()]
         extra_inventory_hosts = self.get_extra_inventory_hosts()
         return inventory_hosts + extra_inventory_hosts
 
