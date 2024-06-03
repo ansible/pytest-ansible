@@ -4,8 +4,10 @@ from ansible.inventory.manager import InventoryManager
 from ansible.parsing.dataloader import DataLoader
 from ansible.vars.manager import VariableManager
 
-from pytest_ansible.host_manager import BaseHostManager
-from pytest_ansible.module_dispatcher.v212 import ModuleDispatcherV212
+from pytest_ansible.host_manager.base import BaseHostManager
+from pytest_ansible.module_dispatcher.v212 import (
+    ModuleDispatcherV212,  # pylint: disable=cyclic-import
+)
 
 
 class HostManagerV212(BaseHostManager):

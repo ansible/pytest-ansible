@@ -8,7 +8,7 @@ import ansible.errors
 import ansible.utils
 
 from ansible.cli.adhoc import AdHocCLI
-from ansible.constants import COLLECTIONS_PATHS
+from ansible.constants import COLLECTIONS_PATHS  # pylint: disable=no-name-in-module
 from ansible.executor.task_queue_manager import TaskQueueManager
 from ansible.playbook.play import Play
 from ansible.plugins.callback import CallbackBase
@@ -26,7 +26,6 @@ try:
     # init_plugin_loader was introduced in Ansible-core change here, v2.15
     # https://github.com/ansible/ansible/pull/78915
     # Whenever a new vXYZ.py dispatcher module is introduced, make this static import
-    # pylint: disable=ungrouped-imports
     from ansible.plugins.loader import init_plugin_loader
 except ImportError:
     HAS_CUSTOM_LOADER_SUPPORT = False

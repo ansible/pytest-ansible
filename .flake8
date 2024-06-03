@@ -12,9 +12,10 @@ style = google
 per-file-ignores =
     src/pytest_ansible/errors.py: DOC101,DOC103,DOC106,DOC107
     src/pytest_ansible/fixtures.py: DOC101,DOC103,DOC106,DOC107,DOC201
-    src/pytest_ansible/host_manager/__init__.py: DOC101,DOC103,DOC106,DOC107,DOC201,DOC501
+    src/pytest_ansible/host_manager/base.py: DOC101,DOC103,DOC106,DOC107,DOC201,DOC501
     src/pytest_ansible/host_manager/v212.py: DOC101,DOC103,DOC106
     src/pytest_ansible/host_manager/v213.py: DOC101,DOC103,DOC106
+    src/pytest_ansible/host_manager/utils.py: DOC106,DOC501
     src/pytest_ansible/module_dispatcher/__init__.py: DOC101,DOC103,DOC106,DOC107,DOC201,DOC501
     src/pytest_ansible/module_dispatcher/v212.py: DOC101,DOC103,DOC106,DOC107,DOC201,DOC501
     src/pytest_ansible/module_dispatcher/v213.py: DOC101,DOC103,DOC106,DOC107,DOC201,DOC501

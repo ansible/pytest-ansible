@@ -14,8 +14,8 @@ invalid_hosts = [
 ]
 
 
-@pytest.fixture(params=[True, False])
-def adhoc_result(request, hosts):
+@pytest.fixture(params=[True, False], name="adhoc_result")
+def fixture_adhoc_result(request, hosts):
     def create_hosts():
         _hosts = hosts(include_extra_inventory=request.param)
         return _hosts.all.ping(), request.param
@@ -115,7 +115,7 @@ def test_not_getattr(adhoc_result, host_pattern):
 @pytest.mark.requires_ansible_v2()
 def test_connection_failure_v2():
     from pytest_ansible.errors import AnsibleConnectionFailure
-    from pytest_ansible.host_manager import get_host_manager
+    from pytest_ansible.host_manager.utils import get_host_manager
 
     hosts = get_host_manager(inventory="unknown.example.com,", connection="smart")
     with pytest.raises(AnsibleConnectionFailure) as exc_info:
@@ -139,7 +139,7 @@ def test_connection_failure_v2():
 @pytest.mark.requires_ansible_v2()
 def test_connection_failure_extra_inventory_v2():
     from pytest_ansible.errors import AnsibleConnectionFailure
-    from pytest_ansible.host_manager import get_host_manager
+    from pytest_ansible.host_manager.utils import get_host_manager
 
     hosts = get_host_manager(
         inventory="localhost",

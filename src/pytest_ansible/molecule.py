@@ -1,6 +1,5 @@
 """pytest-molecule plugin implementation."""
 
-# pylint: disable=protected-access
 from __future__ import annotations
 
 import importlib.util
@@ -93,7 +92,7 @@ def molecule_pytest_configure(config):
         # validate selinux availability
         if sys.platform == "linux" and Path("/etc/selinux/config").is_file():
             try:
-                import selinux  # noqa: F401 pylint: disable=unused-import,import-error,import-outside-toplevel
+                import selinux  # noqa: F401 pylint: disable=import-outside-toplevel
             except ImportError:
                 logging.exception(
                     "It appears that you are trying to use "
@@ -266,8 +265,6 @@ class MoleculeExceptionError(Exception):
 
 class MoleculeScenario:
     """Molecule subprocess wrapper."""
-
-    # pylint: disable=too-few-public-methods
 
     def __init__(self, name: str, parent_directory: Path, test_id: str) -> None:
         """Initialize the MoleculeScenario class.
