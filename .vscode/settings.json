@@ -1,15 +1,21 @@
 {
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
   "[python]": {
     "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit",
       "source.organizeImports": "explicit"
-    }
+    },
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.formatOnSave": true
   },
-  "editor.formatOnSave": true,
-  "isort.check": false,
-  "prettier.enable": false,
-  "python.formatting.provider": "black",
-  "python.linting.mypyEnabled": true,
-  "python.linting.pylintEnabled": true,
+  "flake8.importStrategy": "fromEnvironment",
+  "markiscodecoverage.searchCriteria": ".coverage/lcov.info",
+  "mypy-type-checker.args": ["--config-file=${workspaceFolder}/pyproject.toml"],
+  "mypy-type-checker.importStrategy": "fromEnvironment",
+  "mypy-type-checker.reportingScope": "workspace",
+  "pylint.importStrategy": "fromEnvironment",
   "python.testing.pytestArgs": ["tests"],
   "python.testing.pytestEnabled": true,
   "python.testing.unittestEnabled": false
