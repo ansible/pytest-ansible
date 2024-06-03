@@ -73,12 +73,6 @@ module = ["ansible.*"]
 ignore_missing_imports = true
 ignore_errors = true
 
-[tool.pydoclint]
-allow-init-docstring = true
-arg-type-hints-in-docstring = false
-check-return-types = false
-style = 'google'
-
 [tool.pylint.IMPORTS]
 preferred-modules = ["py:pathlib", "unittest:pytest"]
 
