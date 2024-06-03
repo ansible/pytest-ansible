@@ -1,15 +1,9 @@
-Barroso
-Laska
-NOTESTSCOLLECTED
-Rominger
-TESTSFAILED
-USAGEERROR
-VIRSH
 addini
 addinivalue_line
 addoption
 argparsing
 autouse
+barroso
 caplog
 cidrblock
 codecov
@@ -23,10 +17,12 @@ funcargs
 getfixturevalue
 getgroup
 getplugin
+laska
 lineinfile
 makepyfile
 metafunc
 modifyitems
+notestscollected
 pandoc
 parseoutcomes
 pathsep
@@ -36,6 +32,7 @@ pytester
 pytestmark
 pytrace
 reportinfo
+rominger
 rootpath
 runas
 runpytest
@@ -45,5 +42,8 @@ setenv
 setuptools
 startpath
 testpaths
+testsfailed
 udring
+usageerror
+virsh
 webservers
