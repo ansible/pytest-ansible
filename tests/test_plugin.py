@@ -1,3 +1,5 @@
+# mypy: disable-error-code="method-assign,no-untyped-call,no-untyped-def,var-annotated"
+
 from unittest import mock
 from unittest.mock import MagicMock
 

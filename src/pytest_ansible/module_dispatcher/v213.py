@@ -1,3 +1,4 @@
+# mypy: disable-error-code="misc,no-untyped-def"
 """Fixme."""
 
 import sys
@@ -37,8 +38,8 @@ class ResultAccumulator(CallbackBase):
     def __init__(self, *args, **kwargs) -> None:
         """Initialize object."""
         super().__init__(*args, **kwargs)
-        self.contacted = {}
-        self.unreachable = {}
+        self.contacted = {}  # type: ignore[var-annotated]
+        self.unreachable = {}  # type: ignore[var-annotated]
 
     def v2_runner_on_failed(self, result, *args, **kwargs):
         """Fixme."""

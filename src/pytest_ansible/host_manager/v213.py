@@ -1,3 +1,4 @@
+# mypy: disable-error-code="no-untyped-def"
 """Fixme."""
 
 from ansible.inventory.manager import InventoryManager

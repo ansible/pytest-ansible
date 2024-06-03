@@ -1,3 +1,4 @@
+# mypy: disable-error-code="no-untyped-call,no-untyped-def"
 """Define BaseModuleDispatcher class."""
 
 from collections.abc import Sequence

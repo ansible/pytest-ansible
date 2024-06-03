@@ -1,3 +1,4 @@
+# mypy: disable-error-code="misc,no-untyped-def"
 """Defines pytest-ansible exception classes."""
 
 import ansible.errors

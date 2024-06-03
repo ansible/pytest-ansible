@@ -1,3 +1,5 @@
+# mypy: disable-error-code="no-untyped-call,no-untyped-def"
+
 import pytest
 
 from conftest import NEGATIVE_HOST_PATTERNS, POSITIVE_HOST_PATTERNS
@@ -18,7 +20,7 @@ def test_runtime_error():
 def test_importerror_requires_v1():
     with pytest.raises(ImportError):
         # pylint: disable=unused-import
-        import pytest_ansible.module_dispatcher.v1  # noqa: F401 # pylint: disable=import-error, no-name-in-module
+        import pytest_ansible.module_dispatcher.v1  # type: ignore[import-not-found] # noqa: F401 # pylint: disable=import-error, no-name-in-module
 
 
 @pytest.mark.parametrize(

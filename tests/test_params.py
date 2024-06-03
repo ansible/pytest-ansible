@@ -1,3 +1,5 @@
+# mypy: disable-error-code="attr-defined,no-untyped-def"
+
 import ansible
 import pytest
 
@@ -5,11 +7,11 @@ import pytest
 # pylint: disable=unused-import
 try:
     from _pytest.main import (
-        EXIT_INTERRUPTED,  # type: ignore[attr-defined]
-        EXIT_NOTESTSCOLLECTED,  # type: ignore[attr-defined]
-        EXIT_OK,  # type: ignore[attr-defined]
-        EXIT_TESTSFAILED,  # type: ignore[attr-defined]
-        EXIT_USAGEERROR,  # type: ignore[attr-defined]
+        EXIT_INTERRUPTED,
+        EXIT_NOTESTSCOLLECTED,
+        EXIT_OK,
+        EXIT_TESTSFAILED,
+        EXIT_USAGEERROR,
     )
 except ImportError:
     from _pytest.main import ExitCode

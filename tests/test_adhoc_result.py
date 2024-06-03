@@ -1,3 +1,5 @@
+# mypy: disable-error-code="misc,no-untyped-def"
+
 from types import GeneratorType
 
 import pytest

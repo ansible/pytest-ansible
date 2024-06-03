@@ -1,3 +1,5 @@
+# mypy: disable-error-code="no-untyped-def"
+
 import pytest
 
 from pytest_ansible.host_manager.utils import get_host_manager
