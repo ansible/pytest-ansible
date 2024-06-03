@@ -1,20 +1,12 @@
 [build-system]
+build-backend = "setuptools.build_meta"
 requires = [
-  "setuptools >= 63.0.0", # required by pyproject+setuptools_scm integration
+  "setuptools >= 65.3.0", # required by pyproject+setuptools_scm integration and editable installs
   "setuptools_scm[toml] >= 7.0.5" # required for "no-local-version" scheme
 ]
-build-backend = "setuptools.build_meta"
 
 [project]
-# https://peps.python.org/pep-0621/#readme
-requires-python = ">=3.10"
-dynamic = ["version", "dependencies", "optional-dependencies"]
-name = "pytest-ansible"
-description = "Plugin for pytest to simplify calling ansible modules from tests or fixtures"
-readme = "README.md"
 authors = [{"name" = "Ansible by Red Hat", "email" = "info@ansible.com"}]
-maintainers = [{"name" = "Ansible by Red Hat", "email" = "info@ansible.com"}]
-license = {text = "MIT"}
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Intended Audience :: Developers",
@@ -29,7 +21,14 @@ classifiers = [
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12"
 ]
+description = "Plugin for pytest to simplify calling ansible modules from tests or fixtures"
+dynamic = ["version", "dependencies", "optional-dependencies"]
 keywords = ["ansible", "testing", "pytest"]
+license = {text = "MIT"}
+maintainers = [{"name" = "Ansible by Red Hat", "email" = "info@ansible.com"}]
+name = "pytest-ansible"
+readme = "README.md"
+requires-python = ">=3.10"
 
 [project.entry-points.pytest11]
 pytest-ansible = "pytest_ansible.plugin"
@@ -309,9 +308,11 @@ fail-on = [
 ]
 
 [tool.pytest.ini_options]
-minversion = 6.0
-addopts = ["--tb=native"]
+addopts = "-ra --showlocals --durations=10"
 markers = ["old", "unit", "requires_ansible_v2"]
+testpaths = "tests"
+tmp_path_retention_policy = "failed"
+verbosity_assertions = 2
 
 [tool.ruff]
 builtins = ["__"]
@@ -366,5 +367,20 @@ optional-dependencies.docs = {file = [".config/requirements-docs.in"]}
 optional-dependencies.test = {file = [".config/requirements-test.in"]}
 
 [tool.setuptools_scm]
+# To prevent accidental pick of mobile version tags such 'v6'
+git_describe_command = [
+  "git",
+  "describe",
+  "--dirty",
+  "--long",
+  "--tags",
+  "--match",
+  "v*.*"
+]
 local_scheme = "no-local-version"
-write_to = "src/pytest_ansible/_version.py"
+write_to = "src/ansible_dev_environment/_version.py"
+
+[tool.tomlsort]
+in_place = true
+sort_inline_tables = true
+sort_table_keys = true
