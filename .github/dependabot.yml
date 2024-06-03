@@ -10,18 +10,9 @@ updates:
       - dependabot-deps-updates
       - skip-changelog
     groups:
-      runtime:
-        patterns:
-          - ansible-core
-          - pytest
-          - pytest-plus
-      dev:
+      dependencies:
         patterns:
           - "*"
-        exclude-patterns:
-          - ansible-core
-          - pytest
-          - pytest-plus
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
