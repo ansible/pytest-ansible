@@ -1,4 +1,4 @@
-import pytest
+import pytest  # noqa: INP001, D100
 
 from pytest_ansible.results import ModuleResult
 
@@ -25,7 +25,7 @@ invalid_hosts = ("none", "all", "*", "local*")
 
 
 @pytest.fixture()
-def module_result_ok(request):  # type: ignore[no-untyped-def]
+def module_result_ok(request):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, ARG001, D103
     return ModuleResult(
         invocation={"module_name": "debug", "module_args": {"msg": "testing"}},
         msg="testing",
@@ -36,7 +36,7 @@ def module_result_ok(request):  # type: ignore[no-untyped-def]
 
 
 @pytest.fixture()
-def module_result_failed():  # type: ignore[no-untyped-def]
+def module_result_failed():  # type: ignore[no-untyped-def]  # noqa: ANN201, D103
     return ModuleResult(
         invocation={"module_name": "fail", "module_args": {}},
         failed=True,
@@ -47,7 +47,7 @@ def module_result_failed():  # type: ignore[no-untyped-def]
 
 
 @pytest.fixture()
-def module_result_changed(request):  # type: ignore[no-untyped-def]
+def module_result_changed(request):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, ARG001, D103
     return ModuleResult(
         changed=True,
         end="2016-06-17 21:32:54.877597",
@@ -76,13 +76,13 @@ def module_result_changed(request):  # type: ignore[no-untyped-def]
 
 
 @pytest.fixture()
-def _module_result_skipped():  # type: ignore[no-untyped-def]
+def _module_result_skipped():  # type: ignore[no-untyped-def]  # noqa: ANN202
     msg = "Coming soon!"
     raise NotImplementedError(msg)
 
 
 @pytest.fixture()
-def _module_result_unreachable():  # type: ignore[no-untyped-def]
+def _module_result_unreachable():  # type: ignore[no-untyped-def]  # noqa: ANN202
     msg = "Coming soon!"
     raise NotImplementedError(msg)
 
@@ -110,6 +110,6 @@ def _module_result_unreachable():  # type: ignore[no-untyped-def]
         ),
     ),
 )
-def test_is_property(request, fixture_name, prop, expected_result):  # type: ignore[no-untyped-def]
+def test_is_property(request, fixture_name, prop, expected_result):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
     fixture = request.getfixturevalue(fixture_name)
     assert getattr(fixture, prop) == expected_result

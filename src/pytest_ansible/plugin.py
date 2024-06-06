@@ -36,7 +36,7 @@ logger = logging.getLogger(__name__)
 
 # Silence linters for imported fixtures
 # pylint: disable=pointless-statement, no-member
-(fixture_ansible_adhoc, fixture_ansible_module, ansible_facts, localhost)
+(fixture_ansible_adhoc, fixture_ansible_module, ansible_facts, localhost)  # noqa: B018
 
 log_map = {
     0: logging.CRITICAL,
@@ -48,7 +48,7 @@ log_map = {
 OUR_FIXTURES = ("ansible_adhoc", "ansible_module", "ansible_facts")
 
 
-def pytest_addoption(parser):  # type: ignore[no-untyped-def]
+def pytest_addoption(parser):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
     """Add options to control ansible."""
     group = parser.getgroup("pytest-ansible")
     group.addoption(
@@ -158,7 +158,7 @@ def pytest_addoption(parser):  # type: ignore[no-untyped-def]
         "--ansible-unit-inject-only",
         action="store_true",
         default=False,
-        help="Enable support for ansible collection unit tests by only injecting existing ANSIBLE_COLLECTIONS_PATH.",
+        help="Enable support for ansible collection unit tests by only injecting existing ANSIBLE_COLLECTIONS_PATH.",  # noqa: E501
     )
     group.addoption(
         "--molecule",
@@ -188,7 +188,7 @@ def pytest_addoption(parser):  # type: ignore[no-untyped-def]
     parser.addini("ansible", "Ansible integration", "args")
 
 
-def pytest_configure(config):  # type: ignore[no-untyped-def]
+def pytest_configure(config):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
     """Validate --ansible-* parameters."""
     config.addinivalue_line("markers", "ansible(**kwargs): Ansible integration")
 
@@ -204,7 +204,7 @@ def pytest_configure(config):  # type: ignore[no-untyped-def]
     logging.basicConfig(level=level)
     logging.debug("Logging initialized")
 
-    assert config.pluginmanager.register(PyTestAnsiblePlugin(config), "ansible")
+    assert config.pluginmanager.register(PyTestAnsiblePlugin(config), "ansible")  # noqa: S101
 
     if config.option.ansible_unit_inject_only:
         inject_only()
@@ -232,7 +232,7 @@ def pytest_collect_file(
     return None
 
 
-def pytest_generate_tests(metafunc):  # type: ignore[no-untyped-def]
+def pytest_generate_tests(metafunc):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
     """Generate tests when specific `ansible_*` fixtures are used by tests."""
     if "ansible_host" in metafunc.fixturenames:
         # assert required --ansible-* parameters were used
@@ -244,7 +244,7 @@ def pytest_generate_tests(metafunc):  # type: ignore[no-untyped-def]
                 pattern=metafunc.config.getoption("ansible_host_pattern"),
             )
         except ansible.errors.AnsibleError as exception:
-            raise pytest.UsageError(exception)
+            raise pytest.UsageError(exception)  # noqa: B904
 
         # Return the host name as a string
         metafunc.parametrize("ansible_host", iter(hosts[h] for h in hosts))
@@ -259,7 +259,7 @@ def pytest_generate_tests(metafunc):  # type: ignore[no-untyped-def]
                 pattern=metafunc.config.getoption("ansible_host_pattern"),
             )
         except ansible.errors.AnsibleError as exception:
-            raise pytest.UsageError(exception)
+            raise pytest.UsageError(exception)  # noqa: B904
         groups = hosts.options["inventory_manager"].list_groups()
         extra_groups = hosts.get_extra_inventory_groups()
         # Return the group name as a string
@@ -316,15 +316,15 @@ def pytest_generate_tests(metafunc):  # type: ignore[no-untyped-def]
 class PyTestAnsiblePlugin:
     """Ansible PyTest Plugin Class."""
 
-    def __init__(self, config) -> None:  # type: ignore[no-untyped-def]
+    def __init__(self, config) -> None:  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN101
         """Initialize plugin."""
         self.config = config
 
-    def pytest_report_header(self):  # type: ignore[no-untyped-def]
+    def pytest_report_header(self):  # type: ignore[no-untyped-def]  # noqa: ANN101, ANN201
         """Return the version of ansible."""
         return f"ansible: {ansible.__version__}"
 
-    def pytest_collection_modifyitems(self, session, config, items):  # type: ignore[no-untyped-def]
+    def pytest_collection_modifyitems(self, session, config, items):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN101, ANN201, ARG002
         """Validate --ansible-* parameters."""
         uses_ansible_fixtures = False
         for item in items:
@@ -339,8 +339,8 @@ class PyTestAnsiblePlugin:
                 # ignore any normal fixtures that have definitions to avoid miss activations
                 if (
                     hasattr(item, "_fixtureinfo")
-                    and hasattr(item._fixtureinfo, "name2fixturedefs")
-                    and fixture_name in item._fixtureinfo.name2fixturedefs
+                    and hasattr(item._fixtureinfo, "name2fixturedefs")  # noqa: SLF001
+                    and fixture_name in item._fixtureinfo.name2fixturedefs  # noqa: SLF001
                 ):
                     continue
                 if fixture_name == "request":
@@ -354,7 +354,7 @@ class PyTestAnsiblePlugin:
             # assert required --ansible-* parameters were used
             self.assert_required_ansible_parameters(config)  # type: ignore[no-untyped-call]
 
-    def _load_ansible_config(self, config):  # type: ignore[no-untyped-def]
+    def _load_ansible_config(self, config):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN101, ANN202
         """Load ansible configuration from command-line."""
         option_names = [
             "ansible_inventory",
@@ -386,7 +386,7 @@ class PyTestAnsiblePlugin:
 
         return kwargs
 
-    def _load_request_config(self, request):  # type: ignore[no-untyped-def]
+    def _load_request_config(self, request):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN101, ANN202
         """Load ansible configuration from decorator kwargs."""
         kwargs = {}
 
@@ -397,7 +397,7 @@ class PyTestAnsiblePlugin:
 
         return kwargs
 
-    def initialize(self, config=None, request=None, **kwargs):  # type: ignore[no-untyped-def]
+    def initialize(self, config=None, request=None, **kwargs):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN003, ANN101, ANN201
         """Return an initialized Ansible Host Manager instance."""
         ansible_cfg = {}
         # merge command-line configuration options
@@ -411,7 +411,7 @@ class PyTestAnsiblePlugin:
         return get_host_manager(**ansible_cfg)
 
     @staticmethod
-    def assert_required_ansible_parameters(config):  # type: ignore[no-untyped-def]
+    def assert_required_ansible_parameters(config):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN205
         """Assert whether the required --ansible-* parameters were provided."""
         errors = []
 
@@ -428,7 +428,7 @@ class PyTestAnsiblePlugin:
         ansible_inventory = config.getoption("ansible_inventory")
         if ansible_inventory is None or ansible_inventory == "":
             errors.append(
-                "Unable to find an inventory file, specify one with the --ansible-inventory/--inventory "
+                "Unable to find an inventory file, specify one with the --ansible-inventory/--inventory "  # noqa: E501
                 "parameter.",
             )
 
