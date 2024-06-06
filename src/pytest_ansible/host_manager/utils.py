@@ -17,8 +17,8 @@ def get_host_manager(*args, **kwargs) -> BaseHostManager:  # type: ignore[no-unt
     if has_ansible_v213:
         from pytest_ansible.host_manager.v213 import HostManagerV213 as HostManager
     elif has_ansible_v212:
-        from pytest_ansible.host_manager.v212 import (
-            HostManagerV212 as HostManager,  # type: ignore[assignment]
+        from pytest_ansible.host_manager.v212 import ( # type: ignore[assignment]
+            HostManagerV212 as HostManager,  
         )
     else:
         err = "Unable to find any supported HostManager"
