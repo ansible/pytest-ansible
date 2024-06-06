@@ -1,4 +1,4 @@
-import pytest
+import pytest  # noqa: INP001, D100
 
 
 # pylint: disable=unused-import
@@ -21,7 +21,7 @@ except ImportError:
 
 
 @pytest.mark.old()
-def test_contacted_with_params(pytester, option):  # type: ignore[no-untyped-def]
+def test_contacted_with_params(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
     """FIXME."""
     src = """
         import pytest
@@ -51,7 +51,7 @@ def test_contacted_with_params(pytester, option):  # type: ignore[no-untyped-def
 
 
 @pytest.mark.old()
-def test_contacted_with_params_and_inventory_marker(pytester, option):  # type: ignore[no-untyped-def]
+def test_contacted_with_params_and_inventory_marker(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
     """FIXME."""
     src = f"""
         import pytest
@@ -77,7 +77,7 @@ def test_contacted_with_params_and_inventory_marker(pytester, option):  # type: 
 
 
 @pytest.mark.old()
-def test_contacted_with_params_and_host_pattern_marker(pytester, option):  # type: ignore[no-untyped-def]
+def test_contacted_with_params_and_host_pattern_marker(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
     """FIXME."""
     src = """
         import pytest
@@ -108,7 +108,7 @@ def test_contacted_with_params_and_host_pattern_marker(pytester, option):  # typ
 
 
 @pytest.mark.old()
-def test_contacted_with_params_and_inventory_host_pattern_marker(pytester, option):  # type: ignore[no-untyped-def]
+def test_contacted_with_params_and_inventory_host_pattern_marker(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
     """FIXME."""
     src = f"""
         import pytest
@@ -139,11 +139,11 @@ def test_contacted_with_params_and_inventory_host_pattern_marker(pytester, optio
 
 
 @pytest.mark.old()
-def test_become(pytester, option):  # type: ignore[no-untyped-def]
+def test_become(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
     """Test --ansible-become* parameters.  This test doesn't actually 'sudo',
     but verifies that 'sudo' was attempted by asserting
     '--ansible-become-user' fails as expected.
-    """
+    """  # noqa: D205
     src = f"""
         import pytest
         import ansible
@@ -171,11 +171,11 @@ def test_become(pytester, option):  # type: ignore[no-untyped-def]
                 else:
                     assert 'msg' in result, "Missing expected field in JSON response: msg"
                     assert 'sudo: unknown user: unknown_user' in result['msg']
-        """
+        """  # noqa: E501
 
     pytester.makepyfile(src)
     result = pytester.runpytest_subprocess(
-        *option.args
+        *option.args  # noqa: RUF005
         + [
             "--ansible-inventory",
             str(option.inventory),
@@ -191,7 +191,7 @@ def test_become(pytester, option):  # type: ignore[no-untyped-def]
 
 
 @pytest.mark.old()
-def test_dark_with_params(pytester, option):  # type: ignore[no-untyped-def]
+def test_dark_with_params(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
     """FIXME."""
     src = """
         import pytest
@@ -221,7 +221,7 @@ def test_dark_with_params(pytester, option):  # type: ignore[no-untyped-def]
 
 
 @pytest.mark.old()
-def test_dark_with_params_and_inventory_marker(pytester, option):  # type: ignore[no-untyped-def]
+def test_dark_with_params_and_inventory_marker(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
     """FIXME."""
     src = f"""
         import pytest
@@ -247,7 +247,7 @@ def test_dark_with_params_and_inventory_marker(pytester, option):  # type: ignor
 
 
 @pytest.mark.old()
-def test_dark_with_params_and_host_pattern_marker(pytester, option):  # type: ignore[no-untyped-def]
+def test_dark_with_params_and_host_pattern_marker(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
     """FIXME."""
     src = """
         import pytest
@@ -279,7 +279,7 @@ def test_dark_with_params_and_host_pattern_marker(pytester, option):  # type: ig
 
 
 @pytest.mark.old()
-def test_dark_with_debug_enabled(pytester, option):  # type: ignore[no-untyped-def]
+def test_dark_with_debug_enabled(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
     """Verify that when verbosity is enabled, additional output is provided upon host failure."""
     src = """
         import pytest

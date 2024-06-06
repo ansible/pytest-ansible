@@ -1,4 +1,4 @@
-import pytest
+import pytest  # noqa: INP001, D100
 
 from pytest_ansible.host_manager.utils import get_host_manager
 
@@ -95,7 +95,7 @@ NEGATIVE_HOST_SLICES = [
 ]
 
 
-def pytest_runtest_setup(item):  # type: ignore[no-untyped-def]
+def pytest_runtest_setup(item):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
     # Conditionally skip tests that are pinned to a specific ansible version
     if isinstance(item, pytest.Function):
         # conditionally xfail
@@ -111,7 +111,7 @@ def pytest_runtest_setup(item):  # type: ignore[no-untyped-def]
 class PyTestOption:
     """Helper class that provides methods for creating and managing an inventory file."""
 
-    def __init__(self, config, pytester) -> None:  # type: ignore[no-untyped-def]
+    def __init__(self, config, pytester) -> None:  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN101, D107
         self.config = config
 
         # Create inventory file
@@ -140,12 +140,12 @@ class PyTestOption:
         # Create ansible.cfg file
 
     @property
-    def args(self):  # type: ignore[no-untyped-def]
+    def args(self):  # type: ignore[no-untyped-def]  # noqa: ANN101, ANN201, D102
         return ["--tb", "native"]
 
 
 @pytest.fixture(autouse=True)
-def _clear_global_context():  # type: ignore[no-untyped-def]
+def _clear_global_context():  # type: ignore[no-untyped-def]  # noqa: ANN202
     # Reset the stored command line args
     # if context object does not exist because of old version of ansible, we don't need it
     if co is not None:
@@ -153,16 +153,16 @@ def _clear_global_context():  # type: ignore[no-untyped-def]
 
 
 @pytest.fixture()
-def option(request, pytester):  # type: ignore[no-untyped-def]
+def option(request, pytester):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
     """Returns an instance of PyTestOption to help tests pass parameters and
     use a common inventory file.
-    """
+    """  # noqa: D205
     return PyTestOption(request.config, pytester)
 
 
 @pytest.fixture()
-def hosts():  # type: ignore[no-untyped-def]
-    def create_host_manager(include_extra_inventory=False):  # type: ignore[no-untyped-def]
+def hosts():  # type: ignore[no-untyped-def]  # noqa: ANN201, D103
+    def create_host_manager(include_extra_inventory=False):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN202, FBT002
         kwargs = {"inventory": ",".join(ALL_HOSTS), "connection": "local"}
         if include_extra_inventory:
             kwargs["extra_inventory"] = ",".join(ALL_EXTRA_HOSTS)

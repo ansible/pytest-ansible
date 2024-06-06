@@ -31,7 +31,7 @@ def test_inject(
     """
     caplog.set_level(logging.DEBUG)
 
-    def mock_get_collection_name(start_path: str) -> tuple[str, str]:
+    def mock_get_collection_name(start_path: str) -> tuple[str, str]:  # noqa: ARG001
         """Mock the get_collection_name function.
 
         :param start_path: The path to the root of the collection
@@ -81,7 +81,12 @@ def test_inject_only(
     )
 
 
-def test_for_params():  # type: ignore[no-untyped-def]
+def test_for_params():  # type: ignore[no-untyped-def]  # noqa: ANN201
     """Test for params."""
-    proc = subprocess.run("pytest --help", shell=True, capture_output=True, check=False)
+    proc = subprocess.run(
+        "pytest --help",  # noqa: S607
+        shell=True,
+        capture_output=True,
+        check=False,
+    )
     assert "--ansible-unit-inject-only" in proc.stdout.decode()
