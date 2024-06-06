@@ -1,23 +1,21 @@
-# mypy: disable-error-code="no-untyped-call,no-untyped-def"
-
 import pytest
 
 from conftest import NEGATIVE_HOST_PATTERNS, POSITIVE_HOST_PATTERNS
 
 
-def test_runtime_error():
+def test_runtime_error():  # type: ignore[no-untyped-def]
     from pytest_ansible.module_dispatcher import BaseModuleDispatcher
 
     bmd = BaseModuleDispatcher(inventory="localhost,")
     with pytest.raises(RuntimeError):
-        bmd.has_module("foo")
+        bmd.has_module("foo")  # type: ignore[no-untyped-call]
 
     with pytest.raises(RuntimeError):
-        bmd._run("foo")
+        bmd._run("foo")  # type: ignore[no-untyped-call]
 
 
 @pytest.mark.requires_ansible_v2()
-def test_importerror_requires_v1():
+def test_importerror_requires_v1():  # type: ignore[no-untyped-def]
     with pytest.raises(ImportError):
         # pylint: disable=unused-import
         import pytest_ansible.module_dispatcher.v1  # type: ignore[import-not-found] # noqa: F401 # pylint: disable=import-error, no-name-in-module
@@ -31,7 +29,7 @@ def test_importerror_requires_v1():
     "include_extra_inventory",
     (True, False),
 )
-def test_dispatcher_len(host_pattern, num_hosts, hosts, include_extra_inventory):
+def test_dispatcher_len(host_pattern, num_hosts, hosts, include_extra_inventory):  # type: ignore[no-untyped-def]
     hosts = hosts(include_extra_inventory=include_extra_inventory)
     assert len(getattr(hosts, host_pattern)) == num_hosts[include_extra_inventory]
 
@@ -44,7 +42,7 @@ def test_dispatcher_len(host_pattern, num_hosts, hosts, include_extra_inventory)
     "include_extra_inventory",
     (True, False),
 )
-def test_dispatcher_contains(host_pattern, num_hosts, hosts, include_extra_inventory):
+def test_dispatcher_contains(host_pattern, num_hosts, hosts, include_extra_inventory):  # type: ignore[no-untyped-def]
     hosts = hosts(include_extra_inventory=include_extra_inventory)
     assert host_pattern in hosts["all"]
 
@@ -54,7 +52,7 @@ def test_dispatcher_contains(host_pattern, num_hosts, hosts, include_extra_inven
     "include_extra_inventory",
     (True, False),
 )
-def test_dispatcher_not_contains(
+def test_dispatcher_not_contains(  # type: ignore[no-untyped-def]
     host_pattern,
     num_hosts,
     hosts,
@@ -64,7 +62,7 @@ def test_dispatcher_not_contains(
     assert host_pattern not in hosts["all"]
 
 
-def test_ansible_module_error(hosts):
+def test_ansible_module_error(hosts):  # type: ignore[no-untyped-def]
     """Verify that AnsibleModuleError is raised when no such module exists."""
     from pytest_ansible.errors import AnsibleModuleError
 

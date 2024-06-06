@@ -1,11 +1,9 @@
-# mypy: disable-error-code="attr-defined,no-untyped-def"
-
 import pytest
 
 
 # pylint: disable=unused-import
 try:
-    from _pytest.main import (
+    from _pytest.main import (  # type: ignore[attr-defined]
         EXIT_INTERRUPTED,
         EXIT_NOTESTSCOLLECTED,
         EXIT_OK,
@@ -13,7 +11,7 @@ try:
         EXIT_USAGEERROR,
     )
 except ImportError:
-    from _pytest.main import ExitCode
+    from _pytest.main import ExitCode  # type: ignore[attr-defined]
 
     EXIT_OK = ExitCode.OK
     EXIT_TESTSFAILED = ExitCode.TESTS_FAILED
@@ -23,7 +21,7 @@ except ImportError:
 
 
 @pytest.mark.old()
-def test_contacted_with_params(pytester, option):
+def test_contacted_with_params(pytester, option):  # type: ignore[no-untyped-def]
     """FIXME."""
     src = """
         import pytest
@@ -53,7 +51,7 @@ def test_contacted_with_params(pytester, option):
 
 
 @pytest.mark.old()
-def test_contacted_with_params_and_inventory_marker(pytester, option):
+def test_contacted_with_params_and_inventory_marker(pytester, option):  # type: ignore[no-untyped-def]
     """FIXME."""
     src = f"""
         import pytest
@@ -79,7 +77,7 @@ def test_contacted_with_params_and_inventory_marker(pytester, option):
 
 
 @pytest.mark.old()
-def test_contacted_with_params_and_host_pattern_marker(pytester, option):
+def test_contacted_with_params_and_host_pattern_marker(pytester, option):  # type: ignore[no-untyped-def]
     """FIXME."""
     src = """
         import pytest
@@ -110,7 +108,7 @@ def test_contacted_with_params_and_host_pattern_marker(pytester, option):
 
 
 @pytest.mark.old()
-def test_contacted_with_params_and_inventory_host_pattern_marker(pytester, option):
+def test_contacted_with_params_and_inventory_host_pattern_marker(pytester, option):  # type: ignore[no-untyped-def]
     """FIXME."""
     src = f"""
         import pytest
@@ -141,7 +139,7 @@ def test_contacted_with_params_and_inventory_host_pattern_marker(pytester, optio
 
 
 @pytest.mark.old()
-def test_become(pytester, option):
+def test_become(pytester, option):  # type: ignore[no-untyped-def]
     """Test --ansible-become* parameters.  This test doesn't actually 'sudo',
     but verifies that 'sudo' was attempted by asserting
     '--ansible-become-user' fails as expected.
@@ -193,7 +191,7 @@ def test_become(pytester, option):
 
 
 @pytest.mark.old()
-def test_dark_with_params(pytester, option):
+def test_dark_with_params(pytester, option):  # type: ignore[no-untyped-def]
     """FIXME."""
     src = """
         import pytest
@@ -223,7 +221,7 @@ def test_dark_with_params(pytester, option):
 
 
 @pytest.mark.old()
-def test_dark_with_params_and_inventory_marker(pytester, option):
+def test_dark_with_params_and_inventory_marker(pytester, option):  # type: ignore[no-untyped-def]
     """FIXME."""
     src = f"""
         import pytest
@@ -249,7 +247,7 @@ def test_dark_with_params_and_inventory_marker(pytester, option):
 
 
 @pytest.mark.old()
-def test_dark_with_params_and_host_pattern_marker(pytester, option):
+def test_dark_with_params_and_host_pattern_marker(pytester, option):  # type: ignore[no-untyped-def]
     """FIXME."""
     src = """
         import pytest
@@ -281,7 +279,7 @@ def test_dark_with_params_and_host_pattern_marker(pytester, option):
 
 
 @pytest.mark.old()
-def test_dark_with_debug_enabled(pytester, option):
+def test_dark_with_debug_enabled(pytester, option):  # type: ignore[no-untyped-def]
     """Verify that when verbosity is enabled, additional output is provided upon host failure."""
     src = """
         import pytest

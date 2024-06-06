@@ -1,4 +1,3 @@
-# mypy: disable-error-code="no-untyped-def"
 """Fixme."""
 
 from ansible.inventory.manager import InventoryManager
@@ -12,12 +11,12 @@ from pytest_ansible.module_dispatcher.v213 import ModuleDispatcherV213
 class HostManagerV213(BaseHostManager):
     """Fixme."""
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args, **kwargs) -> None:  # type: ignore[no-untyped-def]
         """Fixme."""
         super().__init__(*args, **kwargs)
         self._dispatcher = ModuleDispatcherV213
 
-    def initialize_inventory(self):
+    def initialize_inventory(self):  # type: ignore[no-untyped-def]
         """Fixme."""
         self.options["loader"] = DataLoader()
         self.options["inventory_manager"] = InventoryManager(

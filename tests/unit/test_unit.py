@@ -1,7 +1,3 @@
-# mypy: disable-error-code="no-untyped-def,union-attr"
-
-"""Tests specific to the unit test functionality."""
-
 from __future__ import annotations
 
 import logging
@@ -53,8 +49,8 @@ def test_inject(
     assert (
         str(tmp_path / "collections")
         == sys.path[0]
-        == re.search(r"_ACF installed: \['(.*?)'.*]", caplog.text).groups()[0]
-        == re.search(r"_ACF configured paths: \['(.*?)'.*]", caplog.text).groups()[0]
+        == re.search(r"_ACF installed: \['(.*?)'.*]", caplog.text).groups()[0]  # type: ignore[union-attr]
+        == re.search(r"_ACF configured paths: \['(.*?)'.*]", caplog.text).groups()[0]  # type: ignore[union-attr]
     )
 
 
@@ -78,12 +74,12 @@ def test_inject_only(
     assert (
         str(tmp_path / "collections")
         == sys.path[0]
-        == re.search(r"_ACF installed: \['(.*?)'.*]", caplog.text).groups()[0]
-        == re.search(r"_ACF configured paths: \['(.*?)'.*]", caplog.text).groups()[0]
+        == re.search(r"_ACF installed: \['(.*?)'.*]", caplog.text).groups()[0]  # type: ignore[union-attr]
+        == re.search(r"_ACF configured paths: \['(.*?)'.*]", caplog.text).groups()[0]  # type: ignore[union-attr]
     )
 
 
-def test_for_params():
+def test_for_params():  # type: ignore[no-untyped-def]
     """Test for params."""
     proc = subprocess.run("pytest --help", shell=True, capture_output=True, check=False)
     assert "--ansible-unit-inject-only" in proc.stdout.decode()

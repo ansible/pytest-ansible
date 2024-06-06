@@ -1,4 +1,3 @@
-# mypy: disable-error-code="misc,no-untyped-def,var-annotated"
 """Fixme."""
 
 from __future__ import annotations
@@ -24,31 +23,31 @@ from pytest_ansible.module_dispatcher import BaseModuleDispatcher
 from pytest_ansible.results import AdHocResult
 
 
-class ResultAccumulator(CallbackBase):
+class ResultAccumulator(CallbackBase):  # type: ignore[misc]
     """Fixme."""
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args, **kwargs) -> None:  # type: ignore[no-untyped-def]
         """Initialize object."""
         super().__init__(*args, **kwargs)
-        self.contacted = {}
-        self.unreachable = {}
+        self.contacted = {}  # type: ignore[var-annotated]
+        self.unreachable = {}  # type: ignore[var-annotated]
 
-    def v2_runner_on_failed(self, result, *args, **kwargs):
+    def v2_runner_on_failed(self, result, *args, **kwargs):  # type: ignore[no-untyped-def]
         """Fixme."""
         result2 = {"failed": True}
         result2.update(result._result)
         self.contacted[result._host.get_name()] = result2
 
-    def v2_runner_on_ok(self, result):
+    def v2_runner_on_ok(self, result):  # type: ignore[no-untyped-def]
         """Fixme."""
         self.contacted[result._host.get_name()] = result._result
 
-    def v2_runner_on_unreachable(self, result):
+    def v2_runner_on_unreachable(self, result):  # type: ignore[no-untyped-def]
         """Fixme."""
         self.unreachable[result._host.get_name()] = result._result
 
     @property
-    def results(self):
+    def results(self):  # type: ignore[no-untyped-def]
         """Fixme."""
         return {"contacted": self.contacted, "unreachable": self.unreachable}
 
@@ -67,7 +66,7 @@ class ModuleDispatcherV212(BaseModuleDispatcher):
         "loader",
     )
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs) -> None:  # type: ignore[no-untyped-def]
         """Fixme."""
         super().__init__(**kwargs)
         if not has_ansible_v212:
@@ -88,7 +87,7 @@ class ModuleDispatcherV212(BaseModuleDispatcher):
 
         return module_loader.has_plugin(name)
 
-    def _run(self, *module_args, **complex_args):
+    def _run(self, *module_args, **complex_args):  # type: ignore[no-untyped-def]
         """Execute an ansible adhoc command returning the result in a AdhocResult object."""
         # Assemble module argument string
         if module_args:

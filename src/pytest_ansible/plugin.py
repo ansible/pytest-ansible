@@ -1,5 +1,3 @@
-# mypy: disable-error-code="no-untyped-call,no-untyped-def"
-
 """PyTest Ansible Plugin."""
 
 from __future__ import annotations
@@ -50,7 +48,7 @@ log_map = {
 OUR_FIXTURES = ("ansible_adhoc", "ansible_module", "ansible_facts")
 
 
-def pytest_addoption(parser):
+def pytest_addoption(parser):  # type: ignore[no-untyped-def]
     """Add options to control ansible."""
     group = parser.getgroup("pytest-ansible")
     group.addoption(
@@ -190,7 +188,7 @@ def pytest_addoption(parser):
     parser.addini("ansible", "Ansible integration", "args")
 
 
-def pytest_configure(config):
+def pytest_configure(config):  # type: ignore[no-untyped-def]
     """Validate --ansible-* parameters."""
     config.addinivalue_line("markers", "ansible(**kwargs): Ansible integration")
 
@@ -234,11 +232,11 @@ def pytest_collect_file(
     return None
 
 
-def pytest_generate_tests(metafunc):
+def pytest_generate_tests(metafunc):  # type: ignore[no-untyped-def]
     """Generate tests when specific `ansible_*` fixtures are used by tests."""
     if "ansible_host" in metafunc.fixturenames:
         # assert required --ansible-* parameters were used
-        PyTestAnsiblePlugin.assert_required_ansible_parameters(metafunc.config)
+        PyTestAnsiblePlugin.assert_required_ansible_parameters(metafunc.config)  # type: ignore[no-untyped-call]
         try:
             plugin = metafunc.config.pluginmanager.getplugin("ansible")
             hosts = plugin.initialize(
@@ -253,7 +251,7 @@ def pytest_generate_tests(metafunc):
 
     if "ansible_group" in metafunc.fixturenames:
         # assert required --ansible-* parameters were used
-        PyTestAnsiblePlugin.assert_required_ansible_parameters(metafunc.config)
+        PyTestAnsiblePlugin.assert_required_ansible_parameters(metafunc.config)  # type: ignore[no-untyped-call]
         try:
             plugin = metafunc.config.pluginmanager.getplugin("ansible")
             hosts = plugin.initialize(
@@ -318,15 +316,15 @@ def pytest_generate_tests(metafunc):
 class PyTestAnsiblePlugin:
     """Ansible PyTest Plugin Class."""
 
-    def __init__(self, config) -> None:
+    def __init__(self, config) -> None:  # type: ignore[no-untyped-def]
         """Initialize plugin."""
         self.config = config
 
-    def pytest_report_header(self):
+    def pytest_report_header(self):  # type: ignore[no-untyped-def]
         """Return the version of ansible."""
         return f"ansible: {ansible.__version__}"
 
-    def pytest_collection_modifyitems(self, session, config, items):
+    def pytest_collection_modifyitems(self, session, config, items):  # type: ignore[no-untyped-def]
         """Validate --ansible-* parameters."""
         uses_ansible_fixtures = False
         for item in items:
@@ -354,9 +352,9 @@ class PyTestAnsiblePlugin:
 
         if uses_ansible_fixtures:
             # assert required --ansible-* parameters were used
-            self.assert_required_ansible_parameters(config)
+            self.assert_required_ansible_parameters(config)  # type: ignore[no-untyped-call]
 
-    def _load_ansible_config(self, config):
+    def _load_ansible_config(self, config):  # type: ignore[no-untyped-def]
         """Load ansible configuration from command-line."""
         option_names = [
             "ansible_inventory",
@@ -388,7 +386,7 @@ class PyTestAnsiblePlugin:
 
         return kwargs
 
-    def _load_request_config(self, request):
+    def _load_request_config(self, request):  # type: ignore[no-untyped-def]
         """Load ansible configuration from decorator kwargs."""
         kwargs = {}
 
@@ -399,21 +397,21 @@ class PyTestAnsiblePlugin:
 
         return kwargs
 
-    def initialize(self, config=None, request=None, **kwargs):
+    def initialize(self, config=None, request=None, **kwargs):  # type: ignore[no-untyped-def]
         """Return an initialized Ansible Host Manager instance."""
         ansible_cfg = {}
         # merge command-line configuration options
         if config is not None:
-            ansible_cfg.update(self._load_ansible_config(config))
+            ansible_cfg.update(self._load_ansible_config(config))  # type: ignore[no-untyped-call]
         # merge pytest request configuration options
         if request is not None:
-            ansible_cfg.update(self._load_request_config(request))
+            ansible_cfg.update(self._load_request_config(request))  # type: ignore[no-untyped-call]
         # merge in provided kwargs
         ansible_cfg.update(kwargs)
         return get_host_manager(**ansible_cfg)
 
     @staticmethod
-    def assert_required_ansible_parameters(config):
+    def assert_required_ansible_parameters(config):  # type: ignore[no-untyped-def]
         """Assert whether the required --ansible-* parameters were provided."""
         errors = []
 

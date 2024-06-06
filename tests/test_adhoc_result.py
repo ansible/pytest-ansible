@@ -1,5 +1,3 @@
-# mypy: disable-error-code="misc,no-untyped-def"
-
 from types import GeneratorType
 
 import pytest
@@ -17,29 +15,29 @@ invalid_hosts = [
 
 
 @pytest.fixture(params=[True, False], name="adhoc_result")
-def fixture_adhoc_result(request, hosts):
-    def create_hosts():
+def fixture_adhoc_result(request, hosts):  # type: ignore[no-untyped-def]
+    def create_hosts():  # type: ignore[no-untyped-def]
         _hosts = hosts(include_extra_inventory=request.param)
         return _hosts.all.ping(), request.param
 
     return create_hosts
 
 
-def test_len(adhoc_result):
+def test_len(adhoc_result):  # type: ignore[no-untyped-def]
     adhoc_result_ret, include_extra_inv = adhoc_result()
     assert len(adhoc_result_ret) == len(ALL_HOSTS) + len(
         ALL_EXTRA_HOSTS if include_extra_inv else [],
     )
 
 
-def test_keys(adhoc_result):
+def test_keys(adhoc_result):  # type: ignore[no-untyped-def]
     adhoc_result_ret, include_extra_inv = adhoc_result()
     assert set(adhoc_result_ret) == set(
         ALL_HOSTS + (ALL_EXTRA_HOSTS if include_extra_inv else []),
     )
 
 
-def test_items(adhoc_result):
+def test_items(adhoc_result):  # type: ignore[no-untyped-def]
     adhoc_result_ret, include_extra_inv = adhoc_result()
     items = adhoc_result_ret.items()
     assert isinstance(items, GeneratorType)
@@ -51,7 +49,7 @@ def test_items(adhoc_result):
     assert count == len(ALL_HOSTS + (ALL_EXTRA_HOSTS if include_extra_inv else []))
 
 
-def test_values(adhoc_result):
+def test_values(adhoc_result):  # type: ignore[no-untyped-def]
     adhoc_result_ret, include_extra_inv = adhoc_result()
     values = adhoc_result_ret.values()
     assert isinstance(values, list)
@@ -64,7 +62,7 @@ def test_values(adhoc_result):
 
 
 @pytest.mark.parametrize("host", ALL_HOSTS + ALL_EXTRA_HOSTS)
-def test_contains(adhoc_result, host):
+def test_contains(adhoc_result, host):  # type: ignore[no-untyped-def]
     adhoc_result_ret, include_extra_inv = adhoc_result()
     if not include_extra_inv and host in ALL_EXTRA_HOSTS:
         assert host not in adhoc_result_ret
@@ -73,13 +71,13 @@ def test_contains(adhoc_result, host):
 
 
 @pytest.mark.parametrize("host", invalid_hosts)
-def test_not_contains(adhoc_result, host):
+def test_not_contains(adhoc_result, host):  # type: ignore[no-untyped-def]
     adhoc_result_ret, dummy = adhoc_result()
     assert host not in adhoc_result_ret
 
 
 @pytest.mark.parametrize("host_pattern", ALL_HOSTS + ALL_EXTRA_HOSTS)
-def test_getitem(adhoc_result, host_pattern):
+def test_getitem(adhoc_result, host_pattern):  # type: ignore[no-untyped-def]
     adhoc_result_ret, include_extra_inv = adhoc_result()
     if not include_extra_inv and host_pattern in ALL_EXTRA_HOSTS:
         with pytest.raises(KeyError):
@@ -90,14 +88,14 @@ def test_getitem(adhoc_result, host_pattern):
 
 
 @pytest.mark.parametrize("host_pattern", invalid_hosts)
-def test_not_getitem(adhoc_result, host_pattern):
+def test_not_getitem(adhoc_result, host_pattern):  # type: ignore[no-untyped-def]
     adhoc_result_ret, dummy = adhoc_result()
     with pytest.raises(KeyError):
         assert adhoc_result_ret[host_pattern]
 
 
 @pytest.mark.parametrize("host_pattern", ALL_HOSTS + ALL_EXTRA_HOSTS)
-def test_getattr(adhoc_result, host_pattern):
+def test_getattr(adhoc_result, host_pattern):  # type: ignore[no-untyped-def]
     adhoc_result_ret, include_extra_inv = adhoc_result()
     if not include_extra_inv and host_pattern in ALL_EXTRA_HOSTS:
         assert not hasattr(adhoc_result_ret, host_pattern)
@@ -107,7 +105,7 @@ def test_getattr(adhoc_result, host_pattern):
 
 
 @pytest.mark.parametrize("host_pattern", invalid_hosts)
-def test_not_getattr(adhoc_result, host_pattern):
+def test_not_getattr(adhoc_result, host_pattern):  # type: ignore[no-untyped-def]
     adhoc_result_ret, dummy = adhoc_result()
     assert not hasattr(adhoc_result_ret, host_pattern)
     with pytest.raises(AttributeError):
@@ -115,7 +113,7 @@ def test_not_getattr(adhoc_result, host_pattern):
 
 
 @pytest.mark.requires_ansible_v2()
-def test_connection_failure_v2():
+def test_connection_failure_v2():  # type: ignore[no-untyped-def]
     from pytest_ansible.errors import AnsibleConnectionFailure
     from pytest_ansible.host_manager.utils import get_host_manager
 
@@ -139,7 +137,7 @@ def test_connection_failure_v2():
 
 
 @pytest.mark.requires_ansible_v2()
-def test_connection_failure_extra_inventory_v2():
+def test_connection_failure_extra_inventory_v2():  # type: ignore[no-untyped-def]
     from pytest_ansible.errors import AnsibleConnectionFailure
     from pytest_ansible.host_manager.utils import get_host_manager
 
