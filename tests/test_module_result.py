@@ -1,5 +1,3 @@
-# mypy: disable-error-code="no-untyped-def"
-
 import pytest
 
 from pytest_ansible.results import ModuleResult
@@ -27,7 +25,7 @@ invalid_hosts = ("none", "all", "*", "local*")
 
 
 @pytest.fixture()
-def module_result_ok(request):
+def module_result_ok(request):  # type: ignore[no-untyped-def]
     return ModuleResult(
         invocation={"module_name": "debug", "module_args": {"msg": "testing"}},
         msg="testing",
@@ -38,7 +36,7 @@ def module_result_ok(request):
 
 
 @pytest.fixture()
-def module_result_failed():
+def module_result_failed():  # type: ignore[no-untyped-def]
     return ModuleResult(
         invocation={"module_name": "fail", "module_args": {}},
         failed=True,
@@ -49,7 +47,7 @@ def module_result_failed():
 
 
 @pytest.fixture()
-def module_result_changed(request):
+def module_result_changed(request):  # type: ignore[no-untyped-def]
     return ModuleResult(
         changed=True,
         end="2016-06-17 21:32:54.877597",
@@ -78,13 +76,13 @@ def module_result_changed(request):
 
 
 @pytest.fixture()
-def _module_result_skipped():
+def _module_result_skipped():  # type: ignore[no-untyped-def]
     msg = "Coming soon!"
     raise NotImplementedError(msg)
 
 
 @pytest.fixture()
-def _module_result_unreachable():
+def _module_result_unreachable():  # type: ignore[no-untyped-def]
     msg = "Coming soon!"
     raise NotImplementedError(msg)
 
@@ -112,6 +110,6 @@ def _module_result_unreachable():
         ),
     ),
 )
-def test_is_property(request, fixture_name, prop, expected_result):
+def test_is_property(request, fixture_name, prop, expected_result):  # type: ignore[no-untyped-def]
     fixture = request.getfixturevalue(fixture_name)
     assert getattr(fixture, prop) == expected_result

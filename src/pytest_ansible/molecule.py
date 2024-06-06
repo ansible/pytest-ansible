@@ -1,5 +1,3 @@
-# mypy: disable-error-code="arg-type,call-overload,no-untyped-def,type-arg,union-attr,var-annotated"
-
 """pytest-molecule plugin implementation."""
 
 from __future__ import annotations
@@ -33,7 +31,7 @@ logger = logging.getLogger(__name__)
 counter = 0
 
 
-def molecule_pytest_configure(config):
+def molecule_pytest_configure(config):  # type: ignore[no-untyped-def]
     """Pytest hook for loading our specific configuration."""
     interesting_env_vars = [
         "ANSIBLE",
@@ -111,7 +109,7 @@ def molecule_pytest_configure(config):
 class MoleculeFile(pytest.File):
     """Wrapper class for molecule files."""
 
-    def collect(self):
+    def collect(self):  # type: ignore[no-untyped-def]
         """Test generator."""
         # pylint: disable=global-statement
         global counter
@@ -132,18 +130,18 @@ class MoleculeItem(pytest.Item):
     Pytest supports multiple tests per file, molecule only one "test".
     """
 
-    def __init__(self, name, parent) -> None:
+    def __init__(self, name, parent) -> None:  # type: ignore[no-untyped-def]
         """Construct MoleculeItem."""
-        self.funcargs = {}
+        self.funcargs = {}  # type: ignore[var-annotated]
         super().__init__(name, parent)
 
         # Determine molecule scenario
         scenario_molecule_yml = self.path
-        data_scenario = self.yaml_loader(scenario_molecule_yml)
+        data_scenario = self.yaml_loader(scenario_molecule_yml)  # type: ignore[arg-type]
         # check if there is a global molecule config
         try:
             data_global = self.yaml_loader(
-                Path(Path.cwd()) / ".config/molecule/config.yml",
+                Path(Path.cwd()) / ".config/molecule/config.yml",  # type: ignore[arg-type]
             )
             data = data_global | data_scenario
         except FileNotFoundError:
@@ -181,12 +179,12 @@ class MoleculeItem(pytest.Item):
         ):
             self.add_marker(self.config.option.molecule_unavailable_driver)
 
-    def yaml_loader(self, filepath: str) -> dict:
+    def yaml_loader(self, filepath: str) -> dict:  # type: ignore[type-arg]
         """Load a yaml file at a given filepath."""
-        with Path.open(filepath, encoding="utf-8") as file_descriptor:
+        with Path.open(filepath, encoding="utf-8") as file_descriptor:  # type: ignore[call-overload]
             return yaml.safe_load(file_descriptor) or {}
 
-    def runtest(self):
+    def runtest(self):  # type: ignore[no-untyped-def]
         """Perform effective test run."""
         folder = self.path.parent
         folders = folder.parts
@@ -206,7 +204,7 @@ class MoleculeItem(pytest.Item):
                     universal_newlines=True,
                 ) as proc:
                     proc.wait()
-                    if len(proc.stdout.readlines()) == 0:
+                    if len(proc.stdout.readlines()) == 0:  # type: ignore[union-attr]
                         pytest.skip("No change in role")
             except subprocess.CalledProcessError as exc:
                 pytest.fail(
@@ -234,7 +232,7 @@ class MoleculeItem(pytest.Item):
                     stderr=subprocess.STDOUT,
                     universal_newlines=True,
                 ) as proc:
-                    for line in proc.stdout:
+                    for line in proc.stdout:  # type: ignore[union-attr]
                         print(line, end="")
                     proc.wait()
                     if proc.returncode != 0:
@@ -252,7 +250,7 @@ class MoleculeItem(pytest.Item):
                 "Molecule tests are disabled",
             )  # Skip the test if --molecule option is not enabled
 
-    def reportinfo(self):
+    def reportinfo(self):  # type: ignore[no-untyped-def]
         """Return representation of test location when in verbose mode."""
         return self.fspath, 0, f"use_case: {self.name}"
 
@@ -279,7 +277,7 @@ class MoleculeScenario:
         self.name = name
         self.test_id = test_id
 
-    def test(self) -> subprocess.CompletedProcess:
+    def test(self) -> subprocess.CompletedProcess:  # type: ignore[type-arg]
         """Run molecule test for the scenario.
 
         :returns: The completed process

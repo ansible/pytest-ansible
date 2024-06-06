@@ -1,5 +1,3 @@
-# mypy: disable-error-code="arg-type,list-item,misc"
-
 """Setup the collection for testing."""
 
 from __future__ import annotations
@@ -111,12 +109,12 @@ def inject(start_path: Path) -> None:
     # Check if the environment variable is set for additional paths
     if "COLLECTIONS_PATH" in os.environ and "COLLECTIONS_PATHS" in os.environ:
         additional_collections_paths.extend(
-            os.environ.get("COLLECTIONS_PATH", "").split(os.pathsep)
+            os.environ.get("COLLECTIONS_PATH", "").split(os.pathsep)  # type: ignore[arg-type]
             + os.environ.get("COLLECTIONS_PATHS", "").split(os.pathsep),
         )
     logger.info("Additional Collections Paths: %s", additional_collections_paths)
 
-    acf_inject(paths=[str(collections_dir), *additional_collections_paths])
+    acf_inject(paths=[str(collections_dir), *additional_collections_paths])  # type: ignore[list-item]
 
     # Inject the path for the collection into sys.path
     sys.path.insert(0, str(collections_dir))
@@ -125,8 +123,8 @@ def inject(start_path: Path) -> None:
     # Set the environment variable as a courtesy for integration tests
     envvar_name = determine_envvar()
     # Assuming additional_collections_paths is a list of PosixPath objects
-    additional_collections_paths = [str(path) for path in additional_collections_paths]
-    env_paths = os.pathsep.join([str(collections_dir), *additional_collections_paths])
+    additional_collections_paths = [str(path) for path in additional_collections_paths]  # type: ignore[misc]
+    env_paths = os.pathsep.join([str(collections_dir), *additional_collections_paths])  # type: ignore[list-item]
     logger.info("Setting %s to %s", envvar_name, env_paths)
     os.environ[envvar_name] = env_paths
 
