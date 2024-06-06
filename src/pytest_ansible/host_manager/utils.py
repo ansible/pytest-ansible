@@ -1,13 +1,10 @@
-# mypy: disable-error-code="assignment,no-untyped-def"
-
 """Host manager related utilities."""
-
 
 from pytest_ansible.has_version import has_ansible_v212, has_ansible_v213
 from pytest_ansible.host_manager.base import BaseHostManager
 
 
-def get_host_manager(*args, **kwargs) -> BaseHostManager:
+def get_host_manager(*args, **kwargs) -> BaseHostManager:  # type: ignore[no-untyped-def]  # noqa: ANN002, ANN003
     """Initialize and return a HostManager instance.
 
     Args:
@@ -20,7 +17,9 @@ def get_host_manager(*args, **kwargs) -> BaseHostManager:
     if has_ansible_v213:
         from pytest_ansible.host_manager.v213 import HostManagerV213 as HostManager
     elif has_ansible_v212:
-        from pytest_ansible.host_manager.v212 import HostManagerV212 as HostManager
+        from pytest_ansible.host_manager.v212 import (  # type: ignore[assignment]
+            HostManagerV212 as HostManager,
+        )
     else:
         err = "Unable to find any supported HostManager"
         raise RuntimeError(err)

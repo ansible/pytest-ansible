@@ -1,6 +1,4 @@
-# mypy: disable-error-code="no-untyped-def,union-attr"
-
-"""Tests specific to the unit test functionality."""
+"""Basic unit tests."""
 
 from __future__ import annotations
 
@@ -33,7 +31,7 @@ def test_inject(
     """
     caplog.set_level(logging.DEBUG)
 
-    def mock_get_collection_name(start_path: str) -> tuple[str, str]:
+    def mock_get_collection_name(start_path: str) -> tuple[str, str]:  # noqa: ARG001
         """Mock the get_collection_name function.
 
         :param start_path: The path to the root of the collection
@@ -53,8 +51,8 @@ def test_inject(
     assert (
         str(tmp_path / "collections")
         == sys.path[0]
-        == re.search(r"_ACF installed: \['(.*?)'.*]", caplog.text).groups()[0]
-        == re.search(r"_ACF configured paths: \['(.*?)'.*]", caplog.text).groups()[0]
+        == re.search(r"_ACF installed: \['(.*?)'.*]", caplog.text).groups()[0]  # type: ignore[union-attr]
+        == re.search(r"_ACF configured paths: \['(.*?)'.*]", caplog.text).groups()[0]  # type: ignore[union-attr]
     )
 
 
@@ -78,12 +76,17 @@ def test_inject_only(
     assert (
         str(tmp_path / "collections")
         == sys.path[0]
-        == re.search(r"_ACF installed: \['(.*?)'.*]", caplog.text).groups()[0]
-        == re.search(r"_ACF configured paths: \['(.*?)'.*]", caplog.text).groups()[0]
+        == re.search(r"_ACF installed: \['(.*?)'.*]", caplog.text).groups()[0]  # type: ignore[union-attr]
+        == re.search(r"_ACF configured paths: \['(.*?)'.*]", caplog.text).groups()[0]  # type: ignore[union-attr]
     )
 
 
-def test_for_params():
+def test_for_params():  # type: ignore[no-untyped-def]  # noqa: ANN201
     """Test for params."""
-    proc = subprocess.run("pytest --help", shell=True, capture_output=True, check=False)
+    proc = subprocess.run(
+        "pytest --help",  # noqa: S607
+        shell=True,
+        capture_output=True,
+        check=False,
+    )
     assert "--ansible-unit-inject-only" in proc.stdout.decode()

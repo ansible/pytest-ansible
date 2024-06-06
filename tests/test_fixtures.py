@@ -1,14 +1,12 @@
-# mypy: disable-error-code="attr-defined,no-untyped-def"
-
-try:
-    from _pytest.main import EXIT_OK  # type: ignore
+try:  # noqa: INP001, D100
+    from _pytest.main import EXIT_OK  # type: ignore  # noqa: PGH003
 except ImportError:
-    from _pytest.main import ExitCode
+    from _pytest.main import ExitCode  # type: ignore[attr-defined]
 
     EXIT_OK = ExitCode.OK
 
 
-def test_ansible_adhoc(pytester, option):
+def test_ansible_adhoc(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
     src = """
         import pytest
         import types
@@ -31,7 +29,7 @@ def test_ansible_adhoc(pytester, option):
     assert result.parseoutcomes()["passed"] == 1
 
 
-def test_ansible_module(pytester, option):
+def test_ansible_module(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
     src = """
         import pytest
         from pytest_ansible.module_dispatcher import BaseModuleDispatcher
@@ -52,7 +50,7 @@ def test_ansible_module(pytester, option):
     assert result.parseoutcomes()["passed"] == 1
 
 
-def test_ansible_facts(pytester, option):
+def test_ansible_facts(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
     src = """
         import pytest
         from pytest_ansible.results import AdHocResult
@@ -73,7 +71,7 @@ def test_ansible_facts(pytester, option):
     assert result.parseoutcomes()["passed"] == 1
 
 
-def test_localhost(pytester, option):
+def test_localhost(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
     src = """
         import pytest
         from pytest_ansible.module_dispatcher import BaseModuleDispatcher
