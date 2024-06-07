@@ -3,6 +3,7 @@ from types import GeneratorType
 import pytest
 
 from conftest import ALL_EXTRA_HOSTS, ALL_HOSTS
+
 from pytest_ansible.results import ModuleResult
 
 
