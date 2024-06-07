@@ -19,7 +19,7 @@ def test_molecule_collect() -> None:
     """Test pytest collection of molecule scenarios."""
     try:
         proc = subprocess.run(
-            "pytest --molecule --collect-only",
+            "pytest --molecule --collect-only",  # noqa: S607
             capture_output=True,
             shell=True,
             check=True,
@@ -42,7 +42,7 @@ def test_molecule_disabled() -> None:
         shell=True,
         text=True,
     )
-    assert proc.returncode == 4
+    assert proc.returncode == 4  # noqa: PLR2004
     # First check is for pytest 7 behavior, second for pytest >=8
     assert "ERROR: found no collectors" in proc.stderr or "ERROR: not found" in proc.stderr
 
@@ -51,7 +51,7 @@ def test_molecule_runtest() -> None:
     """Test running the molecule scenario via pytest."""
     try:
         proc = subprocess.run(
-            f"{sys.executable} -m pytest -v --molecule tests/fixtures/molecule/default/molecule.yml",
+            f"{sys.executable} -m pytest -v --molecule tests/fixtures/molecule/default/molecule.yml",  # noqa: E501
             capture_output=True,
             check=True,
             env={"PATH": os.environ["PATH"]},

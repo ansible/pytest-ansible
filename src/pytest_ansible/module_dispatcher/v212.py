@@ -26,28 +26,28 @@ from pytest_ansible.results import AdHocResult
 class ResultAccumulator(CallbackBase):  # type: ignore[misc]
     """Fixme."""
 
-    def __init__(self, *args, **kwargs) -> None:  # type: ignore[no-untyped-def]
+    def __init__(self, *args, **kwargs) -> None:  # type: ignore[no-untyped-def]  # noqa: ANN002, ANN003, ANN101
         """Initialize object."""
         super().__init__(*args, **kwargs)
         self.contacted = {}  # type: ignore[var-annotated]
         self.unreachable = {}  # type: ignore[var-annotated]
 
-    def v2_runner_on_failed(self, result, *args, **kwargs):  # type: ignore[no-untyped-def]
+    def v2_runner_on_failed(self, result, *args, **kwargs):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN002, ANN003, ANN101, ANN201, ARG002
         """Fixme."""
         result2 = {"failed": True}
-        result2.update(result._result)
-        self.contacted[result._host.get_name()] = result2
+        result2.update(result._result)  # noqa: SLF001
+        self.contacted[result._host.get_name()] = result2  # noqa: SLF001
 
-    def v2_runner_on_ok(self, result):  # type: ignore[no-untyped-def]
+    def v2_runner_on_ok(self, result):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN101, ANN201
         """Fixme."""
-        self.contacted[result._host.get_name()] = result._result
+        self.contacted[result._host.get_name()] = result._result  # noqa: SLF001
 
-    def v2_runner_on_unreachable(self, result):  # type: ignore[no-untyped-def]
+    def v2_runner_on_unreachable(self, result):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN101, ANN201
         """Fixme."""
-        self.unreachable[result._host.get_name()] = result._result
+        self.unreachable[result._host.get_name()] = result._result  # noqa: SLF001
 
     @property
-    def results(self):  # type: ignore[no-untyped-def]
+    def results(self):  # type: ignore[no-untyped-def]  # noqa: ANN101, ANN201
         """Fixme."""
         return {"contacted": self.contacted, "unreachable": self.unreachable}
 
@@ -66,14 +66,14 @@ class ModuleDispatcherV212(BaseModuleDispatcher):
         "loader",
     )
 
-    def __init__(self, **kwargs) -> None:  # type: ignore[no-untyped-def]
+    def __init__(self, **kwargs) -> None:  # type: ignore[no-untyped-def]  # noqa: ANN003, ANN101
         """Fixme."""
         super().__init__(**kwargs)
         if not has_ansible_v212:
             msg = "Only supported with ansible-2.12 and newer"
             raise ImportError(msg)
 
-    def has_module(self, name):  # type: ignore[no-untyped-def]
+    def has_module(self, name):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN101, ANN201
         """Fixme."""
         # Make sure we parse module_path and pass it to the loader,
         # otherwise, only built-in modules will work.
@@ -87,7 +87,7 @@ class ModuleDispatcherV212(BaseModuleDispatcher):
 
         return module_loader.has_plugin(name)
 
-    def _run(self, *module_args, **complex_args):  # type: ignore[no-untyped-def]
+    def _run(self, *module_args, **complex_args):  # type: ignore[no-untyped-def]  # noqa: ANN002, ANN003, ANN101, ANN202, C901, PLR0912, PLR0915
         """Execute an ansible adhoc command returning the result in a AdhocResult object."""
         # Assemble module argument string
         if module_args:
@@ -98,7 +98,7 @@ class ModuleDispatcherV212(BaseModuleDispatcher):
         no_hosts = False
         if len(hosts) == 0:
             no_hosts = True
-            warnings.warn("provided hosts list is empty, only localhost is available")
+            warnings.warn("provided hosts list is empty, only localhost is available")  # noqa: B028
 
         self.options["inventory_manager"].subset(self.options.get("subset"))
         hosts = self.options["inventory_manager"].list_hosts(
@@ -129,7 +129,7 @@ class ModuleDispatcherV212(BaseModuleDispatcher):
             "module_path",
         ):
             arg_value = self.options.get(argument)
-            argument = argument.replace("_", "-")
+            argument = argument.replace("_", "-")  # noqa: PLW2901
 
             if arg_value in (None, False):
                 continue

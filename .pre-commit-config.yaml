@@ -107,6 +107,12 @@ repos:
         name: deps
         alias: deps
         stages: [manual]
-        entry: pip-compile .config/requirements.in --upgrade --all-extras --no-annotate --strip-extras --output-file=.config/constraints.txt pyproject.toml
+        entry: >-
+          pip-compile .config/requirements.in
+          --upgrade
+          --all-extras
+          --no-annotate
+          --strip-extras
+          --output-file=.config/constraints.txt pyproject.toml
         files: ^.config\/.*requirements.*$
         language_version: "3.10" # minimal we support officially
