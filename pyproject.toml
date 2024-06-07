@@ -58,6 +58,7 @@ parallel = true
 source_pkgs = ["pytest_ansible"]
 
 [tool.mypy]
+cache_dir = "./.cache/.mypy"
 files = ["src", "tests"]
 strict = true
 
@@ -309,6 +310,7 @@ fail-on = [
 
 [tool.pytest.ini_options]
 addopts = "-ra --showlocals --durations=10"
+cache_dir = "./.cache/.pytest"
 markers = ["old", "unit", "requires_ansible_v2"]
 testpaths = "tests"
 tmp_path_retention_policy = "failed"
@@ -316,6 +318,7 @@ verbosity_assertions = 2
 
 [tool.ruff]
 builtins = ["__"]
+cache-dir = "./.cache/.ruff"
 fix = true
 line-length = 100
 target-version = "py310"
