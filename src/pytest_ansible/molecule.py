@@ -196,7 +196,7 @@ class MoleculeItem(pytest.Item):
             cmd.extend(("--base-config", self.config.option.molecule_base_config))
         if self.config.option.skip_no_git_change:
             try:
-                with subprocess.Popen(
+                with subprocess.Popen(  # noqa: S603
                     [  # noqa: S607
                         "git",
                         "diff",
@@ -231,7 +231,7 @@ class MoleculeItem(pytest.Item):
             try:
                 # Workaround for STDOUT/STDERR line ordering issue:
                 # https://github.com/pytest-dev/pytest/issues/5449
-                with subprocess.Popen(
+                with subprocess.Popen(  # noqa: S603
                     cmd,
                     cwd=cwd,
                     stdout=subprocess.PIPE,
