@@ -16,7 +16,11 @@ class MockItem:
 
 
 class MockConfig:
-    """Mock class for config object."""
+    """Mock class for config object.
+
+    Attributes:
+        options: A dictionary of options.
+    """
 
     options = {}  # type: ignore[var-annotated]  # noqa: RUF012
 
