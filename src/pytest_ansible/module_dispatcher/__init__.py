@@ -1,12 +1,24 @@
 """Define BaseModuleDispatcher class."""
 
-from collections.abc import Sequence
+from __future__ import annotations
+
+import abc
+
+from typing import TYPE_CHECKING
+
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
 
 from pytest_ansible.errors import AnsibleModuleError
 
 
-class BaseModuleDispatcher:
-    """Fixme.."""
+class BaseModuleDispatcher(abc.ABC):
+    """The module dispatcher is responsible for running ansible modules.
+
+    Attributes:
+        required_kwargs: The required keyword arguments for the dispatcher.
+    """
 
     required_kwargs: Sequence[str] = ("inventory",)
 
@@ -46,12 +58,11 @@ class BaseModuleDispatcher:
 
         Raise `AnsibleModuleError` when no such module exists.
         """
-        if not self.has_module(name):  # type: ignore[no-untyped-call]
+        resolved = self.has_module(name)
+        if not resolved:
             msg = f"The module {name} was not found in configured module paths."
-            raise AnsibleModuleError(
-                msg,
-            )
-        self.options["module_name"] = name
+            raise AnsibleModuleError(msg)
+        self.options["module_name"] = resolved
         return self._run
 
     def check_required_kwargs(self, **kwargs):  # type: ignore[no-untyped-def]  # noqa: ANN003, ANN101, ANN201, ARG002
@@ -61,12 +72,16 @@ class BaseModuleDispatcher:
                 msg = f"Missing required keyword argument '{kwarg}'"
                 raise TypeError(msg)
 
-    def has_module(self, name):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN101, ANN201, ARG002
-        """Return whether ansible provides the requested module."""
-        msg = "Must be implemented by a sub-class"
-        raise RuntimeError(msg)
+    @abc.abstractmethod
+    def has_module(self: BaseModuleDispatcher, name: str) -> str:
+        """Return whether ansible provides the requested module.
 
-    def _run(self, *args, **kwargs):  # type: ignore[no-untyped-def]  # noqa: ANN002, ANN003, ANN101, ANN202, ARG002
+        Must be implemented by a sub-class.
+        """
+        return ""
+
+    @abc.abstractmethod
+    def _run(self, *args, **kwargs):  # type: ignore[no-untyped-def]  # noqa: ANN002, ANN003, ANN101, ANN202
         """Raise a runtime error, unless implemented by sub-classes."""
         msg = "Must be implemented by a sub-class"
         raise RuntimeError(msg)

@@ -1,5 +1,7 @@
 """Fixme."""
 
+from __future__ import annotations
+
 import sys
 import warnings
 
@@ -61,7 +63,11 @@ class ResultAccumulator(CallbackBase):  # type: ignore[misc]
 
 
 class ModuleDispatcherV213(BaseModuleDispatcher):
-    """Pass."""
+    """A plugin runner for Ansible 2.13 and newer.
+
+    Attributes:
+        required_kwargs: A tuple of required keyword arguments.
+    """
 
     required_kwargs = (
         "inventory",
@@ -78,10 +84,15 @@ class ModuleDispatcherV213(BaseModuleDispatcher):
             msg = "Only supported with ansible-2.13 and newer"
             raise ImportError(msg)
 
-    def has_module(self, name):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN101, ANN201
-        """Fixme."""
-        # Make sure we parse module_path and pass it to the loader,
-        # otherwise, only built-in modules will work.
+    def has_module(self: ModuleDispatcherV213, name: str) -> str:
+        """Determine if a module exists and return the full name or "".
+
+        Attributes:
+            name: The user provided name of the module to check.
+
+        Returns:
+            The full name of the module if it exists or "" if it does not.
+        """
         if "module_path" in self.options:
             paths = self.options["module_path"]
             if isinstance(paths, list | tuple | set):
@@ -89,8 +100,13 @@ class ModuleDispatcherV213(BaseModuleDispatcher):
                     module_loader.add_directory(path)
             else:
                 module_loader.add_directory(paths)
-
-        return module_loader.has_plugin(name)
+        try:
+            found = module_loader.find_plugin_with_context(name)
+        except ModuleNotFoundError:
+            return ""
+        if not getattr(found, "resolved", False):
+            return ""
+        return str(found.resolved_fqcn)
 
     def _run(self, *module_args, **complex_args):  # type: ignore[no-untyped-def]  # noqa: ANN002, ANN003, ANN101, ANN202, C901, PLR0912, PLR0915
         """Execute an ansible adhoc command returning the result in a AdhocResult object."""

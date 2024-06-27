@@ -8,6 +8,7 @@ caplog
 cidrblock
 codecov
 errlines
+fqcn
 filterwarnings
 fixturedefs
 fixtureinfo

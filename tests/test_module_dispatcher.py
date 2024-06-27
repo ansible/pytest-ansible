@@ -3,15 +3,12 @@ import pytest  # noqa: INP001, D100
 from conftest import NEGATIVE_HOST_PATTERNS, POSITIVE_HOST_PATTERNS
 
 
-def test_runtime_error():  # type: ignore[no-untyped-def]  # noqa: ANN201, D103
+def test_type_error() -> None:
+    """Verify that BaseModuleDispatcher cannot be instantiated."""
     from pytest_ansible.module_dispatcher import BaseModuleDispatcher
 
-    bmd = BaseModuleDispatcher(inventory="localhost,")
-    with pytest.raises(RuntimeError):
-        bmd.has_module("foo")  # type: ignore[no-untyped-call]
-
-    with pytest.raises(RuntimeError):
-        bmd._run("foo")  # type: ignore[no-untyped-call]
+    with pytest.raises(TypeError, match="^Can't instantiate.*$"):
+        BaseModuleDispatcher(inventory="localhost,")  # type: ignore[abstract] #pylint: disable=abstract-class-instantiated
 
 
 @pytest.mark.requires_ansible_v2()
