@@ -36,28 +36,28 @@ except ImportError:
 class ResultAccumulator(CallbackBase):  # type: ignore[misc]
     """Fixme."""
 
-    def __init__(self, *args, **kwargs) -> None:  # type: ignore[no-untyped-def]  # noqa: ANN002, ANN003, ANN101
+    def __init__(self, *args, **kwargs) -> None:  # type: ignore[no-untyped-def]  # noqa: ANN002, ANN003
         """Initialize object."""
         super().__init__(*args, **kwargs)
         self.contacted = {}  # type: ignore[var-annotated]
         self.unreachable = {}  # type: ignore[var-annotated]
 
-    def v2_runner_on_failed(self, result, *args, **kwargs):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN002, ANN003, ANN101, ANN201, ARG002
+    def v2_runner_on_failed(self, result, *args, **kwargs):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN002, ANN003, ANN201, ARG002
         """Fixme."""
         result2 = {"failed": True}
         result2.update(result._result)  # noqa: SLF001
         self.contacted[result._host.get_name()] = result2  # noqa: SLF001
 
-    def v2_runner_on_ok(self, result):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN101, ANN201
+    def v2_runner_on_ok(self, result):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
         """Fixme."""
         self.contacted[result._host.get_name()] = result._result  # noqa: SLF001
 
-    def v2_runner_on_unreachable(self, result):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN101, ANN201
+    def v2_runner_on_unreachable(self, result):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
         """Fixme."""
         self.unreachable[result._host.get_name()] = result._result  # noqa: SLF001
 
     @property
-    def results(self):  # type: ignore[no-untyped-def]  # noqa: ANN101, ANN201
+    def results(self):  # type: ignore[no-untyped-def]  # noqa: ANN201
         """Fixme."""
         return {"contacted": self.contacted, "unreachable": self.unreachable}
 
@@ -77,7 +77,7 @@ class ModuleDispatcherV213(BaseModuleDispatcher):
         "loader",
     )
 
-    def __init__(self, **kwargs) -> None:  # type: ignore[no-untyped-def]  # noqa: ANN003, ANN101
+    def __init__(self, **kwargs) -> None:  # type: ignore[no-untyped-def]  # noqa: ANN003
         """Fixme."""
         super().__init__(**kwargs)
         if not has_ansible_v213:
@@ -108,7 +108,7 @@ class ModuleDispatcherV213(BaseModuleDispatcher):
             return ""
         return str(found.resolved_fqcn)
 
-    def _run(self, *module_args, **complex_args):  # type: ignore[no-untyped-def]  # noqa: ANN002, ANN003, ANN101, ANN202, C901, PLR0912, PLR0915
+    def _run(self, *module_args, **complex_args):  # type: ignore[no-untyped-def]  # noqa: ANN002, ANN003, ANN202, C901, PLR0912, PLR0915
         """Execute an ansible adhoc command returning the result in a AdhocResult object."""
         # Assemble module argument string
         if module_args:

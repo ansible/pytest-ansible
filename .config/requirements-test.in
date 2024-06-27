@@ -1,12 +1,11 @@
 ansible-core
 black
 coverage[toml]
-flake8
 molecule
 mypy
 pip-tools
 pre-commit
-pydoclint[flake8]
+pydoclint
 pylint
 pytest
 pytest-xdist

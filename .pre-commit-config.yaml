@@ -28,9 +28,10 @@ repos:
     rev: v1.5.5
     hooks:
       - id: remove-tabs
+        exclude: .config/pydoclint-baseline.txt
 
   - repo: https://github.com/pycontribs/mirrors-prettier
-    rev: v3.3.0
+    rev: v3.3.2
     hooks:
       - id: prettier
         always_run: true
@@ -55,28 +56,28 @@ repos:
       - id: tox-ini-fmt
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.4.5
+    rev: v0.5.0
     hooks:
       - id: ruff
         args:
           - --exit-non-zero-on-fix
 
   - repo: https://github.com/streetsidesoftware/cspell-cli
-    rev: v8.8.2
+    rev: v8.9.0
     hooks:
       - id: cspell
         name: Spell check with cspell
 
-  - repo: https://github.com/pycqa/flake8
-    rev: 7.0.0
+  - repo: https://github.com/jsh9/pydoclint
+    rev: 0.5.3
     hooks:
-      - id: flake8
-        name: flake8(pydoclint)
-        additional_dependencies:
-          - pydoclint[flake8]
+      - id: pydoclint
+        # This allows automatic reduction of the baseline file when needed.
+        entry: sh -ec "pydoclint . && pydoclint --generate-baseline=1 ."
+        pass_filenames: false
 
   - repo: https://github.com/pycqa/pylint.git
-    rev: v3.2.2
+    rev: v3.2.4
     hooks:
       - id: pylint
         args:
@@ -90,7 +91,7 @@ repos:
           - setuptools
 
   - repo: https://github.com/pre-commit/mirrors-mypy.git
-    rev: v1.10.0
+    rev: v1.10.1
     hooks:
       - id: mypy
         additional_dependencies:
