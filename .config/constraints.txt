@@ -84,7 +84,7 @@ platformdirs==4.2.2
 pluggy==1.5.0
 pre-commit==3.7.1
 pycparser==2.22
-pydoclint==0.5.1
+pydoclint==0.5.3
 pygments==2.18.0
 pylint==3.2.4
 pymdown-extensions==10.8.1
