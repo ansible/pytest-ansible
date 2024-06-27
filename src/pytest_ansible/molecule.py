@@ -109,7 +109,7 @@ def molecule_pytest_configure(config):  # type: ignore[no-untyped-def]  # noqa: 
 class MoleculeFile(pytest.File):
     """Wrapper class for molecule files."""
 
-    def collect(self):  # type: ignore[no-untyped-def]  # noqa: ANN101, ANN201
+    def collect(self):  # type: ignore[no-untyped-def]  # noqa: ANN201
         """Test generator."""
         # pylint: disable=global-statement
         global counter  # noqa: PLW0603
@@ -119,7 +119,7 @@ class MoleculeFile(pytest.File):
             yield MoleculeItem(f"test{counter}", self)
         counter += 1
 
-    def __str__(self) -> str:  # noqa: ANN101
+    def __str__(self) -> str:
         """Return test name string representation."""
         return str(self.path.relative_to(Path.cwd()))
 
@@ -130,7 +130,7 @@ class MoleculeItem(pytest.Item):
     Pytest supports multiple tests per file, molecule only one "test".
     """
 
-    def __init__(self, name, parent) -> None:  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN101
+    def __init__(self, name, parent) -> None:  # type: ignore[no-untyped-def]  # noqa: ANN001
         """Construct MoleculeItem."""
         self.funcargs = {}  # type: ignore[var-annotated]
         super().__init__(name, parent)
@@ -179,12 +179,12 @@ class MoleculeItem(pytest.Item):
         ):
             self.add_marker(self.config.option.molecule_unavailable_driver)
 
-    def yaml_loader(self, filepath: str) -> dict:  # type: ignore[type-arg]  # noqa: ANN101
+    def yaml_loader(self, filepath: str) -> dict:  # type: ignore[type-arg]
         """Load a yaml file at a given filepath."""
         with Path.open(filepath, encoding="utf-8") as file_descriptor:  # type: ignore[call-overload]
             return yaml.safe_load(file_descriptor) or {}
 
-    def runtest(self):  # type: ignore[no-untyped-def]  # noqa: ANN101, ANN201
+    def runtest(self):  # type: ignore[no-untyped-def]  # noqa: ANN201
         """Perform effective test run."""
         folder = self.path.parent
         folders = folder.parts
@@ -197,7 +197,7 @@ class MoleculeItem(pytest.Item):
         if self.config.option.skip_no_git_change:
             try:
                 with subprocess.Popen(
-                    [  # noqa: S603, S607
+                    [  # noqa: S607
                         "git",
                         "diff",
                         self.config.option.skip_no_git_change,
@@ -232,7 +232,7 @@ class MoleculeItem(pytest.Item):
                 # Workaround for STDOUT/STDERR line ordering issue:
                 # https://github.com/pytest-dev/pytest/issues/5449
                 with subprocess.Popen(
-                    cmd,  # noqa: S603
+                    cmd,
                     cwd=cwd,
                     stdout=subprocess.PIPE,
                     stderr=subprocess.STDOUT,
@@ -256,11 +256,11 @@ class MoleculeItem(pytest.Item):
                 "Molecule tests are disabled",
             )  # Skip the test if --molecule option is not enabled
 
-    def reportinfo(self):  # type: ignore[no-untyped-def]  # noqa: ANN101, ANN201
+    def reportinfo(self):  # type: ignore[no-untyped-def]  # noqa: ANN201
         """Return representation of test location when in verbose mode."""
         return self.fspath, 0, f"use_case: {self.name}"
 
-    def __str__(self) -> str:  # noqa: ANN101
+    def __str__(self) -> str:
         """Return name of the test."""
         return f"{self.name}[{self.molecule_driver}]"
 
@@ -272,7 +272,7 @@ class MoleculeExceptionError(Exception):
 class MoleculeScenario:
     """Molecule subprocess wrapper."""
 
-    def __init__(self, name: str, parent_directory: Path, test_id: str) -> None:  # noqa: ANN101
+    def __init__(self, name: str, parent_directory: Path, test_id: str) -> None:
         """Initialize the MoleculeScenario class.
 
         :param molecule_parent: The parent directory of 'molecule'
@@ -283,7 +283,7 @@ class MoleculeScenario:
         self.name = name
         self.test_id = test_id
 
-    def test(self) -> subprocess.CompletedProcess:  # type: ignore[type-arg]  # noqa: ANN101
+    def test(self) -> subprocess.CompletedProcess:  # type: ignore[type-arg]
         """Run molecule test for the scenario.
 
         :returns: The completed process

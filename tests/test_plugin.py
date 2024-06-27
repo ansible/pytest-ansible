@@ -7,11 +7,11 @@ from pytest_ansible.plugin import PyTestAnsiblePlugin, pytest_generate_tests
 class MockItem:
     """Mock class for item object."""
 
-    def __init__(self, fixturenames, marker=None) -> None:  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN101, D107
+    def __init__(self, fixturenames, marker=None) -> None:  # type: ignore[no-untyped-def]  # noqa: ANN001, D107
         self.fixturenames = fixturenames
         self.marker = marker
 
-    def get_closest_marker(self, marker_name):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN101, ANN201, ARG002, D102
+    def get_closest_marker(self, marker_name):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, ARG002, D102
         return self.marker
 
 
@@ -24,13 +24,13 @@ class MockConfig:
 
     options = {}  # type: ignore[var-annotated]  # noqa: RUF012
 
-    def setoption(self, option_name, value):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN101, ANN201, D102
+    def setoption(self, option_name, value):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D102
         self.options[option_name] = value
 
-    def getoption(self, option_name):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN101, ANN201, D102
+    def getoption(self, option_name):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D102
         return self.options.get(option_name)
 
-    def __init__(self) -> None:  # noqa: ANN101, D107
+    def __init__(self) -> None:  # noqa: D107
         self.options = {
             "ansible_host_pattern": "localhost",
             "ansible_inventory": "/etc/ansible/hosts",
@@ -40,14 +40,14 @@ class MockConfig:
 class MockPluginManager:
     """Mock class for pluginmanager object."""
 
-    def getplugin(self, name):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN101, ANN201, ARG002, D102
+    def getplugin(self, name):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, ARG002, D102
         return MagicMock()
 
 
 class MockMetafunc:
     """Mock class for metafunc object."""
 
-    def __init__(self, fixturenames) -> None:  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN101, D107
+    def __init__(self, fixturenames) -> None:  # type: ignore[no-untyped-def]  # noqa: ANN001, D107
         self.fixturenames = fixturenames
         self.config = MockConfig()
         self.parametrize = MagicMock()

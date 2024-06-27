@@ -111,7 +111,7 @@ def pytest_runtest_setup(item):  # type: ignore[no-untyped-def]  # noqa: ANN001,
 class PyTestOption:
     """Helper class that provides methods for creating and managing an inventory file."""
 
-    def __init__(self, config, pytester) -> None:  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN101, D107
+    def __init__(self, config, pytester) -> None:  # type: ignore[no-untyped-def]  # noqa: ANN001, D107
         self.config = config
 
         # Create inventory file
@@ -140,7 +140,7 @@ class PyTestOption:
         # Create ansible.cfg file
 
     @property
-    def args(self):  # type: ignore[no-untyped-def]  # noqa: ANN101, ANN201, D102
+    def args(self):  # type: ignore[no-untyped-def]  # noqa: ANN201, D102
         return ["--tb", "native"]
 
 

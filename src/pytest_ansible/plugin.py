@@ -316,15 +316,15 @@ def pytest_generate_tests(metafunc):  # type: ignore[no-untyped-def]  # noqa: AN
 class PyTestAnsiblePlugin:
     """Ansible PyTest Plugin Class."""
 
-    def __init__(self, config) -> None:  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN101
+    def __init__(self, config) -> None:  # type: ignore[no-untyped-def]  # noqa: ANN001
         """Initialize plugin."""
         self.config = config
 
-    def pytest_report_header(self):  # type: ignore[no-untyped-def]  # noqa: ANN101, ANN201
+    def pytest_report_header(self):  # type: ignore[no-untyped-def]  # noqa: ANN201
         """Return the version of ansible."""
         return f"ansible: {ansible.__version__}"
 
-    def pytest_collection_modifyitems(self, session, config, items):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN101, ANN201, ARG002
+    def pytest_collection_modifyitems(self, session, config, items):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, ARG002
         """Validate --ansible-* parameters."""
         uses_ansible_fixtures = False
         for item in items:
@@ -354,7 +354,7 @@ class PyTestAnsiblePlugin:
             # assert required --ansible-* parameters were used
             self.assert_required_ansible_parameters(config)  # type: ignore[no-untyped-call]
 
-    def _load_ansible_config(self, config):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN101, ANN202
+    def _load_ansible_config(self, config):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN202
         """Load ansible configuration from command-line."""
         option_names = [
             "ansible_inventory",
@@ -386,7 +386,7 @@ class PyTestAnsiblePlugin:
 
         return kwargs
 
-    def _load_request_config(self, request):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN101, ANN202
+    def _load_request_config(self, request):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN202
         """Load ansible configuration from decorator kwargs."""
         kwargs = {}
 
@@ -397,7 +397,7 @@ class PyTestAnsiblePlugin:
 
         return kwargs
 
-    def initialize(self, config=None, request=None, **kwargs):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN003, ANN101, ANN201
+    def initialize(self, config=None, request=None, **kwargs):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN003, ANN201
         """Return an initialized Ansible Host Manager instance."""
         ansible_cfg = {}
         # merge command-line configuration options

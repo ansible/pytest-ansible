@@ -11,12 +11,12 @@ from pytest_ansible.module_dispatcher.v213 import ModuleDispatcherV213
 class HostManagerV213(BaseHostManager):
     """Fixme."""
 
-    def __init__(self, *args, **kwargs) -> None:  # type: ignore[no-untyped-def]  # noqa: ANN002, ANN003, ANN101
+    def __init__(self, *args, **kwargs) -> None:  # type: ignore[no-untyped-def]  # noqa: ANN002, ANN003
         """Fixme."""
         super().__init__(*args, **kwargs)
         self._dispatcher = ModuleDispatcherV213
 
-    def initialize_inventory(self):  # type: ignore[no-untyped-def]  # noqa: ANN101, ANN201
+    def initialize_inventory(self):  # type: ignore[no-untyped-def]  # noqa: ANN201
         """Fixme."""
         self.options["loader"] = DataLoader()
         self.options["inventory_manager"] = InventoryManager(
