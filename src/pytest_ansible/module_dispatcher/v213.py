@@ -63,7 +63,11 @@ class ResultAccumulator(CallbackBase):  # type: ignore[misc]
 
 
 class ModuleDispatcherV213(BaseModuleDispatcher):
-    """Pass."""
+    """A plugin runner for Ansible 2.13 and newer.
+
+    Attributes:
+        required_kwargs: A tuple of required keyword arguments.
+    """
 
     required_kwargs = (
         "inventory",

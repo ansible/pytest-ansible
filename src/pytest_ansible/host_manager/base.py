@@ -4,7 +4,14 @@ import ansible
 
 
 class BaseHostManager:
-    """Fixme."""
+    """The BaseHostManager class provides a base class for managing ansible inventory hosts.
+
+    It's getitem method invokes the module dispatcher with a plugin name.
+
+    Attributes:
+        _required_kwargs: A tuple of required keyword arguments.
+
+    """
 
     _required_kwargs = ("inventory",)
 
