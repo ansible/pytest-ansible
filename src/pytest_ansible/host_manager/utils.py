@@ -1,6 +1,6 @@
 """Host manager related utilities."""
 
-from pytest_ansible.has_version import has_ansible_v212, has_ansible_v213
+from pytest_ansible.has_version import has_ansible_v213
 from pytest_ansible.host_manager.base import BaseHostManager
 
 
@@ -16,10 +16,6 @@ def get_host_manager(*args, **kwargs) -> BaseHostManager:  # type: ignore[no-unt
     """
     if has_ansible_v213:
         from pytest_ansible.host_manager.v213 import HostManagerV213 as HostManager
-    elif has_ansible_v212:
-        from pytest_ansible.host_manager.v212 import (  # type: ignore[assignment]
-            HostManagerV212 as HostManager,
-        )
     else:
         err = "Unable to find any supported HostManager"
         raise RuntimeError(err)

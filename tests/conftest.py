@@ -124,11 +124,11 @@ class PyTestOption:
             reachable
 
             [reachable]
-            localhost ansible_connection=local ansible_python_interpreter='/usr/bin/env python'
-            127.0.0.2 ansible_connection=local ansible_python_interpreter='/usr/bin/env python'
-            127.0.0.3 ansible_connection=local ansible_python_interpreter='/usr/bin/env python'
-            127.0.0.4 ansible_connection=local ansible_python_interpreter='/usr/bin/env python'
-            127.0.0.5 ansible_connection=local ansible_python_interpreter='/usr/bin/env python'
+            localhost ansible_connection=local
+            127.0.0.2 ansible_connection=local
+            127.0.0.3 ansible_connection=local
+            127.0.0.4 ansible_connection=local
+            127.0.0.5 ansible_connection=local
 
             [unreachable]
             unreachable-host-1.example.com
