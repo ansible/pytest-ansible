@@ -105,7 +105,7 @@ requests==2.32.3
 resolvelib==1.0.1
 rich==13.7.1
 rpds-py==0.18.1
-ruff==0.4.10
+ruff==0.5.0
 six==1.16.0
 soupsieve==2.5
 subprocess-tee==0.4.2
