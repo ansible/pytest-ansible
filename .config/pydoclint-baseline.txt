@@ -27,8 +27,6 @@ src/pytest_ansible/fixtures.py
 	DOC201: Function `localhost` does not have a return section in docstring
 --------------------
 src/pytest_ansible/host_manager/base.py
-	DOC601: Class `BaseHostManager`: Class docstring contains fewer class attributes than actual class attributes.  (Please read https://jsh9.github.io/pydoclint/checking_class_attributes.html on how to correctly document class attributes.)
-	DOC603: Class `BaseHostManager`: Class docstring attributes are different from actual class attributes. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Attributes in the class definition but not in the docstring: [_required_kwargs: ]. (Please read https://jsh9.github.io/pydoclint/checking_class_attributes.html on how to correctly document class attributes.)
 	DOC101: Method `BaseHostManager.__init__`: Docstring contains fewer arguments than in function signature.
 	DOC106: Method `BaseHostManager.__init__`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
 	DOC103: Method `BaseHostManager.__init__`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [**kwargs: , *args: ].
@@ -73,19 +71,12 @@ src/pytest_ansible/host_manager/utils.py
 	DOC106: Function `get_host_manager`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
 	DOC501: Function `get_host_manager` has "raise" statements, but the docstring does not have a "Raises" section
 --------------------
-src/pytest_ansible/host_manager/v212.py
-	DOC101: Method `HostManagerV212.__init__`: Docstring contains fewer arguments than in function signature.
-	DOC106: Method `HostManagerV212.__init__`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
-	DOC103: Method `HostManagerV212.__init__`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [**kwargs: , *args: ].
---------------------
 src/pytest_ansible/host_manager/v213.py
 	DOC101: Method `HostManagerV213.__init__`: Docstring contains fewer arguments than in function signature.
 	DOC106: Method `HostManagerV213.__init__`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
 	DOC103: Method `HostManagerV213.__init__`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [**kwargs: , *args: ].
 --------------------
 src/pytest_ansible/module_dispatcher/__init__.py
-	DOC601: Class `BaseModuleDispatcher`: Class docstring contains fewer class attributes than actual class attributes.  (Please read https://jsh9.github.io/pydoclint/checking_class_attributes.html on how to correctly document class attributes.)
-	DOC603: Class `BaseModuleDispatcher`: Class docstring attributes are different from actual class attributes. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Attributes in the class definition but not in the docstring: [required_kwargs: Sequence[str]]. (Please read https://jsh9.github.io/pydoclint/checking_class_attributes.html on how to correctly document class attributes.)
 	DOC101: Method `BaseModuleDispatcher.__init__`: Docstring contains fewer arguments than in function signature.
 	DOC106: Method `BaseModuleDispatcher.__init__`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
 	DOC103: Method `BaseModuleDispatcher.__init__`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [**kwargs: ].
@@ -106,47 +97,12 @@ src/pytest_ansible/module_dispatcher/__init__.py
 	DOC103: Method `BaseModuleDispatcher.check_required_kwargs`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [**kwargs: ].
 	DOC501: Method `BaseModuleDispatcher.check_required_kwargs` has "raise" statements, but the docstring does not have a "Raises" section
 	DOC101: Method `BaseModuleDispatcher.has_module`: Docstring contains fewer arguments than in function signature.
-	DOC106: Method `BaseModuleDispatcher.has_module`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
-	DOC107: Method `BaseModuleDispatcher.has_module`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
-	DOC103: Method `BaseModuleDispatcher.has_module`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [name: ].
-	DOC501: Method `BaseModuleDispatcher.has_module` has "raise" statements, but the docstring does not have a "Raises" section
+	DOC103: Method `BaseModuleDispatcher.has_module`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [name: str].
+	DOC201: Method `BaseModuleDispatcher.has_module` does not have a return section in docstring
 	DOC101: Method `BaseModuleDispatcher._run`: Docstring contains fewer arguments than in function signature.
 	DOC106: Method `BaseModuleDispatcher._run`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
 	DOC103: Method `BaseModuleDispatcher._run`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [**kwargs: , *args: ].
 	DOC501: Method `BaseModuleDispatcher._run` has "raise" statements, but the docstring does not have a "Raises" section
---------------------
-src/pytest_ansible/module_dispatcher/v212.py
-	DOC101: Method `ResultAccumulator.__init__`: Docstring contains fewer arguments than in function signature.
-	DOC106: Method `ResultAccumulator.__init__`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
-	DOC103: Method `ResultAccumulator.__init__`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [**kwargs: , *args: ].
-	DOC101: Method `ResultAccumulator.v2_runner_on_failed`: Docstring contains fewer arguments than in function signature.
-	DOC106: Method `ResultAccumulator.v2_runner_on_failed`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
-	DOC107: Method `ResultAccumulator.v2_runner_on_failed`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
-	DOC103: Method `ResultAccumulator.v2_runner_on_failed`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [**kwargs: , *args: , result: ].
-	DOC101: Method `ResultAccumulator.v2_runner_on_ok`: Docstring contains fewer arguments than in function signature.
-	DOC106: Method `ResultAccumulator.v2_runner_on_ok`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
-	DOC107: Method `ResultAccumulator.v2_runner_on_ok`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
-	DOC103: Method `ResultAccumulator.v2_runner_on_ok`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [result: ].
-	DOC101: Method `ResultAccumulator.v2_runner_on_unreachable`: Docstring contains fewer arguments than in function signature.
-	DOC106: Method `ResultAccumulator.v2_runner_on_unreachable`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
-	DOC107: Method `ResultAccumulator.v2_runner_on_unreachable`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
-	DOC103: Method `ResultAccumulator.v2_runner_on_unreachable`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [result: ].
-	DOC601: Class `ModuleDispatcherV212`: Class docstring contains fewer class attributes than actual class attributes.  (Please read https://jsh9.github.io/pydoclint/checking_class_attributes.html on how to correctly document class attributes.)
-	DOC603: Class `ModuleDispatcherV212`: Class docstring attributes are different from actual class attributes. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Attributes in the class definition but not in the docstring: [required_kwargs: Sequence[str]]. (Please read https://jsh9.github.io/pydoclint/checking_class_attributes.html on how to correctly document class attributes.)
-	DOC101: Method `ModuleDispatcherV212.__init__`: Docstring contains fewer arguments than in function signature.
-	DOC106: Method `ModuleDispatcherV212.__init__`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
-	DOC103: Method `ModuleDispatcherV212.__init__`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [**kwargs: ].
-	DOC501: Method `ModuleDispatcherV212.__init__` has "raise" statements, but the docstring does not have a "Raises" section
-	DOC101: Method `ModuleDispatcherV212.has_module`: Docstring contains fewer arguments than in function signature.
-	DOC106: Method `ModuleDispatcherV212.has_module`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
-	DOC107: Method `ModuleDispatcherV212.has_module`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
-	DOC103: Method `ModuleDispatcherV212.has_module`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [name: ].
-	DOC201: Method `ModuleDispatcherV212.has_module` does not have a return section in docstring
-	DOC101: Method `ModuleDispatcherV212._run`: Docstring contains fewer arguments than in function signature.
-	DOC106: Method `ModuleDispatcherV212._run`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
-	DOC103: Method `ModuleDispatcherV212._run`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [**complex_args: , *module_args: ].
-	DOC201: Method `ModuleDispatcherV212._run` does not have a return section in docstring
-	DOC501: Method `ModuleDispatcherV212._run` has "raise" statements, but the docstring does not have a "Raises" section
 --------------------
 src/pytest_ansible/module_dispatcher/v213.py
 	DOC101: Method `ResultAccumulator.__init__`: Docstring contains fewer arguments than in function signature.
@@ -164,17 +120,12 @@ src/pytest_ansible/module_dispatcher/v213.py
 	DOC106: Method `ResultAccumulator.v2_runner_on_unreachable`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
 	DOC107: Method `ResultAccumulator.v2_runner_on_unreachable`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
 	DOC103: Method `ResultAccumulator.v2_runner_on_unreachable`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [result: ].
-	DOC601: Class `ModuleDispatcherV213`: Class docstring contains fewer class attributes than actual class attributes.  (Please read https://jsh9.github.io/pydoclint/checking_class_attributes.html on how to correctly document class attributes.)
-	DOC603: Class `ModuleDispatcherV213`: Class docstring attributes are different from actual class attributes. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Attributes in the class definition but not in the docstring: [required_kwargs: ]. (Please read https://jsh9.github.io/pydoclint/checking_class_attributes.html on how to correctly document class attributes.)
 	DOC101: Method `ModuleDispatcherV213.__init__`: Docstring contains fewer arguments than in function signature.
 	DOC106: Method `ModuleDispatcherV213.__init__`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
 	DOC103: Method `ModuleDispatcherV213.__init__`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [**kwargs: ].
 	DOC501: Method `ModuleDispatcherV213.__init__` has "raise" statements, but the docstring does not have a "Raises" section
 	DOC101: Method `ModuleDispatcherV213.has_module`: Docstring contains fewer arguments than in function signature.
-	DOC106: Method `ModuleDispatcherV213.has_module`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
-	DOC107: Method `ModuleDispatcherV213.has_module`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
-	DOC103: Method `ModuleDispatcherV213.has_module`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [name: ].
-	DOC201: Method `ModuleDispatcherV213.has_module` does not have a return section in docstring
+	DOC103: Method `ModuleDispatcherV213.has_module`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [name: str].
 	DOC101: Method `ModuleDispatcherV213._run`: Docstring contains fewer arguments than in function signature.
 	DOC106: Method `ModuleDispatcherV213._run`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
 	DOC103: Method `ModuleDispatcherV213._run`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [**complex_args: , *module_args: ].
@@ -381,8 +332,6 @@ tests/test_plugin.py
 	DOC106: Method `MockItem.__init__`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
 	DOC107: Method `MockItem.__init__`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
 	DOC103: Method `MockItem.__init__`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [fixturenames: , marker: ].
-	DOC601: Class `MockConfig`: Class docstring contains fewer class attributes than actual class attributes.  (Please read https://jsh9.github.io/pydoclint/checking_class_attributes.html on how to correctly document class attributes.)
-	DOC603: Class `MockConfig`: Class docstring attributes are different from actual class attributes. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Attributes in the class definition but not in the docstring: [options: ]. (Please read https://jsh9.github.io/pydoclint/checking_class_attributes.html on how to correctly document class attributes.)
 	DOC101: Method `MockMetafunc.__init__`: Docstring contains fewer arguments than in function signature.
 	DOC106: Method `MockMetafunc.__init__`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
 	DOC107: Method `MockMetafunc.__init__`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
