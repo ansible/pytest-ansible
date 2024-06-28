@@ -8,11 +8,11 @@ caplog
 cidrblock
 codecov
 errlines
-fqcn
 filterwarnings
 fixturedefs
 fixtureinfo
 fixturenames
+fqcn
 fspath
 funcargs
 getfixturevalue
