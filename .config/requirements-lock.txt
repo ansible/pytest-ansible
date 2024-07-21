@@ -5,10 +5,10 @@
 #    pip-compile --no-annotate --output-file=.config/requirements-lock.txt --strip-extras pyproject.toml
 #
 ansible-compat==24.7.0
-ansible-core==2.17.1
+ansible-core==2.17.2
 attrs==23.2.0
 cffi==1.16.0
-cryptography==42.0.8
+cryptography==43.0.0
 exceptiongroup==1.2.2
 iniconfig==2.0.0
 jinja2==3.1.4
@@ -18,7 +18,7 @@ markupsafe==2.1.5
 packaging==24.1
 pluggy==1.5.0
 pycparser==2.22
-pytest==8.2.2
+pytest==8.3.1
 pyyaml==6.0.1
 referencing==0.35.1
 resolvelib==1.0.1
