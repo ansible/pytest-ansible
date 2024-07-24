@@ -7,4 +7,31 @@ on:
 
 jobs:
   release:
-    uses: ansible/team-devtools/.github/workflows/release.yml@main
+    name: release ${{ github.event.ref }}
+    environment: release
+    runs-on: ubuntu-22.04
+    permissions:
+      id-token: write
+
+    env:
+      FORCE_COLOR: 1
+      PY_COLORS: 1
+
+    steps:
+      - name: Switch to using Python 3.12 by default
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install tox
+        run: python3 -m pip install --user "tox>=4.0.0"
+
+      - name: Check out src from Git
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # needed by setuptools-scm
+
+      - name: Build dists
+        run: python3 -m tox -e pkg
+      - name: Publish to pypi.org
+        uses: pypa/gh-action-pypi-publish@release/v1
