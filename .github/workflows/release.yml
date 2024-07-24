@@ -7,7 +7,6 @@ on:
 
 jobs:
   release:
-    name: release ${{ github.event.ref }}
     environment: release
     runs-on: ubuntu-22.04
     permissions:
@@ -38,7 +37,6 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
 
   forum_post:
-    name: forum post ${{ github.event.release.tag_name }}
     needs: release
     runs-on: ubuntu-22.04
 
