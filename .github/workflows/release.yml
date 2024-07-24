@@ -38,7 +38,8 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
 
   forum_post:
-    name: forum post ${{ github.release.name }}
+    name: forum post ${{ github.event.ref }}
+    needs: release
     runs-on: ubuntu-22.04
 
     steps:
@@ -46,4 +47,4 @@ jobs:
         run: curl -O https://raw.githubusercontent.com/ansible/team-devtools/main/.github/workflows/forum_post.py
 
       - name: Run the forum post script
-        run: python3 forum_post.py ${{ github.respository }} ${{ github.release.name }} ${{ secrets.FORUM_KEY }} ${{ secrets.FORUM_USER }}
+        run: python3 forum_post.py ${{ github.event.repository.name }} ${{ github.event.ref }} ${{ secrets.FORUM_KEY }} ${{ secrets.FORUM_USER }}
