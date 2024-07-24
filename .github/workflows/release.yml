@@ -7,4 +7,4 @@ on:
 
 jobs:
   release:
-    uses: ansible/team-devtools/.github/workflow/release.yml@main
+    uses: ansible/team-devtools/.github/workflows/release.yml@main
