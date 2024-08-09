@@ -1,4 +1,8 @@
-import ansible  # noqa: INP001, D100
+"""Test CLI parameters."""
+
+from __future__ import annotations
+
+import ansible
 import pytest
 
 

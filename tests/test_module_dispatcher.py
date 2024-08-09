@@ -1,6 +1,10 @@
-import pytest  # noqa: INP001, D100
+"""Test the module dispatcher."""
 
-from conftest import NEGATIVE_HOST_PATTERNS, POSITIVE_HOST_PATTERNS
+from __future__ import annotations
+
+import pytest
+
+from .conftest import NEGATIVE_HOST_PATTERNS, POSITIVE_HOST_PATTERNS
 
 
 def test_type_error() -> None:

@@ -1,6 +1,10 @@
-import pytest  # noqa: INP001, D100
+"""Test the host manager."""
 
-from conftest import (
+from __future__ import annotations
+
+import pytest
+
+from .conftest import (
     ALL_EXTRA_HOSTS,
     ALL_HOSTS,
     EXTRA_HOST_POSITIVE_PATTERNS,

@@ -1,4 +1,8 @@
-import pytest  # noqa: INP001, D100
+"""Global fixtures for pytest tests."""
+
+from __future__ import annotations
+
+import pytest
 
 from pytest_ansible.host_manager.utils import get_host_manager
 

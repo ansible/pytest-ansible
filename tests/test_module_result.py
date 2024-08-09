@@ -1,4 +1,8 @@
-import pytest  # noqa: INP001, D100
+"""Test the module result."""
+
+from __future__ import annotations
+
+import pytest
 
 from pytest_ansible.results import ModuleResult
 

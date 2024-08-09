@@ -1,5 +1,7 @@
 """Fixme."""
 
+from __future__ import annotations
+
 import ansible
 
 from packaging.version import parse as parse_version

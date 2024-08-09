@@ -1,5 +1,7 @@
 """Fixme."""
 
+from __future__ import annotations
+
 from ansible.inventory.manager import InventoryManager
 from ansible.parsing.dataloader import DataLoader
 from ansible.vars.manager import VariableManager

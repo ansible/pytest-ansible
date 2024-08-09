@@ -1,4 +1,8 @@
-import pytest  # noqa: INP001, D100
+"""Ad-hoc tests for pytest-ansible."""
+
+from __future__ import annotations
+
+import pytest
 
 
 # pylint: disable=unused-import

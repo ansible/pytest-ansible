@@ -1,7 +1,14 @@
 """Host manager related utilities."""
 
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from pytest_ansible.has_version import has_ansible_v213
-from pytest_ansible.host_manager.base import BaseHostManager
+
+
+if TYPE_CHECKING:
+    from pytest_ansible.host_manager.base import BaseHostManager
 
 
 def get_host_manager(*args, **kwargs) -> BaseHostManager:  # type: ignore[no-untyped-def]  # noqa: ANN002, ANN003
