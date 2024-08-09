@@ -1,4 +1,6 @@
-from unittest import mock  # noqa: INP001, D100
+from __future__ import annotations
+
+from unittest import mock
 from unittest.mock import MagicMock
 
 from pytest_ansible.plugin import PyTestAnsiblePlugin, pytest_generate_tests

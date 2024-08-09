@@ -1,4 +1,7 @@
-try:  # noqa: INP001, D100
+from __future__ import annotations
+
+
+try:
     from _pytest.main import EXIT_OK  # type: ignore  # noqa: PGH003
 except ImportError:
     from _pytest.main import ExitCode  # type: ignore[attr-defined]

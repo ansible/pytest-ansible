@@ -1,4 +1,5 @@
 """Host manager related utilities."""
+from __future__ import annotations
 
 from pytest_ansible.has_version import has_ansible_v213
 from pytest_ansible.host_manager.base import BaseHostManager

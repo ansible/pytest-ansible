@@ -1,4 +1,6 @@
-import pytest  # noqa: INP001, D100
+from __future__ import annotations
+
+import pytest
 
 from conftest import NEGATIVE_HOST_PATTERNS, POSITIVE_HOST_PATTERNS
 

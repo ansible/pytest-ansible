@@ -1,4 +1,6 @@
-from types import GeneratorType  # noqa: INP001, D100
+from __future__ import annotations
+
+from types import GeneratorType
 
 import pytest
 

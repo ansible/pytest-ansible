@@ -1,4 +1,5 @@
 """Fixme."""
+from __future__ import annotations
 
 
 class ModuleResult(dict):  # type: ignore[type-arg]
