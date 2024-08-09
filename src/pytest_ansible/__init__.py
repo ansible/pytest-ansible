@@ -1,4 +1,5 @@
 """The pytest-ansible initialization."""
+
 from __future__ import annotations
 
 

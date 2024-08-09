@@ -1,4 +1,5 @@
 """Defines pytest-ansible exception classes."""
+
 from __future__ import annotations
 
 import ansible.errors

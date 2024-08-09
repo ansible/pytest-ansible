@@ -1,3 +1,5 @@
+"""Test the fixtures provided by the plugin."""
+
 from __future__ import annotations
 
 

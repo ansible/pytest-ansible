@@ -1,4 +1,5 @@
 """Fixme."""
+
 from __future__ import annotations
 
 from ansible.inventory.manager import InventoryManager

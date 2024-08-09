@@ -1,12 +1,14 @@
+"""Adhoc result tests."""
+
 from __future__ import annotations
 
 from types import GeneratorType
 
 import pytest
 
-from conftest import ALL_EXTRA_HOSTS, ALL_HOSTS
-
 from pytest_ansible.results import ModuleResult
+
+from .conftest import ALL_EXTRA_HOSTS, ALL_HOSTS
 
 
 invalid_hosts = [

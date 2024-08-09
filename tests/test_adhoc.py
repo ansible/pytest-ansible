@@ -1,3 +1,5 @@
+"""Ad-hoc tests for pytest-ansible."""
+
 from __future__ import annotations
 
 import pytest

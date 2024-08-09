@@ -1,8 +1,10 @@
+"""Test the host manager."""
+
 from __future__ import annotations
 
 import pytest
 
-from conftest import (
+from .conftest import (
     ALL_EXTRA_HOSTS,
     ALL_HOSTS,
     EXTRA_HOST_POSITIVE_PATTERNS,
