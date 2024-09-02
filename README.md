@@ -600,7 +600,8 @@ def test_inventory_unreachable(ansible_module):
 
 ## Communication
 
-Refer to the [Communication](https://ansible.readthedocs.io/projects/pytest-ansible/community/#community)
+Refer to the
+[Communication](https://ansible.readthedocs.io/projects/pytest-ansible/community/#community)
 section of the documentation to find out how to get in touch with us.
 
 You can also find more information in the
@@ -614,7 +615,8 @@ the same before you submit a pull request.
 
 ## Code of Conduct
 
-Please see the official [Ansible Community Code of Conduct](https://docs.ansible.com/ansible/latest/community/code_of_conduct.html).
+Please see the official
+[Ansible Community Code of Conduct](https://docs.ansible.com/ansible/latest/community/code_of_conduct.html).
 
 ## License
 
