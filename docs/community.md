@@ -7,8 +7,7 @@ community.
 
 - [Get Help](https://forum.ansible.com/c/help/6): get help or help others.
   Please add appropriate tags if you start new discussions, for example you can
-  use the `devtools` tag. For example, you can filter topics tagged as
-  [`eda-server`](https://forum.ansible.com/tag/eda-server)
+  use the `devtools` tag.
 - [Social Spaces](https://forum.ansible.com/c/chat/4): meet and interact with
   fellow enthusiasts.
 - [News & Announcements](https://forum.ansible.com/c/news/5): track project-wide
