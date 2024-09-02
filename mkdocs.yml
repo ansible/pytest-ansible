@@ -45,6 +45,7 @@ nav:
       - home: index.md
       - installing.md
       - getting_started.md
+      - community.md
 
 plugins:
   - autorefs
