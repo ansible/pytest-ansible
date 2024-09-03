@@ -615,7 +615,7 @@ the same before you submit a pull request.
 
 ## Code of Conduct
 
-Please see the official
+Please see the
 [Ansible Community Code of Conduct](https://docs.ansible.com/ansible/latest/community/code_of_conduct.html).
 
 ## License
