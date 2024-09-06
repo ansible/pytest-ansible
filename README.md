@@ -598,11 +598,25 @@ def test_inventory_unreachable(ansible_module):
         assert result['failed'] == True
 ```
 
+## Communication
+
+Refer to the
+[Communication](https://ansible.readthedocs.io/projects/pytest-ansible/community/#community)
+section of the documentation to find out how to get in touch with us.
+
+You can also find more information in the
+[Ansible communication guide](https://docs.ansible.com/ansible/devel/community/communication.html).
+
 ## Contributing
 
 Contributions are very welcome. Tests can be run with
 [tox](https://tox.wiki/en/latest/), please ensure the coverage at least stays
 the same before you submit a pull request.
+
+## Code of Conduct
+
+Please see the
+[Ansible Community Code of Conduct](https://docs.ansible.com/ansible/latest/community/code_of_conduct.html).
 
 ## License
 
