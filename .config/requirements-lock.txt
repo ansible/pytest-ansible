@@ -24,4 +24,4 @@ referencing==0.35.1
 resolvelib==1.0.1
 rpds-py==0.20.0
 subprocess-tee==0.4.2
-tomli==2.0.1
+tomli==2.0.2
