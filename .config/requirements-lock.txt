@@ -8,13 +8,13 @@ ansible-compat==24.9.1
 ansible-core==2.17.5
 attrs==24.2.0
 cffi==1.17.1
-cryptography==43.0.1
+cryptography==43.0.3
 exceptiongroup==1.2.2
 iniconfig==2.0.0
 jinja2==3.1.4
 jsonschema==4.23.0
 jsonschema-specifications==2024.10.1
-markupsafe==3.0.1
+markupsafe==3.0.2
 packaging==24.1
 pluggy==1.5.0
 pycparser==2.22
