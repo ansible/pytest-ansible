@@ -23,13 +23,13 @@ def fixture_ansible_module(ansible_adhoc):  # type: ignore[no-untyped-def]  # no
     return getattr(host_mgr, host_mgr.options["host_pattern"])
 
 
-@pytest.fixture()
+@pytest.fixture
 def ansible_facts(ansible_module):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
     """Return ansible_facts dictionary."""
     return ansible_module.setup()
 
 
-@pytest.fixture()
+@pytest.fixture
 def localhost(request):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
     """Return a host manager representing localhost."""
     # NOTE: Do not use ansible_adhoc as a dependent fixture since that will assert specific command-line parameters have  # noqa: E501

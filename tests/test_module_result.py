@@ -28,7 +28,7 @@ valid_hosts = ("localhost", "another_host")
 invalid_hosts = ("none", "all", "*", "local*")
 
 
-@pytest.fixture()
+@pytest.fixture
 def module_result_ok(request):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, ARG001, D103
     return ModuleResult(
         invocation={"module_name": "debug", "module_args": {"msg": "testing"}},
@@ -39,7 +39,7 @@ def module_result_ok(request):  # type: ignore[no-untyped-def]  # noqa: ANN001, 
     )
 
 
-@pytest.fixture()
+@pytest.fixture
 def module_result_failed():  # type: ignore[no-untyped-def]  # noqa: ANN201, D103
     return ModuleResult(
         invocation={"module_name": "fail", "module_args": {}},
@@ -50,7 +50,7 @@ def module_result_failed():  # type: ignore[no-untyped-def]  # noqa: ANN201, D10
     )
 
 
-@pytest.fixture()
+@pytest.fixture
 def module_result_changed(request):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, ARG001, D103
     return ModuleResult(
         changed=True,
@@ -79,13 +79,13 @@ def module_result_changed(request):  # type: ignore[no-untyped-def]  # noqa: ANN
     )
 
 
-@pytest.fixture()
+@pytest.fixture
 def _module_result_skipped():  # type: ignore[no-untyped-def]  # noqa: ANN202
     msg = "Coming soon!"
     raise NotImplementedError(msg)
 
 
-@pytest.fixture()
+@pytest.fixture
 def _module_result_unreachable():  # type: ignore[no-untyped-def]  # noqa: ANN202
     msg = "Coming soon!"
     raise NotImplementedError(msg)

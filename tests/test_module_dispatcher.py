@@ -15,7 +15,7 @@ def test_type_error() -> None:
         BaseModuleDispatcher(inventory="localhost,")  # type: ignore[abstract] #pylint: disable=abstract-class-instantiated
 
 
-@pytest.mark.requires_ansible_v2()
+@pytest.mark.requires_ansible_v2
 def test_importerror_requires_v1():  # type: ignore[no-untyped-def]  # noqa: ANN201, D103
     with pytest.raises(ImportError):
         # pylint: disable=unused-import
