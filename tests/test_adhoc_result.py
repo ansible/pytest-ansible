@@ -117,7 +117,7 @@ def test_not_getattr(adhoc_result, host_pattern):  # type: ignore[no-untyped-def
         getattr(adhoc_result_ret, host_pattern)
 
 
-@pytest.mark.requires_ansible_v2()
+@pytest.mark.requires_ansible_v2
 def test_connection_failure_v2():  # type: ignore[no-untyped-def]  # noqa: ANN201, D103
     from pytest_ansible.errors import AnsibleConnectionFailure
     from pytest_ansible.host_manager.utils import get_host_manager
@@ -141,7 +141,7 @@ def test_connection_failure_v2():  # type: ignore[no-untyped-def]  # noqa: ANN20
     )
 
 
-@pytest.mark.requires_ansible_v2()
+@pytest.mark.requires_ansible_v2
 def test_connection_failure_extra_inventory_v2():  # type: ignore[no-untyped-def]  # noqa: ANN201, D103
     from pytest_ansible.errors import AnsibleConnectionFailure
     from pytest_ansible.host_manager.utils import get_host_manager

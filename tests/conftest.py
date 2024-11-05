@@ -156,7 +156,7 @@ def _clear_global_context():  # type: ignore[no-untyped-def]  # noqa: ANN202
         co.GlobalCLIArgs._Singleton__instance = None
 
 
-@pytest.fixture()
+@pytest.fixture
 def option(request, pytester):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
     """Returns an instance of PyTestOption to help tests pass parameters and
     use a common inventory file.
@@ -164,7 +164,7 @@ def option(request, pytester):  # type: ignore[no-untyped-def]  # noqa: ANN001, 
     return PyTestOption(request.config, pytester)
 
 
-@pytest.fixture()
+@pytest.fixture
 def hosts():  # type: ignore[no-untyped-def]  # noqa: ANN201, D103
     def create_host_manager(include_extra_inventory=False):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN202, FBT002
         kwargs = {"inventory": ",".join(ALL_HOSTS), "connection": "local"}

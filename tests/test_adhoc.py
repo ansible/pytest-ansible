@@ -24,7 +24,7 @@ except ImportError:
     EXIT_NOTESTSCOLLECTED = ExitCode.NO_TESTS_COLLECTED
 
 
-@pytest.mark.old()
+@pytest.mark.old
 def test_contacted_with_params(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
     """FIXME."""
     src = """
@@ -54,7 +54,7 @@ def test_contacted_with_params(pytester, option):  # type: ignore[no-untyped-def
     assert result.parseoutcomes()["passed"] == 1
 
 
-@pytest.mark.old()
+@pytest.mark.old
 def test_contacted_with_params_and_inventory_marker(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
     """FIXME."""
     src = f"""
@@ -80,7 +80,7 @@ def test_contacted_with_params_and_inventory_marker(pytester, option):  # type: 
     assert result.parseoutcomes()["passed"] == 1
 
 
-@pytest.mark.old()
+@pytest.mark.old
 def test_contacted_with_params_and_host_pattern_marker(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
     """FIXME."""
     src = """
@@ -111,7 +111,7 @@ def test_contacted_with_params_and_host_pattern_marker(pytester, option):  # typ
     assert result.parseoutcomes()["passed"] == 1
 
 
-@pytest.mark.old()
+@pytest.mark.old
 def test_contacted_with_params_and_inventory_host_pattern_marker(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
     """FIXME."""
     src = f"""
@@ -142,7 +142,7 @@ def test_contacted_with_params_and_inventory_host_pattern_marker(pytester, optio
     assert result.parseoutcomes()["passed"] == 1
 
 
-@pytest.mark.old()
+@pytest.mark.old
 def test_become(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
     """Test --ansible-become* parameters.  This test doesn't actually 'sudo',
     but verifies that 'sudo' was attempted by asserting
@@ -194,7 +194,7 @@ def test_become(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN0
     assert result.parseoutcomes()["passed"] == 1
 
 
-@pytest.mark.old()
+@pytest.mark.old
 def test_dark_with_params(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
     """FIXME."""
     src = """
@@ -224,7 +224,7 @@ def test_dark_with_params(pytester, option):  # type: ignore[no-untyped-def]  # 
     assert result.parseoutcomes()["passed"] == 1
 
 
-@pytest.mark.old()
+@pytest.mark.old
 def test_dark_with_params_and_inventory_marker(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
     """FIXME."""
     src = f"""
@@ -250,7 +250,7 @@ def test_dark_with_params_and_inventory_marker(pytester, option):  # type: ignor
     assert result.parseoutcomes()["passed"] == 1
 
 
-@pytest.mark.old()
+@pytest.mark.old
 def test_dark_with_params_and_host_pattern_marker(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
     """FIXME."""
     src = """
@@ -282,7 +282,7 @@ def test_dark_with_params_and_host_pattern_marker(pytester, option):  # type: ig
     assert result.parseoutcomes()["passed"] == 1
 
 
-@pytest.mark.old()
+@pytest.mark.old
 def test_dark_with_debug_enabled(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
     """Verify that when verbosity is enabled, additional output is provided upon host failure."""
     src = """

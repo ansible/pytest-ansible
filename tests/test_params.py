@@ -149,7 +149,7 @@ def test_params_required_with_inventory_without_host_pattern(pytester, option): 
     )
 
 
-@pytest.mark.requires_ansible_v2()
+@pytest.mark.requires_ansible_v2
 def test_params_required_without_inventory_with_host_pattern_v2(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
     src = """
         import pytest
