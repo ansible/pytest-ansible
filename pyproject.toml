@@ -377,3 +377,8 @@ write_to = "src/pytest_ansible/_version.py"
 in_place = true
 sort_inline_tables = true
 sort_table_keys = true
+
+[tool.uv.pip]
+annotation-style = "line"
+custom-compile-command = "tox run deps"
+no-emit-package = ["ansible-core", "pip", "resolvelib", "typing_extensions", "uv"]

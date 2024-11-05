@@ -3,7 +3,7 @@ black
 coverage[toml]
 molecule
 mypy
-pip-tools
+pip
 pre-commit
 pydoclint
 pylint
@@ -13,3 +13,4 @@ ruff
 toml-sort
 tox
 types-PyYAML
+uv
