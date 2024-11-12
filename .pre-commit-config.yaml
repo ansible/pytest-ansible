@@ -44,11 +44,6 @@ repos:
           - prettier-plugin-toml
           - prettier-plugin-sort-json
 
-  - repo: https://github.com/psf/black
-    rev: 24.10.0
-    hooks:
-      - id: black
-
   - repo: https://github.com/pappasam/toml-sort
     rev: v0.23.1
     hooks:
@@ -60,14 +55,23 @@ repos:
       - id: tox-ini-fmt
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.7.2
+    rev: v0.7.3
     hooks:
       - id: ruff
         args:
+          - --fix
           - --exit-non-zero-on-fix
+        types_or: [python, pyi]
+      - id: ruff-format # must be after ruff
+        types_or: [python, pyi]
+
+  - repo: https://github.com/psf/black # must be after ruff
+    rev: 24.10.0
+    hooks:
+      - id: black
 
   - repo: https://github.com/streetsidesoftware/cspell-cli
-    rev: v8.15.2
+    rev: v8.16.0
     hooks:
       - id: cspell
         name: Spell check with cspell
