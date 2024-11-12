@@ -336,13 +336,17 @@ line-length = 100
 target-version = "py310"
 
 [tool.ruff.lint]
+ignore = [
+  "COM812", # conflicts with ISC001 on format
+  "ISC001" # conflicts with COM812 on format
+]
 select = ["ALL"]
 
 [tool.ruff.lint.flake8-pytest-style]
 parametrize-values-type = "tuple"
 
 [tool.ruff.lint.isort]
-known-first-party = ["pytest_ansible"]
+known-first-party = ["src"]
 lines-after-imports = 2 # Ensures consistency for cases when there's variable vs function/class definitions after imports
 lines-between-types = 1 # Separate import/from with 1 line
 required-imports = ["from __future__ import annotations"]

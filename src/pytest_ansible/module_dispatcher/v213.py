@@ -84,7 +84,7 @@ class ModuleDispatcherV213(BaseModuleDispatcher):
             msg = "Only supported with ansible-2.13 and newer"
             raise ImportError(msg)
 
-    def has_module(self: ModuleDispatcherV213, name: str) -> str:
+    def has_module(self, name: str) -> str:
         """Determine if a module exists and return the full name or "".
 
         Attributes:

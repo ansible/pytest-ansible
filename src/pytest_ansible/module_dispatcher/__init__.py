@@ -73,7 +73,7 @@ class BaseModuleDispatcher(abc.ABC):
                 raise TypeError(msg)
 
     @abc.abstractmethod
-    def has_module(self: BaseModuleDispatcher, name: str) -> str:
+    def has_module(self, name: str) -> str:
         """Return whether ansible provides the requested module.
 
         Must be implemented by a sub-class.
