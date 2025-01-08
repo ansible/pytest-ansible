@@ -290,7 +290,7 @@ class MoleculeScenario:
         """
         return subprocess.run(
             args=[sys.executable, "-m", "molecule", "test", "-s", self.name],
-            capture_output=False,
+            capture_output=True,
             check=False,
             cwd=self.parent_directory,
             shell=False,
