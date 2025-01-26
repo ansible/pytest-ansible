@@ -2,12 +2,12 @@
 #    tox run deps
 ansible-compat==24.10.0    # via molecule, pytest-ansible (pyproject.toml)
 astroid==3.3.8            # via pylint
-attrs==24.3.0             # via jsonschema, referencing
+attrs==25.1.0             # via jsonschema, referencing
 babel==2.16.0             # via mkdocs-material
 beautifulsoup4==4.12.3    # via linkchecker, mkdocs-htmlproofer-plugin
 black==24.10.0            # via pytest-ansible (pyproject.toml)
 bracex==2.5.post1         # via wcmatch
-cachetools==5.5.0         # via tox
+cachetools==5.5.1         # via tox
 cairocffi==1.7.1          # via cairosvg
 cairosvg==2.7.1           # via mkdocs-ansible
 certifi==2024.12.14        # via requests
@@ -30,12 +30,12 @@ docstring-parser-fork==0.0.12  # via pydoclint
 enrich==1.2.7             # via molecule
 exceptiongroup==1.2.2     # via pytest
 execnet==2.1.1            # via pytest-xdist
-filelock==3.16.1          # via tox, virtualenv
+filelock==3.17.0          # via tox, virtualenv
 ghp-import==2.1.0         # via mkdocs
 griffe==1.5.5             # via mkdocstrings-python
 hjson==3.1.0              # via mkdocs-macros-plugin, super-collections
 htmlmin2==0.1.13          # via mkdocs-minify-plugin
-identify==2.6.5           # via pre-commit
+identify==2.6.6           # via pre-commit
 idna==3.10                # via requests
 iniconfig==2.0.0          # via pytest
 isort==5.13.2             # via pylint
@@ -65,7 +65,7 @@ mkdocs-minify-plugin==0.8.0  # via mkdocs-ansible
 mkdocs-monorepo-plugin==1.1.0  # via mkdocs-ansible
 mkdocstrings==0.27.0      # via mkdocs-ansible, mkdocstrings-python
 mkdocstrings-python==1.13.0  # via mkdocs-ansible
-molecule==24.12.0          # via pytest-ansible (pyproject.toml)
+molecule==25.1.0          # via pytest-ansible (pyproject.toml)
 mypy==1.14.1              # via pytest-ansible (pyproject.toml)
 mypy-extensions==1.0.0    # via black, mypy
 nodeenv==1.9.1            # via pre-commit
@@ -76,25 +76,25 @@ pillow==11.1.0            # via cairosvg, mkdocs-ansible
 pipdeptree==2.24.0        # via mkdocs-ansible, pytest-ansible (pyproject.toml)
 platformdirs==4.3.6       # via black, mkdocs-get-deps, mkdocstrings, pylint, tox, virtualenv
 pluggy==1.5.0             # via molecule, pytest, tox
-pre-commit==4.0.1         # via pytest-ansible (pyproject.toml)
+pre-commit==4.1.0         # via pytest-ansible (pyproject.toml)
 pycparser==2.22           # via cffi
 pydoclint==0.6.0          # via pytest-ansible (pyproject.toml)
 pygments==2.19.1          # via mkdocs-material, rich
 pylint==3.3.3             # via pytest-ansible (pyproject.toml)
-pymdown-extensions==10.14  # via markdown-exec, mkdocs-ansible, mkdocs-material, mkdocstrings
-pyproject-api==1.8.0      # via tox
+pymdown-extensions==10.14.1  # via markdown-exec, mkdocs-ansible, mkdocs-material, mkdocstrings
+pyproject-api==1.9.0      # via tox
 pytest==8.3.4             # via pytest-xdist, pytest-ansible (pyproject.toml)
 pytest-xdist==3.6.1       # via pytest-ansible (pyproject.toml)
 python-dateutil==2.9.0.post0  # via ghp-import, mkdocs-macros-plugin
 python-slugify==8.0.4     # via mkdocs-monorepo-plugin
 pyyaml==6.0.2             # via ansible-compat, ansible-core, mkdocs, mkdocs-get-deps, mkdocs-macros-plugin, molecule, pre-commit, pymdown-extensions, pyyaml-env-tag
 pyyaml-env-tag==0.1       # via mkdocs
-referencing==0.36.1       # via jsonschema, jsonschema-specifications
+referencing==0.36.2       # via jsonschema, jsonschema-specifications
 regex==2024.11.6          # via mkdocs-material
 requests==2.32.3          # via linkchecker, mkdocs-htmlproofer-plugin, mkdocs-material
 rich==13.9.4              # via enrich, molecule
 rpds-py==0.22.3           # via jsonschema, referencing
-ruff==0.9.2               # via pytest-ansible (pyproject.toml)
+ruff==0.9.3               # via pytest-ansible (pyproject.toml)
 six==1.17.0               # via python-dateutil
 soupsieve==2.6            # via beautifulsoup4
 subprocess-tee==0.4.2     # via ansible-compat
@@ -105,7 +105,7 @@ tinycss2==1.4.0           # via cairosvg, cssselect2
 toml-sort==0.24.2         # via pytest-ansible (pyproject.toml)
 tomli==2.2.1              # via black, coverage, mypy, pydoclint, pylint, pyproject-api, pytest, tox
 tomlkit==0.13.2           # via pylint, toml-sort
-tox==4.23.2               # via pytest-ansible (pyproject.toml)
+tox==4.24.1               # via pytest-ansible (pyproject.toml)
 types-pyyaml==6.0.12.20241230  # via pytest-ansible (pyproject.toml)
 urllib3==2.3.0            # via requests
 virtualenv==20.29.1       # via pre-commit, tox
