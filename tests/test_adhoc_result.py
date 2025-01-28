@@ -159,9 +159,9 @@ def test_connection_failure_extra_inventory_v2():  # type: ignore[no-untyped-def
     # Assert dark
     assert "unknown.example.extra.com" in exc_info.value.dark
     # Assert unreachable
-    assert (
-        "unreachable" in exc_info.value.dark["unknown.example.extra.com"]
-    ), exc_info.value.dark.keys()
+    assert "unreachable" in exc_info.value.dark["unknown.example.extra.com"], (
+        exc_info.value.dark.keys()
+    )
     assert exc_info.value.dark["unknown.example.extra.com"]["unreachable"]
     # Assert msg
     assert "msg" in exc_info.value.dark["unknown.example.extra.com"]

@@ -1,5 +1,4 @@
 ansible-core
-black
 coverage[toml]
 molecule
 mypy

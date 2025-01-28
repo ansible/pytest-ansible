@@ -135,9 +135,9 @@ def test_host_manager_getattr(host_pattern, num_hosts, hosts, include_extra_inve
 )
 def test_host_manager_slice(host_slice, num_hosts, hosts, include_extra_inventory):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
     _hosts = hosts(include_extra_inventory=include_extra_inventory)
-    assert (
-        len(_hosts[host_slice]) == num_hosts[include_extra_inventory]
-    ), f"{len(_hosts[host_slice])} != {num_hosts} for {host_slice}"
+    assert len(_hosts[host_slice]) == num_hosts[include_extra_inventory], (
+        f"{len(_hosts[host_slice])} != {num_hosts} for {host_slice}"
+    )
 
 
 # pylint: disable=pointless-statement
