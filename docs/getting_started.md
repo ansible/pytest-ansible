@@ -54,7 +54,7 @@ pip install pytest-ansible
 The following may be added to the collections' `pyproject.toml` file to limit
 warnings and set the default path for the collection's tests
 
-```
+```toml
 [tool.pytest.ini_options]
 testpaths = [
     "tests",
@@ -70,7 +70,7 @@ the correct collection namespace and name.
 
 One way to detect issues without running the tests is to run:
 
-```
+```shell
 pytest --collect-only
 ```
 
@@ -106,7 +106,7 @@ installed.
 Add a `test_integration.py` file to the `tests/integration` directory of the
 ansible collection:
 
-```
+```python
 """Tests for molecule scenarios."""
 from __future__ import absolute_import, division, print_function
 
