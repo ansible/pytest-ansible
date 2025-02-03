@@ -48,7 +48,7 @@ repos:
       - id: tox-ini-fmt
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.9.3
+    rev: v0.9.4
     hooks:
       - id: ruff
         args:
@@ -59,7 +59,7 @@ repos:
         types_or: [python, pyi]
 
   - repo: https://github.com/streetsidesoftware/cspell-cli
-    rev: v8.17.1
+    rev: v8.17.2
     hooks:
       - id: cspell
         name: Spell check with cspell
