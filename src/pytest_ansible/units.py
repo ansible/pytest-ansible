@@ -104,17 +104,19 @@ def inject(start_path: Path) -> None:
                 os.symlink(entry, name_dir / entry.name)
 
     # Configuration option for additional collection paths
-    additional_collections_paths = [Path("~/.ansible/collections").expanduser()]
+    additional_collections_paths: list[str] = [
+        Path("~/.ansible/collections").expanduser().as_posix()
+    ]
 
     # Check if the environment variable is set for additional paths
     if "COLLECTIONS_PATH" in os.environ and "COLLECTIONS_PATHS" in os.environ:
         additional_collections_paths.extend(
-            os.environ.get("COLLECTIONS_PATH", "").split(os.pathsep)  # type: ignore[arg-type]
+            os.environ.get("COLLECTIONS_PATH", "").split(os.pathsep)
             + os.environ.get("COLLECTIONS_PATHS", "").split(os.pathsep),
         )
     logger.info("Additional Collections Paths: %s", additional_collections_paths)
 
-    acf_inject(paths=[str(collections_dir), *additional_collections_paths])  # type: ignore[list-item]
+    acf_inject(paths=[str(collections_dir), *additional_collections_paths])
 
     # Inject the path for the collection into sys.path
     sys.path.insert(0, str(collections_dir))
@@ -123,8 +125,8 @@ def inject(start_path: Path) -> None:
     # Set the environment variable as a courtesy for integration tests
     envvar_name = determine_envvar()
     # Assuming additional_collections_paths is a list of PosixPath objects
-    additional_collections_paths = [str(path) for path in additional_collections_paths]  # type: ignore[misc]
-    env_paths = os.pathsep.join([str(collections_dir), *additional_collections_paths])  # type: ignore[list-item]
+    additional_collections_paths = [str(path) for path in additional_collections_paths]
+    env_paths = os.pathsep.join([str(collections_dir), *additional_collections_paths])
     logger.info("Setting %s to %s", envvar_name, env_paths)
     os.environ[envvar_name] = env_paths
 

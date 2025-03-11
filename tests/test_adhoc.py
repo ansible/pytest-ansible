@@ -163,12 +163,18 @@ def test_become(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN0
             assert len(contacted) == len(ansible_module)
             for result in contacted.values():
                 # Assert test failed as expected
-                if parse_version(ansible.__version__) < parse_version('2.4.0'):
+                if parse_version(ansible.__version__) >= parse_version('2.19.0.dev0'):
+                    assert result["failed"], "Test did not fail as expected"
+                    assert (
+                        "Failed to set permissions on the temporary files Ansible needs to create when becoming an unprivileged user"
+                        in result["msg"]
+                    )
+                elif parse_version(ansible.__version__) < parse_version('2.4.0'):
                     assert 'failed' in result, "Missing expected field in JSON response: failed"
                     assert result['failed'], "Test did not fail as expected"
 
                 # Assert expected failure message
-                if parse_version(ansible.__version__) >= parse_version('2.0.0'):
+                elif parse_version(ansible.__version__) >= parse_version('2.0.0'):
                     assert 'msg' in result, "Missing expected field in JSON response: msg"
                     assert result['msg'].startswith('Failed to set permissions on the temporary files Ansible needs ' \
                         'to create when becoming an unprivileged user')
