@@ -31,11 +31,14 @@ def test_inject(
     """
     caplog.set_level(logging.DEBUG)
 
-    def mock_get_collection_name(start_path: str) -> tuple[str, str]:  # noqa: ARG001
+    def mock_get_collection_name(start_path: Path) -> tuple[str | None, str | None]:  # noqa: ARG001
         """Mock the get_collection_name function.
 
-        :param start_path: The path to the root of the collection
-        :returns: A tuple of the namespace and name
+        Args:
+            start_path: The Path to the root of the collection
+
+        Returns:
+            A tuple of the namespace and name
         """
         return "namespace", "name"
 

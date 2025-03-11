@@ -21,8 +21,9 @@ jobs:
     uses: ansible/team-devtools/.github/workflows/tox.yml@main
     with:
       max_python: "3.13"
-      jobs_producing_coverage: 7
+      jobs_producing_coverage: 8
       other_names: |
+        devel
         docs
         lint
         pkg

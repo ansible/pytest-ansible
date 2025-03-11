@@ -354,9 +354,6 @@ tests/test_plugin.py
 tests/unit/test_unit.py
     DOC101: Function `test_inject`: Docstring contains fewer arguments than in function signature.
     DOC103: Function `test_inject`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [caplog: pytest.LogCaptureFixture, monkeypatch: pytest.MonkeyPatch, tmp_path: Path].
-    DOC101: Function `mock_get_collection_name`: Docstring contains fewer arguments than in function signature.
-    DOC103: Function `mock_get_collection_name`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [start_path: str].
-    DOC201: Function `mock_get_collection_name` does not have a return section in docstring
     DOC101: Function `test_inject_only`: Docstring contains fewer arguments than in function signature.
     DOC103: Function `test_inject_only`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [caplog: pytest.LogCaptureFixture, monkeypatch: pytest.MonkeyPatch, tmp_path: Path].
 --------------------
