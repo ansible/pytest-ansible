@@ -19,7 +19,8 @@ classifiers = [
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
-  "Programming Language :: Python :: 3.12"
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13"
 ]
 description = "Plugin for pytest to simplify calling ansible modules from tests or fixtures"
 dynamic = ["version", "dependencies", "optional-dependencies"]
@@ -41,18 +42,19 @@ repository = "https://github.com/ansible/pytest-ansible"
 
 [tool.coverage.report]
 exclude_also = ["if TYPE_CHECKING:", "pragma: no cover"]
-fail_under = 68
-ignore_errors = true
+fail_under = 76
+ignore_errors = false
 show_missing = true
 skip_covered = true
 skip_empty = true
-sort = "Cover"
 
 [tool.coverage.run]
 branch = false # https://github.com/nedbat/coveragepy/issues/605
-concurrency = ["multiprocessing", "thread"]
+# do not add 'thread' because it would generate some broken coverage files with:
+# CoverageWarning: Couldn't use data file ... database disk image is malformed
+# concurrency = ["multiprocessing"] # , "thread"]
 omit = ["_version.py"]
-parallel = true
+parallel = false
 source_pkgs = ["pytest_ansible"]
 
 [tool.mypy]
@@ -320,6 +322,10 @@ fail-on = [
 [tool.pytest.ini_options]
 addopts = "-ra --showlocals --durations=10"
 cache_dir = "./.cache/.pytest"
+filterwarnings = [
+  "ignore:This process \\(pid=.*\\) is multi-threaded, use of fork\\(\\) may lead to deadlocks in the child.:DeprecationWarning",
+  "ignore:AnsibleCollectionFinder has already been configured:UserWarning"
+]
 markers = ["old", "unit", "requires_ansible_v2"]
 testpaths = "tests"
 tmp_path_retention_policy = "failed"
