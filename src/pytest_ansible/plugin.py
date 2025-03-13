@@ -74,7 +74,7 @@ def pytest_addoption(parser):  # type: ignore[no-untyped-def]  # noqa: ANN001, A
         "--ansible-host-pattern",
         action="store",
         dest="ansible_host_pattern",
-        default=None,
+        default="localhost",
         metavar="ANSIBLE_HOST_PATTERN",
         help="ansible host pattern (default: %(default)s)",
     )
@@ -423,13 +423,6 @@ class PyTestAnsiblePlugin:
             pytest.UsageError: If the required --ansible-* parameters were not provided.
         """
         errors = []
-
-        # Verify --ansible-host-pattern was provided
-        ansible_hostname = config.getoption("ansible_host_pattern")
-        if ansible_hostname is None or ansible_hostname == "":
-            errors.append(
-                "Missing required parameter --ansible-host-pattern/--host-pattern",
-            )
 
         # NOTE: I don't think this will ever catch issues since ansible_inventory
         # defaults to '/etc/ansible/hosts'

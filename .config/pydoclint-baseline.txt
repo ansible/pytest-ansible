@@ -308,10 +308,6 @@ tests/test_params.py
     DOC106: Function `test_param_requires_value`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC107: Function `test_param_requires_value`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
     DOC103: Function `test_param_requires_value`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [pytester: , required_value_parameter: ].
-    DOC101: Function `test_params_required_with_inventory_without_host_pattern`: Docstring contains fewer arguments than in function signature.
-    DOC106: Function `test_params_required_with_inventory_without_host_pattern`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
-    DOC107: Function `test_params_required_with_inventory_without_host_pattern`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
-    DOC103: Function `test_params_required_with_inventory_without_host_pattern`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [option: , pytester: ].
 --------------------
 tests/test_plugin.py
     DOC101: Method `MockItem.__init__`: Docstring contains fewer arguments than in function signature.
