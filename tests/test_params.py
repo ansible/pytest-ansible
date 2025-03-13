@@ -87,7 +87,7 @@ def test_params_not_required_when_not_using_fixture(pytester, option):  # type: 
     ),
 )
 def test_params_required_when_using_fixture(pytester, option, fixture_name):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
-    """Verify the ansible parameters are required if the fixture is used."""
+    """Verify that ansible parameters are not required if the fixture is used."""
     src = f"""
         import pytest
         def test_func({fixture_name}):
@@ -96,12 +96,7 @@ def test_params_required_when_using_fixture(pytester, option, fixture_name):  # 
 
     pytester.makepyfile(src)
     result = pytester.runpytest(*option.args)
-    assert result.ret == EXIT_USAGEERROR
-    result.stderr.fnmatch_lines(
-        [
-            "ERROR: Missing required parameter --ansible-host-pattern/--host-pattern",
-        ],
-    )
+    assert result.ret == EXIT_OK
 
 
 @pytest.mark.parametrize(
@@ -109,8 +104,6 @@ def test_params_required_when_using_fixture(pytester, option, fixture_name):  # 
     (
         "--ansible-inventory",
         "--inventory",
-        "--ansible-host-pattern",
-        "--host-pattern",
         "--ansible-connection",
         "--connection",
         "--ansible-user",
@@ -129,23 +122,6 @@ def test_param_requires_value(pytester, required_value_parameter):  # type: igno
     assert result.ret == EXIT_USAGEERROR
     result.stderr.fnmatch_lines(
         [f"*: error: argument *{required_value_parameter}*: expected one argument"],
-    )
-
-
-def test_params_required_with_inventory_without_host_pattern(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
-    """Verify that a host pattern is required when an inventory is supplied."""
-    src = """
-        import pytest
-        def test_func(ansible_module):
-            assert True
-    """
-    pytester.makepyfile(src)
-    result = pytester.runpytest(*[*option.args, "--ansible-inventory", "local,"])
-    assert result.ret == EXIT_USAGEERROR
-    result.stderr.fnmatch_lines(
-        [
-            "ERROR: Missing required parameter --ansible-host-pattern/--host-pattern",
-        ],
     )
 
 
