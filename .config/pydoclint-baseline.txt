@@ -39,7 +39,6 @@ src/pytest_ansible/host_manager/base.py
     DOC101: Method `BaseHostManager.check_required_kwargs`: Docstring contains fewer arguments than in function signature.
     DOC106: Method `BaseHostManager.check_required_kwargs`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC103: Method `BaseHostManager.check_required_kwargs`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [**kwargs: ].
-    DOC501: Method `BaseHostManager.check_required_kwargs` has raise/assert statements, but the docstring does not have a "Raises" section
     DOC503: Method `BaseHostManager.check_required_kwargs` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['TypeError'].
     DOC101: Method `BaseHostManager.has_matching_inventory`: Docstring contains fewer arguments than in function signature.
     DOC106: Method `BaseHostManager.has_matching_inventory`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
@@ -51,14 +50,12 @@ src/pytest_ansible/host_manager/base.py
     DOC107: Method `BaseHostManager.__getitem__`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
     DOC103: Method `BaseHostManager.__getitem__`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [item: ].
     DOC201: Method `BaseHostManager.__getitem__` does not have a return section in docstring
-    DOC501: Method `BaseHostManager.__getitem__` has raise/assert statements, but the docstring does not have a "Raises" section
     DOC503: Method `BaseHostManager.__getitem__` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['KeyError'].
     DOC101: Method `BaseHostManager.__getattr__`: Docstring contains fewer arguments than in function signature.
     DOC106: Method `BaseHostManager.__getattr__`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC107: Method `BaseHostManager.__getattr__`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
     DOC103: Method `BaseHostManager.__getattr__`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [attr: ].
     DOC201: Method `BaseHostManager.__getattr__` does not have a return section in docstring
-    DOC501: Method `BaseHostManager.__getattr__` has raise/assert statements, but the docstring does not have a "Raises" section
     DOC503: Method `BaseHostManager.__getattr__` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['AttributeError'].
     DOC201: Method `BaseHostManager.keys` does not have a return section in docstring
     DOC201: Method `BaseHostManager.__iter__` does not have a return section in docstring
@@ -68,12 +65,10 @@ src/pytest_ansible/host_manager/base.py
     DOC107: Method `BaseHostManager.__contains__`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
     DOC103: Method `BaseHostManager.__contains__`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [item: ].
     DOC201: Method `BaseHostManager.__contains__` does not have a return section in docstring
-    DOC501: Method `BaseHostManager.initialize_inventory` has raise/assert statements, but the docstring does not have a "Raises" section
     DOC503: Method `BaseHostManager.initialize_inventory` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['NotImplementedError'].
 --------------------
 src/pytest_ansible/host_manager/utils.py
     DOC106: Function `get_host_manager`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
-    DOC501: Function `get_host_manager` has raise/assert statements, but the docstring does not have a "Raises" section
     DOC503: Function `get_host_manager` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['RuntimeError'].
 --------------------
 src/pytest_ansible/host_manager/v213.py
@@ -96,12 +91,10 @@ src/pytest_ansible/module_dispatcher/__init__.py
     DOC107: Method `BaseModuleDispatcher.__getattr__`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
     DOC103: Method `BaseModuleDispatcher.__getattr__`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [name: ].
     DOC201: Method `BaseModuleDispatcher.__getattr__` does not have a return section in docstring
-    DOC501: Method `BaseModuleDispatcher.__getattr__` has raise/assert statements, but the docstring does not have a "Raises" section
     DOC503: Method `BaseModuleDispatcher.__getattr__` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['AnsibleModuleError'].
     DOC101: Method `BaseModuleDispatcher.check_required_kwargs`: Docstring contains fewer arguments than in function signature.
     DOC106: Method `BaseModuleDispatcher.check_required_kwargs`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC103: Method `BaseModuleDispatcher.check_required_kwargs`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [**kwargs: ].
-    DOC501: Method `BaseModuleDispatcher.check_required_kwargs` has raise/assert statements, but the docstring does not have a "Raises" section
     DOC503: Method `BaseModuleDispatcher.check_required_kwargs` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['TypeError'].
     DOC101: Method `BaseModuleDispatcher.has_module`: Docstring contains fewer arguments than in function signature.
     DOC103: Method `BaseModuleDispatcher.has_module`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [name: str].
@@ -109,7 +102,6 @@ src/pytest_ansible/module_dispatcher/__init__.py
     DOC101: Method `BaseModuleDispatcher._run`: Docstring contains fewer arguments than in function signature.
     DOC106: Method `BaseModuleDispatcher._run`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC103: Method `BaseModuleDispatcher._run`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [**kwargs: , *args: ].
-    DOC501: Method `BaseModuleDispatcher._run` has raise/assert statements, but the docstring does not have a "Raises" section
     DOC503: Method `BaseModuleDispatcher._run` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['RuntimeError'].
 --------------------
 src/pytest_ansible/module_dispatcher/v213.py
@@ -131,7 +123,6 @@ src/pytest_ansible/module_dispatcher/v213.py
     DOC101: Method `ModuleDispatcherV213.__init__`: Docstring contains fewer arguments than in function signature.
     DOC106: Method `ModuleDispatcherV213.__init__`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC103: Method `ModuleDispatcherV213.__init__`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [**kwargs: ].
-    DOC501: Method `ModuleDispatcherV213.__init__` has raise/assert statements, but the docstring does not have a "Raises" section
     DOC503: Method `ModuleDispatcherV213.__init__` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['ImportError'].
     DOC101: Method `ModuleDispatcherV213.has_module`: Docstring contains fewer arguments than in function signature.
     DOC103: Method `ModuleDispatcherV213.has_module`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [name: str].
@@ -139,7 +130,6 @@ src/pytest_ansible/module_dispatcher/v213.py
     DOC106: Method `ModuleDispatcherV213._run`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC103: Method `ModuleDispatcherV213._run`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [**complex_args: , *module_args: ].
     DOC201: Method `ModuleDispatcherV213._run` does not have a return section in docstring
-    DOC501: Method `ModuleDispatcherV213._run` has raise/assert statements, but the docstring does not have a "Raises" section
     DOC503: Method `ModuleDispatcherV213._run` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['AnsibleConnectionFailure', 'ansible.errors.AnsibleError'].
 --------------------
 src/pytest_ansible/molecule.py
@@ -172,8 +162,6 @@ src/pytest_ansible/plugin.py
     DOC106: Function `pytest_configure`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC107: Function `pytest_configure`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
     DOC103: Function `pytest_configure`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [config: ].
-    DOC501: Function `pytest_configure` has raise/assert statements, but the docstring does not have a "Raises" section
-    DOC503: Function `pytest_configure` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['AssertionError (implicitly from the `assert` statement)'].
     DOC101: Function `pytest_collect_file`: Docstring contains fewer arguments than in function signature.
     DOC103: Function `pytest_collect_file`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [file_path: Path | None, parent: pytest.Collector].
     DOC201: Function `pytest_collect_file` does not have a return section in docstring
@@ -181,7 +169,6 @@ src/pytest_ansible/plugin.py
     DOC106: Function `pytest_generate_tests`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC107: Function `pytest_generate_tests`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
     DOC103: Function `pytest_generate_tests`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [metafunc: ].
-    DOC501: Function `pytest_generate_tests` has raise/assert statements, but the docstring does not have a "Raises" section
     DOC503: Function `pytest_generate_tests` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['pytest.UsageError'].
     DOC101: Method `PyTestAnsiblePlugin.__init__`: Docstring contains fewer arguments than in function signature.
     DOC106: Method `PyTestAnsiblePlugin.__init__`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
@@ -211,28 +198,23 @@ src/pytest_ansible/plugin.py
     DOC106: Method `PyTestAnsiblePlugin.assert_required_ansible_parameters`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC107: Method `PyTestAnsiblePlugin.assert_required_ansible_parameters`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
     DOC103: Method `PyTestAnsiblePlugin.assert_required_ansible_parameters`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [config: ].
-    DOC501: Method `PyTestAnsiblePlugin.assert_required_ansible_parameters` has raise/assert statements, but the docstring does not have a "Raises" section
     DOC503: Method `PyTestAnsiblePlugin.assert_required_ansible_parameters` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['pytest.UsageError'].
 --------------------
 src/pytest_ansible/results.py
     DOC101: Method `AdHocResult.__init__`: Docstring contains fewer arguments than in function signature.
     DOC106: Method `AdHocResult.__init__`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC103: Method `AdHocResult.__init__`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [**kwargs: ].
-    DOC501: Method `AdHocResult.__init__` has raise/assert statements, but the docstring does not have a "Raises" section
-    DOC503: Method `AdHocResult.__init__` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['AssertionError (implicitly from the `assert` statement)'].
     DOC101: Method `AdHocResult.__getitem__`: Docstring contains fewer arguments than in function signature.
     DOC106: Method `AdHocResult.__getitem__`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC107: Method `AdHocResult.__getitem__`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
     DOC103: Method `AdHocResult.__getitem__`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [item: ].
     DOC201: Method `AdHocResult.__getitem__` does not have a return section in docstring
-    DOC501: Method `AdHocResult.__getitem__` has raise/assert statements, but the docstring does not have a "Raises" section
     DOC503: Method `AdHocResult.__getitem__` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['KeyError'].
     DOC101: Method `AdHocResult.__getattr__`: Docstring contains fewer arguments than in function signature.
     DOC106: Method `AdHocResult.__getattr__`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC107: Method `AdHocResult.__getattr__`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
     DOC103: Method `AdHocResult.__getattr__`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [attr: ].
     DOC201: Method `AdHocResult.__getattr__` does not have a return section in docstring
-    DOC501: Method `AdHocResult.__getattr__` has raise/assert statements, but the docstring does not have a "Raises" section
     DOC503: Method `AdHocResult.__getattr__` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['AttributeError'].
     DOC201: Method `AdHocResult.__len__` does not have a return section in docstring
     DOC101: Method `AdHocResult.__contains__`: Docstring contains fewer arguments than in function signature.
@@ -268,80 +250,52 @@ tests/conftest.py
     DOC201: Function `option` does not have a return section in docstring
 --------------------
 tests/integration/test_molecule.py
-    DOC501: Function `test_molecule_collect` has raise/assert statements, but the docstring does not have a "Raises" section
-    DOC503: Function `test_molecule_collect` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['AssertionError (implicitly from the `assert` statement)'].
-    DOC501: Function `test_molecule_disabled` has raise/assert statements, but the docstring does not have a "Raises" section
-    DOC503: Function `test_molecule_disabled` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['AssertionError (implicitly from the `assert` statement)'].
-    DOC501: Function `test_molecule_runtest` has raise/assert statements, but the docstring does not have a "Raises" section
-    DOC503: Function `test_molecule_runtest` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['AssertionError (implicitly from the `assert` statement)'].
     DOC101: Function `test_molecule_fixture`: Docstring contains fewer arguments than in function signature.
     DOC103: Function `test_molecule_fixture`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [molecule_scenario: MoleculeScenario].
-    DOC501: Function `test_molecule_fixture` has raise/assert statements, but the docstring does not have a "Raises" section
-    DOC503: Function `test_molecule_fixture` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['AssertionError (implicitly from the `assert` statement)'].
 --------------------
 tests/test_adhoc.py
     DOC101: Function `test_contacted_with_params`: Docstring contains fewer arguments than in function signature.
     DOC106: Function `test_contacted_with_params`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC107: Function `test_contacted_with_params`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
     DOC103: Function `test_contacted_with_params`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [option: , pytester: ].
-    DOC501: Function `test_contacted_with_params` has raise/assert statements, but the docstring does not have a "Raises" section
-    DOC503: Function `test_contacted_with_params` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['AssertionError (implicitly from the `assert` statement)'].
     DOC101: Function `test_contacted_with_params_and_inventory_marker`: Docstring contains fewer arguments than in function signature.
     DOC106: Function `test_contacted_with_params_and_inventory_marker`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC107: Function `test_contacted_with_params_and_inventory_marker`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
     DOC103: Function `test_contacted_with_params_and_inventory_marker`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [option: , pytester: ].
-    DOC501: Function `test_contacted_with_params_and_inventory_marker` has raise/assert statements, but the docstring does not have a "Raises" section
-    DOC503: Function `test_contacted_with_params_and_inventory_marker` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['AssertionError (implicitly from the `assert` statement)'].
     DOC101: Function `test_contacted_with_params_and_host_pattern_marker`: Docstring contains fewer arguments than in function signature.
     DOC106: Function `test_contacted_with_params_and_host_pattern_marker`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC107: Function `test_contacted_with_params_and_host_pattern_marker`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
     DOC103: Function `test_contacted_with_params_and_host_pattern_marker`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [option: , pytester: ].
-    DOC501: Function `test_contacted_with_params_and_host_pattern_marker` has raise/assert statements, but the docstring does not have a "Raises" section
-    DOC503: Function `test_contacted_with_params_and_host_pattern_marker` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['AssertionError (implicitly from the `assert` statement)'].
     DOC101: Function `test_contacted_with_params_and_inventory_host_pattern_marker`: Docstring contains fewer arguments than in function signature.
     DOC106: Function `test_contacted_with_params_and_inventory_host_pattern_marker`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC107: Function `test_contacted_with_params_and_inventory_host_pattern_marker`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
     DOC103: Function `test_contacted_with_params_and_inventory_host_pattern_marker`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [option: , pytester: ].
-    DOC501: Function `test_contacted_with_params_and_inventory_host_pattern_marker` has raise/assert statements, but the docstring does not have a "Raises" section
-    DOC503: Function `test_contacted_with_params_and_inventory_host_pattern_marker` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['AssertionError (implicitly from the `assert` statement)'].
     DOC101: Function `test_become`: Docstring contains fewer arguments than in function signature.
     DOC106: Function `test_become`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC107: Function `test_become`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
     DOC103: Function `test_become`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [option: , pytester: ].
-    DOC501: Function `test_become` has raise/assert statements, but the docstring does not have a "Raises" section
-    DOC503: Function `test_become` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['AssertionError (implicitly from the `assert` statement)'].
     DOC101: Function `test_dark_with_params`: Docstring contains fewer arguments than in function signature.
     DOC106: Function `test_dark_with_params`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC107: Function `test_dark_with_params`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
     DOC103: Function `test_dark_with_params`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [option: , pytester: ].
-    DOC501: Function `test_dark_with_params` has raise/assert statements, but the docstring does not have a "Raises" section
-    DOC503: Function `test_dark_with_params` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['AssertionError (implicitly from the `assert` statement)'].
     DOC101: Function `test_dark_with_params_and_inventory_marker`: Docstring contains fewer arguments than in function signature.
     DOC106: Function `test_dark_with_params_and_inventory_marker`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC107: Function `test_dark_with_params_and_inventory_marker`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
     DOC103: Function `test_dark_with_params_and_inventory_marker`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [option: , pytester: ].
-    DOC501: Function `test_dark_with_params_and_inventory_marker` has raise/assert statements, but the docstring does not have a "Raises" section
-    DOC503: Function `test_dark_with_params_and_inventory_marker` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['AssertionError (implicitly from the `assert` statement)'].
     DOC101: Function `test_dark_with_params_and_host_pattern_marker`: Docstring contains fewer arguments than in function signature.
     DOC106: Function `test_dark_with_params_and_host_pattern_marker`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC107: Function `test_dark_with_params_and_host_pattern_marker`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
     DOC103: Function `test_dark_with_params_and_host_pattern_marker`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [option: , pytester: ].
-    DOC501: Function `test_dark_with_params_and_host_pattern_marker` has raise/assert statements, but the docstring does not have a "Raises" section
-    DOC503: Function `test_dark_with_params_and_host_pattern_marker` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['AssertionError (implicitly from the `assert` statement)'].
     DOC101: Function `test_dark_with_debug_enabled`: Docstring contains fewer arguments than in function signature.
     DOC106: Function `test_dark_with_debug_enabled`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC107: Function `test_dark_with_debug_enabled`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
     DOC103: Function `test_dark_with_debug_enabled`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [option: , pytester: ].
-    DOC501: Function `test_dark_with_debug_enabled` has raise/assert statements, but the docstring does not have a "Raises" section
-    DOC503: Function `test_dark_with_debug_enabled` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['AssertionError (implicitly from the `assert` statement)'].
 --------------------
 tests/test_module_dispatcher.py
     DOC101: Function `test_ansible_module_error`: Docstring contains fewer arguments than in function signature.
     DOC106: Function `test_ansible_module_error`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC107: Function `test_ansible_module_error`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
     DOC103: Function `test_ansible_module_error`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [hosts: ].
-    DOC501: Function `test_ansible_module_error` has raise/assert statements, but the docstring does not have a "Raises" section
-    DOC503: Function `test_ansible_module_error` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['AssertionError (implicitly from the `assert` statement)'].
 --------------------
 tests/test_params.py
     DOC101: Function `test_plugin_help`: Docstring contains fewer arguments than in function signature.
@@ -356,32 +310,22 @@ tests/test_params.py
     DOC106: Function `test_report_header`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC107: Function `test_report_header`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
     DOC103: Function `test_report_header`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [option: , pytester: ].
-    DOC501: Function `test_report_header` has raise/assert statements, but the docstring does not have a "Raises" section
-    DOC503: Function `test_report_header` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['AssertionError (implicitly from the `assert` statement)'].
     DOC101: Function `test_params_not_required_when_not_using_fixture`: Docstring contains fewer arguments than in function signature.
     DOC106: Function `test_params_not_required_when_not_using_fixture`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC107: Function `test_params_not_required_when_not_using_fixture`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
     DOC103: Function `test_params_not_required_when_not_using_fixture`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [option: , pytester: ].
-    DOC501: Function `test_params_not_required_when_not_using_fixture` has raise/assert statements, but the docstring does not have a "Raises" section
-    DOC503: Function `test_params_not_required_when_not_using_fixture` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['AssertionError (implicitly from the `assert` statement)'].
     DOC101: Function `test_params_required_when_using_fixture`: Docstring contains fewer arguments than in function signature.
     DOC106: Function `test_params_required_when_using_fixture`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC107: Function `test_params_required_when_using_fixture`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
     DOC103: Function `test_params_required_when_using_fixture`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [fixture_name: , option: , pytester: ].
-    DOC501: Function `test_params_required_when_using_fixture` has raise/assert statements, but the docstring does not have a "Raises" section
-    DOC503: Function `test_params_required_when_using_fixture` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['AssertionError (implicitly from the `assert` statement)'].
     DOC101: Function `test_param_requires_value`: Docstring contains fewer arguments than in function signature.
     DOC106: Function `test_param_requires_value`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC107: Function `test_param_requires_value`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
     DOC103: Function `test_param_requires_value`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [pytester: , required_value_parameter: ].
-    DOC501: Function `test_param_requires_value` has raise/assert statements, but the docstring does not have a "Raises" section
-    DOC503: Function `test_param_requires_value` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['AssertionError (implicitly from the `assert` statement)'].
     DOC101: Function `test_params_required_with_inventory_without_host_pattern`: Docstring contains fewer arguments than in function signature.
     DOC106: Function `test_params_required_with_inventory_without_host_pattern`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC107: Function `test_params_required_with_inventory_without_host_pattern`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
     DOC103: Function `test_params_required_with_inventory_without_host_pattern`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [option: , pytester: ].
-    DOC501: Function `test_params_required_with_inventory_without_host_pattern` has raise/assert statements, but the docstring does not have a "Raises" section
-    DOC503: Function `test_params_required_with_inventory_without_host_pattern` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['AssertionError (implicitly from the `assert` statement)'].
 --------------------
 tests/test_plugin.py
     DOC101: Method `MockItem.__init__`: Docstring contains fewer arguments than in function signature.
@@ -396,12 +340,6 @@ tests/test_plugin.py
 tests/unit/test_unit.py
     DOC101: Function `test_inject`: Docstring contains fewer arguments than in function signature.
     DOC103: Function `test_inject`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [caplog: pytest.LogCaptureFixture, monkeypatch: pytest.MonkeyPatch, tmp_path: Path].
-    DOC501: Function `test_inject` has raise/assert statements, but the docstring does not have a "Raises" section
-    DOC503: Function `test_inject` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['AssertionError (implicitly from the `assert` statement)'].
     DOC101: Function `test_inject_only`: Docstring contains fewer arguments than in function signature.
     DOC103: Function `test_inject_only`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [caplog: pytest.LogCaptureFixture, monkeypatch: pytest.MonkeyPatch, tmp_path: Path].
-    DOC501: Function `test_inject_only` has raise/assert statements, but the docstring does not have a "Raises" section
-    DOC503: Function `test_inject_only` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['AssertionError (implicitly from the `assert` statement)'].
-    DOC501: Function `test_for_params` has raise/assert statements, but the docstring does not have a "Raises" section
-    DOC503: Function `test_for_params` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['AssertionError (implicitly from the `assert` statement)'].
 --------------------
