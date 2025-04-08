@@ -20,6 +20,9 @@ def get_host_manager(*args, **kwargs) -> BaseHostManager:  # type: ignore[no-unt
 
     Returns:
         HostManager: A HostManager instance.
+
+    Raises:
+        RuntimeError: If no supported HostManager is found.
     """
     if has_ansible_v213:
         from pytest_ansible.host_manager.v213 import HostManagerV213 as HostManager

@@ -56,7 +56,8 @@ class BaseModuleDispatcher(abc.ABC):
     def __getattr__(self, name):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN204
         """Run the ansible module matching the provided `name`.
 
-        Raise `AnsibleModuleError` when no such module exists.
+        Raises:
+            AnsibleModuleError: when no such module exists.
         """
         resolved = self.has_module(name)
         if not resolved:
@@ -66,7 +67,11 @@ class BaseModuleDispatcher(abc.ABC):
         return self._run
 
     def check_required_kwargs(self, **kwargs):  # type: ignore[no-untyped-def]  # noqa: ANN003, ANN201, ARG002
-        """Raise a TypeError if any required kwargs are missing."""
+        """Check that all required kwargs are present.
+
+        Raises:
+            TypeError: if any required kwargs are missing.
+        """
         for kwarg in self.required_kwargs:
             if kwarg not in self.options:
                 msg = f"Missing required keyword argument '{kwarg}'"
@@ -82,6 +87,10 @@ class BaseModuleDispatcher(abc.ABC):
 
     @abc.abstractmethod
     def _run(self, *args, **kwargs):  # type: ignore[no-untyped-def]  # noqa: ANN002, ANN003, ANN202
-        """Raise a runtime error, unless implemented by sub-classes."""
+        """Raise a runtime error, unless implemented by sub-classes.
+
+        Raises:
+            RuntimeError: Must be implemented by a sub-class.
+        """
         msg = "Must be implemented by a sub-class"
         raise RuntimeError(msg)

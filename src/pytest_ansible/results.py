@@ -54,13 +54,21 @@ class AdHocResult:
             setattr(self, kwarg, kwargs.get(kwarg))
 
     def __getitem__(self, item):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN204
-        """Return a ModuleResult instance matching the provided `item`."""
+        """Return a ModuleResult instance matching the provided `item`.
+
+        Raises:
+            KeyError: If the item does not exist.
+        """
         if item in self.contacted:
             return ModuleResult(**self.contacted[item])
         raise KeyError(item)
 
     def __getattr__(self, attr):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN204
-        """Return a ModuleResult instance matching the provided `attr`."""
+        """Return a ModuleResult instance matching the provided `attr`.
+
+        Raises:
+            AttributeError: If the attribute does not exist.
+        """
         if attr in self.contacted:
             return ModuleResult(**self.contacted[attr])
         msg = f"type AdHocResult has no attribute '{attr}'"

@@ -39,7 +39,6 @@ src/pytest_ansible/host_manager/base.py
     DOC101: Method `BaseHostManager.check_required_kwargs`: Docstring contains fewer arguments than in function signature.
     DOC106: Method `BaseHostManager.check_required_kwargs`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC103: Method `BaseHostManager.check_required_kwargs`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [**kwargs: ].
-    DOC503: Method `BaseHostManager.check_required_kwargs` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['TypeError'].
     DOC101: Method `BaseHostManager.has_matching_inventory`: Docstring contains fewer arguments than in function signature.
     DOC106: Method `BaseHostManager.has_matching_inventory`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC107: Method `BaseHostManager.has_matching_inventory`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
@@ -50,13 +49,11 @@ src/pytest_ansible/host_manager/base.py
     DOC107: Method `BaseHostManager.__getitem__`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
     DOC103: Method `BaseHostManager.__getitem__`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [item: ].
     DOC201: Method `BaseHostManager.__getitem__` does not have a return section in docstring
-    DOC503: Method `BaseHostManager.__getitem__` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['KeyError'].
     DOC101: Method `BaseHostManager.__getattr__`: Docstring contains fewer arguments than in function signature.
     DOC106: Method `BaseHostManager.__getattr__`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC107: Method `BaseHostManager.__getattr__`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
     DOC103: Method `BaseHostManager.__getattr__`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [attr: ].
     DOC201: Method `BaseHostManager.__getattr__` does not have a return section in docstring
-    DOC503: Method `BaseHostManager.__getattr__` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['AttributeError'].
     DOC201: Method `BaseHostManager.keys` does not have a return section in docstring
     DOC201: Method `BaseHostManager.__iter__` does not have a return section in docstring
     DOC201: Method `BaseHostManager.__len__` does not have a return section in docstring
@@ -65,11 +62,9 @@ src/pytest_ansible/host_manager/base.py
     DOC107: Method `BaseHostManager.__contains__`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
     DOC103: Method `BaseHostManager.__contains__`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [item: ].
     DOC201: Method `BaseHostManager.__contains__` does not have a return section in docstring
-    DOC503: Method `BaseHostManager.initialize_inventory` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['NotImplementedError'].
 --------------------
 src/pytest_ansible/host_manager/utils.py
     DOC106: Function `get_host_manager`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
-    DOC503: Function `get_host_manager` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['RuntimeError'].
 --------------------
 src/pytest_ansible/host_manager/v213.py
     DOC101: Method `HostManagerV213.__init__`: Docstring contains fewer arguments than in function signature.
@@ -91,18 +86,15 @@ src/pytest_ansible/module_dispatcher/__init__.py
     DOC107: Method `BaseModuleDispatcher.__getattr__`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
     DOC103: Method `BaseModuleDispatcher.__getattr__`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [name: ].
     DOC201: Method `BaseModuleDispatcher.__getattr__` does not have a return section in docstring
-    DOC503: Method `BaseModuleDispatcher.__getattr__` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['AnsibleModuleError'].
     DOC101: Method `BaseModuleDispatcher.check_required_kwargs`: Docstring contains fewer arguments than in function signature.
     DOC106: Method `BaseModuleDispatcher.check_required_kwargs`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC103: Method `BaseModuleDispatcher.check_required_kwargs`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [**kwargs: ].
-    DOC503: Method `BaseModuleDispatcher.check_required_kwargs` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['TypeError'].
     DOC101: Method `BaseModuleDispatcher.has_module`: Docstring contains fewer arguments than in function signature.
     DOC103: Method `BaseModuleDispatcher.has_module`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [name: str].
     DOC201: Method `BaseModuleDispatcher.has_module` does not have a return section in docstring
     DOC101: Method `BaseModuleDispatcher._run`: Docstring contains fewer arguments than in function signature.
     DOC106: Method `BaseModuleDispatcher._run`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC103: Method `BaseModuleDispatcher._run`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [**kwargs: , *args: ].
-    DOC503: Method `BaseModuleDispatcher._run` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['RuntimeError'].
 --------------------
 src/pytest_ansible/module_dispatcher/v213.py
     DOC101: Method `ResultAccumulator.__init__`: Docstring contains fewer arguments than in function signature.
@@ -123,14 +115,12 @@ src/pytest_ansible/module_dispatcher/v213.py
     DOC101: Method `ModuleDispatcherV213.__init__`: Docstring contains fewer arguments than in function signature.
     DOC106: Method `ModuleDispatcherV213.__init__`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC103: Method `ModuleDispatcherV213.__init__`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [**kwargs: ].
-    DOC503: Method `ModuleDispatcherV213.__init__` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['ImportError'].
     DOC101: Method `ModuleDispatcherV213.has_module`: Docstring contains fewer arguments than in function signature.
     DOC103: Method `ModuleDispatcherV213.has_module`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [name: str].
     DOC101: Method `ModuleDispatcherV213._run`: Docstring contains fewer arguments than in function signature.
     DOC106: Method `ModuleDispatcherV213._run`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC103: Method `ModuleDispatcherV213._run`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [**complex_args: , *module_args: ].
     DOC201: Method `ModuleDispatcherV213._run` does not have a return section in docstring
-    DOC503: Method `ModuleDispatcherV213._run` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['AnsibleConnectionFailure', 'ansible.errors.AnsibleError'].
 --------------------
 src/pytest_ansible/molecule.py
     DOC101: Function `molecule_pytest_configure`: Docstring contains fewer arguments than in function signature.
@@ -169,7 +159,6 @@ src/pytest_ansible/plugin.py
     DOC106: Function `pytest_generate_tests`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC107: Function `pytest_generate_tests`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
     DOC103: Function `pytest_generate_tests`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [metafunc: ].
-    DOC503: Function `pytest_generate_tests` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['pytest.UsageError'].
     DOC101: Method `PyTestAnsiblePlugin.__init__`: Docstring contains fewer arguments than in function signature.
     DOC106: Method `PyTestAnsiblePlugin.__init__`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC107: Method `PyTestAnsiblePlugin.__init__`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
@@ -198,7 +187,6 @@ src/pytest_ansible/plugin.py
     DOC106: Method `PyTestAnsiblePlugin.assert_required_ansible_parameters`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC107: Method `PyTestAnsiblePlugin.assert_required_ansible_parameters`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
     DOC103: Method `PyTestAnsiblePlugin.assert_required_ansible_parameters`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [config: ].
-    DOC503: Method `PyTestAnsiblePlugin.assert_required_ansible_parameters` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['pytest.UsageError'].
 --------------------
 src/pytest_ansible/results.py
     DOC101: Method `AdHocResult.__init__`: Docstring contains fewer arguments than in function signature.
@@ -209,13 +197,11 @@ src/pytest_ansible/results.py
     DOC107: Method `AdHocResult.__getitem__`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
     DOC103: Method `AdHocResult.__getitem__`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [item: ].
     DOC201: Method `AdHocResult.__getitem__` does not have a return section in docstring
-    DOC503: Method `AdHocResult.__getitem__` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['KeyError'].
     DOC101: Method `AdHocResult.__getattr__`: Docstring contains fewer arguments than in function signature.
     DOC106: Method `AdHocResult.__getattr__`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC107: Method `AdHocResult.__getattr__`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
     DOC103: Method `AdHocResult.__getattr__`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [attr: ].
     DOC201: Method `AdHocResult.__getattr__` does not have a return section in docstring
-    DOC503: Method `AdHocResult.__getattr__` exceptions in the "Raises" section in the docstring do not match those in the function body. Raised exceptions in the docstring: []. Raised exceptions in the body: ['AttributeError'].
     DOC201: Method `AdHocResult.__len__` does not have a return section in docstring
     DOC101: Method `AdHocResult.__contains__`: Docstring contains fewer arguments than in function signature.
     DOC106: Method `AdHocResult.__contains__`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature

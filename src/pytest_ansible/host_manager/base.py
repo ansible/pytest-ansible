@@ -59,7 +59,11 @@ class BaseHostManager:
         return extra_inventory_groups
 
     def check_required_kwargs(self, **kwargs):  # type: ignore[no-untyped-def]  # noqa: ANN003, ANN201, ARG002
-        """Raise a TypeError if any required kwargs are missing."""
+        """Raise a TypeError if any required kwargs are missing.
+
+        Raises:
+            TypeError: If any required kwargs are missing.
+        """
         for kwarg in self._required_kwargs:
             if kwarg not in self.options:
                 msg = f"Missing required keyword argument '{kwarg}'"
@@ -78,7 +82,11 @@ class BaseHostManager:
             return False
 
     def __getitem__(self, item):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN204
-        """Return a ModuleDispatcher instance described the provided `item`."""
+        """Return a ModuleDispatcher instance described the provided `item`.
+
+        Raises:
+            KeyError: If the item does not exist.
+        """
         # Handle slicing
         if isinstance(item, slice):
             new_item = "all["
@@ -97,7 +105,11 @@ class BaseHostManager:
         return self._dispatcher(**self.options)  # type: ignore[no-untyped-call]
 
     def __getattr__(self, attr):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN204
-        """Return a ModuleDispatcher instance described the provided `attr`."""
+        """Return a ModuleDispatcher instance described the provided `attr`.
+
+        Raises:
+            AttributeError: If the attribute does not exist.
+        """
         if not self.has_matching_inventory(attr):  # type: ignore[no-untyped-call]
             msg = f"type HostManager has no attribute '{attr}'"
             raise AttributeError(msg)
@@ -134,6 +146,10 @@ class BaseHostManager:
         return self.has_matching_inventory(item)  # type: ignore[no-any-return, no-untyped-call]
 
     def initialize_inventory(self):  # type: ignore[no-untyped-def]  # noqa: ANN201
-        """Fixme."""
+        """Fixme.
+
+        Raises:
+            NotImplementedError: Must be implemented by sub-class.
+        """
         msg = "Must be implemented by sub-class"
         raise NotImplementedError(msg)
