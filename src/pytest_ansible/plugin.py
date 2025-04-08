@@ -201,8 +201,9 @@ def pytest_configure(config):  # type: ignore[no-untyped-def]  # noqa: ANN001, A
 
     # Configure the logger.
     level = log_map.get(config.option.verbose)
-    logging.basicConfig(level=level)
-    logging.debug("Logging initialized")
+    if level is not None:
+        logger.setLevel(level)
+    logger.debug("Logging initialized")
 
     assert config.pluginmanager.register(PyTestAnsiblePlugin(config), "ansible")  # noqa: S101
 
@@ -233,7 +234,11 @@ def pytest_collect_file(
 
 
 def pytest_generate_tests(metafunc):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
-    """Generate tests when specific `ansible_*` fixtures are used by tests."""
+    """Generate tests when specific `ansible_*` fixtures are used by tests.
+
+    Raises:
+        pytest.UsageError: If the required --ansible-* parameters were not provided.
+    """
     if "ansible_host" in metafunc.fixturenames:
         # assert required --ansible-* parameters were used
         PyTestAnsiblePlugin.assert_required_ansible_parameters(metafunc.config)  # type: ignore[no-untyped-call]
@@ -412,7 +417,11 @@ class PyTestAnsiblePlugin:
 
     @staticmethod
     def assert_required_ansible_parameters(config):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN205
-        """Assert whether the required --ansible-* parameters were provided."""
+        """Assert whether the required --ansible-* parameters were provided.
+
+        Raises:
+            pytest.UsageError: If the required --ansible-* parameters were not provided.
+        """
         errors = []
 
         # Verify --ansible-host-pattern was provided

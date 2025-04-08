@@ -94,7 +94,7 @@ def molecule_pytest_configure(config):  # type: ignore[no-untyped-def]  # noqa: 
             try:
                 import selinux  # noqa: F401 pylint: disable=import-outside-toplevel
             except ImportError:
-                logging.exception(
+                logger.exception(
                     "It appears that you are trying to use "
                     "molecule with a Python interpreter that does not have the "
                     "libselinux python bindings installed. These can only be "

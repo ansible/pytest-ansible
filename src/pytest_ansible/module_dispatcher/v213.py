@@ -78,7 +78,11 @@ class ModuleDispatcherV213(BaseModuleDispatcher):
     )
 
     def __init__(self, **kwargs) -> None:  # type: ignore[no-untyped-def]  # noqa: ANN003
-        """Fixme."""
+        """Fixme.
+
+        Raises:
+            ImportError: If ansible version is not 2.13 or newer.
+        """
         super().__init__(**kwargs)
         if not has_ansible_v213:
             msg = "Only supported with ansible-2.13 and newer"
@@ -109,7 +113,12 @@ class ModuleDispatcherV213(BaseModuleDispatcher):
         return str(found.resolved_fqcn)
 
     def _run(self, *module_args, **complex_args):  # type: ignore[no-untyped-def]  # noqa: ANN002, ANN003, ANN202, C901, PLR0912, PLR0915
-        """Execute an ansible adhoc command returning the result in a AdhocResult object."""
+        """Execute an ansible adhoc command returning the result in a AdhocResult object.
+
+        Raises:
+            ansible.errors.AnsibleError: If the host is unreachable.
+            AnsibleConnectionFailure: If the host is unreachable.
+        """
         # Assemble module argument string
         if module_args:
             complex_args.update({"_raw_params": " ".join(module_args)})
