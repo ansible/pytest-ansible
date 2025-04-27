@@ -10,7 +10,7 @@ bracex==2.5.post1         # via wcmatch
 cachetools==5.5.2         # via tox
 cairocffi==1.7.1          # via cairosvg
 cairosvg==2.7.1           # via mkdocs-ansible
-certifi==2025.1.31        # via requests
+certifi==2025.4.26        # via requests
 cffi==1.17.1              # via cairocffi, cryptography
 cfgv==3.4.0               # via pre-commit
 chardet==5.2.0            # via tox
@@ -32,7 +32,7 @@ exceptiongroup==1.2.2     # via pytest
 execnet==2.1.1            # via pytest-xdist
 filelock==3.18.0          # via tox, virtualenv
 ghp-import==2.1.0         # via mkdocs
-griffe==1.7.2             # via mkdocstrings-python
+griffe==1.7.3             # via mkdocstrings-python
 hjson==3.1.0              # via mkdocs-macros-plugin, super-collections
 htmlmin2==0.1.13          # via mkdocs-minify-plugin
 identify==2.6.10           # via pre-commit
@@ -42,7 +42,7 @@ isort==6.0.1              # via pylint
 jinja2==3.1.6             # via ansible-core, mkdocs, mkdocs-macros-plugin, mkdocs-material, mkdocstrings, molecule
 jsmin==3.0.1              # via mkdocs-minify-plugin
 jsonschema==4.23.0        # via ansible-compat, molecule
-jsonschema-specifications==2024.10.1  # via jsonschema
+jsonschema-specifications==2025.4.1  # via jsonschema
 linkchecker==10.5.0       # via mkdocs-ansible
 markdown==3.8             # via markdown-include, mkdocs, mkdocs-autorefs, mkdocs-htmlproofer-plugin, mkdocs-material, mkdocstrings, pymdown-extensions
 markdown-exec==1.10.3     # via mkdocs-ansible
@@ -67,7 +67,7 @@ mkdocstrings==0.29.1      # via mkdocs-ansible, mkdocstrings-python
 mkdocstrings-python==1.16.10  # via mkdocs-ansible
 molecule==25.4.0          # via pytest-ansible (pyproject.toml)
 mypy==1.15.0              # via pytest-ansible (pyproject.toml)
-mypy-extensions==1.0.0    # via mypy
+mypy-extensions==1.1.0    # via mypy
 nodeenv==1.9.1            # via pre-commit
 packaging==25.0           # via ansible-compat, ansible-core, mkdocs, mkdocs-macros-plugin, molecule, pyproject-api, pytest, tox, pytest-ansible (pyproject.toml)
 paginate==0.5.7           # via mkdocs-material
@@ -94,9 +94,9 @@ referencing==0.36.2       # via jsonschema, jsonschema-specifications
 requests==2.32.3          # via linkchecker, mkdocs-htmlproofer-plugin, mkdocs-material
 rich==14.0.0              # via enrich, molecule
 rpds-py==0.24.0           # via jsonschema, referencing
-ruff==0.11.6              # via pytest-ansible (pyproject.toml)
+ruff==0.11.7              # via pytest-ansible (pyproject.toml)
 six==1.17.0               # via python-dateutil
-soupsieve==2.6            # via beautifulsoup4
+soupsieve==2.7            # via beautifulsoup4
 subprocess-tee==0.4.2     # via ansible-compat
 super-collections==0.5.3  # via mkdocs-macros-plugin
 termcolor==3.0.1          # via mkdocs-macros-plugin
