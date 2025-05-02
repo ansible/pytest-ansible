@@ -326,6 +326,7 @@ filterwarnings = [
   "ignore:This process \\(pid=.*\\) is multi-threaded, use of fork\\(\\) may lead to deadlocks in the child.:DeprecationWarning",
   "ignore:AnsibleCollectionFinder has already been configured:UserWarning"
 ]
+junit_family = "legacy" # see https://docs.codecov.com/docs/test-analytics
 markers = ["old", "unit", "requires_ansible_v2"]
 testpaths = "tests"
 tmp_path_retention_policy = "failed"
