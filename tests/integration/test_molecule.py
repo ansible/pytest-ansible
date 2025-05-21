@@ -66,6 +66,7 @@ def test_molecule_runtest() -> None:
     except subprocess.CalledProcessError as exc:
         pytest.fail(exc.stderr)
 
+
 def test_molecule_fixture(molecule_scenario: MoleculeScenario) -> None:
     """Test the scenario fixture.
 
@@ -74,6 +75,7 @@ def test_molecule_fixture(molecule_scenario: MoleculeScenario) -> None:
     assert molecule_scenario.test_id in ["fixtures-default", "extensions-default"]
     assert molecule_scenario.name == "default"
     molecule_scenario.test()
+
 
 def test_molecule_fixture_with_moleculeopts(molecule_scenario: MoleculeScenario, capfd) -> None:
     """Test the scenario fixture with MOLECULE_OPTS set.
