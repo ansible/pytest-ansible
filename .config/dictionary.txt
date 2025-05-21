@@ -3,6 +3,7 @@ addinivalue
 addoption
 autouse
 barroso
+capfd
 caplog
 fixturedefs
 fixtureinfo
@@ -18,6 +19,7 @@ lineinfile
 makepyfile
 metafunc
 modifyitems
+moleculeopts
 notestscollected
 pandoc
 parseoutcomes

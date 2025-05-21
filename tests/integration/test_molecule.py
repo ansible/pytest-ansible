@@ -12,6 +12,8 @@ import pytest
 
 
 if TYPE_CHECKING:
+    from _pytest.capture import CaptureFixture
+
     from pytest_ansible.molecule import MoleculeScenario
 
 
@@ -77,10 +79,13 @@ def test_molecule_fixture(molecule_scenario: MoleculeScenario) -> None:
     molecule_scenario.test()
 
 
-def test_molecule_fixture_with_moleculeopts(molecule_scenario: MoleculeScenario, capfd) -> None:
+def test_molecule_fixture_with_moleculeopts(
+    molecule_scenario: MoleculeScenario, capfd: CaptureFixture[str]
+) -> None:
     """Test the scenario fixture with MOLECULE_OPTS set.
 
     :param molecule_scenario: One scenario
+    :param capfd: Text capturing of writes to file descriptors
     """
     assert molecule_scenario.test_id in ["fixtures-default", "extensions-default"]
     assert molecule_scenario.name == "default"

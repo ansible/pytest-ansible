@@ -238,6 +238,8 @@ tests/conftest.py
 tests/integration/test_molecule.py
     DOC101: Function `test_molecule_fixture`: Docstring contains fewer arguments than in function signature.
     DOC103: Function `test_molecule_fixture`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [molecule_scenario: MoleculeScenario].
+    DOC101: Function `test_molecule_fixture_with_moleculeopts`: Docstring contains fewer arguments than in function signature.
+    DOC103: Function `test_molecule_fixture_with_moleculeopts`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [capfd: CaptureFixture[str], molecule_scenario: MoleculeScenario].
 --------------------
 tests/test_adhoc.py
     DOC101: Function `test_contacted_with_params`: Docstring contains fewer arguments than in function signature.
