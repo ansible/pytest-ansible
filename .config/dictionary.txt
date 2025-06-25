@@ -19,7 +19,6 @@ lineinfile
 makepyfile
 metafunc
 modifyitems
-moleculeopts
 notestscollected
 pandoc
 parseoutcomes
