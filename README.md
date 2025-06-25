@@ -67,7 +67,6 @@ pip install pytest-ansible
 
 3. Depending on your preferred directory structure, you can clone collections
    into the appropriate paths.
-
    - **Collection Tree Approach**: The preferred approach is to clone the
      collections being developed into it's proper collection tree path. This
      eliminates the need for any symlinks and other collections being developed
@@ -87,7 +86,6 @@ pip install pytest-ansible
      ```
 
      Notes:
-
      - Run `pytest` in the root of the collection directory, adjacent to the
        collection's `galaxy.yml` file.
      - A collections directory will be created in the repository directory, and
