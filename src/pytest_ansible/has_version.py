@@ -8,6 +8,7 @@ from packaging.version import parse as parse_version
 
 
 ansible_version = parse_version(ansible.__version__)
+print(f"{ansible_version=}")
 has_ansible_v2 = ansible_version >= parse_version("2.0.0")
 has_ansible_v24 = ansible_version >= parse_version("2.4.0")
 has_ansible_v28 = ansible_version >= parse_version("2.8.0.dev0")
