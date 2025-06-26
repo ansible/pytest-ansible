@@ -7,6 +7,8 @@ from unittest.mock import MagicMock
 
 from pytest_ansible.plugin import PyTestAnsiblePlugin, pytest_generate_tests
 
+from .conftest import skip_ansible_219
+
 
 class MockItem:
     """Mock class for item object."""
@@ -57,6 +59,7 @@ class MockMetafunc:
         self.parametrize = MagicMock()
 
 
+@skip_ansible_219
 def test_pytest_generate_tests_with_ansible_host():  # type: ignore[no-untyped-def]  # noqa: ANN201, D103
     metafunc = MagicMock()
     metafunc.fixturenames = ["ansible_host"]
@@ -80,6 +83,7 @@ def test_pytest_generate_tests_with_ansible_host():  # type: ignore[no-untyped-d
     assert metafunc.parametrize.call_count == 1
 
 
+@skip_ansible_219
 def test_pytest_generate_tests_with_ansible_group():  # type: ignore[no-untyped-def]  # noqa: ANN201, D103
     metafunc = MagicMock()
     metafunc.fixturenames = ["ansible_group"]

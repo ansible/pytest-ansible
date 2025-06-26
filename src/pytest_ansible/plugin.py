@@ -5,6 +5,7 @@ from __future__ import annotations
 import contextlib
 import logging
 import subprocess
+import warnings
 
 from typing import TYPE_CHECKING
 
@@ -15,12 +16,15 @@ import ansible.utils
 import ansible.utils.display
 import pytest
 
+from typing_extensions import deprecated
+
 from pytest_ansible.fixtures import (
     ansible_facts,
     fixture_ansible_adhoc,
     fixture_ansible_module,
     localhost,
 )
+from pytest_ansible.has_version import has_ansible_v219
 from pytest_ansible.host_manager.utils import get_host_manager
 
 from .molecule import HAS_MOLECULE, MoleculeFile, MoleculeScenario
@@ -233,6 +237,24 @@ def pytest_collect_file(
     return None
 
 
+def warn_or_fail(fixture_name: str) -> None:
+    """Give the appropriate feedback to the user when a deprecated fixture is used.
+
+    Args:
+        fixture_name: The fixture that has been used.
+    """
+    if has_ansible_v219:
+        pytest.exit(
+            f"{fixture_name} fixture not supported on Ansible 2.19+. See https://github.com/ansible/pytest-ansible/issues/468."
+        )
+    else:
+        warnings.warn(
+            f"{fixture_name} fixture is deprecated and will be removed in a future release. See https://github.com/ansible/pytest-ansible/issues/468.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+
+
 def pytest_generate_tests(metafunc):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
     """Generate tests when specific `ansible_*` fixtures are used by tests.
 
@@ -240,6 +262,8 @@ def pytest_generate_tests(metafunc):  # type: ignore[no-untyped-def]  # noqa: AN
         pytest.UsageError: If the required --ansible-* parameters were not provided.
     """
     if "ansible_host" in metafunc.fixturenames:
+        warn_or_fail("ansible_host")
+
         # assert required --ansible-* parameters were used
         PyTestAnsiblePlugin.assert_required_ansible_parameters(metafunc.config)  # type: ignore[no-untyped-call]
         try:
@@ -255,6 +279,8 @@ def pytest_generate_tests(metafunc):  # type: ignore[no-untyped-def]  # noqa: AN
         metafunc.parametrize("ansible_host", iter(hosts[h] for h in hosts))
 
     if "ansible_group" in metafunc.fixturenames:
+        warn_or_fail("ansible_group")
+
         # assert required --ansible-* parameters were used
         PyTestAnsiblePlugin.assert_required_ansible_parameters(metafunc.config)  # type: ignore[no-untyped-call]
         try:
@@ -402,6 +428,7 @@ class PyTestAnsiblePlugin:
 
         return kwargs
 
+    @deprecated("Host management is deprecated and will be removed in a future release")
     def initialize(self, config=None, request=None, **kwargs):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN003, ANN201
         """Return an initialized Ansible Host Manager instance."""
         ansible_cfg = {}
