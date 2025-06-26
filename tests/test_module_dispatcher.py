@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from .conftest import NEGATIVE_HOST_PATTERNS, POSITIVE_HOST_PATTERNS
+from .conftest import NEGATIVE_HOST_PATTERNS, POSITIVE_HOST_PATTERNS, skip_ansible_219
 
 
 def test_type_error() -> None:
@@ -30,6 +30,7 @@ def test_importerror_requires_v1():  # type: ignore[no-untyped-def]  # noqa: ANN
     "include_extra_inventory",
     (True, False),
 )
+@skip_ansible_219
 def test_dispatcher_len(host_pattern, num_hosts, hosts, include_extra_inventory):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
     hosts = hosts(include_extra_inventory=include_extra_inventory)
     assert len(getattr(hosts, host_pattern)) == num_hosts[include_extra_inventory]
@@ -43,6 +44,7 @@ def test_dispatcher_len(host_pattern, num_hosts, hosts, include_extra_inventory)
     "include_extra_inventory",
     (True, False),
 )
+@skip_ansible_219
 def test_dispatcher_contains(host_pattern, num_hosts, hosts, include_extra_inventory):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, ARG001, D103
     hosts = hosts(include_extra_inventory=include_extra_inventory)
     assert host_pattern in hosts["all"]
@@ -53,6 +55,7 @@ def test_dispatcher_contains(host_pattern, num_hosts, hosts, include_extra_inven
     "include_extra_inventory",
     (True, False),
 )
+@skip_ansible_219
 def test_dispatcher_not_contains(  # type: ignore[no-untyped-def]  # noqa: ANN201, D103
     host_pattern,  # noqa: ANN001
     num_hosts,  # noqa: ANN001, ARG001

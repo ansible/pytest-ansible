@@ -234,7 +234,7 @@ def pytest_collect_file(
     return None
 
 
-def pytest_generate_tests(metafunc):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
+def pytest_generate_tests(metafunc):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, C901
     """Generate tests when specific `ansible_*` fixtures are used by tests.
 
     Raises:
@@ -259,6 +259,9 @@ def pytest_generate_tests(metafunc):  # type: ignore[no-untyped-def]  # noqa: AN
         metafunc.parametrize("ansible_host", iter(hosts[h] for h in hosts))
 
     if "ansible_group" in metafunc.fixturenames:
+        if has_ansible_v219:
+            pytest.exit("ansible_group fixture not supported on Ansible 2.19+")
+
         # assert required --ansible-* parameters were used
         PyTestAnsiblePlugin.assert_required_ansible_parameters(metafunc.config)  # type: ignore[no-untyped-call]
         try:
