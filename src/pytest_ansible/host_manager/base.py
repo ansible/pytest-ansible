@@ -4,7 +4,10 @@ from __future__ import annotations
 
 import ansible
 
+from typing_extensions import deprecated
 
+
+@deprecated("Host management is deprecated and will be removed in a future release")
 class BaseHostManager:
     """The BaseHostManager class provides a base class for managing ansible inventory hosts.
 
