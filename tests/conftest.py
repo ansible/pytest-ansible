@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import pytest
 
+from pytest_ansible.has_version import has_ansible_v219
 from pytest_ansible.host_manager.utils import get_host_manager
 
 
@@ -173,3 +174,8 @@ def hosts():  # type: ignore[no-untyped-def]  # noqa: ANN201, D103
         return get_host_manager(**kwargs)
 
     return create_host_manager
+
+
+skip_ansible_219 = pytest.mark.skipif(
+    has_ansible_v219, reason="Functionality is unsupported on Ansible 2.19+"
+)
