@@ -244,10 +244,12 @@ def warn_or_fail(fixture_name: str) -> None:
         fixture_name: The fixture that has been used.
     """
     if has_ansible_v219:
-        pytest.exit(f"{fixture_name} fixture not supported on Ansible 2.19+")
+        pytest.exit(
+            f"{fixture_name} fixture not supported on Ansible 2.19+. See https://github.com/ansible/pytest-ansible/issues/468."
+        )
     else:
         warnings.warn(
-            f"{fixture_name} fixture is deprecated and will be removed in a future release.",
+            f"{fixture_name} fixture is deprecated and will be removed in a future release. See https://github.com/ansible/pytest-ansible/issues/468.",
             DeprecationWarning,
             stacklevel=2,
         )
