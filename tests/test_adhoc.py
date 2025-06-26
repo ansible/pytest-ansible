@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import pytest
 
+from .conftest import skip_ansible_219
+
 
 # pylint: disable=unused-import
 try:
@@ -24,7 +26,7 @@ except ImportError:
     EXIT_NOTESTSCOLLECTED = ExitCode.NO_TESTS_COLLECTED
 
 
-@pytest.mark.old
+@skip_ansible_219
 def test_contacted_with_params(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
     """FIXME."""
     src = """
@@ -54,7 +56,7 @@ def test_contacted_with_params(pytester, option):  # type: ignore[no-untyped-def
     assert result.parseoutcomes()["passed"] == 1
 
 
-@pytest.mark.old
+@skip_ansible_219
 def test_contacted_with_params_and_inventory_marker(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
     """FIXME."""
     src = f"""
@@ -80,7 +82,7 @@ def test_contacted_with_params_and_inventory_marker(pytester, option):  # type: 
     assert result.parseoutcomes()["passed"] == 1
 
 
-@pytest.mark.old
+@skip_ansible_219
 def test_contacted_with_params_and_host_pattern_marker(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
     """FIXME."""
     src = """
@@ -111,7 +113,7 @@ def test_contacted_with_params_and_host_pattern_marker(pytester, option):  # typ
     assert result.parseoutcomes()["passed"] == 1
 
 
-@pytest.mark.old
+@skip_ansible_219
 def test_contacted_with_params_and_inventory_host_pattern_marker(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
     """FIXME."""
     src = f"""
@@ -142,7 +144,7 @@ def test_contacted_with_params_and_inventory_host_pattern_marker(pytester, optio
     assert result.parseoutcomes()["passed"] == 1
 
 
-@pytest.mark.old
+@skip_ansible_219
 def test_become(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
     """Test --ansible-become* parameters.  This test doesn't actually 'sudo',
     but verifies that 'sudo' was attempted by asserting
@@ -200,7 +202,7 @@ def test_become(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN0
     assert result.parseoutcomes()["passed"] == 1
 
 
-@pytest.mark.old
+@skip_ansible_219
 def test_dark_with_params(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
     """FIXME."""
     src = """
@@ -230,7 +232,7 @@ def test_dark_with_params(pytester, option):  # type: ignore[no-untyped-def]  # 
     assert result.parseoutcomes()["passed"] == 1
 
 
-@pytest.mark.old
+@skip_ansible_219
 def test_dark_with_params_and_inventory_marker(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
     """FIXME."""
     src = f"""
@@ -256,7 +258,7 @@ def test_dark_with_params_and_inventory_marker(pytester, option):  # type: ignor
     assert result.parseoutcomes()["passed"] == 1
 
 
-@pytest.mark.old
+@skip_ansible_219
 def test_dark_with_params_and_host_pattern_marker(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
     """FIXME."""
     src = """

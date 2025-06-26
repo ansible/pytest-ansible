@@ -5,6 +5,8 @@ from __future__ import annotations
 import ansible
 import pytest
 
+from .conftest import skip_ansible_219
+
 
 # pylint: disable=unused-import
 try:
@@ -86,6 +88,7 @@ def test_params_not_required_when_not_using_fixture(pytester, option):  # type: 
         "ansible_facts",
     ),
 )
+@skip_ansible_219
 def test_params_required_when_using_fixture(pytester, option, fixture_name):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
     """Verify that ansible parameters are not required if the fixture is used."""
     src = f"""
@@ -137,6 +140,7 @@ def test_params_required_without_inventory_with_host_pattern_v2(pytester, option
     assert result.ret == EXIT_OK
 
 
+@skip_ansible_219
 def test_param_override_with_marker(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
     src = """
         import pytest

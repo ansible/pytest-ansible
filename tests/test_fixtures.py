@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from .conftest import skip_ansible_219
+
 
 try:
     from _pytest.main import EXIT_OK  # type: ignore  # noqa: PGH003
@@ -34,6 +36,7 @@ def test_ansible_adhoc(pytester, option):  # type: ignore[no-untyped-def]  # noq
     assert result.parseoutcomes()["passed"] == 1
 
 
+@skip_ansible_219
 def test_ansible_module(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
     src = """
         import pytest
@@ -55,6 +58,7 @@ def test_ansible_module(pytester, option):  # type: ignore[no-untyped-def]  # no
     assert result.parseoutcomes()["passed"] == 1
 
 
+@skip_ansible_219
 def test_ansible_facts(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
     src = """
         import pytest
@@ -76,6 +80,7 @@ def test_ansible_facts(pytester, option):  # type: ignore[no-untyped-def]  # noq
     assert result.parseoutcomes()["passed"] == 1
 
 
+@skip_ansible_219
 def test_localhost(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
     src = """
         import pytest
