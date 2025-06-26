@@ -129,6 +129,7 @@ def test_param_requires_value(pytester, required_value_parameter):  # type: igno
 
 
 @pytest.mark.requires_ansible_v2
+@skip_ansible_219
 def test_params_required_without_inventory_with_host_pattern_v2(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
     src = """
         import pytest

@@ -66,6 +66,7 @@ def test_dispatcher_not_contains(  # type: ignore[no-untyped-def]  # noqa: ANN20
     assert host_pattern not in hosts["all"]
 
 
+@skip_ansible_219
 def test_ansible_module_error(hosts):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
     """Verify that AnsibleModuleError is raised when no such module exists."""
     from pytest_ansible.errors import AnsibleModuleError
