@@ -21,6 +21,7 @@ from pytest_ansible.fixtures import (
     fixture_ansible_module,
     localhost,
 )
+from pytest_ansible.has_version import has_ansible_v219
 from pytest_ansible.host_manager.utils import get_host_manager
 
 from .molecule import HAS_MOLECULE, MoleculeFile, MoleculeScenario
@@ -240,6 +241,9 @@ def pytest_generate_tests(metafunc):  # type: ignore[no-untyped-def]  # noqa: AN
         pytest.UsageError: If the required --ansible-* parameters were not provided.
     """
     if "ansible_host" in metafunc.fixturenames:
+        if has_ansible_v219:
+            pytest.exit("ansible_host fixture not supported on Ansible 2.19+")
+
         # assert required --ansible-* parameters were used
         PyTestAnsiblePlugin.assert_required_ansible_parameters(metafunc.config)  # type: ignore[no-untyped-call]
         try:
