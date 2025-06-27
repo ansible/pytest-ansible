@@ -235,10 +235,6 @@ tests/conftest.py
     DOC103: Function `option`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [pytester: , request: ].
     DOC201: Function `option` does not have a return section in docstring
 --------------------
-tests/integration/test_molecule.py
-    DOC101: Function `test_molecule_fixture`: Docstring contains fewer arguments than in function signature.
-    DOC103: Function `test_molecule_fixture`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [molecule_scenario: MoleculeScenario].
---------------------
 tests/test_adhoc.py
     DOC101: Function `test_contacted_with_params`: Docstring contains fewer arguments than in function signature.
     DOC106: Function `test_contacted_with_params`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature

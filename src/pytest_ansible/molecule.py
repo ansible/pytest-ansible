@@ -288,8 +288,16 @@ class MoleculeScenario:
 
         :returns: The completed process
         """
+        args = [sys.executable, "-m", "molecule", "test", "-s", self.name]
+
+        # We append the additional options to molecule call, allowing user to
+        # control how molecule is called by pytest-molecule
+        opts = os.environ.get("MOLECULE_OPTS")
+        if opts:
+            args.extend(shlex.split(opts))
+
         return subprocess.run(
-            args=[sys.executable, "-m", "molecule", "test", "-s", self.name],
+            args=args,
             capture_output=False,
             check=False,
             cwd=self.parent_directory,

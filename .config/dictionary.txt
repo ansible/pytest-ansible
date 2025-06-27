@@ -3,6 +3,7 @@ addinivalue
 addoption
 autouse
 barroso
+capfd
 caplog
 fixturedefs
 fixtureinfo

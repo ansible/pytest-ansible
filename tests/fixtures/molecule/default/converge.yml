@@ -6,3 +6,8 @@
     - name: Print out information
       ansible.builtin.debug:
         msg: "converge ran successfully"
+
+    - name: Print out information only when MOLECULE_OPTS is working correctly
+      when: var_set_from_molecule_opts is not undefined
+      ansible.builtin.debug:
+        msg: "MOLECULE_OPTS applied successfully"
