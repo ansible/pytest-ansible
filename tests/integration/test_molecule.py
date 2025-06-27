@@ -91,6 +91,6 @@ def test_molecule_fixture_with_molecule_opts(
     """
     assert molecule_scenario.test_id in ["fixtures-default", "extensions-default"]
     assert molecule_scenario.name == "default"
-    os.environ["MOLECULE_OPTS"] = "-- --extra-vars var_set_from_molecule_opts=True"
+    os.environ["MOLECULE_OPTS"] = "-- --extra-vars var_set_from_molecule_opts=a-value"
     molecule_scenario.test()
     assert "MOLECULE_OPTS applied successfully" in capfd.readouterr().out
