@@ -85,6 +85,7 @@ repos:
           - pytest
           - pyyaml
           - setuptools
+          - typing_extensions
 
   - repo: https://github.com/pre-commit/mirrors-mypy.git
     rev: v1.16.1
@@ -96,6 +97,7 @@ repos:
           - pytest
           - types-pyyaml
           - types-setuptools
+          - typing_extensions
         # Override default pre-commit '--ignore-missing-imports'
         args: [--strict]
 
