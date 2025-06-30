@@ -83,7 +83,7 @@ def test_contains(adhoc_result, host):  # type: ignore[no-untyped-def]  # noqa: 
 @pytest.mark.parametrize("host", invalid_hosts)
 @skip_ansible_219
 def test_not_contains(adhoc_result, host):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
-    adhoc_result_ret, dummy = adhoc_result()
+    adhoc_result_ret, _ = adhoc_result()
     assert host not in adhoc_result_ret
 
 
@@ -102,7 +102,7 @@ def test_getitem(adhoc_result, host_pattern):  # type: ignore[no-untyped-def]  #
 @pytest.mark.parametrize("host_pattern", invalid_hosts)
 @skip_ansible_219
 def test_not_getitem(adhoc_result, host_pattern):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
-    adhoc_result_ret, dummy = adhoc_result()
+    adhoc_result_ret, _ = adhoc_result()
     with pytest.raises(KeyError):
         assert adhoc_result_ret[host_pattern]
 
@@ -121,7 +121,7 @@ def test_getattr(adhoc_result, host_pattern):  # type: ignore[no-untyped-def]  #
 @pytest.mark.parametrize("host_pattern", invalid_hosts)
 @skip_ansible_219
 def test_not_getattr(adhoc_result, host_pattern):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
-    adhoc_result_ret, dummy = adhoc_result()
+    adhoc_result_ret, _ = adhoc_result()
     assert not hasattr(adhoc_result_ret, host_pattern)
     with pytest.raises(AttributeError):
         getattr(adhoc_result_ret, host_pattern)

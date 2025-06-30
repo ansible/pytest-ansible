@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import collections
 
-class ModuleResult(dict):  # type: ignore[type-arg]
+
+class ModuleResult(collections.UserDict):  # type: ignore[type-arg]
     """Fixme."""
 
     def _check_key(self, key):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN202
@@ -91,7 +93,7 @@ class AdHocResult:
         return self.contacted.keys()
 
     def items(self):  # type: ignore[no-untyped-def]  # noqa: ANN201
-        """Return a list of tuples containing the inventory host key, and the ModuleResult instance."""  # noqa: E501
+        """Return a list of tuples containing the inventory host key, and the ModuleResult instance."""  # noqa: DOC402, E501
         for k in self.contacted:
             yield (k, getattr(self, k))
 

@@ -337,13 +337,20 @@ builtins = ["__"]
 cache-dir = "./.cache/.ruff"
 fix = true
 line-length = 100
+preview = true
 target-version = "py310"
 
 [tool.ruff.lint]
 ignore = [
   "COM812", # conflicts with ISC001 on format
+  "CPY001", # missing-copyright-notice
   "ISC001", # conflicts with COM812 on format
-  "PLC0415" # import should be at the top-level of a file
+  "PLC0415", # import should be at the top-level of a file
+  # temporary disabled when we enabled preview mode:
+  "RUF052",
+  "PLC2701",
+  "PLR6301",
+  "PTH211"
 ]
 select = ["ALL"]
 

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import sys
+import typing
 import warnings
 
 import ansible.constants
@@ -112,13 +113,13 @@ class ModuleDispatcherV213(BaseModuleDispatcher):
             return ""
         return str(found.resolved_fqcn)
 
-    def _run(self, *module_args, **complex_args):  # type: ignore[no-untyped-def]  # noqa: ANN002, ANN003, ANN202, C901, PLR0912, PLR0915
+    def _run(self, *module_args, **complex_args):  # type: ignore[no-untyped-def]  # noqa: ANN002, ANN003, ANN202, C901, PLR0912, PLR0914, PLR0915
         """Execute an ansible adhoc command returning the result in a AdhocResult object.
 
         Raises:
             ansible.errors.AnsibleError: If the host is unreachable.
             AnsibleConnectionFailure: If the host is unreachable.
-        """
+        """  # noqa: DOC201
         # Assemble module argument string
         if module_args:
             complex_args.update({"_raw_params": " ".join(module_args)})
@@ -170,7 +171,7 @@ class ModuleDispatcherV213(BaseModuleDispatcher):
             arg_value = self.options.get(argument)
             argument = argument.replace("_", "-")  # noqa: PLW2901
 
-            if arg_value in (None, False):
+            if isinstance(arg_value, typing.Hashable) and arg_value in {None, False}:
                 continue
 
             if arg_value is True:

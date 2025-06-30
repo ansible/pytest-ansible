@@ -36,8 +36,11 @@ except ImportError:
 def get_collection_name(start_path: Path) -> tuple[str | None, str | None]:
     """Get the collection namespace and name from the galaxy.yml file.
 
-    :param start_path: The path to the root of the collection
-    :returns: A tuple of the namespace and name
+    Args:
+        start_path: The path to the root of the collection
+
+    Returns:
+        A tuple of the namespace and name
     """
     info_file = start_path / "galaxy.yml"
     logger.info("Looking for collection info in %s", info_file)
@@ -162,7 +165,8 @@ def determine_envvar() -> str:
 
     Ansible 2.9 did not have AnsibleCollectionFinder and did not support ANSIBLE_COLLECTIONS_PATH later versions do.
 
-    :returns: The appropriate environment variable to use
+    Returns:
+        The appropriate environment variable to use
     """  # noqa: E501
     if not HAS_COLLECTION_FINDER:
         return "ANSIBLE_COLLECTIONS_PATHS"

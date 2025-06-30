@@ -4,11 +4,11 @@ from __future__ import annotations
 
 import logging
 import shutil
-import subprocess
+import subprocess  # noqa: S404
 import warnings
 
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import ansible
 import ansible.constants
@@ -78,10 +78,10 @@ def _load_scenarios(config: pytest.Config) -> None:
                         test_id=f"{molecule_parent.name}-{scenario.name}",
                     ),
                 )
-        else:
+        else:  # pragma: no-cover
             msg = f"Failed to use git to identify molecule scenarios. {proc}"
             logger.warning(msg)
-    else:
+    else:  # pragma: no-cover
         msg = "Unable to find git, molecule functionality will be disabled."
         logger.warning(msg)
 
@@ -263,10 +263,10 @@ def pytest_collect_file(
     file_path: Path | None,
     parent: pytest.Collector,
 ) -> Node | None:
-    """Transform each found molecule.yml into a pytest test."""
+    """Transform each found molecule.yml into a pytest test."""  # noqa: DOC201
     if not parent.config.option.molecule:
         return None
-    if not HAS_MOLECULE:
+    if not HAS_MOLECULE:  # pragma: no cover
         pytest.exit(
             f"molecule not installed or found, unable to collect test {file_path}",
         )
@@ -391,7 +391,11 @@ class PyTestAnsiblePlugin:
             self.assert_required_ansible_parameters(config)  # type: ignore[no-untyped-call]
 
     def _load_ansible_config(self, config):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN202
-        """Load ansible configuration from command-line."""
+        """Load ansible configuration from command-line.
+
+        Returns:
+            Dictionary
+        """
         option_names = [
             "ansible_inventory",
             "ansible_extra_inventory",
@@ -422,8 +426,15 @@ class PyTestAnsiblePlugin:
 
         return kwargs
 
-    def _load_request_config(self, request):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN202
-        """Load ansible configuration from decorator kwargs."""
+    def _load_request_config(self, request: pytest.FixtureRequest) -> dict[Any, Any]:
+        """Load ansible configuration from decorator kwargs.
+
+        Args:
+            request: pytest request fixture.
+
+        Returns:
+            Dictionary
+        """
         kwargs = {}
 
         # Override options from @pytest.mark.ansible
@@ -442,7 +453,7 @@ class PyTestAnsiblePlugin:
             ansible_cfg.update(self._load_ansible_config(config))  # type: ignore[no-untyped-call]
         # merge pytest request configuration options
         if request is not None:
-            ansible_cfg.update(self._load_request_config(request))  # type: ignore[no-untyped-call]
+            ansible_cfg.update(self._load_request_config(request))
         # merge in provided kwargs
         ansible_cfg.update(kwargs)
         return get_host_manager(**ansible_cfg)
@@ -460,7 +471,7 @@ class PyTestAnsiblePlugin:
         # defaults to '/etc/ansible/hosts'
         # Verify --ansible-inventory was provided
         ansible_inventory = config.getoption("ansible_inventory")
-        if ansible_inventory is None or ansible_inventory == "":
+        if not ansible_inventory:
             errors.append(
                 "Unable to find an inventory file, specify one with the --ansible-inventory/--inventory "  # noqa: E501
                 "parameter.",

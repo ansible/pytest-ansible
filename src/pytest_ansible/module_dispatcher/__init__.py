@@ -58,7 +58,7 @@ class BaseModuleDispatcher(abc.ABC):
 
         Raises:
             AnsibleModuleError: when no such module exists.
-        """
+        """  # noqa: DOC201
         resolved = self.has_module(name)
         if not resolved:
             msg = f"The module {name} was not found in configured module paths."

@@ -36,7 +36,7 @@ class BaseHostManager:
         pass
 
     def get_extra_inventory_hosts(self, host_pattern=None):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
-        """Fixme."""
+        """Fixme."""  # noqa: DOC201
         try:
             if host_pattern is None:
                 extra_inventory_hosts = [
@@ -54,7 +54,7 @@ class BaseHostManager:
         return extra_inventory_hosts
 
     def get_extra_inventory_groups(self):  # type: ignore[no-untyped-def]  # noqa: ANN201
-        """Fixme."""
+        """Fixme."""  # noqa: DOC201
         try:
             extra_inventory_groups = self.options["extra_inventory_manager"].groups
         except KeyError:
@@ -120,7 +120,7 @@ class BaseHostManager:
         return self._dispatcher(**self.options)  # type: ignore[no-untyped-call]
 
     def keys(self):  # type: ignore[no-untyped-def]  # noqa: ANN201
-        """Fixme."""
+        """Fixme."""  # noqa: DOC201
         inventory_hosts = [h.name for h in self.options["inventory_manager"].list_hosts()]
         extra_inventory_hosts = self.get_extra_inventory_hosts()  # type: ignore[no-untyped-call]
         return inventory_hosts + extra_inventory_hosts

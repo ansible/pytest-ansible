@@ -6,7 +6,7 @@ import importlib.util
 import logging
 import os
 import shlex
-import subprocess
+import subprocess  # noqa: S404
 import sys
 import warnings
 
@@ -110,7 +110,7 @@ class MoleculeFile(pytest.File):
     """Wrapper class for molecule files."""
 
     def collect(self):  # type: ignore[no-untyped-def]  # noqa: ANN201
-        """Test generator."""
+        """Test generator."""  # noqa: DOC402
         # pylint: disable=global-statement
         global counter  # noqa: PLW0603
         if hasattr(MoleculeItem, "from_parent"):
@@ -180,7 +180,11 @@ class MoleculeItem(pytest.Item):
             self.add_marker(self.config.option.molecule_unavailable_driver)
 
     def yaml_loader(self, filepath: str) -> dict:  # type: ignore[type-arg]
-        """Load a yaml file at a given filepath."""
+        """Load a yaml file at a given filepath.
+
+        Returns:
+            dict
+        """
         with Path.open(filepath, encoding="utf-8") as file_descriptor:  # type: ignore[call-overload]
             return yaml.safe_load(file_descriptor) or {}
 
@@ -286,7 +290,8 @@ class MoleculeScenario:
     def test(self) -> subprocess.CompletedProcess:  # type: ignore[type-arg]
         """Run molecule test for the scenario.
 
-        :returns: The completed process
+        Returns:
+            The completed process
         """
         args = [sys.executable, "-m", "molecule", "test", "-s", self.name]
 
