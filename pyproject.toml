@@ -323,8 +323,13 @@ fail-on = [
 addopts = "-ra --showlocals --durations=10"
 cache_dir = "./.cache/.pytest"
 filterwarnings = [
+  "error",
+  "ignore::ResourceWarning",
   "ignore:This process \\(pid=.*\\) is multi-threaded, use of fork\\(\\) may lead to deadlocks in the child.:DeprecationWarning",
-  "ignore:AnsibleCollectionFinder has already been configured:UserWarning"
+  "ignore:AnsibleCollectionFinder has already been configured:UserWarning",
+  "ignore:Host management is deprecated and will be removed in a future release:DeprecationWarning",
+  "ignore:ansible_host fixture is deprecated and will be removed in a future release.:DeprecationWarning",
+  "ignore:ansible_group fixture is deprecated and will be removed in a future release.:DeprecationWarning"
 ]
 junit_family = "xunit2" # see https://docs.codecov.com/docs/test-analytics
 markers = ["old", "unit", "requires_ansible_v2"]
