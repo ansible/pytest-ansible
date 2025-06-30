@@ -249,7 +249,8 @@ def pytest_configure(config):  # type: ignore[no-untyped-def]  # noqa: ANN001, A
         inject_only()
     else:
         start_path = config.invocation_params.dir
-        inject(start_path)
+        if (start_path / "galaxy.yml").exists():
+            inject(start_path)
 
     # register an additional marker
     config.addinivalue_line("markers", "no_driver: molecule test that uses no driver")
