@@ -68,7 +68,7 @@ molecule==25.6.0          # via pytest-ansible (pyproject.toml)
 mypy==1.16.1              # via pytest-ansible (pyproject.toml)
 mypy-extensions==1.1.0    # via mypy
 nodeenv==1.9.1            # via pre-commit
-packaging==25.0           # via ansible-compat, ansible-core, mkdocs, mkdocs-macros-plugin, molecule, pyproject-api, pytest, tox, pytest-ansible (pyproject.toml)
+packaging==25.0           # via ansible-compat, ansible-core, mkdocs, mkdocs-macros-plugin, molecule, pyproject-api, pytest, pytest-sugar, tox, pytest-ansible (pyproject.toml)
 paginate==0.5.7           # via mkdocs-material
 pathspec==0.12.1          # via mkdocs, mkdocs-macros-plugin, mypy
 pillow==11.2.1            # via cairosvg, mkdocs-ansible
@@ -81,9 +81,10 @@ pygments==2.19.2          # via mkdocs-material, pytest, rich
 pylint==3.3.7             # via pytest-ansible (pyproject.toml)
 pymdown-extensions==10.16  # via markdown-exec, mkdocs-ansible, mkdocs-material, mkdocstrings
 pyproject-api==1.9.1      # via tox
-pytest==8.4.1             # via pytest-github-actions-annotate-failures, pytest-plus, pytest-xdist, pytest-ansible (pyproject.toml)
+pytest==8.4.1             # via pytest-github-actions-annotate-failures, pytest-plus, pytest-sugar, pytest-xdist, pytest-ansible (pyproject.toml)
 pytest-github-actions-annotate-failures==0.3.0  # via pytest-ansible (pyproject.toml)
 pytest-plus==0.8.1        # via pytest-ansible (pyproject.toml)
+pytest-sugar==1.0.0       # via pytest-ansible (pyproject.toml)
 pytest-xdist==3.7.0       # via pytest-ansible (pyproject.toml)
 python-dateutil==2.9.0.post0  # via ghp-import, mkdocs-macros-plugin
 pyyaml==6.0.2             # via ansible-compat, ansible-core, mkdocs, mkdocs-get-deps, mkdocs-macros-plugin, molecule, pre-commit, pymdown-extensions, pyyaml-env-tag
@@ -97,7 +98,7 @@ six==1.17.0               # via python-dateutil
 soupsieve==2.7            # via beautifulsoup4
 subprocess-tee==0.4.2     # via ansible-compat
 super-collections==0.5.3  # via mkdocs-macros-plugin
-termcolor==3.1.0          # via mkdocs-macros-plugin
+termcolor==3.1.0          # via mkdocs-macros-plugin, pytest-sugar
 tinycss2==1.4.0           # via cairosvg, cssselect2
 toml-sort==0.24.2         # via pytest-ansible (pyproject.toml)
 tomli==2.2.1              # via coverage, mypy, pydoclint, pylint, pyproject-api, pytest, tox
