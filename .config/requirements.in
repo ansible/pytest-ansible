@@ -2,3 +2,4 @@ ansible-core>=2.14
 ansible-compat>=4.1.11
 pytest>=6
 packaging
+typing-extensions
