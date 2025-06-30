@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import os
-import subprocess
+import subprocess  # noqa: S404
 import sys
 
 from typing import TYPE_CHECKING
@@ -75,7 +75,7 @@ def test_molecule_fixture(molecule_scenario: MoleculeScenario) -> None:
     Args:
         molecule_scenario: One scenario
     """
-    assert molecule_scenario.test_id in ["fixtures-default", "extensions-default"]
+    assert molecule_scenario.test_id in {"fixtures-default", "extensions-default"}
     assert molecule_scenario.name == "default"
     molecule_scenario.test()
 
@@ -89,7 +89,7 @@ def test_molecule_fixture_with_molecule_opts(
         molecule_scenario: One scenario
         capfd: Text capturing of writes to file descriptors
     """
-    assert molecule_scenario.test_id in ["fixtures-default", "extensions-default"]
+    assert molecule_scenario.test_id in {"fixtures-default", "extensions-default"}
     assert molecule_scenario.name == "default"
     os.environ["MOLECULE_OPTS"] = "-- --extra-vars var_set_from_molecule_opts=a-value"
     molecule_scenario.test()

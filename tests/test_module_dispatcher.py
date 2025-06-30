@@ -11,7 +11,7 @@ def test_type_error() -> None:
     """Verify that BaseModuleDispatcher cannot be instantiated."""
     from pytest_ansible.module_dispatcher import BaseModuleDispatcher
 
-    with pytest.raises(TypeError, match="^Can't instantiate.*$"):
+    with pytest.raises(TypeError, match=r"^Can't instantiate.*$"):
         BaseModuleDispatcher(inventory="localhost,")  # type: ignore[abstract] #pylint: disable=abstract-class-instantiated
 
 
