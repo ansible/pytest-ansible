@@ -50,14 +50,10 @@ repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.12.1
     hooks:
-      - id: ruff
-        args:
-          - --fix
-          - --exit-non-zero-on-fix
-        types_or: [python, pyi]
-      - id: ruff-format # must be after ruff
-        types_or: [python, pyi]
-
+      - id: ruff-format
+        alias: ruff
+      - id: ruff-check
+        alias: ruff
   - repo: https://github.com/streetsidesoftware/cspell-cli
     rev: v9.0.1
     hooks:
