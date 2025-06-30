@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
-import contextlib
 import logging
+import shutil
 import subprocess
 import warnings
 
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 import ansible
@@ -32,8 +33,6 @@ from .units import inject, inject_only
 
 
 if TYPE_CHECKING:
-    from pathlib import Path
-
     from _pytest.nodes import Node
 
 logger = logging.getLogger(__name__)
@@ -50,6 +49,41 @@ log_map = {
     4: logging.DEBUG,
 }
 OUR_FIXTURES = ("ansible_adhoc", "ansible_module", "ansible_facts")
+
+# detected molecule scenarios
+scenarios: list[MoleculeScenario] = []
+
+
+def _load_scenarios(config: pytest.Config) -> None:
+    # Find all molecule scenarios not gitignored
+    git_path = shutil.which("git")
+    if git_path:
+        args = f"{git_path} ls-files **/molecule/*/molecule.yml"
+        proc = subprocess.run(  # noqa: S602
+            args,
+            capture_output=True,
+            check=False,
+            text=True,
+            cwd=config.rootpath.as_posix(),
+            shell=True,  # always keep shell here is otherwise it will fail for some users
+        )
+        if proc.returncode == 0:
+            for fs_entry in proc.stdout.splitlines():
+                scenario = Path(fs_entry).parent
+                molecule_parent = scenario.parent.parent
+                scenarios.append(
+                    MoleculeScenario(
+                        parent_directory=molecule_parent,
+                        name=scenario.name,
+                        test_id=f"{molecule_parent.name}-{scenario.name}",
+                    ),
+                )
+        else:
+            msg = f"Failed to use git to identify molecule scenarios. {proc}"
+            logger.warning(msg)
+    else:
+        msg = "Unable to find git, molecule functionality will be disabled."
+        logger.warning(msg)
 
 
 def pytest_addoption(parser):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
@@ -217,6 +251,13 @@ def pytest_configure(config):  # type: ignore[no-untyped-def]  # noqa: ANN001, A
         start_path = config.invocation_params.dir
         inject(start_path)
 
+    # register an additional marker
+    config.addinivalue_line("markers", "no_driver: molecule test that uses no driver")
+    config.addinivalue_line("markers", "molecule: molecule test")
+    _load_scenarios(config)
+    for name in sorted({scenario.name for scenario in scenarios}):
+        config.addinivalue_line("markers", f"{name}: molecule scenario named '{name}'")
+
 
 def pytest_collect_file(
     file_path: Path | None,
@@ -301,42 +342,6 @@ def pytest_generate_tests(metafunc):  # type: ignore[no-untyped-def]  # noqa: AN
         if not HAS_MOLECULE:
             pytest.exit("molecule not installed or found.")
 
-        # Find all molecule scenarios not gitignored
-        rootpath = metafunc.config.rootpath
-
-        scenarios = []
-
-        candidates = list(rootpath.glob("**/molecule/*/molecule.yml"))
-        command = ["git", "check-ignore", *candidates]
-        with contextlib.suppress(subprocess.CalledProcessError, FileNotFoundError):
-            proc = subprocess.run(
-                args=command,
-                capture_output=True,
-                check=True,
-                text=True,
-                shell=False,
-            )
-
-        try:
-            ignored = proc.stdout.splitlines()
-            scenario_paths = [
-                candidate for candidate in candidates if str(candidate) not in ignored
-            ]
-        except NameError:
-            scenario_paths = candidates
-
-        for fs_entry in scenario_paths:
-            scenario = fs_entry.parent
-            molecule_parent = scenario.parent.parent
-            scenarios.append(
-                MoleculeScenario(
-                    parent_directory=molecule_parent,
-                    name=scenario.name,
-                    test_id=f"{molecule_parent.name}-{scenario.name}",
-                ),
-            )
-        if not scenarios:
-            pytest.exit(f"No molecule scenarios found in: {rootpath}")
         metafunc.parametrize(
             "molecule_scenario",
             scenarios,
