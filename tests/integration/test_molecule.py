@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 import os
 import subprocess  # noqa: S404
 import sys
@@ -17,21 +18,28 @@ if TYPE_CHECKING:
     from pytest_ansible.molecule import MoleculeScenario
 
 
-def test_molecule_collect() -> None:
-    """Test pytest collection of molecule scenarios."""
-    try:
-        proc = subprocess.run(
-            "pytest --molecule --collect-only",  # noqa: S607
-            capture_output=True,
-            shell=True,
-            check=True,
-            text=True,
-        )
-    except subprocess.CalledProcessError as exc:
-        pytest.fail(exc.stderr)
+def test_molecule_collect(caplog: pytest.LogCaptureFixture) -> None:
+    """Test pytest collection of molecule scenarios.
 
-    assert proc.returncode == 0
-    assert "test1[default]" in proc.stdout
+    Args:
+        caplog: pytest caplog
+    """
+    with caplog.at_level(logging.WARNING):
+        try:
+            proc = subprocess.run(
+                "pytest --molecule --collect-only",  # noqa: S607
+                capture_output=True,
+                shell=True,
+                check=True,
+                text=True,
+            )
+        except subprocess.CalledProcessError as exc:
+            pytest.fail(exc.stderr)
+
+        assert proc.returncode == 0
+        assert "test1[default]" in proc.stdout
+
+    assert len(caplog.records) == 0, caplog.records
 
 
 def test_molecule_disabled() -> None:

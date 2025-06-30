@@ -284,10 +284,6 @@ tests/test_params.py
     DOC106: Function `test_params_not_required_when_not_using_fixture`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC107: Function `test_params_not_required_when_not_using_fixture`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
     DOC103: Function `test_params_not_required_when_not_using_fixture`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [option: , pytester: ].
-    DOC101: Function `test_params_required_when_using_fixture`: Docstring contains fewer arguments than in function signature.
-    DOC106: Function `test_params_required_when_using_fixture`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
-    DOC107: Function `test_params_required_when_using_fixture`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
-    DOC103: Function `test_params_required_when_using_fixture`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [fixture_name: , option: , pytester: ].
     DOC101: Function `test_param_requires_value`: Docstring contains fewer arguments than in function signature.
     DOC106: Function `test_param_requires_value`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC107: Function `test_param_requires_value`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints

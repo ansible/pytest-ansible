@@ -2,10 +2,18 @@
 
 from __future__ import annotations
 
+import warnings
+
+from typing import TYPE_CHECKING
+
 import ansible
 import pytest
 
 from .conftest import skip_ansible_219
+
+
+if TYPE_CHECKING:
+    from tests.conftest import PyTestOption
 
 
 # pylint: disable=unused-import
@@ -89,17 +97,30 @@ def test_params_not_required_when_not_using_fixture(pytester, option):  # type: 
     ),
 )
 @skip_ansible_219
-def test_params_required_when_using_fixture(pytester, option, fixture_name):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
-    """Verify that ansible parameters are not required if the fixture is used."""
-    src = f"""
-        import pytest
-        def test_func({fixture_name}):
-            {fixture_name}
-        """
+def test_params_required_when_using_fixture(
+    pytester: pytest.Pytester,
+    option: PyTestOption,
+    fixture_name: str,
+) -> None:
+    """Verify that ansible parameters are not required if the fixture is used.
 
-    pytester.makepyfile(src)
-    result = pytester.runpytest(*option.args)
-    assert result.ret == EXIT_OK
+    Args:
+        pytester: fixture
+        option: fixture
+        fixture_name: string
+    """
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", category=UserWarning)
+
+        src = f"""
+            import pytest
+            def test_func({fixture_name}):
+                {fixture_name}
+            """
+
+        pytester.makepyfile(src)
+        result = pytester.runpytest(*option.args)
+        assert result.ret == EXIT_OK
 
 
 @pytest.mark.parametrize(
