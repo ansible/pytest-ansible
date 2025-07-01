@@ -3,8 +3,6 @@ name: tox
 
 on:
   merge_group:
-    branches:
-      - "main"
   push:
     branches:
       - "main"
@@ -26,8 +24,7 @@ jobs:
       max_python: "3.13"
       jobs_producing_coverage: 8
       other_names: |
-        devel
+        devel-pre-py313-milestone:tox -e devel,pre,py313-milestone
         docs
         lint
         pkg
-        py313-milestone
