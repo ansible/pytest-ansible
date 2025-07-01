@@ -371,6 +371,7 @@ required-imports = ["from __future__ import annotations"]
 [tool.ruff.lint.per-file-ignores]
 "_version.py" = ["SIM108"]
 "tests/**" = ["SLF001", "S101", "S602", "T201"]
+"tests/fixtures/ansible_collections/test/test/tests/unit/plugins/modules/test_pool.py" = ["INP001"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"

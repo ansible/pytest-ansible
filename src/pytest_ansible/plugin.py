@@ -10,12 +10,19 @@ import warnings
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
-import ansible
-import ansible.constants
-import ansible.errors
-import ansible.utils
-import ansible.utils.display
 import pytest
+
+
+try:
+    import ansible
+    import ansible.constants
+    import ansible.errors
+    import ansible.utils
+    import ansible.utils.display
+
+    HAS_ANSIBLE = True
+except ImportError:
+    HAS_ANSIBLE = False
 
 from typing_extensions import deprecated
 
@@ -86,8 +93,14 @@ def _load_scenarios(config: pytest.Config) -> None:
         logger.warning(msg)
 
 
-def pytest_addoption(parser):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
-    """Add options to control ansible."""
+def pytest_addoption(parser: pytest.Parser) -> None:
+    """Add options to control ansible.
+
+    Args:
+        parser: pytest.Parser
+    """
+    if not HAS_ANSIBLE:
+        return
     group = parser.getgroup("pytest-ansible")
     group.addoption(
         "--inventory",
@@ -226,8 +239,14 @@ def pytest_addoption(parser):  # type: ignore[no-untyped-def]  # noqa: ANN001, A
     parser.addini("ansible", "Ansible integration", "args")
 
 
-def pytest_configure(config):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
-    """Validate --ansible-* parameters."""
+def pytest_configure(config: pytest.Config) -> None:
+    """Validate --ansible-* parameters.
+
+    Args:
+        config: pytest.Config
+    """
+    if not HAS_ANSIBLE:
+        return
     config.addinivalue_line("markers", "ansible(**kwargs): Ansible integration")
 
     # Enable connection debugging
@@ -265,6 +284,8 @@ def pytest_collect_file(
     parent: pytest.Collector,
 ) -> Node | None:
     """Transform each found molecule.yml into a pytest test."""  # noqa: DOC201
+    if not hasattr(parent.config.option, "molecule"):
+        return None
     if not parent.config.option.molecule:
         return None
     if not HAS_MOLECULE:  # pragma: no cover
