@@ -96,6 +96,7 @@ def test_host_manager_getitem(host_pattern, num_hosts, hosts, include_extra_inve
         assert _hosts[host_pattern]
 
 
+@skip_ansible_219
 @pytest.mark.parametrize(
     ("host_pattern", "num_hosts"),
     NEGATIVE_HOST_PATTERNS,
@@ -149,6 +150,7 @@ def test_host_manager_slice(host_slice, num_hosts, hosts, include_extra_inventor
 
 
 # pylint: disable=pointless-statement
+@skip_ansible_219
 @pytest.mark.parametrize(
     "host_slice",
     NEGATIVE_HOST_SLICES,
@@ -184,6 +186,7 @@ def test_host_manager_not_getattr(  # type: ignore[no-untyped-def]  # noqa: ANN2
         getattr(_hosts, host_pattern)
 
 
+@skip_ansible_219
 def test_defaults(request):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
     from ansible.constants import DEFAULT_TRANSPORT  # pylint: disable=no-name-in-module
 

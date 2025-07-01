@@ -174,3 +174,4 @@ _readthedocs
 
 # JetBrains
 .idea
+tests/fixtures/ansible_collections/test/test/tests/output

@@ -142,14 +142,6 @@ src/pytest_ansible/molecule.py
     DOC103: Method `MoleculeScenario.__init__`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [name: str, parent_directory: Path, test_id: str].
 --------------------
 src/pytest_ansible/plugin.py
-    DOC101: Function `pytest_addoption`: Docstring contains fewer arguments than in function signature.
-    DOC106: Function `pytest_addoption`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
-    DOC107: Function `pytest_addoption`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
-    DOC103: Function `pytest_addoption`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [parser: ].
-    DOC101: Function `pytest_configure`: Docstring contains fewer arguments than in function signature.
-    DOC106: Function `pytest_configure`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
-    DOC107: Function `pytest_configure`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
-    DOC103: Function `pytest_configure`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [config: ].
     DOC101: Function `pytest_collect_file`: Docstring contains fewer arguments than in function signature.
     DOC103: Function `pytest_collect_file`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [file_path: Path | None, parent: pytest.Collector].
     DOC201: Function `pytest_collect_file` does not have a return section in docstring
