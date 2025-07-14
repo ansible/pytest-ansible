@@ -10,7 +10,7 @@ bracex==2.6               # via wcmatch
 cachetools==6.1.0         # via tox
 cairocffi==1.7.1          # via cairosvg
 cairosvg==2.8.2           # via mkdocs-ansible
-certifi==2025.6.15        # via requests
+certifi==2025.7.9         # via requests
 cffi==1.17.1              # via cairocffi, cryptography
 cfgv==3.4.0               # via pre-commit
 chardet==5.2.0            # via tox
@@ -93,7 +93,7 @@ referencing==0.36.2       # via jsonschema, jsonschema-specifications
 requests==2.32.4          # via linkchecker, mkdocs-htmlproofer-plugin, mkdocs-material
 rich==14.0.0              # via enrich, molecule
 rpds-py==0.26.0           # via jsonschema, referencing
-ruff==0.12.2              # via pytest-ansible (pyproject.toml)
+ruff==0.12.3              # via pytest-ansible (pyproject.toml)
 six==1.17.0               # via python-dateutil
 soupsieve==2.7            # via beautifulsoup4
 subprocess-tee==0.4.2     # via ansible-compat
