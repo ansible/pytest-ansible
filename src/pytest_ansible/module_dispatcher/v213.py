@@ -248,7 +248,10 @@ class ModuleDispatcherV213(BaseModuleDispatcher):
         # now create a task queue manager to execute the play
         tqm = None
         try:
-            tqm = TaskQueueManager(**kwargs)
+            # pylint catches on this as the signature has changed in 2.19+
+            # This code has been deprecated and disabled for 2.19 and later
+            # but pylint doesn't know about that.
+            tqm = TaskQueueManager(**kwargs)  # pylint: disable=unexpected-keyword-arg
             tqm.run(play)
         finally:
             if tqm:
