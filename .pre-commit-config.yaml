@@ -83,7 +83,7 @@ repos:
           - typing_extensions
 
   - repo: https://github.com/pre-commit/mirrors-mypy.git
-    rev: v1.17.1
+    rev: v1.18.1
     hooks:
       - id: mypy
         additional_dependencies:
