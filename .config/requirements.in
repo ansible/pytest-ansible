@@ -1,8 +1,0 @@
-ansible-compat>=4.1.11
-ansible-core>=2.14
-packaging
-pytest-plus
-pytest-sugar
-pytest-xdist
-pytest>=6
-typing-extensions
