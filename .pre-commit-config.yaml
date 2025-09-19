@@ -6,7 +6,21 @@ ci:
   skip:
     - deps
 repos:
-  - repo: https://github.com/pre-commit/pre-commit-hooks
+  - repo: https://github.com/streetsidesoftware/cspell-cli
+    rev: v9.2.0
+    hooks:
+      - id: cspell
+        entry: bash
+        pass_filenames: false
+        args:
+          [
+            "-euo",
+            "pipefail",
+            "-c",
+            "cspell-cli . --relative --no-progress --no-summary && cspell-cli . --disable-dictionary=words --no-exit-code --words-only --quiet --unique | LC_ALL=C sort > .config/dictionary.txt",
+          ]
+        name: cspell + remove unused and sort dictionary
+  - repo: https://github.com/pre-commit/pre-commit-hooks.git
     rev: v6.0.0
     hooks:
       - id: check-added-large-files
@@ -33,18 +47,13 @@ repos:
         always_run: true
         additional_dependencies:
           - prettier
-          - prettier-plugin-toml
           - prettier-plugin-sort-json
 
   - repo: https://github.com/pappasam/toml-sort
     rev: v0.24.3
     hooks:
       - id: toml-sort-fix
-
-  - repo: https://github.com/tox-dev/tox-ini-fmt
-    rev: 1.6.0
-    hooks:
-      - id: tox-ini-fmt
+        alias: toml
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.13.0

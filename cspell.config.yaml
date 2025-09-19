@@ -11,13 +11,15 @@ dictionaries:
   - "!backwards-compatibility"
   - "!cryptocurrencies"
   - "!cpp"
+enabled: true
+useGitignore: true
 ignorePaths:
   - .config/requirements*
   - \.*
   - cspell.config.yaml
-  - mkdocs.yml
-  - pyproject.toml
-  - tox.ini
+  - uv.lock
+
+  - "*.egg-info"
 
 languageSettings:
   - languageId: python
