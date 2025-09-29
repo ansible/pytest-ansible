@@ -144,7 +144,6 @@ def pytest_addoption(parser: pytest.Parser) -> None:
         help="further limit selected hosts to an additional pattern",
     )
     group.addoption(
-        "--connection",
         "--ansible-connection",
         action="store",
         dest="ansible_connection",
