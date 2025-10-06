@@ -6,9 +6,7 @@ import sys
 import typing
 import warnings
 
-import ansible.constants
 import ansible.errors
-import ansible.utils
 
 from ansible.cli.adhoc import AdHocCLI
 from ansible.constants import COLLECTIONS_PATHS  # pylint: disable=no-name-in-module
