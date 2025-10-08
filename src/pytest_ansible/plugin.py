@@ -68,7 +68,7 @@ def _load_scenarios(config: pytest.Config) -> None:
         logger.warning(msg)
         return
 
-    # Determine git root path
+    # Ensure we are in a git repo
     args = f"{git_path} rev-parse --git-dir"
     proc = subprocess.run(  # noqa: S602
         args,
@@ -83,9 +83,6 @@ def _load_scenarios(config: pytest.Config) -> None:
         logger.warning(msg)
         return
 
-    # Resolve git root dir
-    git_root = Path(proc.stdout).resolve().parent
-
     # Find all molecule scenarios not gitignored
     glob_pattern = "**/molecule/*/molecule.yml"
     args = f"{git_path} ls-files {glob_pattern}"
@@ -94,7 +91,7 @@ def _load_scenarios(config: pytest.Config) -> None:
         capture_output=True,
         check=False,
         text=True,
-        cwd=git_root.as_posix(),
+        cwd=config.rootpath.as_posix(),
         shell=True,  # always keep shell here is otherwise it will fail for some users
     )
     if proc.returncode == 0:
