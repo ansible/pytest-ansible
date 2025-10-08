@@ -3,8 +3,6 @@ ci:
   # We rely on renovate to update it but there is no way to fully disable it
   # https://github.com/pre-commit-ci/issues/issues/83
   autoupdate_schedule: quarterly
-  skip:
-    - deps
 repos:
   - repo: https://github.com/streetsidesoftware/cspell-cli
     rev: v9.2.0
@@ -77,7 +75,7 @@ repos:
         pass_filenames: false
 
   - repo: https://github.com/pycqa/pylint.git
-    rev: v3.3.8
+    rev: v3.3.9
     hooks:
       - id: pylint
         args:
@@ -104,16 +102,3 @@ repos:
           - typing_extensions
         # Override default pre-commit '--ignore-missing-imports'
         args: [--strict]
-
-  # Keep last due to being considerably slower than the others:
-  - repo: local
-    hooks:
-      - id: deps
-        name: Upgrade constraints files and requirements
-        language: python
-        entry: python3 -m uv pip compile -q --all-extras --output-file=.config/constraints.txt pyproject.toml --upgrade
-        pass_filenames: false
-        stages:
-          - manual
-        additional_dependencies:
-          - uv>=0.4.3
