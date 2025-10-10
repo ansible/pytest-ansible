@@ -568,8 +568,6 @@ commands = [
     "pytest",
     {default = [
       "-ra",
-      "-n",
-      "auto",
       "--showlocals",
       "--doctest-modules",
       "--durations=10",
