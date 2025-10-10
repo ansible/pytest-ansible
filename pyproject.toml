@@ -105,7 +105,7 @@ branch = true
 # CoverageWarning: Couldn't use data file ... database disk image is malformed
 # concurrency = ["multiprocessing"] # , "thread"]
 omit = ["_version.py"]
-parallel = false
+parallel = true
 source = ["src"]
 
 [tool.mypy]
