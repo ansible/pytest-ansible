@@ -105,7 +105,7 @@ branch = true
 # CoverageWarning: Couldn't use data file ... database disk image is malformed
 # concurrency = ["multiprocessing"] # , "thread"]
 omit = ["_version.py"]
-parallel = true
+parallel = false
 source = ["src"]
 
 [tool.mypy]
@@ -568,8 +568,6 @@ commands = [
     "pytest",
     {default = [
       "-ra",
-      "-n",
-      "auto",
       "--showlocals",
       "--doctest-modules",
       "--durations=10",
