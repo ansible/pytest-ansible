@@ -50,6 +50,7 @@ pytrace
 reportinfo
 runpytest
 superfences
+testinfra
 testpaths
 webservers
 xunit
