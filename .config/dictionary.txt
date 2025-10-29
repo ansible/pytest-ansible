@@ -17,7 +17,6 @@ autorefs
 autouse
 capfd
 caplog
-devel
 facelessuser
 fixturedefs
 fixtureinfo
