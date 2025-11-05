@@ -64,6 +64,7 @@ classifiers = [
 ]
 dependencies = [
   "ansible-core>=2.17.14",
+  "ansible-compat>=25.8.2",
   "cffi>=1.17.1",
   "packaging>=25.0",
   "pytest>=6",
