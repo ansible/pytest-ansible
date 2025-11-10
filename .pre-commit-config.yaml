@@ -54,7 +54,7 @@ repos:
         alias: toml
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.14.3
+    rev: v0.14.4
     hooks:
       - id: ruff-format
         alias: ruff
@@ -67,7 +67,7 @@ repos:
         name: Spell check with cspell
 
   - repo: https://github.com/jsh9/pydoclint
-    rev: "0.7.6"
+    rev: "0.8.1"
     hooks:
       - id: pydoclint
         # This allows automatic reduction of the baseline file when needed.
