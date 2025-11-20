@@ -1810,6 +1810,7 @@ wheels = [
 name = "pytest-ansible"
 source = { editable = "." }
 dependencies = [
+    { name = "ansible-compat" },
     { name = "ansible-core", version = "2.17.14", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "ansible-core", version = "2.19.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.11.*'" },
     { name = "ansible-core", version = "2.20.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
@@ -1863,6 +1864,7 @@ pkg = [
 
 [package.metadata]
 requires-dist = [
+    { name = "ansible-compat", specifier = ">=25.8.2" },
     { name = "ansible-core", specifier = ">=2.17.14" },
     { name = "cffi", specifier = ">=1.17.1" },
     { name = "packaging", specifier = ">=25.0" },
