@@ -103,6 +103,6 @@ repos:
         # Override default pre-commit '--ignore-missing-imports'
         args: [--strict]
   - repo: https://github.com/ansible/team-devtools
-    rev: v25.12.5
+    rev: v25.12.6
     hooks:
       - id: check-platform-constraints
