@@ -1844,9 +1844,9 @@ pkg = [
 [package.metadata]
 requires-dist = [
     { name = "ansible-compat", specifier = ">=25.8.2" },
-    { name = "ansible-core", specifier = ">=2.17.14" },
-    { name = "cffi", specifier = ">=1.17.1" },
-    { name = "packaging", specifier = ">=25.0" },
+    { name = "ansible-core", specifier = ">=2.16.14" },
+    { name = "cffi", specifier = ">=1.15.1" },
+    { name = "packaging", specifier = ">=23.2" },
     { name = "pytest", specifier = ">=6" },
     { name = "pytest-plus", specifier = ">=0.8.1" },
     { name = "pytest-sugar", specifier = ">=1.1.1" },
