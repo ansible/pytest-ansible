@@ -1846,7 +1846,11 @@ requires-dist = [
     { name = "ansible-compat", specifier = ">=25.8.2" },
     { name = "ansible-core", specifier = ">=2.16.14" },
     { name = "cffi", specifier = ">=1.15.1" },
+<<<<<<< HEAD
     { name = "packaging", specifier = ">=22.0" },
+=======
+    { name = "packaging", specifier = ">=23.2" },
+>>>>>>> b8a4f90 (Lower version for platform)
     { name = "pytest", specifier = ">=6" },
     { name = "pytest-plus", specifier = ">=0.8.1" },
     { name = "pytest-sugar", specifier = ">=1.1.1" },
