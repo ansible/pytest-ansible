@@ -63,10 +63,10 @@ classifiers = [
   "Programming Language :: Python :: 3.13"
 ]
 dependencies = [
-  "ansible-core>=2.17.14",
+  "ansible-core>=2.16.14",
   "ansible-compat>=25.8.2",
-  "cffi>=1.17.1",
-  "packaging>=25.0",
+  "cffi>=1.15.1",
+  "packaging>=22.0",
   "pytest>=6",
   "pytest-plus>=0.8.1",
   "pytest-sugar>=1.1.1",
