@@ -1951,7 +1951,7 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "cffi", specifier = ">=1.17.1" },
+    { name = "cffi", specifier = ">=1.15.1" },
     { name = "coverage", extras = ["toml"], specifier = ">=7.10.6" },
     { name = "cryptography", specifier = ">=38" },
     { name = "molecule", specifier = ">=25.7.0" },
