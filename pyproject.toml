@@ -10,7 +10,7 @@ requires = [
 [dependency-groups]
 dev = [
   "coverage[toml]>=7.10.6",
-  "cffi>=1.17.1", # molecule indirect dependency
+  "cffi>=1.15.1",
   "cryptography>=38", # indirect dependency of ansible-core
   "molecule>=25.7.0",
   "mypy>=1.17.1",
