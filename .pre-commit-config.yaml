@@ -5,7 +5,7 @@ ci:
   autoupdate_schedule: quarterly
 repos:
   - repo: https://github.com/streetsidesoftware/cspell-cli
-    rev: v9.3.3
+    rev: v9.4.0
     hooks:
       - id: cspell
         entry: bash
@@ -61,7 +61,7 @@ repos:
       - id: ruff-check
         alias: ruff
   - repo: https://github.com/streetsidesoftware/cspell-cli
-    rev: v9.3.3
+    rev: v9.4.0
     hooks:
       - id: cspell
         name: Spell check with cspell
