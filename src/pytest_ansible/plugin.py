@@ -84,7 +84,7 @@ def _load_scenarios(config: pytest.Config) -> None:
         return
 
     # Find all molecule scenarios not gitignored
-    glob_pattern = "**/molecule/*/molecule.yml"
+    glob_pattern = ":(glob)**/molecule/*/molecule.yml"
     args = f"{git_path} ls-files {glob_pattern}"
     proc = subprocess.run(  # noqa: S602
         args,
