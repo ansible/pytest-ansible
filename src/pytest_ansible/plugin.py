@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import shlex
 import shutil
 import subprocess  # noqa: S404
 import warnings
@@ -84,8 +85,8 @@ def _load_scenarios(config: pytest.Config) -> None:
         return
 
     # Find all molecule scenarios not gitignored
-    glob_pattern = "**/molecule/*/molecule.yml"
-    args = f"{git_path} ls-files {glob_pattern}"
+    glob_pattern = ":(glob)**/molecule/*/molecule.yml"
+    args = f"{git_path} ls-files {shlex.quote(glob_pattern)}"
     proc = subprocess.run(  # noqa: S602
         args,
         capture_output=True,
