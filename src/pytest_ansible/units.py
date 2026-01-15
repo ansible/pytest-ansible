@@ -104,7 +104,7 @@ def inject(start_path: Path) -> None:
             for entry in start_path.iterdir():
                 if entry.name == "collections":
                     continue
-                os.symlink(entry, name_dir / entry.name)
+                Path(name_dir / entry.name).symlink_to(entry)
 
     # Configuration option for additional collection paths
     additional_collections_paths: list[str] = [
