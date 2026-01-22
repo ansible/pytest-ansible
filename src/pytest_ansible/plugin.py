@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import importlib.util
 import logging
+import shlex
 import shutil
 import subprocess  # noqa: S404
 import warnings
@@ -63,18 +64,30 @@ scenarios: list[MoleculeScenario] = []
 
 
 def _load_scenarios(config: pytest.Config) -> None:
-    # Find all molecule scenarios not gitignored
-    if not (config.rootpath / ".git").exists():  # pragma: no-cover
-        msg = "Target directory is not .git, molecule scenarios detection will be skipped."
-        logger.warning(msg)
-        return
     git_path = shutil.which("git")
     if not git_path:  # pragma: no-cover
         msg = "Unable to find git, molecule functionality will be disabled."
         logger.warning(msg)
         return
-    glob_pattern = "**/molecule/*/molecule.yml"
-    args = f"{git_path} ls-files {glob_pattern}"
+
+    # Ensure we are in a git repo
+    args = f"{git_path} rev-parse --git-dir"
+    proc = subprocess.run(  # noqa: S602
+        args,
+        capture_output=True,
+        check=False,
+        text=True,
+        cwd=config.rootpath.as_posix(),
+        shell=True,  # always keep shell here is otherwise it will fail for some users
+    )
+    if proc.returncode != 0:
+        msg = "Unable to find git root, molecule scenarios detection will be skipped."
+        logger.warning(msg)
+        return
+
+    # Find all molecule scenarios not gitignored
+    glob_pattern = ":(glob)**/molecule/*/molecule.yml"
+    args = f"{git_path} ls-files {shlex.quote(glob_pattern)}"
     proc = subprocess.run(  # noqa: S602
         args,
         capture_output=True,

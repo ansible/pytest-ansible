@@ -10,8 +10,8 @@ requires = [
 [dependency-groups]
 dev = [
   "coverage[toml]>=7.10.6",
-  "cffi>=1.17.1", # molecule indirect dependency
-  "cryptography>=38", # indirect dependency of ansible-core
+  "cffi>=1.15.1",
+  "cryptography>=37", # indirect dependency of ansible-core
   "molecule>=25.7.0",
   "mypy>=1.17.1",
   "pip>=25.2",
@@ -63,9 +63,10 @@ classifiers = [
   "Programming Language :: Python :: 3.13"
 ]
 dependencies = [
-  "ansible-core>=2.17.14",
-  "cffi>=1.17.1",
-  "packaging>=25.0",
+  "ansible-core>=2.16.14",
+  "ansible-compat>=25.8.2",
+  "cffi>=1.15.1",
+  "packaging>=23.2",
   "pytest>=6",
   "pytest-plus>=0.8.1",
   "pytest-sugar>=1.1.1",
@@ -105,7 +106,8 @@ branch = true
 # CoverageWarning: Couldn't use data file ... database disk image is malformed
 # concurrency = ["multiprocessing"] # , "thread"]
 omit = ["_version.py"]
-parallel = false
+parallel = true
+relative_files = true
 source = ["src"]
 
 [tool.mypy]
@@ -406,8 +408,7 @@ ignore = [
   # temporary disabled when we enabled preview mode:
   "RUF052",
   "PLC2701",
-  "PLR6301",
-  "PTH211"
+  "PLR6301"
 ]
 select = ["ALL"]
 

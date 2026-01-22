@@ -1,4 +1,5 @@
 """Define BaseModuleDispatcher class."""
+# ruff: noqa: RUF067
 
 from __future__ import annotations
 
