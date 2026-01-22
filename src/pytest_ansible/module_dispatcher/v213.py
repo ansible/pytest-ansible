@@ -7,7 +7,6 @@ import typing
 import warnings
 
 import ansible.errors
-
 from ansible.cli.adhoc import AdHocCLI
 from ansible.constants import COLLECTIONS_PATHS  # pylint: disable=no-name-in-module
 from ansible.executor.task_queue_manager import TaskQueueManager
@@ -16,10 +15,9 @@ from ansible.plugins.callback import CallbackBase
 from ansible.plugins.loader import module_loader
 
 from pytest_ansible.errors import AnsibleConnectionFailure
-from pytest_ansible.has_version import has_ansible_v213
+from pytest_ansible.has_version import has_ansible_v213, has_ansible_v219
 from pytest_ansible.module_dispatcher import BaseModuleDispatcher
 from pytest_ansible.results import AdHocResult
-
 
 HAS_CUSTOM_LOADER_SUPPORT = True
 
@@ -192,9 +190,13 @@ class ModuleDispatcherV213(BaseModuleDispatcher):
             "inventory": self.options["inventory_manager"],
             "variable_manager": self.options["variable_manager"],
             "loader": self.options["loader"],
-            "stdout_callback": callback,
             "passwords": {"conn_pass": None, "become_pass": None},
         }
+
+        if has_ansible_v219:
+            kwargs["stdout_callback_name"] = None
+        else:
+            kwargs["stdout_callback"] = callback
 
         kwargs_extra = {}
         # If we have an extra inventory, do the same that we did for the inventory
@@ -205,9 +207,13 @@ class ModuleDispatcherV213(BaseModuleDispatcher):
                 "inventory": self.options["extra_inventory_manager"],
                 "variable_manager": self.options["extra_variable_manager"],
                 "loader": self.options["extra_loader"],
-                "stdout_callback": callback_extra,
                 "passwords": {"conn_pass": None, "become_pass": None},
             }
+
+            if has_ansible_v219:
+                kwargs_extra["stdout_callback_name"] = None
+            else:
+                kwargs_extra["stdout_callback"] = callback_extra
 
         # create a pseudo-play to execute the specified module via a single task
         play_ds = {
@@ -246,10 +252,13 @@ class ModuleDispatcherV213(BaseModuleDispatcher):
         # now create a task queue manager to execute the play
         tqm = None
         try:
-            # pylint catches on this as the signature has changed in 2.19+
-            # This code has been deprecated and disabled for 2.19 and later
-            # but pylint doesn't know about that.
-            tqm = TaskQueueManager(**kwargs)  # pylint: disable=unexpected-keyword-arg,useless-suppression
+            tqm = TaskQueueManager(**kwargs)
+            if has_ansible_v219:
+                tqm.load_callbacks()
+                callback._init_callback_methods()  # noqa: SLF001
+                callback.set_options()
+                if tqm._callback_plugins:  # noqa: SLF001
+                    tqm._callback_plugins[0] = callback  # noqa: SLF001
             tqm.run(play)
         finally:
             if tqm:
@@ -259,6 +268,12 @@ class ModuleDispatcherV213(BaseModuleDispatcher):
             tqm_extra = None
             try:
                 tqm_extra = TaskQueueManager(**kwargs_extra)
+                if has_ansible_v219:
+                    tqm_extra.load_callbacks()
+                    callback_extra._init_callback_methods()  # noqa: SLF001
+                    callback_extra.set_options()
+                    if tqm_extra._callback_plugins:  # noqa: SLF001
+                        tqm_extra._callback_plugins[0] = callback_extra  # noqa: SLF001
                 tqm_extra.run(play_extra)
             finally:
                 if tqm_extra:
