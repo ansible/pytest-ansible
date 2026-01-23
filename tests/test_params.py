@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 import warnings
+
 from typing import TYPE_CHECKING
 
 import ansible
 import pytest
+
 
 if TYPE_CHECKING:
     from tests.conftest import PyTestOption
@@ -14,8 +16,8 @@ if TYPE_CHECKING:
 
 # pylint: disable=unused-import
 try:
-    from _pytest.main import (
-        EXIT_INTERRUPTED,  # type: ignore[attr-defined]
+    from _pytest.main import (  # type: ignore[attr-defined]
+        EXIT_INTERRUPTED,
         EXIT_NOTESTSCOLLECTED,
         EXIT_OK,
         EXIT_TESTSFAILED,
