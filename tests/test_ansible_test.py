@@ -10,7 +10,9 @@ def test_ansible_test() -> None:
     proc = subprocess.run(
         "ansible-test units --target-python default",  # noqa: S607
         shell=True,
-        capture_output=True,
+        stdin=subprocess.DEVNULL,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
         cwd="tests/fixtures/ansible_collections/test/test",
         check=False,
     )

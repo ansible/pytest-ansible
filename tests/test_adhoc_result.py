@@ -8,7 +8,7 @@ import pytest
 
 from pytest_ansible.results import ModuleResult
 
-from .conftest import ALL_EXTRA_HOSTS, ALL_HOSTS, skip_ansible_219
+from .conftest import ALL_EXTRA_HOSTS, ALL_HOSTS
 
 
 invalid_hosts = [
@@ -28,7 +28,6 @@ def fixture_adhoc_result(request, hosts):  # type: ignore[no-untyped-def]  # noq
     return create_hosts
 
 
-@skip_ansible_219
 def test_len(adhoc_result):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
     adhoc_result_ret, include_extra_inv = adhoc_result()
     assert len(adhoc_result_ret) == len(ALL_HOSTS) + len(
@@ -36,7 +35,6 @@ def test_len(adhoc_result):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN
     )
 
 
-@skip_ansible_219
 def test_keys(adhoc_result):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
     adhoc_result_ret, include_extra_inv = adhoc_result()
     assert set(adhoc_result_ret) == set(
@@ -44,7 +42,6 @@ def test_keys(adhoc_result):  # type: ignore[no-untyped-def]  # noqa: ANN001, AN
     )
 
 
-@skip_ansible_219
 def test_items(adhoc_result):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
     adhoc_result_ret, include_extra_inv = adhoc_result()
     items = adhoc_result_ret.items()
@@ -57,7 +54,6 @@ def test_items(adhoc_result):  # type: ignore[no-untyped-def]  # noqa: ANN001, A
     assert count == len(ALL_HOSTS + (ALL_EXTRA_HOSTS if include_extra_inv else []))
 
 
-@skip_ansible_219
 def test_values(adhoc_result):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
     adhoc_result_ret, include_extra_inv = adhoc_result()
     values = adhoc_result_ret.values()
@@ -71,7 +67,6 @@ def test_values(adhoc_result):  # type: ignore[no-untyped-def]  # noqa: ANN001, 
 
 
 @pytest.mark.parametrize("host", ALL_HOSTS + ALL_EXTRA_HOSTS)
-@skip_ansible_219
 def test_contains(adhoc_result, host):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
     adhoc_result_ret, include_extra_inv = adhoc_result()
     if not include_extra_inv and host in ALL_EXTRA_HOSTS:
@@ -81,14 +76,12 @@ def test_contains(adhoc_result, host):  # type: ignore[no-untyped-def]  # noqa: 
 
 
 @pytest.mark.parametrize("host", invalid_hosts)
-@skip_ansible_219
 def test_not_contains(adhoc_result, host):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
     adhoc_result_ret, _ = adhoc_result()
     assert host not in adhoc_result_ret
 
 
 @pytest.mark.parametrize("host_pattern", ALL_HOSTS + ALL_EXTRA_HOSTS)
-@skip_ansible_219
 def test_getitem(adhoc_result, host_pattern):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
     adhoc_result_ret, include_extra_inv = adhoc_result()
     if not include_extra_inv and host_pattern in ALL_EXTRA_HOSTS:
@@ -100,7 +93,6 @@ def test_getitem(adhoc_result, host_pattern):  # type: ignore[no-untyped-def]  #
 
 
 @pytest.mark.parametrize("host_pattern", invalid_hosts)
-@skip_ansible_219
 def test_not_getitem(adhoc_result, host_pattern):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
     adhoc_result_ret, _ = adhoc_result()
     with pytest.raises(KeyError):
@@ -108,7 +100,6 @@ def test_not_getitem(adhoc_result, host_pattern):  # type: ignore[no-untyped-def
 
 
 @pytest.mark.parametrize("host_pattern", ALL_HOSTS + ALL_EXTRA_HOSTS)
-@skip_ansible_219
 def test_getattr(adhoc_result, host_pattern):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
     adhoc_result_ret, include_extra_inv = adhoc_result()
     if not include_extra_inv and host_pattern in ALL_EXTRA_HOSTS:
@@ -119,7 +110,6 @@ def test_getattr(adhoc_result, host_pattern):  # type: ignore[no-untyped-def]  #
 
 
 @pytest.mark.parametrize("host_pattern", invalid_hosts)
-@skip_ansible_219
 def test_not_getattr(adhoc_result, host_pattern):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
     adhoc_result_ret, _ = adhoc_result()
     assert not hasattr(adhoc_result_ret, host_pattern)
@@ -128,7 +118,6 @@ def test_not_getattr(adhoc_result, host_pattern):  # type: ignore[no-untyped-def
 
 
 @pytest.mark.requires_ansible_v2
-@skip_ansible_219
 def test_connection_failure_v2():  # type: ignore[no-untyped-def]  # noqa: ANN201, D103
     from pytest_ansible.errors import AnsibleConnectionFailure
     from pytest_ansible.host_manager.utils import get_host_manager
@@ -153,7 +142,6 @@ def test_connection_failure_v2():  # type: ignore[no-untyped-def]  # noqa: ANN20
 
 
 @pytest.mark.requires_ansible_v2
-@skip_ansible_219
 def test_connection_failure_extra_inventory_v2():  # type: ignore[no-untyped-def]  # noqa: ANN201, D103
     from pytest_ansible.errors import AnsibleConnectionFailure
     from pytest_ansible.host_manager.utils import get_host_manager

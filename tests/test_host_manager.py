@@ -12,7 +12,6 @@ from .conftest import (
     NEGATIVE_HOST_SLICES,
     POSITIVE_HOST_PATTERNS,
     POSITIVE_HOST_SLICES,
-    skip_ansible_219,
 )
 
 
@@ -25,7 +24,6 @@ pytestmark = [
     "include_extra_inventory",
     (True, False),
 )
-@skip_ansible_219
 def test_host_manager_len(hosts, include_extra_inventory):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
     _hosts = hosts(include_extra_inventory=include_extra_inventory)
     assert len(_hosts) == len(ALL_HOSTS) + len(
@@ -37,7 +35,6 @@ def test_host_manager_len(hosts, include_extra_inventory):  # type: ignore[no-un
     "include_extra_inventory",
     (True, False),
 )
-@skip_ansible_219
 def test_host_manager_keys(hosts, include_extra_inventory):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
     _hosts = hosts(include_extra_inventory=include_extra_inventory)
     sorted_keys = _hosts.keys()
@@ -54,7 +51,6 @@ def test_host_manager_keys(hosts, include_extra_inventory):  # type: ignore[no-u
     "include_extra_inventory",
     (True, False),
 )
-@skip_ansible_219
 def test_host_manager_contains(host_pattern, num_hosts, hosts, include_extra_inventory):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, ARG001, D103
     _hosts = hosts(include_extra_inventory=include_extra_inventory)
     if not include_extra_inventory and host_pattern.startswith("extra"):
@@ -68,7 +64,6 @@ def test_host_manager_contains(host_pattern, num_hosts, hosts, include_extra_inv
     NEGATIVE_HOST_PATTERNS,
 )
 @pytest.mark.parametrize("include_extra_inventory", (True, False))
-@skip_ansible_219
 def test_host_manager_not_contains(  # type: ignore[no-untyped-def]  # noqa: ANN201, D103
     host_pattern,  # noqa: ANN001
     num_hosts,  # noqa: ANN001, ARG001
@@ -87,7 +82,6 @@ def test_host_manager_not_contains(  # type: ignore[no-untyped-def]  # noqa: ANN
     "include_extra_inventory",
     (True, False),
 )
-@skip_ansible_219
 def test_host_manager_getitem(host_pattern, num_hosts, hosts, include_extra_inventory):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, ARG001, D103
     _hosts = hosts(include_extra_inventory=include_extra_inventory)
     if not include_extra_inventory and host_pattern.startswith("extra"):
@@ -96,7 +90,6 @@ def test_host_manager_getitem(host_pattern, num_hosts, hosts, include_extra_inve
         assert _hosts[host_pattern]
 
 
-@skip_ansible_219
 @pytest.mark.parametrize(
     ("host_pattern", "num_hosts"),
     NEGATIVE_HOST_PATTERNS,
@@ -124,7 +117,6 @@ def test_host_manager_not_getitem(  # type: ignore[no-untyped-def]  # noqa: ANN2
     "include_extra_inventory",
     (True, False),
 )
-@skip_ansible_219
 def test_host_manager_getattr(host_pattern, num_hosts, hosts, include_extra_inventory):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, ARG001, D103
     _hosts = hosts(include_extra_inventory=include_extra_inventory)
     if not include_extra_inventory and host_pattern.startswith("extra"):
@@ -141,7 +133,6 @@ def test_host_manager_getattr(host_pattern, num_hosts, hosts, include_extra_inve
     "include_extra_inventory",
     (True, False),
 )
-@skip_ansible_219
 def test_host_manager_slice(host_slice, num_hosts, hosts, include_extra_inventory):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
     _hosts = hosts(include_extra_inventory=include_extra_inventory)
     assert len(_hosts[host_slice]) == num_hosts[include_extra_inventory], (
@@ -150,7 +141,6 @@ def test_host_manager_slice(host_slice, num_hosts, hosts, include_extra_inventor
 
 
 # pylint: disable=pointless-statement
-@skip_ansible_219
 @pytest.mark.parametrize(
     "host_slice",
     NEGATIVE_HOST_SLICES,
@@ -173,7 +163,6 @@ def test_host_manager_not_slice(host_slice, hosts, include_extra_inventory):  # 
     "include_extra_inventory",
     (True, False),
 )
-@skip_ansible_219
 def test_host_manager_not_getattr(  # type: ignore[no-untyped-def]  # noqa: ANN201, D103
     host_pattern,  # noqa: ANN001
     num_hosts,  # noqa: ANN001, ARG001
@@ -186,7 +175,6 @@ def test_host_manager_not_getattr(  # type: ignore[no-untyped-def]  # noqa: ANN2
         getattr(_hosts, host_pattern)
 
 
-@skip_ansible_219
 def test_defaults(request):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
     from ansible.constants import DEFAULT_TRANSPORT  # pylint: disable=no-name-in-module
 
