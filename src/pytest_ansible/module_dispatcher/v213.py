@@ -7,6 +7,7 @@ import typing
 import warnings
 
 import ansible.errors
+
 from ansible.cli.adhoc import AdHocCLI
 from ansible.constants import COLLECTIONS_PATHS  # pylint: disable=no-name-in-module
 from ansible.executor.task_queue_manager import TaskQueueManager
@@ -18,6 +19,7 @@ from pytest_ansible.errors import AnsibleConnectionFailure
 from pytest_ansible.has_version import has_ansible_v213, has_ansible_v219
 from pytest_ansible.module_dispatcher import BaseModuleDispatcher
 from pytest_ansible.results import AdHocResult
+
 
 HAS_CUSTOM_LOADER_SUPPORT = True
 
