@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import importlib.util
 import logging
 import shlex
 import shutil
@@ -116,9 +117,16 @@ def pytest_addoption(parser: pytest.Parser) -> None:
 
     Args:
         parser: pytest.Parser
+
+    Raises:
+        pytest.UsageError: If pytest-testinfra is installed.
     """
     if not HAS_ANSIBLE:
         return
+    spec = importlib.util.find_spec("testinfra")
+    if spec is not None:
+        msg = "pytest-ansible is incompatible with pytest-testinfra, see https://github.com/ansible/pytest-ansible/issues/509"
+        raise pytest.UsageError(msg)
     group = parser.getgroup("pytest-ansible")
     group.addoption(
         "--inventory",
@@ -157,7 +165,6 @@ def pytest_addoption(parser: pytest.Parser) -> None:
         help="further limit selected hosts to an additional pattern",
     )
     group.addoption(
-        "--connection",
         "--ansible-connection",
         action="store",
         dest="ansible_connection",
