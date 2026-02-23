@@ -1,29 +1,29 @@
 {
-  "[jsonc]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[python]": {
-    "editor.codeActionsOnSave": {
-      "source.fixAll": "explicit",
-      "source.organizeImports": "explicit"
-    },
-    "editor.defaultFormatter": "charliermarsh.ruff",
-    "editor.formatOnSave": true
-  },
-  "flake8.importStrategy": "fromEnvironment",
-  "markiscodecoverage.searchCriteria": ".cache/.coverage/lcov.info",
-  "mypy-type-checker.args": ["--config-file=${workspaceFolder}/pyproject.toml"],
-  "mypy-type-checker.importStrategy": "fromEnvironment",
-  "mypy-type-checker.reportingScope": "workspace",
-  "pylint.importStrategy": "fromEnvironment",
-  "python.testing.pytestArgs": ["tests"],
-  "python.testing.pytestEnabled": true,
-  "python.testing.unittestEnabled": false,
-  "triggerTaskOnSave.tasks": {
-    "pydoclint": ["*.py"]
-  },
-  "sonarlint.connectedMode.project": {
-    "connectionId": "ansible",
-    "projectKey": "ansible_pytest-ansible"
-  }
+	"[jsonc]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[python]": {
+		"editor.codeActionsOnSave": {
+			"source.fixAll": "explicit",
+			"source.organizeImports": "explicit"
+		},
+		"editor.defaultFormatter": "charliermarsh.ruff",
+		"editor.formatOnSave": true
+	},
+	"flake8.importStrategy": "fromEnvironment",
+	"markiscodecoverage.searchCriteria": ".cache/.coverage/lcov.info",
+	"mypy-type-checker.args": ["--config-file=${workspaceFolder}/pyproject.toml"],
+	"mypy-type-checker.importStrategy": "fromEnvironment",
+	"mypy-type-checker.reportingScope": "workspace",
+	"pylint.importStrategy": "fromEnvironment",
+	"python.testing.pytestArgs": ["tests"],
+	"python.testing.pytestEnabled": true,
+	"python.testing.unittestEnabled": false,
+	"triggerTaskOnSave.tasks": {
+		"pydoclint": ["*.py"]
+	},
+	"sonarlint.connectedMode.project": {
+		"connectionId": "ansible",
+		"projectKey": "ansible_pytest-ansible"
+	}
 }
