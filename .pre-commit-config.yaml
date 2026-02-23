@@ -54,7 +54,7 @@ repos:
         alias: toml
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.1
+    rev: v0.15.2
     hooks:
       - id: ruff-format
         alias: ruff
@@ -75,7 +75,7 @@ repos:
         pass_filenames: false
 
   - repo: https://github.com/pycqa/pylint.git
-    rev: v4.0.4
+    rev: v4.0.5
     hooks:
       - id: pylint
         args:
