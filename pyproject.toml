@@ -382,7 +382,8 @@ filterwarnings = [
   "ignore:AnsibleCollectionFinder has already been configured:UserWarning",
   "ignore:Host management is deprecated and will be removed in a future release:DeprecationWarning",
   "ignore:ansible_host fixture is deprecated and will be removed in a future release.:DeprecationWarning",
-  "ignore:ansible_group fixture is deprecated and will be removed in a future release.:DeprecationWarning"
+  "ignore:ansible_group fixture is deprecated and will be removed in a future release.:DeprecationWarning",
+  "ignore:pytest-ansible no longer supports the '--connection' option:DeprecationWarning"
 ]
 junit_family = "xunit2"
 markers = ["old", "unit", "requires_ansible_v2"]

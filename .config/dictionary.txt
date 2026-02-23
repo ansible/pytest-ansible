@@ -13,10 +13,12 @@ VIRSH
 addini
 addinivalue
 addoption
+addopts
 autorefs
 autouse
 capfd
 caplog
+conftests
 facelessuser
 fixturedefs
 fixtureinfo
@@ -33,6 +35,7 @@ junitxml
 lineinfile
 linenums
 magiclink
+makeconftest
 makepyfile
 metafunc
 mkdocstrings
@@ -49,6 +52,7 @@ pytrace
 reportinfo
 runpytest
 superfences
+testinfra
 testpaths
 webservers
 xunit

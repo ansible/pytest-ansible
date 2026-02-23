@@ -111,6 +111,31 @@ def _load_scenarios(config: pytest.Config) -> None:
         logger.warning(msg)
 
 
+def pytest_load_initial_conftests(
+    early_config: pytest.Config,  # noqa: ARG001
+    parser: pytest.Parser,  # noqa: ARG001
+    args: list[str],
+) -> None:
+    """Detect deprecated --connection usage and warn.
+
+    Args:
+        early_config: pytest.Config (unused)
+        parser: pytest.Parser (unused)
+        args: Combined list of CLI args and addopts values
+    """
+    for arg in args:
+        if arg == "--connection" or arg.startswith("--connection="):
+            warnings.warn(
+                "pytest-ansible no longer supports the '--connection' option. "
+                "Use '--ansible-connection' instead. "
+                "If you are passing '--connection' to another plugin (e.g. testinfra), "
+                "you can ignore this warning.",
+                DeprecationWarning,
+                stacklevel=1,
+            )
+            break
+
+
 def pytest_addoption(parser: pytest.Parser) -> None:
     """Add options to control ansible.
 
@@ -157,7 +182,6 @@ def pytest_addoption(parser: pytest.Parser) -> None:
         help="further limit selected hosts to an additional pattern",
     )
     group.addoption(
-        "--connection",
         "--ansible-connection",
         action="store",
         dest="ansible_connection",
