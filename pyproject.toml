@@ -68,9 +68,8 @@ dependencies = [
   "cffi>=1.15.1",
   "packaging>=23.2",
   "pytest>=6",
-  "pytest-sugar>=1.1.1",
   "pytest-xdist>=3.8.0",
-  "typing-extensions>=4.15.0"
+  "typing-extensions>=4.15.0",
 ]
 description = "Plugin for pytest to simplify calling ansible modules from tests or fixtures"
 dynamic = ["version"]
