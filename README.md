@@ -220,7 +220,7 @@ pytest \
     [--inventory <path_to_inventory>] \
     [--extra-inventory <path_to_extra_inventory>] \
     [--host-pattern <host-pattern>] \
-    [--connection <plugin>] \
+    [--ansible-connection <plugin>] \
     [--module-path <path_to_modules] \
     [--user <username>] \
     [--become] \

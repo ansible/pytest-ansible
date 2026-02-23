@@ -43,7 +43,7 @@ def test_plugin_help(pytester):  # type: ignore[no-untyped-def]  # noqa: ANN001,
             # Check for the specific args
             "  --inventory*, --ansible-inventory=ANSIBLE_INVENTORY",
             "  --host-pattern*, --ansible-host-pattern=ANSIBLE_HOST_PATTERN",
-            "  --connection*, --ansible-connection=ANSIBLE_CONNECTION",
+            "  --ansible-connection=ANSIBLE_CONNECTION",
             "  --user*, --ansible-user=ANSIBLE_USER",
             "  --check, --ansible-check",
             "  --module-path*, --ansible-module-path=ANSIBLE_MODULE_PATH",
@@ -126,7 +126,6 @@ def test_params_required_when_using_fixture(
         "--ansible-inventory",
         "--inventory",
         "--ansible-connection",
-        "--connection",
         "--ansible-user",
         "--user",
         "--ansible-become-method",
@@ -182,3 +181,55 @@ def test_param_override_with_marker(pytester, option):  # type: ignore[no-untype
     assert result.ret == EXIT_OK
 
     # Mock assert the correct variables are set
+
+
+def test_deprecated_connection_warning() -> None:
+    """Verify a deprecation warning is emitted when --connection is used."""
+    from pytest_ansible.plugin import pytest_load_initial_conftests
+
+    args: list[str] = ["--connection", "local"]
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        pytest_load_initial_conftests(early_config=None, parser=None, args=args)  # type: ignore[arg-type]
+
+    assert len(caught) == 1
+    assert issubclass(caught[0].category, DeprecationWarning)
+    assert "pytest-ansible no longer supports the '--connection' option" in str(caught[0].message)
+
+
+def test_no_warning_without_connection_flag() -> None:
+    """Verify no warning is emitted when --connection is not used."""
+    from pytest_ansible.plugin import pytest_load_initial_conftests
+
+    args: list[str] = ["--ansible-connection", "local"]
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        pytest_load_initial_conftests(early_config=None, parser=None, args=args)  # type: ignore[arg-type]
+
+    assert len(caught) == 0
+
+
+def test_deprecated_connection_warning_integration(
+    pytester: pytest.Pytester,
+) -> None:
+    """Integration test: verify deprecation warning appears when --connection is used.
+
+    Args:
+        pytester: pytest fixture for running pytest in a subprocess
+    """
+    pytester.makeconftest(
+        """
+        def pytest_addoption(parser):
+            parser.addoption("--connection", action="store", default=None)
+        """,
+    )
+    pytester.makepyfile(
+        """
+        def test_func():
+            assert True
+        """,
+    )
+    result = pytester.runpytest("--connection", "local", "-W", "all::DeprecationWarning")
+    result.stdout.fnmatch_lines(
+        ["*pytest-ansible no longer supports the '--connection' option*"],
+    )
