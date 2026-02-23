@@ -1900,7 +1900,6 @@ dependencies = [
     { name = "cffi" },
     { name = "packaging" },
     { name = "pytest" },
-    { name = "pytest-sugar" },
     { name = "pytest-xdist" },
     { name = "typing-extensions" },
 ]
@@ -1951,7 +1950,6 @@ requires-dist = [
     { name = "cffi", specifier = ">=1.15.1" },
     { name = "packaging", specifier = ">=23.2" },
     { name = "pytest", specifier = ">=6" },
-    { name = "pytest-sugar", specifier = ">=1.1.1" },
     { name = "pytest-xdist", specifier = ">=3.8.0" },
     { name = "typing-extensions", specifier = ">=4.15.0" },
 ]
@@ -2014,19 +2012,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/83/8d/c5acdd43847e975b31173f12fe3660174fb4f274f5bbe0b7efb5fa5d91fb/pytest_plus-0.8.1.tar.gz", hash = "sha256:02dfb28f1a914e8df3b6e3525df7e94feabc0681ecea626912e8028e9355f02c", size = 15444, upload-time = "2025-02-02T10:05:05.071Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/12/ae/35aac382af0d72c57df397deb753bca71a879a0a51f52b3ce77b3d2e7643/pytest_plus-0.8.1-py3-none-any.whl", hash = "sha256:2b8e9037716c9d7b708074863933897681f86d852d9c4e9717271be143dbdfb6", size = 6235, upload-time = "2025-02-02T10:05:03.701Z" },
-]
-
-[[package]]
-name = "pytest-sugar"
-version = "1.1.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "pytest" },
-    { name = "termcolor" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/0b/4e/60fed105549297ba1a700e1ea7b828044842ea27d72c898990510b79b0e2/pytest-sugar-1.1.1.tar.gz", hash = "sha256:73b8b65163ebf10f9f671efab9eed3d56f20d2ca68bda83fa64740a92c08f65d", size = 16533, upload-time = "2025-08-23T12:19:35.737Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/87/d5/81d38a91c1fdafb6711f053f5a9b92ff788013b19821257c2c38c1e132df/pytest_sugar-1.1.1-py3-none-any.whl", hash = "sha256:2f8319b907548d5b9d03a171515c1d43d2e38e32bd8182a1781eb20b43344cc8", size = 11440, upload-time = "2025-08-23T12:19:34.894Z" },
 ]
 
 [[package]]
