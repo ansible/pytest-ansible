@@ -44,6 +44,7 @@ pandoc
 parseoutcomes
 pluginmanager
 posargs
+prek
 pydoclint
 pymdownx
 pytester
@@ -54,5 +55,6 @@ runpytest
 superfences
 testinfra
 testpaths
+tombi
 webservers
 xunit
