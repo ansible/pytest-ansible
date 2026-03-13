@@ -205,42 +205,16 @@ wheels = [
 
 [[package]]
 name = "cairosvg"
-version = "2.7.1"
+version = "2.9.0"
 source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "python_full_version < '3.11'",
-]
 dependencies = [
-    { name = "cairocffi", marker = "python_full_version < '3.11'" },
-    { name = "cssselect2", marker = "python_full_version < '3.11'" },
-    { name = "defusedxml", marker = "python_full_version < '3.11'" },
-    { name = "pillow", marker = "python_full_version < '3.11'" },
-    { name = "tinycss2", marker = "python_full_version < '3.11'" },
+    { name = "cairocffi" },
+    { name = "cssselect2" },
+    { name = "defusedxml" },
+    { name = "pillow" },
+    { name = "tinycss2" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/d5/e6/ec5900b724e3c44af7f6f51f719919137284e5da4aabe96508baec8a1b40/CairoSVG-2.7.1.tar.gz", hash = "sha256:432531d72347291b9a9ebfb6777026b607563fd8719c46ee742db0aef7271ba0", size = 8399085, upload-time = "2023-08-05T09:08:05.75Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/01/a5/1866b42151f50453f1a0d28fc4c39f5be5f412a2e914f33449c42daafdf1/CairoSVG-2.7.1-py3-none-any.whl", hash = "sha256:8a5222d4e6c3f86f1f7046b63246877a63b49923a1cd202184c3a634ef546b3b", size = 43235, upload-time = "2023-08-05T09:08:01.583Z" },
-]
-
-[[package]]
-name = "cairosvg"
-version = "2.8.2"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "python_full_version >= '3.12'",
-    "python_full_version == '3.11.*'",
-]
-dependencies = [
-    { name = "cairocffi", marker = "python_full_version >= '3.11'" },
-    { name = "cssselect2", marker = "python_full_version >= '3.11'" },
-    { name = "defusedxml", marker = "python_full_version >= '3.11'" },
-    { name = "pillow", marker = "python_full_version >= '3.11'" },
-    { name = "tinycss2", marker = "python_full_version >= '3.11'" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/ab/b9/5106168bd43d7cd8b7cc2a2ee465b385f14b63f4c092bb89eee2d48c8e67/cairosvg-2.8.2.tar.gz", hash = "sha256:07cbf4e86317b27a92318a4cac2a4bb37a5e9c1b8a27355d06874b22f85bef9f", size = 8398590, upload-time = "2025-05-15T06:56:32.653Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/67/48/816bd4aaae93dbf9e408c58598bc32f4a8c65f4b86ab560864cb3ee60adb/cairosvg-2.8.2-py3-none-any.whl", hash = "sha256:eab46dad4674f33267a671dce39b64be245911c901c70d65d2b7b0821e852bf5", size = 45773, upload-time = "2025-05-15T06:56:28.552Z" },
-]
+sdist = { url = "https://files.pythonhosted.org/packages/38/07/e8412a13019b3f737972dea23a2c61ca42becafc16c9338f4ca7a0caa993/cairosvg-2.9.0.tar.gz", hash = "sha256:1debb00cd2da11350d8b6f5ceb739f1b539196d71d5cf5eb7363dbd1bfbc8dc5", size = 40877, upload-time = "2026-03-13T15:42:00.564Z" }
 
 [[package]]
 name = "certifi"
@@ -1218,13 +1192,13 @@ wheels = [
 
 [[package]]
 name = "mkdocs-ansible"
-version = "25.5.0"
+version = "25.2.0"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
     "python_full_version < '3.11'",
 ]
 dependencies = [
-    { name = "cairosvg", version = "2.7.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
+    { name = "cairosvg", marker = "python_full_version < '3.11'" },
     { name = "linkchecker", marker = "python_full_version < '3.11'" },
     { name = "markdown-exec", marker = "python_full_version < '3.11'" },
     { name = "markdown-include", marker = "python_full_version < '3.11'" },
@@ -1235,14 +1209,15 @@ dependencies = [
     { name = "mkdocs-material", marker = "python_full_version < '3.11'" },
     { name = "mkdocs-material-extensions", marker = "python_full_version < '3.11'" },
     { name = "mkdocs-minify-plugin", marker = "python_full_version < '3.11'" },
+    { name = "mkdocs-monorepo-plugin", marker = "python_full_version < '3.11'" },
     { name = "mkdocstrings", marker = "python_full_version < '3.11'" },
     { name = "mkdocstrings-python", marker = "python_full_version < '3.11'" },
     { name = "pillow", marker = "python_full_version < '3.11'" },
     { name = "pymdown-extensions", marker = "python_full_version < '3.11'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/0c/42/9bb1dc927030aa2dede32f5ea01d7205ffa6718f43f936f650f438438e58/mkdocs_ansible-25.5.0.tar.gz", hash = "sha256:867dd4c21920c9d5ded0e4800a3093f33cb9e1138a9718135c702096075d8377", size = 46417, upload-time = "2025-05-13T13:35:59.15Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/81/54/0b52701cde603997bc52f43f196e3864e70b275922b19deaed8f60034061/mkdocs_ansible-25.2.0.tar.gz", hash = "sha256:c8b55cfa82656d20d7afbfa6bffb32f05e963e6649b8d14dbca5ba34ac9d693a", size = 46201, upload-time = "2025-02-18T13:32:57.504Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/42/ae/49317cc49795486c64ed5dcc317e7a467d5c07e7afad72fcdc14ca9e6027/mkdocs_ansible-25.5.0-py3-none-any.whl", hash = "sha256:36e4d5f7d3160e9a5ba984c0478217fe0af1009ad6cc07c99af776b1b9f363ad", size = 35675, upload-time = "2025-05-13T13:35:57.252Z" },
+    { url = "https://files.pythonhosted.org/packages/7b/bc/dee2c54fc0a746557d1b837620ad479b272d83f913ec36ee143811123b2a/mkdocs_ansible-25.2.0-py3-none-any.whl", hash = "sha256:442c1515748bfcfc2e3de5fd540430370ea5369be55cc011d17297945d8a28ae", size = 35652, upload-time = "2025-02-18T13:32:55.103Z" },
 ]
 
 [[package]]
@@ -1254,7 +1229,7 @@ resolution-markers = [
     "python_full_version == '3.11.*'",
 ]
 dependencies = [
-    { name = "cairosvg", version = "2.8.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
+    { name = "cairosvg", marker = "python_full_version >= '3.11'" },
     { name = "cffi", marker = "python_full_version >= '3.11'" },
     { name = "linkchecker", marker = "python_full_version >= '3.11'" },
     { name = "markdown-exec", marker = "python_full_version >= '3.11'" },
@@ -1396,6 +1371,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/52/67/fe4b77e7a8ae7628392e28b14122588beaf6078b53eb91c7ed000fd158ac/mkdocs-minify-plugin-0.8.0.tar.gz", hash = "sha256:bc11b78b8120d79e817308e2b11539d790d21445eb63df831e393f76e52e753d", size = 8366, upload-time = "2024-01-29T16:11:32.982Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/1b/cd/2e8d0d92421916e2ea4ff97f10a544a9bd5588eb747556701c983581df13/mkdocs_minify_plugin-0.8.0-py3-none-any.whl", hash = "sha256:5fba1a3f7bd9a2142c9954a6559a57e946587b21f133165ece30ea145c66aee6", size = 6723, upload-time = "2024-01-29T16:11:31.851Z" },
+]
+
+[[package]]
+name = "mkdocs-monorepo-plugin"
+version = "1.1.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "mkdocs", marker = "python_full_version < '3.11'" },
+    { name = "python-slugify", marker = "python_full_version < '3.11'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/d4/6a/a75245020e44beb9d7c806158f8a2cda37597711409d40c5a37c70078a7e/mkdocs-monorepo-plugin-1.1.2.tar.gz", hash = "sha256:09200bcf837ad35070e6da973aa0cb682e69ed6e16f254a30584550c6d2d8ebb", size = 13723, upload-time = "2025-06-05T19:09:45.042Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/57/26/4f4c19457d1d4e6d571a3b092921b7a0ce9477d18d997755ac615d72b96b/mkdocs_monorepo_plugin-1.1.2-py3-none-any.whl", hash = "sha256:4b917bc224b89e34e1736bb31ad5ae9deb0a907da879e03bb9454b41fb8b1cac", size = 14539, upload-time = "2025-06-05T19:09:43.74Z" },
 ]
 
 [[package]]
@@ -1885,7 +1873,7 @@ dev = [
     { name = "uv" },
 ]
 docs = [
-    { name = "mkdocs-ansible", version = "25.5.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
+    { name = "mkdocs-ansible", version = "25.2.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "mkdocs-ansible", version = "25.6.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
 ]
 lint = [
@@ -2008,6 +1996,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/82/bb/93a3e83bdf9322c7e21cafd092e56a4a17c4d8ef4277b6eb01af1a540a6f/python_discovery-1.1.0.tar.gz", hash = "sha256:447941ba1aed8cc2ab7ee3cb91be5fc137c5bdbb05b7e6ea62fbdcb66e50b268", size = 55674, upload-time = "2026-02-26T09:42:49.668Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/06/54/82a6e2ef37f0f23dccac604b9585bdcbd0698604feb64807dcb72853693e/python_discovery-1.1.0-py3-none-any.whl", hash = "sha256:a162893b8809727f54594a99ad2179d2ede4bf953e12d4c7abc3cc9cdbd1437b", size = 30687, upload-time = "2026-02-26T09:42:48.548Z" },
+]
+
+[[package]]
+name = "python-slugify"
+version = "8.0.4"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "text-unidecode", marker = "python_full_version < '3.11'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/87/c7/5e1547c44e31da50a460df93af11a535ace568ef89d7a811069ead340c4a/python-slugify-8.0.4.tar.gz", hash = "sha256:59202371d1d05b54a9e7720c5e038f928f45daaffe41dd10822f3907b937c856", size = 10921, upload-time = "2024-02-08T18:32:45.488Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a4/62/02da182e544a51a5c3ccf4b03ab79df279f9c60c5e82d5e8bec7ca26ac11/python_slugify-8.0.4-py2.py3-none-any.whl", hash = "sha256:276540b79961052b66b7d116620b36518847f52d5fd9e3a70164fc8c50faa6b8", size = 10051, upload-time = "2024-02-08T18:32:43.911Z" },
 ]
 
 [[package]]
@@ -2412,6 +2412,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/46/79/cf31d7a93a8fdc6aa0fbb665be84426a8c5a557d9240b6239e9e11e35fc5/termcolor-3.3.0.tar.gz", hash = "sha256:348871ca648ec6a9a983a13ab626c0acce02f515b9e1983332b17af7979521c5", size = 14434, upload-time = "2025-12-29T12:55:21.882Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/33/d1/8bb87d21e9aeb323cc03034f5eaf2c8f69841e40e4853c2627edf8111ed3/termcolor-3.3.0-py3-none-any.whl", hash = "sha256:cf642efadaf0a8ebbbf4bc7a31cec2f9b5f21a9f726f4ccbb08192c9c26f43a5", size = 7734, upload-time = "2025-12-29T12:55:20.718Z" },
+]
+
+[[package]]
+name = "text-unidecode"
+version = "1.3"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/ab/e2/e9a00f0ccb71718418230718b3d900e71a5d16e701a3dae079a21e9cd8f8/text-unidecode-1.3.tar.gz", hash = "sha256:bad6603bb14d279193107714b288be206cac565dfa49aa5b105294dd5c4aab93", size = 76885, upload-time = "2019-08-30T21:36:45.405Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a6/a5/c0b6468d3824fe3fde30dbb5e1f687b291608f9473681bbf7dabbf5a87d7/text_unidecode-1.3-py2.py3-none-any.whl", hash = "sha256:1311f10e8b895935241623731c2ba64f4c455287888b18189350b67134a822e8", size = 78154, upload-time = "2019-08-30T21:37:03.543Z" },
 ]
 
 [[package]]
