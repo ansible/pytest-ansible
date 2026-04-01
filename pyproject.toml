@@ -466,6 +466,7 @@ commands = [
 ]
 commands_pre = []
 description = "Bump all test dependencies"
+dependency_groups = ["lint"]
 env_dir = "{work_dir}/lint"
 skip_install = true
 
@@ -492,6 +493,7 @@ skip_install = false
 set_env.DYLD_FALLBACK_LIBRARY_PATH = "/opt/homebrew/lib:{env:LD_LIBRARY_PATH}"
 set_env.NO_COLOR = "1"
 set_env.TERM = "dump"
+set_env.NO_MKDOCS_2_WARNING = "1"
 
 [tool.tox.env.lint]
 commands = [["prek", "run", "--all-files", "--show-diff-on-failure"]]
