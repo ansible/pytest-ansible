@@ -311,8 +311,9 @@ The following example demonstrates available keyword arguments when creating a
 ```python
 def test_uptime(ansible_adhoc):
     # take down the database
-    ansible_adhoc(inventory='db1.example.com,', user='ec2-user',
-        become=True, become_user='root').all.command('reboot')
+    ansible_adhoc(
+        inventory="db1.example.com,", user="ec2-user", become=True, become_user="root"
+    ).all.command("reboot")
 ```
 
 The `HostManager` object returned by the `ansible_adhoc()` function provides
@@ -324,21 +325,21 @@ def test_host_manager(ansible_adhoc):
     hosts = ansible_adhoc()
 
     # __getitem__
-    hosts['all'].ping()
-    hosts['localhost'].ping()
+    hosts["all"].ping()
+    hosts["localhost"].ping()
 
     # __getattr__
     hosts.all.ping()
     hosts.localhost.ping()
 
     # Supports [ansible host patterns](http://docs.ansible.com/ansible/latest/intro_patterns.html)
-    hosts['webservers:!phoenix'].ping()  # all webservers that are not in phoenix
+    hosts["webservers:!phoenix"].ping()  # all webservers that are not in phoenix
     hosts[0].ping()
     hosts[0:2].ping()
 
-    assert 'one.example.com' in hosts
+    assert "one.example.com" in hosts
 
-    assert hasattr(hosts, 'two.example.com')
+    assert hasattr(hosts, "two.example.com")
 
     for a_host in hosts:
         a_host.ping()
@@ -355,18 +356,18 @@ such as cloud modules (ec2, gce etc...).
 def test_do_something_cloudy(localhost, ansible_adhoc):
     """Deploy an ec2 instance using multiple fixtures."""
     params = dict(
-        key_name='some_key',
-        instance_type='t2.micro',
-        image='ami-123456',
+        key_name="some_key",
+        instance_type="t2.micro",
+        image="ami-123456",
         wait=True,
-        group='webservers',
+        group="webservers",
         count=1,
-        vpc_subnet_id='subnet-29e63245',
+        vpc_subnet_id="subnet-29e63245",
         assign_public_ip=True,
     )
 
     # Deploy an ec2 instance from localhost using the `ansible_adhoc` fixture
-    ansible_adhoc(inventory='localhost,', connection='local').localhost.ec2(**params)
+    ansible_adhoc(inventory="localhost,", connection="local").localhost.ec2(**params)
 
     # Deploy an ec2 instance from localhost using the `localhost` fixture
     localhost.ec2(**params)
@@ -433,21 +434,19 @@ A systems facts can be useful when deciding whether to skip a test ...
 ```python
 def test_something_with_amazon_ec2(ansible_facts):
     for facts in ansible_facts:
-        if 'ec2.internal' != facts['ansible_domain']:
+        if "ec2.internal" != facts["ansible_domain"]:
             pytest.skip("This test only applies to ec2 instances")
-
 ```
 
 Additionally, since facts are just ansible modules, you could inspect the
 contents of the `ec2_facts` module for greater granularity ...
 
 ```python
-
 def test_terminate_us_east_1_instances(ansible_adhoc):
 
     for facts in ansible_adhoc().all.ec2_facts():
-        if facts['ansible_ec2_placement_region'].startswith('us-east'):
-            '''do some testing'''
+        if facts["ansible_ec2_placement_region"].startswith("us-east"):
+            """do some testing"""
 ```
 
 #### Parameterize with `pytest.mark.ansible`
@@ -462,42 +461,45 @@ For example, to interact with the local system, you would adjust the
 `host_pattern` and `connection` parameters.
 
 ```python
-@pytest.mark.ansible(host_pattern='local,', connection='local')
+@pytest.mark.ansible(host_pattern="local,", connection="local")
 def test_copy_local(ansible_module):
 
     # create a file with random data
     contacted = ansible_module.copy(
-        dest='/etc/motd',
-        content='PyTest is amazing!',
-        owner='root',
-        group='root',
-        mode='0644',
+        dest="/etc/motd",
+        content="PyTest is amazing!",
+        owner="root",
+        group="root",
+        mode="0644",
     )
 
     # assert only a single host was contacted
-    assert len(contacted) == 1, \
-        "Unexpected number of hosts contacted (%d != %d)" % \
-        (1, len(contacted))
+    assert len(contacted) == 1, "Unexpected number of hosts contacted (%d != %d)" % (
+        1,
+        len(contacted),
+    )
 
-    assert 'local' in contacted
+    assert "local" in contacted
 
     # assert the copy module reported changes
-    assert 'changed' in contacted['local']
-    assert contacted['local']['changed']
+    assert "changed" in contacted["local"]
+    assert contacted["local"]["changed"]
 ```
 
 Note, the parameters provided by `pytest.mark.ansible` will apply to all class
 methods.
 
 ```python
-@pytest.mark.ansible(host_pattern='local,', connection='local')
+@pytest.mark.ansible(host_pattern="local,", connection="local")
 class Test_Local(object):
     def test_install(self, ansible_module):
-        '''do some testing'''
+        """do some testing"""
+
     def test_template(self, ansible_module):
-        '''do some testing'''
+        """do some testing"""
+
     def test_service(self, ansible_module):
-        '''do some testing'''
+        """do some testing"""
 ```
 
 #### Inspecting results
@@ -507,23 +509,22 @@ object returned will be an instance of class `AdHocResult`. The `AdHocResult`
 class can be inspected as follows:
 
 ```python
-
 def test_adhoc_result(ansible_adhoc):
     contacted = ansible_adhoc(inventory=my_inventory).command("date")
 
     # As a dictionary
-    for (host, result) in contacted.items():
+    for host, result in contacted.items():
         assert result.is_successful, "Failed on host %s" % host
     for result in contacted.values():
         assert result.is_successful
     for host in contacted.keys():
-        assert host in ['localhost', 'one.example.com']
+        assert host in ["localhost", "one.example.com"]
 
     assert contacted.localhost.is_successful
 
     # As a list
     assert len(contacted) > 0
-    assert 'localhost' in contacted
+    assert "localhost" in contacted
 
     # As an iterator
     for result in contacted:
@@ -533,7 +534,7 @@ def test_adhoc_result(ansible_adhoc):
     assert contacted.localhost.is_successful
 
     # Or __getitem__
-    assert contacted['localhost'].is_successful
+    assert contacted["localhost"].is_successful
 ```
 
 Using the `AdHocResult` object provides ways to conveniently access results for
@@ -547,7 +548,6 @@ The `ModuleResult` interface provides some convenient properties to determine
 the success of the module call. Examples are included below.
 
 ```python
-
 def test_module_result(localhost):
     contacted = localhost.command("find /tmp")
 
@@ -583,17 +583,17 @@ returned data. The following demonstrates how to catch the exception, and
 inspect the results.
 
 ```python
-@pytest.mark.ansible(inventory='good:bad')
+@pytest.mark.ansible(inventory="good:bad")
 def test_inventory_unreachable(ansible_module):
     exc_info = pytest.raises(pytest_ansible.AnsibleHostUnreachable, ansible_module.ping)
     (contacted, dark) = exc_info.value.results
 
     # inspect the JSON result...
-    for (host, result) in contacted.items():
-        assert result['ping'] == 'pong'
+    for host, result in contacted.items():
+        assert result["ping"] == "pong"
 
-    for (host, result) in dark.items():
-        assert result['failed'] == True
+    for host, result in dark.items():
+        assert result["failed"] == True
 ```
 
 ## Communication
