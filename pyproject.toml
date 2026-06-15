@@ -405,6 +405,7 @@ ignore = [
   "PLC2701",
   "PLR6301",
   "PLW0717",  # try-too-many-statements
+  "RUF076",  # autouse-true, used intentionally in test fixtures
 ]
 select = ["ALL"]
 
