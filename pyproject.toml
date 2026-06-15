@@ -403,7 +403,8 @@ ignore = [
   # temporary disabled when we enabled preview mode:
   "RUF052",
   "PLC2701",
-  "PLR6301"
+  "PLR6301",
+  "PLW0717",  # try-too-many-statements
 ]
 select = ["ALL"]
 
