@@ -11,7 +11,7 @@ has_ansible_v212 = False
 has_ansible_v213 = False
 has_ansible_v219 = False
 
-try:
+try:  # noqa: PLW0717
     import ansible
 
     from packaging.version import parse as parse_version
