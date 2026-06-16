@@ -14,7 +14,7 @@ from typing import TYPE_CHECKING, Any
 import pytest
 
 
-try:
+try:  # noqa: PLW0717
     import ansible
     import ansible.constants
     import ansible.errors
