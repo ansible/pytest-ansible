@@ -1,42 +1,5 @@
 # cspell: ignore docstrings dunder simplifiable vararg preexec showlocals tomlsort addopts
 
-[build-system]
-requires = [
-  "setuptools_scm[toml] >= 7.0.5",  # required for "no-local-version" scheme
-  "setuptools >= 65.3.0",  # required by pyproject+setuptools_scm integration and editable installs
-]
-build-backend = "setuptools.build_meta"
-
-[dependency-groups]
-dev = [
-  "cffi>=1.15.1",  # indirect dependency of ansible-core
-  "coverage[toml]>=7.10.6",
-  "cryptography>=37",
-  "molecule>=25.7.0",
-  "mypy>=1.17.1",
-  "pip>=25.2",
-  "pydoclint>=0.7.3",
-  "pylint>=3.3.8",
-  "pytest>=8.4.2",
-  "pytest-github-actions-annotate-failures>=0.3.0",
-  "pytest-plus>=0.8.1",
-  "pytest-xdist>=3.8.0",
-  "ruff>=0.12.12",
-  "toml-sort>=0.24.2",
-  "tox>=4.30.2",
-  "types-pyyaml>=6.0.12.20250822",
-  "uv>=0.8.17"
-]
-docs = ["mkdocs-ansible>=0.2.0"]
-lint = [
-  "pip>=25.2",
-  "prek>=0.3.3",
-  "pytest>=7.2.2",
-  "setuptools>=51.1.1",
-  "tombi>=0.7.32",
-]
-pkg = ["build>=0.9", "pip>=25.2", "pipx>=1.7.1", "twine>=4.0.2"]
-
 [project]
 authors = [{ "name" = "Ansible by Red Hat", "email" = "info@ansible.com" }]
 classifiers = [
@@ -72,14 +35,51 @@ name = "pytest-ansible"
 readme = "README.md"
 requires-python = ">=3.10"
 
-[project.entry-points.pytest11]
-pytest-ansible = "pytest_ansible.plugin"
-
 [project.urls]
 changelog = "https://github.com/ansible/pytest-ansible/releases"
 documentation = "https://github.com/ansible/pytest-ansible"
 homepage = "https://github.com/ansible/pytest-ansible"
 repository = "https://github.com/ansible/pytest-ansible"
+
+[project.entry-points.pytest11]
+pytest-ansible = "pytest_ansible.plugin"
+
+[dependency-groups]
+dev = [
+  "cffi>=1.15.1",  # indirect dependency of ansible-core
+  "coverage[toml]>=7.10.6",
+  "cryptography>=37",
+  "molecule>=25.7.0",
+  "mypy>=1.17.1",
+  "pip>=25.2",
+  "pydoclint>=0.7.3",
+  "pylint>=3.3.8",
+  "pytest>=8.4.2",
+  "pytest-github-actions-annotate-failures>=0.3.0",
+  "pytest-plus>=0.8.1",
+  "pytest-xdist>=3.8.0",
+  "ruff>=0.12.12",
+  "toml-sort>=0.24.2",
+  "tox>=4.30.2",
+  "types-pyyaml>=6.0.12.20250822",
+  "uv>=0.8.17"
+]
+docs = ["mkdocs-ansible>=0.2.0"]
+lint = [
+  "pip>=25.2",
+  "prek>=0.3.3",
+  "pytest>=7.2.2",
+  "setuptools>=51.1.1",
+  "tombi>=0.7.32",
+]
+pkg = ["build>=0.9", "pip>=25.2", "pipx>=1.7.1", "twine>=4.0.2"]
+
+[build-system]
+requires = [
+  "setuptools_scm[toml] >= 7.0.5",  # required for "no-local-version" scheme
+  "setuptools >= 65.3.0",  # required by pyproject+setuptools_scm integration and editable installs
+]
+build-backend = "setuptools.build_meta"
 
 [tool.coverage.report]
 exclude_also = ["if TYPE_CHECKING:", "pragma: no cover"]
@@ -403,7 +403,7 @@ ignore = [
   # temporary disabled when we enabled preview mode:
   "RUF052",
   "PLC2701",
-  "PLR6301"
+  "PLR6301",
 ]
 select = ["ALL"]
 
@@ -418,7 +418,7 @@ required-imports = ["from __future__ import annotations"]
 
 [tool.ruff.lint.per-file-ignores]
 "_version.py" = ["SIM108"]
-"tests/**" = ["SLF001", "S101", "S602", "T201"]
+"tests/**" = ["SLF001", "S101", "S602", "T201", "RUF076"]
 "tests/fixtures/ansible_collections/test/test/tests/unit/plugins/modules/test_pool.py" = [
   "INP001"
 ]

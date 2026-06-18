@@ -1,5 +1,4 @@
 """The pytest-ansible initialization."""
-# ruff: noqa: RUF067
 
 from __future__ import annotations
 
