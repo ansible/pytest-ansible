@@ -616,6 +616,7 @@ TERM = "xterm-256color"
 
 [tool.uv]
 constraint-dependencies = [
+  "cairosvg>=2.9.0",
   "idna>=3.18",
   "pymdown-extensions>=11.0",
   "urllib3>=2.7.0",
