@@ -615,4 +615,9 @@ PRE_COMMIT_COLOR = "always"
 TERM = "xterm-256color"
 
 [tool.uv]
+constraint-dependencies = [
+  "idna>=3.18",
+  "pymdown-extensions>=11.0",
+  "urllib3>=2.7.0",
+]
 package = true
