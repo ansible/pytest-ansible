@@ -186,7 +186,7 @@ class ModuleDispatcherV213(BaseModuleDispatcher):
         """Validate that hosts matching the configured pattern exist.
 
         Raises:
-            ansible.errors.AnsibleError: When no hosts match after subsetting.
+            ansible.errors.AnsibleError: When no hosts match after applying subset.
         """
         hosts = self.options["inventory_manager"].list_hosts()
         extra_hosts = (

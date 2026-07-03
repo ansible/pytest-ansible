@@ -93,6 +93,8 @@ src/pytest_ansible/module_dispatcher/__init__.py
     DOC103: Method `BaseModuleDispatcher._run`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [**kwargs: , *args: ].
 --------------------
 src/pytest_ansible/module_dispatcher/v213.py
+    DOC101: Function `_execute_play`: Docstring contains fewer arguments than in function signature.
+    DOC103: Function `_execute_play`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [callback: ResultAccumulator, play: Play, tqm_kwargs: dict].
     DOC101: Method `ResultAccumulator.__init__`: Docstring contains fewer arguments than in function signature.
     DOC106: Method `ResultAccumulator.__init__`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC103: Method `ResultAccumulator.__init__`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [**kwargs: , *args: ].
@@ -116,8 +118,20 @@ src/pytest_ansible/module_dispatcher/v213.py
     DOC101: Method `ModuleDispatcherV213._run`: Docstring contains fewer arguments than in function signature.
     DOC106: Method `ModuleDispatcherV213._run`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC103: Method `ModuleDispatcherV213._run`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [**complex_args: , *module_args: ].
+    DOC101: Method `ModuleDispatcherV213._build_tqm_kwargs`: Docstring contains fewer arguments than in function signature.
+    DOC103: Method `ModuleDispatcherV213._build_tqm_kwargs`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [callback: ResultAccumulator, extra: bool].
+    DOC201: Method `ModuleDispatcherV213._build_tqm_kwargs` does not have a return section in docstring
+    DOC101: Method `ModuleDispatcherV213._build_play_ds`: Docstring contains fewer arguments than in function signature.
+    DOC103: Method `ModuleDispatcherV213._build_play_ds`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [complex_args: dict].
+    DOC201: Method `ModuleDispatcherV213._build_play_ds` does not have a return section in docstring
+    DOC101: Method `ModuleDispatcherV213._raise_on_unreachable`: Docstring contains fewer arguments than in function signature.
+    DOC103: Method `ModuleDispatcherV213._raise_on_unreachable`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [callback: ResultAccumulator, callback_extra: ResultAccumulator | None].
 --------------------
 src/pytest_ansible/molecule.py
+    DOC101: Function `_populate_config_metadata`: Docstring contains fewer arguments than in function signature.
+    DOC106: Function `_populate_config_metadata`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
+    DOC107: Function `_populate_config_metadata`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
+    DOC103: Function `_populate_config_metadata`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [config: ].
     DOC101: Function `molecule_pytest_configure`: Docstring contains fewer arguments than in function signature.
     DOC106: Function `molecule_pytest_configure`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC107: Function `molecule_pytest_configure`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
@@ -150,7 +164,12 @@ src/pytest_ansible/plugin.py
     DOC101: Method `PyTestAnsiblePlugin.pytest_collection_modifyitems`: Docstring contains fewer arguments than in function signature.
     DOC106: Method `PyTestAnsiblePlugin.pytest_collection_modifyitems`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC107: Method `PyTestAnsiblePlugin.pytest_collection_modifyitems`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
-    DOC103: Method `PyTestAnsiblePlugin.pytest_collection_modifyitems`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [config: , items: , session: ].
+    DOC103: Method `PyTestAnsiblePlugin.pytest_collection_modifyitems`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [config: , items: ].
+    DOC101: Method `PyTestAnsiblePlugin._any_item_uses_ansible_fixtures`: Docstring contains fewer arguments than in function signature.
+    DOC106: Method `PyTestAnsiblePlugin._any_item_uses_ansible_fixtures`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
+    DOC107: Method `PyTestAnsiblePlugin._any_item_uses_ansible_fixtures`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
+    DOC103: Method `PyTestAnsiblePlugin._any_item_uses_ansible_fixtures`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [items: ].
+    DOC201: Method `PyTestAnsiblePlugin._any_item_uses_ansible_fixtures` does not have a return section in docstring
     DOC101: Method `PyTestAnsiblePlugin._load_ansible_config`: Docstring contains fewer arguments than in function signature.
     DOC106: Method `PyTestAnsiblePlugin._load_ansible_config`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC107: Method `PyTestAnsiblePlugin._load_ansible_config`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
@@ -191,6 +210,9 @@ src/pytest_ansible/results.py
     DOC201: Method `AdHocResult.values` does not have a return section in docstring
 --------------------
 src/pytest_ansible/units.py
+    DOC101: Function `_resolve_collections_dir`: Docstring contains fewer arguments than in function signature.
+    DOC103: Function `_resolve_collections_dir`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [name: str, namespace: str, start_path: Path].
+    DOC201: Function `_resolve_collections_dir` does not have a return section in docstring
     DOC101: Function `inject`: Docstring contains fewer arguments than in function signature.
     DOC103: Function `inject`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [start_path: Path].
     DOC101: Function `acf_inject`: Docstring contains fewer arguments than in function signature.
