@@ -65,6 +65,37 @@ def get_collection_name(start_path: Path) -> tuple[str | None, str | None]:
     return namespace, name
 
 
+def _resolve_collections_dir(
+    start_path: Path,
+    namespace: str,
+    name: str,
+) -> Path:
+    """Return the collections root directory, creating symlinks when needed.
+
+    :param start_path: The path where pytest was invoked.
+    :param namespace: The collection namespace.
+    :param name: The collection name.
+    :returns: Path to the directory containing ``ansible_collections/``.
+    """
+    collection_tree = ("collections", "ansible_collections", namespace, name)
+    if start_path.parts[-4:] == collection_tree:
+        logger.info("In collection tree")
+        return start_path.parents[2]
+
+    logger.info("Not in collection tree")
+    collections_dir = start_path / "collections"
+    name_dir = collections_dir / "ansible_collections" / namespace / name
+
+    if not name_dir.is_dir():
+        name_dir.mkdir(parents=True, exist_ok=True)
+        for entry in start_path.iterdir():
+            if entry.name == "collections":
+                continue
+            Path(name_dir / entry.name).symlink_to(entry)
+
+    return collections_dir
+
+
 def inject(start_path: Path) -> None:
     """Inject the collection path.
 
@@ -83,35 +114,14 @@ def inject(start_path: Path) -> None:
     logger.debug("Start path: %s", start_path)
     namespace, name = get_collection_name(start_path)
     if namespace is None or name is None:
-        # Tests may not being run from the root of the repo.
         return
 
-    # Determine if the start_path is in a collections tree
-    collection_tree = ("collections", "ansible_collections", namespace, name)
-    if start_path.parts[-4:] == collection_tree:
-        logger.info("In collection tree")
-        collections_dir = start_path.parents[2]
+    collections_dir = _resolve_collections_dir(start_path, namespace, name)
 
-    else:
-        logger.info("Not in collection tree")
-        collections_dir = start_path / "collections"
-        name_dir = collections_dir / "ansible_collections" / namespace / name
-
-        # If it's here, we will trust it was from this
-        if not name_dir.is_dir():
-            name_dir.mkdir(parents=True, exist_ok=True)
-
-            for entry in start_path.iterdir():
-                if entry.name == "collections":
-                    continue
-                Path(name_dir / entry.name).symlink_to(entry)
-
-    # Configuration option for additional collection paths
     additional_collections_paths: list[str] = [
         Path("~/.ansible/collections").expanduser().as_posix()
     ]
 
-    # Check if the environment variable is set for additional paths
     if "COLLECTIONS_PATH" in os.environ and "COLLECTIONS_PATHS" in os.environ:
         additional_collections_paths.extend(
             os.environ.get("COLLECTIONS_PATH", "").split(os.pathsep)
@@ -121,13 +131,10 @@ def inject(start_path: Path) -> None:
 
     acf_inject(paths=[str(collections_dir), *additional_collections_paths])
 
-    # Inject the path for the collection into sys.path
     sys.path.insert(0, str(collections_dir))
     logger.debug("sys.path updated: %s", sys.path)
 
-    # Set the environment variable as a courtesy for integration tests
     envvar_name = determine_envvar()
-    # Assuming additional_collections_paths is a list of PosixPath objects
     additional_collections_paths = [str(path) for path in additional_collections_paths]
     env_paths = os.pathsep.join([str(collections_dir), *additional_collections_paths])
     logger.info("Setting %s to %s", envvar_name, env_paths)

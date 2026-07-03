@@ -31,36 +31,31 @@ logger = logging.getLogger(__name__)
 counter = 0
 
 
+def _populate_config_metadata(config) -> None:  # type: ignore[no-untyped-def]  # noqa: ANN001
+    """Populate pytest config metadata with molecule/ansible info and env vars."""
+    if not hasattr(config, "_metadata"):
+        return
+
+    interesting_env_vars = ("ANSIBLE", "MOLECULE", "DOCKER", "PODMAN", "VAGRANT", "VIRSH", "ZUUL")
+
+    for package in ["molecule"]:
+        config._metadata["Packages"][package] = version(package)  # noqa: SLF001
+
+    if "Tools" not in config._metadata:  # noqa: SLF001
+        config._metadata["Tools"] = {}  # noqa: SLF001
+    config._metadata["Tools"]["ansible"] = str(ansible_version())  # noqa: SLF001
+
+    env = ""
+    for key, value in sorted(os.environ.items()):
+        for var_name in interesting_env_vars:
+            if key.startswith(var_name):
+                env += f"{key}={value} "
+    config._metadata["env"] = env  # noqa: SLF001
+
+
 def molecule_pytest_configure(config):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
     """Pytest hook for loading our specific configuration."""
-    interesting_env_vars = [
-        "ANSIBLE",
-        "MOLECULE",
-        "DOCKER",
-        "PODMAN",
-        "VAGRANT",
-        "VIRSH",
-        "ZUUL",
-    ]
-
-    # Add extra information that may be key for debugging failures
-    if hasattr(config, "_metadata"):
-        for package in ["molecule"]:
-            config._metadata["Packages"][package] = version(  # noqa: SLF001
-                package,
-            )
-
-        if "Tools" not in config._metadata:  # noqa: SLF001
-            config._metadata["Tools"] = {}  # noqa: SLF001
-        config._metadata["Tools"]["ansible"] = str(ansible_version())  # noqa: SLF001
-
-        # Adds interesting env vars
-        env = ""
-        for key, value in sorted(os.environ.items()):
-            for var_name in interesting_env_vars:
-                if key.startswith(var_name):
-                    env += f"{key}={value} "
-        config._metadata["env"] = env  # noqa: SLF001
+    _populate_config_metadata(config)
 
     # We hide DeprecationWarnings thrown by driver loading because these are
     # outside our control and worse: they are displayed even on projects that
@@ -199,30 +194,22 @@ class MoleculeItem(pytest.Item):
         if self.config.option.molecule_base_config:
             cmd.extend(("--base-config", self.config.option.molecule_base_config))
         if self.config.option.skip_no_git_change:
-            try:
-                with subprocess.Popen(  # noqa: S603
-                    [  # noqa: S607
-                        "git",
-                        "diff",
-                        self.config.option.skip_no_git_change,
-                        "--",
-                        "./",
-                    ],
-                    cwd=cwd,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.STDOUT,
-                    universal_newlines=True,
-                ) as proc:
-                    proc.wait()
-                    if len(proc.stdout.readlines()) == 0:  # type: ignore[union-attr]
-                        pytest.skip("No change in role")
-            except subprocess.CalledProcessError as exc:
-                pytest.fail(
-                    "Error checking git diff. Error code was: "
-                    + str(exc.returncode)
-                    + "\nError output was: "
-                    + exc.output,
-                )
+            with subprocess.Popen(  # noqa: S603
+                [  # noqa: S607
+                    "git",
+                    "diff",
+                    self.config.option.skip_no_git_change,
+                    "--",
+                    "./",
+                ],
+                cwd=cwd,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                universal_newlines=True,
+            ) as proc:
+                proc.wait()
+                if len(proc.stdout.readlines()) == 0:  # type: ignore[union-attr]
+                    pytest.skip("No change in role")
 
         cmd.extend(("test", "-s", scenario))
         # We append the additional options to molecule call, allowing user to
@@ -231,34 +218,26 @@ class MoleculeItem(pytest.Item):
         if opts:
             cmd.extend(shlex.split(opts))
 
-        if self.config.getoption("--molecule"):  # Check if --molecule option is enabled
-            try:
-                # Workaround for STDOUT/STDERR line ordering issue:
-                # https://github.com/pytest-dev/pytest/issues/5449
-                with subprocess.Popen(  # noqa: S603
-                    cmd,
-                    cwd=cwd,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.STDOUT,
-                    universal_newlines=True,
-                ) as proc:
-                    for line in proc.stdout:  # type: ignore[union-attr]
-                        print(line, end="")  # noqa: T201
-                    proc.wait()
-                    if proc.returncode != 0:
-                        pytest.fail(
-                            f"Error code {proc.returncode} returned by: {' '.join(cmd)}",
-                            pytrace=False,
-                        )
-            except subprocess.CalledProcessError as exc:
-                pytest.fail(
-                    f"Exception {exc} returned by: {' '.join(cmd)}",
-                    pytrace=False,
-                )
+        if self.config.getoption("--molecule"):
+            # Workaround for STDOUT/STDERR line ordering issue:
+            # https://github.com/pytest-dev/pytest/issues/5449
+            with subprocess.Popen(  # noqa: S603
+                cmd,
+                cwd=cwd,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                universal_newlines=True,
+            ) as proc:
+                for line in proc.stdout:  # type: ignore[union-attr]
+                    print(line, end="")  # noqa: T201
+                proc.wait()
+                if proc.returncode != 0:
+                    pytest.fail(
+                        f"Error code {proc.returncode} returned by: {' '.join(cmd)}",
+                        pytrace=False,
+                    )
         else:
-            pytest.skip(
-                "Molecule tests are disabled",
-            )  # Skip the test if --molecule option is not enabled
+            pytest.skip("Molecule tests are disabled")
 
     def reportinfo(self):  # type: ignore[no-untyped-def]  # noqa: ANN201
         """Return representation of test location when in verbose mode."""

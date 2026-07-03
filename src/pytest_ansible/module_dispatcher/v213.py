@@ -32,6 +32,32 @@ except ImportError:
     HAS_CUSTOM_LOADER_SUPPORT = False
 
 
+def _execute_play(
+    play: Play,
+    tqm_kwargs: dict,  # type: ignore[type-arg]
+    callback: ResultAccumulator,
+) -> None:
+    """Run a play through a TaskQueueManager and clean up afterwards.
+
+    :param play: The Play to execute.
+    :param tqm_kwargs: Keyword arguments for TaskQueueManager.
+    :param callback: The result accumulator callback.
+    """
+    tqm = None
+    try:
+        tqm = TaskQueueManager(**tqm_kwargs)
+        if has_ansible_v219:
+            tqm.load_callbacks()
+            callback._init_callback_methods()  # noqa: SLF001
+            callback.set_options()
+            if tqm._callback_plugins:  # noqa: SLF001
+                tqm._callback_plugins[0] = callback  # noqa: SLF001
+        tqm.run(play)
+    finally:
+        if tqm:
+            tqm.cleanup()
+
+
 class ResultAccumulator(CallbackBase):  # type: ignore[misc]
     """Fixme."""
 
@@ -111,23 +137,63 @@ class ModuleDispatcherV213(BaseModuleDispatcher):
             return ""
         return str(found.resolved_fqcn)
 
-    def _run(self, *module_args, **complex_args):  # type: ignore[no-untyped-def]  # noqa: ANN002, ANN003, ANN202, C901, PLR0912, PLR0914, PLR0915
-        """Execute an ansible adhoc command returning the result in a AdhocResult object.
-
-        Raises:
-            ansible.errors.AnsibleError: If the host is unreachable.
-            AnsibleConnectionFailure: If the host is unreachable.
-        """  # noqa: DOC201
-        # Assemble module argument string
+    def _run(self, *module_args, **complex_args):  # type: ignore[no-untyped-def]  # noqa: ANN002, ANN003, ANN202
+        """Execute an ansible adhoc command returning the result in a AdhocResult object."""  # noqa: DOC201
         if module_args:
             complex_args.update({"_raw_params": " ".join(module_args)})
 
-        # Assert hosts matching the provided pattern exist
-        hosts = self.options["inventory_manager"].list_hosts()
+        self._assert_hosts_exist()
+        self._configure_adhoc_cli()
+
+        callback = ResultAccumulator()
+        kwargs = self._build_tqm_kwargs(callback)
+        play_ds = self._build_play_ds(complex_args)
+
+        play = Play().load(
+            play_ds,
+            variable_manager=self.options["variable_manager"],
+            loader=self.options["loader"],
+        )
+
+        if HAS_CUSTOM_LOADER_SUPPORT:
+            init_plugin_loader(COLLECTIONS_PATHS)
+
+        _execute_play(play, kwargs, callback)
+
+        callback_extra = None
         if self.options.get("extra_inventory_manager", None):
-            extra_hosts = self.options["extra_inventory_manager"].list_hosts()
-        else:
-            extra_hosts = []
+            callback_extra = ResultAccumulator()
+            kwargs_extra = self._build_tqm_kwargs(callback_extra, extra=True)
+            play_extra = Play().load(
+                play_ds,
+                variable_manager=self.options["extra_variable_manager"],
+                loader=self.options["extra_loader"],
+            )
+            _execute_play(play_extra, kwargs_extra, callback_extra)
+
+        self._raise_on_unreachable(callback, callback_extra)
+
+        contacted = callback.contacted
+        if callback_extra is not None:
+            contacted = {**contacted, **callback_extra.contacted}
+        return AdHocResult(contacted=contacted)
+
+    # ------------------------------------------------------------------
+    # Helpers extracted from _run to lower cognitive complexity
+    # ------------------------------------------------------------------
+
+    def _assert_hosts_exist(self) -> None:
+        """Validate that hosts matching the configured pattern exist.
+
+        Raises:
+            ansible.errors.AnsibleError: When no hosts match after subsetting.
+        """
+        hosts = self.options["inventory_manager"].list_hosts()
+        extra_hosts = (
+            self.options["extra_inventory_manager"].list_hosts()
+            if self.options.get("extra_inventory_manager", None)
+            else []
+        )
         no_hosts = False
         if len(hosts + extra_hosts) == 0:
             no_hosts = True
@@ -144,11 +210,10 @@ class ModuleDispatcherV213(BaseModuleDispatcher):
             extra_hosts = []
         if len(hosts + extra_hosts) == 0 and not no_hosts:
             msg = "Specified hosts and/or --limit does not match any hosts."
-            raise ansible.errors.AnsibleError(
-                msg,
-            )
+            raise ansible.errors.AnsibleError(msg)
 
-        # Pass along cli options
+    def _configure_adhoc_cli(self) -> None:
+        """Build a fake CLI arg list and parse it through AdHocCLI."""
         args = ["pytest-ansible"]
         verbosity = None
         for verbosity_syntax in ("-v", "-vv", "-vvv", "-vvvv", "-vvvvv"):
@@ -177,48 +242,37 @@ class ModuleDispatcherV213(BaseModuleDispatcher):
             else:
                 args.append(f"--{argument}={arg_value}")
 
-        # Use Ansible's own adhoc cli to parse the fake command line we created and then save it
-        # into Ansible's global context
         adhoc = AdHocCLI(args)
         adhoc.parse()
-
-        # And now we'll never speak of this again
         del adhoc
 
-        # Initialize callbacks to capture module JSON responses
-        callback = ResultAccumulator()
+    def _build_tqm_kwargs(
+        self,
+        callback: ResultAccumulator,
+        *,
+        extra: bool = False,
+    ) -> dict:  # type: ignore[type-arg]
+        """Return keyword arguments for TaskQueueManager.
 
-        kwargs = {
-            "inventory": self.options["inventory_manager"],
-            "variable_manager": self.options["variable_manager"],
-            "loader": self.options["loader"],
+        :param callback: The result accumulator callback to attach.
+        :param extra: If True, use the extra inventory/variable_manager/loader.
+        """
+        prefix = "extra_" if extra else ""
+        kwargs: dict = {  # type: ignore[type-arg]
+            "inventory": self.options[f"{prefix}inventory_manager"],
+            "variable_manager": self.options[f"{prefix}variable_manager"],
+            "loader": self.options[f"{prefix}loader"],
             "passwords": {"conn_pass": None, "become_pass": None},
         }
-
         if has_ansible_v219:
             kwargs["stdout_callback_name"] = None
         else:
             kwargs["stdout_callback"] = callback
+        return kwargs
 
-        kwargs_extra = {}
-        # If we have an extra inventory, do the same that we did for the inventory
-        if self.options.get("extra_inventory_manager", None):
-            callback_extra = ResultAccumulator()
-
-            kwargs_extra = {
-                "inventory": self.options["extra_inventory_manager"],
-                "variable_manager": self.options["extra_variable_manager"],
-                "loader": self.options["extra_loader"],
-                "passwords": {"conn_pass": None, "become_pass": None},
-            }
-
-            if has_ansible_v219:
-                kwargs_extra["stdout_callback_name"] = None
-            else:
-                kwargs_extra["stdout_callback"] = callback_extra
-
-        # create a pseudo-play to execute the specified module via a single task
-        play_ds = {
+    def _build_play_ds(self, complex_args: dict) -> dict:  # type: ignore[type-arg]
+        """Return the play data structure for a single ad-hoc task."""
+        return {
             "name": "pytest-ansible",
             "hosts": self.options["host_pattern"],
             "become": self.options.get("become"),
@@ -234,54 +288,16 @@ class ModuleDispatcherV213(BaseModuleDispatcher):
             ],
         }
 
-        play = Play().load(
-            play_ds,
-            variable_manager=self.options["variable_manager"],
-            loader=self.options["loader"],
-        )
-        play_extra = None
-        if self.options.get("extra_inventory_manager", None):
-            play_extra = Play().load(
-                play_ds,
-                variable_manager=self.options["extra_variable_manager"],
-                loader=self.options["extra_loader"],
-            )
+    @staticmethod
+    def _raise_on_unreachable(
+        callback: ResultAccumulator,
+        callback_extra: ResultAccumulator | None,
+    ) -> None:
+        """Raise AnsibleConnectionFailure if any host was unreachable.
 
-        if HAS_CUSTOM_LOADER_SUPPORT:
-            # Load the collection finder, unsupported, may change in future
-            init_plugin_loader(COLLECTIONS_PATHS)
-
-        # now create a task queue manager to execute the play
-        tqm = None
-        try:
-            tqm = TaskQueueManager(**kwargs)
-            if has_ansible_v219:
-                tqm.load_callbacks()
-                callback._init_callback_methods()  # noqa: SLF001
-                callback.set_options()
-                if tqm._callback_plugins:  # noqa: SLF001
-                    tqm._callback_plugins[0] = callback  # noqa: SLF001
-            tqm.run(play)
-        finally:
-            if tqm:
-                tqm.cleanup()
-
-        if self.options.get("extra_inventory_manager", None):
-            tqm_extra = None
-            try:
-                tqm_extra = TaskQueueManager(**kwargs_extra)
-                if has_ansible_v219:
-                    tqm_extra.load_callbacks()
-                    callback_extra._init_callback_methods()  # noqa: SLF001
-                    callback_extra.set_options()
-                    if tqm_extra._callback_plugins:  # noqa: SLF001
-                        tqm_extra._callback_plugins[0] = callback_extra  # noqa: SLF001
-                tqm_extra.run(play_extra)
-            finally:
-                if tqm_extra:
-                    tqm_extra.cleanup()
-
-        # Raise exception if host(s) unreachable
+        Raises:
+            AnsibleConnectionFailure: When one or more hosts are unreachable.
+        """
         if callback.unreachable:
             msg = "Host unreachable in the inventory"
             raise AnsibleConnectionFailure(
@@ -289,18 +305,9 @@ class ModuleDispatcherV213(BaseModuleDispatcher):
                 dark=callback.unreachable,
                 contacted=callback.contacted,
             )
-        if self.options.get("extra_inventory_manager", None) and callback_extra.unreachable:
+        if callback_extra is not None and callback_extra.unreachable:
             raise AnsibleConnectionFailure(  # noqa: TRY003
                 "Host unreachable in the extra inventory",  # noqa: EM101
                 dark=callback_extra.unreachable,
                 contacted=callback_extra.contacted,
             )
-
-        # Success!
-        return AdHocResult(
-            contacted=(
-                {**callback.contacted, **callback_extra.contacted}
-                if self.options.get("extra_inventory_manager", None)
-                else callback.contacted
-            ),
-        )
