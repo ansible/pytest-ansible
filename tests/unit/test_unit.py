@@ -9,7 +9,8 @@ import sys
 
 from typing import TYPE_CHECKING
 
-from pytest_ansible.units import inject, inject_only
+from pytest_ansible.molecule import _populate_config_metadata
+from pytest_ansible.units import _resolve_collections_dir, inject, inject_only
 
 
 if TYPE_CHECKING:
@@ -82,6 +83,43 @@ def test_inject_only(
         == re.search(r"_ACF installed: \['(.*?)'.*]", caplog.text).groups()[0]  # type: ignore[union-attr]
         == re.search(r"_ACF configured paths: \['(.*?)'.*]", caplog.text).groups()[0]  # type: ignore[union-attr]
     )
+
+
+def test_resolve_collections_dir_in_tree(tmp_path: Path) -> None:
+    """Test _resolve_collections_dir when already inside a collection tree.
+
+    :param tmp_path: The pytest tmp_path fixture
+    """
+    tree = tmp_path / "collections" / "ansible_collections" / "myns" / "myname"
+    tree.mkdir(parents=True)
+    result = _resolve_collections_dir(tree, "myns", "myname")
+    assert result == tmp_path / "collections"
+
+
+def test_populate_config_metadata_no_metadata() -> None:
+    """Test _populate_config_metadata returns early when config lacks _metadata."""
+
+    class FakeConfig:
+        """Config object without _metadata attribute."""
+
+    _populate_config_metadata(FakeConfig())
+
+
+def test_populate_config_metadata_with_metadata() -> None:
+    """Test _populate_config_metadata populates metadata correctly."""
+
+    class FakeConfig:
+        """Config object with a _metadata dict."""
+
+        _metadata: dict = {}  # type: ignore[type-arg]  # noqa: RUF012
+
+    config = FakeConfig()
+    config._metadata = {"Packages": {}}  # noqa: SLF001
+    _populate_config_metadata(config)
+    assert "molecule" in config._metadata["Packages"]  # noqa: SLF001
+    assert "Tools" in config._metadata  # noqa: SLF001
+    assert "ansible" in config._metadata["Tools"]  # noqa: SLF001
+    assert "env" in config._metadata  # noqa: SLF001
 
 
 def test_for_params():  # type: ignore[no-untyped-def]  # noqa: ANN201

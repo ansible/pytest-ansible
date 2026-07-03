@@ -310,4 +310,6 @@ tests/unit/test_unit.py
     DOC103: Function `test_inject`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [caplog: pytest.LogCaptureFixture, monkeypatch: pytest.MonkeyPatch, tmp_path: Path].
     DOC101: Function `test_inject_only`: Docstring contains fewer arguments than in function signature.
     DOC103: Function `test_inject_only`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [caplog: pytest.LogCaptureFixture, monkeypatch: pytest.MonkeyPatch, tmp_path: Path].
+    DOC101: Function `test_resolve_collections_dir_in_tree`: Docstring contains fewer arguments than in function signature.
+    DOC103: Function `test_resolve_collections_dir_in_tree`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [tmp_path: Path].
 --------------------
