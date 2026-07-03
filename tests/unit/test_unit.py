@@ -90,9 +90,9 @@ def test_resolve_collections_dir_in_tree(tmp_path: Path) -> None:
 
     :param tmp_path: The pytest tmp_path fixture
     """
-    tree = tmp_path / "collections" / "ansible_collections" / "myns" / "myname"
+    tree = tmp_path / "collections" / "ansible_collections" / "testns" / "testname"
     tree.mkdir(parents=True)
-    result = _resolve_collections_dir(tree, "myns", "myname")
+    result = _resolve_collections_dir(tree, "testns", "testname")
     assert result == tmp_path / "collections"
 
 
@@ -111,15 +111,15 @@ def test_populate_config_metadata_with_metadata() -> None:
     class FakeConfig:
         """Config object with a _metadata dict."""
 
-        _metadata: dict = {}  # type: ignore[type-arg]  # noqa: RUF012
+        def __init__(self) -> None:
+            self._metadata: dict = {"Packages": {}}  # type: ignore[type-arg]
 
     config = FakeConfig()
-    config._metadata = {"Packages": {}}  # noqa: SLF001
     _populate_config_metadata(config)
-    assert "molecule" in config._metadata["Packages"]  # noqa: SLF001
-    assert "Tools" in config._metadata  # noqa: SLF001
-    assert "ansible" in config._metadata["Tools"]  # noqa: SLF001
-    assert "env" in config._metadata  # noqa: SLF001
+    assert "molecule" in config._metadata["Packages"]
+    assert "Tools" in config._metadata
+    assert "ansible" in config._metadata["Tools"]
+    assert "env" in config._metadata
 
 
 def test_for_params():  # type: ignore[no-untyped-def]  # noqa: ANN201
