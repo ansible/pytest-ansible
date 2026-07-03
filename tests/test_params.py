@@ -190,7 +190,7 @@ def test_deprecated_connection_warning() -> None:
     args: list[str] = ["--connection", "local"]
     with warnings.catch_warnings(record=True) as caught:
         warnings.simplefilter("always")
-        pytest_load_initial_conftests(early_config=None, parser=None, args=args)  # type: ignore[arg-type]
+        pytest_load_initial_conftests(args=args)
 
     assert len(caught) == 1
     assert issubclass(caught[0].category, DeprecationWarning)
@@ -204,7 +204,7 @@ def test_no_warning_without_connection_flag() -> None:
     args: list[str] = ["--ansible-connection", "local"]
     with warnings.catch_warnings(record=True) as caught:
         warnings.simplefilter("always")
-        pytest_load_initial_conftests(early_config=None, parser=None, args=args)  # type: ignore[arg-type]
+        pytest_load_initial_conftests(args=args)
 
     assert len(caught) == 0
 

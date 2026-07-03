@@ -129,7 +129,7 @@ def test_pytest_collection_modifyitems_with_marker():  # type: ignore[no-untyped
 
     # With the marker, ensure that assert_required_ansible_parameters is not called
     with mock.patch.object(plugin, "assert_required_ansible_parameters"):
-        plugin.pytest_collection_modifyitems(None, mock_config, items)  # type: ignore[no-untyped-call]
+        plugin.pytest_collection_modifyitems(mock_config, items)  # type: ignore[no-untyped-call]
 
 
 def test_pytest_collection_modifyitems_without_marker():  # type: ignore[no-untyped-def]  # noqa: ANN201, D103
@@ -143,7 +143,7 @@ def test_pytest_collection_modifyitems_without_marker():  # type: ignore[no-unty
 
     # Without the marker, ensure that assert_required_ansible_parameters is called
     with mock.patch.object(plugin, "assert_required_ansible_parameters") as mock_assert:
-        plugin.pytest_collection_modifyitems(None, mock_config, items)  # type: ignore[no-untyped-call]
+        plugin.pytest_collection_modifyitems(mock_config, items)  # type: ignore[no-untyped-call]
         mock_assert.assert_called_once()
 
 
@@ -158,5 +158,5 @@ def test_pytest_collection_modifyitems_no_fixtures():  # type: ignore[no-untyped
 
     # With no fixtures, ensure that assert_required_ansible_parameters is not called
     with mock.patch.object(plugin, "assert_required_ansible_parameters") as mock_assert:
-        plugin.pytest_collection_modifyitems(None, mock_config, items)  # type: ignore[no-untyped-call]
+        plugin.pytest_collection_modifyitems(mock_config, items)  # type: ignore[no-untyped-call]
         mock_assert.assert_not_called()

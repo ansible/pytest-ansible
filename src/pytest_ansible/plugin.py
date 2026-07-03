@@ -112,15 +112,11 @@ def _load_scenarios(config: pytest.Config) -> None:
 
 
 def pytest_load_initial_conftests(
-    early_config: pytest.Config,  # noqa: ARG001
-    parser: pytest.Parser,  # noqa: ARG001
     args: list[str],
 ) -> None:
     """Detect deprecated --connection usage and warn.
 
     Args:
-        early_config: pytest.Config (unused)
-        parser: pytest.Parser (unused)
         args: Combined list of CLI args and addopts values
     """
     for arg in args:
@@ -424,19 +420,22 @@ class PyTestAnsiblePlugin:
         """Return the version of ansible."""
         return f"ansible: {ansible.__version__}"
 
-    def pytest_collection_modifyitems(self, session, config, items):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, ARG002
+    def pytest_collection_modifyitems(self, config, items):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
         """Validate --ansible-* parameters."""
-        uses_ansible_fixtures = False
+        if self._any_item_uses_ansible_fixtures(items):
+            self.assert_required_ansible_parameters(config)  # type: ignore[no-untyped-call]
+
+    @staticmethod
+    def _any_item_uses_ansible_fixtures(items) -> bool:  # type: ignore[no-untyped-def]  # noqa: ANN001
+        """Return True if any collected item requests one of OUR_FIXTURES."""
         for item in items:
             if not hasattr(item, "fixturenames"):
                 continue
 
             for fixture_name in item.fixturenames:
                 if fixture_name in OUR_FIXTURES:
-                    uses_ansible_fixtures = True
-                    break
+                    return True
 
-                # ignore any normal fixtures that have definitions to avoid miss activations
                 if (
                     hasattr(item, "_fixtureinfo")
                     and hasattr(item._fixtureinfo, "name2fixturedefs")  # noqa: SLF001
@@ -444,15 +443,12 @@ class PyTestAnsiblePlugin:
                 ):
                     continue
                 if fixture_name == "request":
-                    continue  # reserved name, from pytest
+                    continue
                 logger.error(
                     "Found %s fixture which seem to have no definition.",
                     fixture_name,
                 )
-
-        if uses_ansible_fixtures:
-            # assert required --ansible-* parameters were used
-            self.assert_required_ansible_parameters(config)  # type: ignore[no-untyped-call]
+        return False
 
     def _load_ansible_config(self, config):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN202
         """Load ansible configuration from command-line.

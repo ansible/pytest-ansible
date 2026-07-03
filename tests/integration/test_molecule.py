@@ -9,10 +9,10 @@ import sys
 
 from typing import TYPE_CHECKING
 
-import pytest
-
 
 if TYPE_CHECKING:
+    import pytest
+
     from _pytest.capture import CaptureFixture
 
     from pytest_ansible.molecule import MoleculeScenario
@@ -25,16 +25,13 @@ def test_molecule_collect(caplog: pytest.LogCaptureFixture) -> None:
         caplog: pytest caplog
     """
     with caplog.at_level(logging.WARNING):
-        try:
-            proc = subprocess.run(
-                "pytest --molecule --collect-only",  # noqa: S607
-                capture_output=True,
-                shell=True,
-                check=True,
-                text=True,
-            )
-        except subprocess.CalledProcessError as exc:
-            pytest.fail(exc.stderr)
+        proc = subprocess.run(
+            "pytest --molecule --collect-only",  # noqa: S607
+            capture_output=True,
+            shell=True,
+            check=True,
+            text=True,
+        )
 
         assert proc.returncode == 0
         assert "test1[default]" in proc.stdout
@@ -59,22 +56,18 @@ def test_molecule_disabled() -> None:
 
 def test_molecule_runtest() -> None:
     """Test running the molecule scenario via pytest."""
-    try:
-        proc = subprocess.run(
-            f"{sys.executable} -m pytest -v --molecule tests/fixtures/molecule/default/molecule.yml",  # noqa: E501
-            capture_output=True,
-            check=True,
-            env={"PATH": os.environ["PATH"]},
-            shell=True,
-            text=True,
-        )
-        assert proc.returncode == 0
-        assert "collected 1 item" in proc.stdout
-        assert "tests/fixtures/molecule/default/molecule.yml::test" in proc.stdout
-        assert "1 passed" in proc.stdout
-
-    except subprocess.CalledProcessError as exc:
-        pytest.fail(exc.stderr)
+    proc = subprocess.run(
+        f"{sys.executable} -m pytest -v --molecule tests/fixtures/molecule/default/molecule.yml",
+        capture_output=True,
+        check=True,
+        env={"PATH": os.environ["PATH"]},
+        shell=True,
+        text=True,
+    )
+    assert proc.returncode == 0
+    assert "collected 1 item" in proc.stdout
+    assert "tests/fixtures/molecule/default/molecule.yml::test" in proc.stdout
+    assert "1 passed" in proc.stdout
 
 
 def test_molecule_fixture(molecule_scenario: MoleculeScenario) -> None:
