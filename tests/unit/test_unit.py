@@ -90,9 +90,9 @@ def test_resolve_collections_dir_in_tree(tmp_path: Path) -> None:
 
     :param tmp_path: The pytest tmp_path fixture
     """
-    tree = tmp_path / "collections" / "ansible_collections" / "testns" / "testname"
+    tree = tmp_path / "collections" / "ansible_collections" / "namespace" / "name"
     tree.mkdir(parents=True)
-    result = _resolve_collections_dir(tree, "testns", "testname")
+    result = _resolve_collections_dir(tree, "namespace", "name")
     assert result == tmp_path / "collections"
 
 
