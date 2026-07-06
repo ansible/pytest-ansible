@@ -304,6 +304,14 @@ tests/test_plugin.py
     DOC106: Method `MockMetafunc.__init__`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
     DOC107: Method `MockMetafunc.__init__`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
     DOC103: Method `MockMetafunc.__init__`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [fixturenames: ].
+    DOC601: Class `ItemWithPartialFixtureDefs`: Class docstring contains fewer class attributes than actual class attributes.  (Please read https://jsh9.github.io/pydoclint/checking_class_attributes.html on how to correctly document class attributes.)
+    DOC603: Class `ItemWithPartialFixtureDefs`: Class docstring attributes are different from actual class attributes. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Attributes in the class definition but not in the docstring: [fixturenames: ]. (Please read https://jsh9.github.io/pydoclint/checking_class_attributes.html on how to correctly document class attributes.)
+    DOC601: Class `ItemWithBareFixtureInfo`: Class docstring contains fewer class attributes than actual class attributes.  (Please read https://jsh9.github.io/pydoclint/checking_class_attributes.html on how to correctly document class attributes.)
+    DOC603: Class `ItemWithBareFixtureInfo`: Class docstring attributes are different from actual class attributes. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Attributes in the class definition but not in the docstring: [fixturenames: ]. (Please read https://jsh9.github.io/pydoclint/checking_class_attributes.html on how to correctly document class attributes.)
+    DOC106: Function `test_pytest_collect_file_symlink`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
+    DOC107: Function `test_pytest_collect_file_symlink`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
+    DOC106: Function `test_pytest_collect_file_non_molecule_yml`: The option `--arg-type-hints-in-signature` is `True` but there are no argument type hints in the signature
+    DOC107: Function `test_pytest_collect_file_non_molecule_yml`: The option `--arg-type-hints-in-signature` is `True` but not all args in the signature have type hints
 --------------------
 tests/unit/test_unit.py
     DOC101: Function `test_inject`: Docstring contains fewer arguments than in function signature.
@@ -312,4 +320,6 @@ tests/unit/test_unit.py
     DOC103: Function `test_inject_only`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [caplog: pytest.LogCaptureFixture, monkeypatch: pytest.MonkeyPatch, tmp_path: Path].
     DOC101: Function `test_resolve_collections_dir_in_tree`: Docstring contains fewer arguments than in function signature.
     DOC103: Function `test_resolve_collections_dir_in_tree`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [tmp_path: Path].
+    DOC101: Function `test_resolve_collections_dir_existing_dir`: Docstring contains fewer arguments than in function signature.
+    DOC103: Function `test_resolve_collections_dir_existing_dir`: Docstring arguments are different from function arguments. (Or could be other formatting issues: https://jsh9.github.io/pydoclint/violation_codes.html#notes-on-doc103 ). Arguments in the function signature but not in the docstring: [tmp_path: Path].
 --------------------

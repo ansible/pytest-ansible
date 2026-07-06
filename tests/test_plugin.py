@@ -343,10 +343,12 @@ def test_warn_or_fail_pre_v219():  # type: ignore[no-untyped-def]  # noqa: ANN20
 
     from pytest_ansible.plugin import warn_or_fail
 
-    with patch("pytest_ansible.plugin.has_ansible_v219", False):  # noqa: FBT003
-        with warnings.catch_warnings(record=True) as caught:
-            warnings.simplefilter("always")
-            warn_or_fail("ansible_host")
+    with (
+        patch("pytest_ansible.plugin.has_ansible_v219", False),  # noqa: FBT003
+        warnings.catch_warnings(record=True) as caught,
+    ):
+        warnings.simplefilter("always")
+        warn_or_fail("ansible_host")
 
     assert len(caught) == 1
     assert issubclass(caught[0].category, DeprecationWarning)
