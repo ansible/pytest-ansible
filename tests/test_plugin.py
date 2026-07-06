@@ -354,3 +354,31 @@ def test_warn_or_fail_pre_v219():  # type: ignore[no-untyped-def]  # noqa: ANN20
     assert len(caught) == 1
     assert issubclass(caught[0].category, DeprecationWarning)
     assert "ansible_host" in str(caught[0].message)
+
+
+def test_pytest_load_initial_conftests_connection_equals():  # type: ignore[no-untyped-def]  # noqa: ANN201
+    """The --connection=value form should also trigger a deprecation warning."""
+    import warnings
+
+    from pytest_ansible.plugin import pytest_load_initial_conftests
+
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        pytest_load_initial_conftests(args=["--connection=local"])
+
+    assert len(caught) == 1
+    assert issubclass(caught[0].category, DeprecationWarning)
+    assert "--ansible-connection" in str(caught[0].message)
+
+
+def test_pytest_load_initial_conftests_no_connection():  # type: ignore[no-untyped-def]  # noqa: ANN201
+    """No warning emitted when --connection is absent."""
+    import warnings
+
+    from pytest_ansible.plugin import pytest_load_initial_conftests
+
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        pytest_load_initial_conftests(args=["--verbose", "--ansible-connection=local"])
+
+    assert len(caught) == 0
