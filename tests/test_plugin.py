@@ -226,3 +226,131 @@ def test_any_item_uses_ansible_fixtures_logs_undefined(
         )
     assert result is False
     assert "unknown_fixture" in caplog.text
+
+
+def test_any_item_uses_ansible_fixtures_fixtureinfo_miss():  # type: ignore[no-untyped-def]  # noqa: ANN201
+    """Fixture present in _fixtureinfo but not matching name2fixturedefs falls through."""
+
+    class ItemWithPartialFixtureDefs:
+        """Item where fixture is NOT in name2fixturedefs."""
+
+        fixturenames = ["other_fixture"]  # noqa: RUF012
+
+        class _fixtureinfo:  # noqa: N801
+            name2fixturedefs = {"different_fixture": [MagicMock()]}  # noqa: RUF012
+
+    result = PyTestAnsiblePlugin._any_item_uses_ansible_fixtures(
+        [ItemWithPartialFixtureDefs()],
+    )
+    assert result is False
+
+
+def test_any_item_uses_ansible_fixtures_no_name2fixturedefs():  # type: ignore[no-untyped-def]  # noqa: ANN201
+    """Item with _fixtureinfo but without name2fixturedefs attribute."""
+
+    class ItemWithBareFixtureInfo:
+        """Item where _fixtureinfo lacks name2fixturedefs."""
+
+        fixturenames = ["some_fixture"]  # noqa: RUF012
+
+        class _fixtureinfo:  # noqa: N801
+            pass
+
+    result = PyTestAnsiblePlugin._any_item_uses_ansible_fixtures(
+        [ItemWithBareFixtureInfo()],
+    )
+    assert result is False
+
+
+def test_pytest_collect_file_no_molecule_option():  # type: ignore[no-untyped-def]  # noqa: ANN201
+    """Return None when config.option has no molecule attribute."""
+    from pytest_ansible.plugin import pytest_collect_file
+
+    parent = MagicMock()
+    del parent.config.option.molecule
+
+    result = pytest_collect_file(file_path=None, parent=parent)
+    assert result is None
+
+
+def test_pytest_collect_file_molecule_disabled():  # type: ignore[no-untyped-def]  # noqa: ANN201
+    """Return None when --molecule is not enabled."""
+    from pytest_ansible.plugin import pytest_collect_file
+
+    parent = MagicMock()
+    parent.config.option.molecule = False
+
+    result = pytest_collect_file(file_path=None, parent=parent)
+    assert result is None
+
+
+def test_pytest_collect_file_symlink(tmp_path):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
+    """Return None for symlinked files.
+
+    Args:
+        tmp_path: pytest tmp_path fixture
+    """
+    from pytest_ansible.plugin import pytest_collect_file
+
+    real_file = tmp_path / "real_molecule.yml"
+    real_file.write_text("---\n")
+    symlink = tmp_path / "molecule.yml"
+    symlink.symlink_to(real_file)
+
+    parent = MagicMock()
+    parent.config.option.molecule = True
+
+    result = pytest_collect_file(file_path=symlink, parent=parent)
+    assert result is None
+
+
+def test_pytest_collect_file_non_molecule_yml(tmp_path):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
+    """Return None for files not named molecule.yml.
+
+    Args:
+        tmp_path: pytest tmp_path fixture
+    """
+    from pytest_ansible.plugin import pytest_collect_file
+
+    other_file = tmp_path / "playbook.yml"
+    other_file.write_text("---\n")
+
+    parent = MagicMock()
+    parent.config.option.molecule = True
+
+    result = pytest_collect_file(file_path=other_file, parent=parent)
+    assert result is None
+
+
+def test_warn_or_fail_on_v219():  # type: ignore[no-untyped-def]  # noqa: ANN201
+    """On Ansible 2.19+, warn_or_fail should call pytest.exit."""
+    from unittest.mock import patch
+
+    from pytest_ansible.plugin import warn_or_fail
+
+    with (
+        patch("pytest_ansible.plugin.has_ansible_v219", True),  # noqa: FBT003
+        patch("pytest_ansible.plugin.pytest") as mock_pytest,
+    ):
+        warn_or_fail("ansible_host")
+        mock_pytest.exit.assert_called_once()
+
+
+def test_warn_or_fail_pre_v219():  # type: ignore[no-untyped-def]  # noqa: ANN201
+    """Before Ansible 2.19, warn_or_fail should emit a DeprecationWarning."""
+    import warnings
+
+    from unittest.mock import patch
+
+    from pytest_ansible.plugin import warn_or_fail
+
+    with (
+        patch("pytest_ansible.plugin.has_ansible_v219", False),  # noqa: FBT003
+        warnings.catch_warnings(record=True) as caught,
+    ):
+        warnings.simplefilter("always")
+        warn_or_fail("ansible_host")
+
+    assert len(caught) == 1
+    assert issubclass(caught[0].category, DeprecationWarning)
+    assert "ansible_host" in str(caught[0].message)
