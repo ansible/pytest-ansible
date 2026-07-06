@@ -122,6 +122,61 @@ def test_populate_config_metadata_with_metadata() -> None:
     assert "env" in config._metadata
 
 
+def test_populate_config_metadata_captures_env_vars(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Test _populate_config_metadata captures matching environment variables.
+
+    Args:
+        monkeypatch: pytest monkeypatch fixture
+    """
+
+    class FakeConfig:
+        """Config object with a _metadata dict."""
+
+        def __init__(self) -> None:
+            self._metadata: dict = {"Packages": {}}  # type: ignore[type-arg]
+
+    monkeypatch.setenv("ANSIBLE_TEST_VAR", "yes")
+    monkeypatch.setenv("MOLECULE_DEBUG", "1")
+
+    config = FakeConfig()
+    _populate_config_metadata(config)
+    assert "ANSIBLE_TEST_VAR=yes" in config._metadata["env"]
+    assert "MOLECULE_DEBUG=1" in config._metadata["env"]
+
+
+def test_populate_config_metadata_tools_already_exists() -> None:
+    """Test _populate_config_metadata when Tools key already exists in metadata."""
+
+    class FakeConfig:
+        """Config object with _metadata including pre-existing Tools."""
+
+        def __init__(self) -> None:
+            self._metadata: dict = {  # type: ignore[type-arg]
+                "Packages": {},
+                "Tools": {"existing_tool": "1.0"},
+            }
+
+    config = FakeConfig()
+    _populate_config_metadata(config)
+    assert "existing_tool" in config._metadata["Tools"]
+    assert "ansible" in config._metadata["Tools"]
+
+
+def test_resolve_collections_dir_existing_dir(tmp_path: Path) -> None:
+    """Test _resolve_collections_dir when name_dir already exists.
+
+    :param tmp_path: The pytest tmp_path fixture
+    """
+    collections_dir = tmp_path / "collections"
+    name_dir = collections_dir / "ansible_collections" / "ns" / "col"
+    name_dir.mkdir(parents=True)
+
+    result = _resolve_collections_dir(tmp_path, "ns", "col")
+    assert result == collections_dir
+
+
 def test_for_params():  # type: ignore[no-untyped-def]  # noqa: ANN201
     """Test for params."""
     proc = subprocess.run(
