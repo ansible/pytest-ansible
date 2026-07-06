@@ -305,7 +305,7 @@ def test_execute_play_v219_empty_callback_plugins() -> None:
         patch("pytest_ansible.module_dispatcher.v213.has_ansible_v219", True),  # noqa: FBT003
     ):
         play = MagicMock()
-        callback = MagicMock(spec=ResultAccumulator)
+        callback = MagicMock()
         _execute_play(play, {}, callback)
 
     mock_tqm_instance.load_callbacks.assert_called_once()
@@ -326,7 +326,7 @@ def test_execute_play_v219_with_callback_plugins() -> None:
         patch("pytest_ansible.module_dispatcher.v213.has_ansible_v219", True),  # noqa: FBT003
     ):
         play = MagicMock()
-        callback = MagicMock(spec=ResultAccumulator)
+        callback = MagicMock()
         _execute_play(play, {}, callback)
 
     assert mock_tqm_instance._callback_plugins[0] is callback
