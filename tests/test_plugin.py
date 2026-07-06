@@ -290,8 +290,6 @@ def test_pytest_collect_file_symlink(tmp_path):  # type: ignore[no-untyped-def] 
     Args:
         tmp_path: pytest tmp_path fixture
     """
-    from pathlib import Path
-
     from pytest_ansible.plugin import pytest_collect_file
 
     real_file = tmp_path / "real_molecule.yml"
@@ -312,8 +310,6 @@ def test_pytest_collect_file_non_molecule_yml(tmp_path):  # type: ignore[no-unty
     Args:
         tmp_path: pytest tmp_path fixture
     """
-    from pathlib import Path
-
     from pytest_ansible.plugin import pytest_collect_file
 
     other_file = tmp_path / "playbook.yml"
@@ -342,6 +338,7 @@ def test_warn_or_fail_on_v219():  # type: ignore[no-untyped-def]  # noqa: ANN201
 def test_warn_or_fail_pre_v219():  # type: ignore[no-untyped-def]  # noqa: ANN201
     """Before Ansible 2.19, warn_or_fail should emit a DeprecationWarning."""
     import warnings
+
     from unittest.mock import patch
 
     from pytest_ansible.plugin import warn_or_fail
