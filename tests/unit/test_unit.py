@@ -191,8 +191,8 @@ def test_resolve_collections_dir_creates_symlinks(tmp_path: Path) -> None:
     (tmp_path / "module_a.py").write_text("# module a")
     (tmp_path / "README.md").write_text("# readme")
 
-    result = _resolve_collections_dir(tmp_path, "myns", "mycol")
-    name_dir = tmp_path / "collections" / "ansible_collections" / "myns" / "mycol"
+    result = _resolve_collections_dir(tmp_path, "ns", "col")
+    name_dir = tmp_path / "collections" / "ansible_collections" / "ns" / "col"
     assert result == tmp_path / "collections"
     assert name_dir.is_dir()
     assert (name_dir / "module_a.py").is_symlink()
@@ -255,7 +255,7 @@ def test_result_accumulator_on_failed() -> None:
     result._host.get_name.return_value = "host1"
     result._result = {"rc": 1, "stderr": "error"}
 
-    acc.v2_runner_on_failed(result)
+    acc.v2_runner_on_failed(result)  # type: ignore[no-untyped-call]
     assert "host1" in acc.contacted
     assert acc.contacted["host1"]["failed"] is True
     assert acc.contacted["host1"]["rc"] == 1
@@ -267,7 +267,7 @@ def test_result_accumulator_results_property() -> None:
     result = MagicMock()
     result._host.get_name.return_value = "h1"
     result._result = {"changed": True}
-    acc.v2_runner_on_ok(result)
+    acc.v2_runner_on_ok(result)  # type: ignore[no-untyped-call]
 
     assert acc.results == {"contacted": {"h1": {"changed": True}}, "unreachable": {}}
 
@@ -305,7 +305,7 @@ def test_execute_play_v219_empty_callback_plugins() -> None:
         patch("pytest_ansible.module_dispatcher.v213.has_ansible_v219", True),  # noqa: FBT003
     ):
         play = MagicMock()
-        callback = ResultAccumulator()
+        callback = MagicMock(spec=ResultAccumulator)
         _execute_play(play, {}, callback)
 
     mock_tqm_instance.load_callbacks.assert_called_once()
@@ -326,7 +326,7 @@ def test_execute_play_v219_with_callback_plugins() -> None:
         patch("pytest_ansible.module_dispatcher.v213.has_ansible_v219", True),  # noqa: FBT003
     ):
         play = MagicMock()
-        callback = ResultAccumulator()
+        callback = MagicMock(spec=ResultAccumulator)
         _execute_play(play, {}, callback)
 
     assert mock_tqm_instance._callback_plugins[0] is callback
@@ -339,7 +339,7 @@ def test_result_accumulator_on_unreachable() -> None:
     result._host.get_name.return_value = "unreachable_host"
     result._result = {"msg": "No route to host"}
 
-    acc.v2_runner_on_unreachable(result)
+    acc.v2_runner_on_unreachable(result)  # type: ignore[no-untyped-call]
     assert "unreachable_host" in acc.unreachable
     assert acc.unreachable["unreachable_host"]["msg"] == "No route to host"
 
