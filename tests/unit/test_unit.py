@@ -122,6 +122,26 @@ def test_populate_config_metadata_with_metadata() -> None:
     assert "env" in config._metadata
 
 
+def test_populate_config_metadata_captures_env_vars(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Test _populate_config_metadata captures matching environment variables."""
+
+    class FakeConfig:
+        """Config object with a _metadata dict."""
+
+        def __init__(self) -> None:
+            self._metadata: dict = {"Packages": {}}  # type: ignore[type-arg]
+
+    monkeypatch.setenv("ANSIBLE_TEST_VAR", "yes")
+    monkeypatch.setenv("MOLECULE_DEBUG", "1")
+
+    config = FakeConfig()
+    _populate_config_metadata(config)
+    assert "ANSIBLE_TEST_VAR=yes" in config._metadata["env"]
+    assert "MOLECULE_DEBUG=1" in config._metadata["env"]
+
+
 def test_for_params():  # type: ignore[no-untyped-def]  # noqa: ANN201
     """Test for params."""
     proc = subprocess.run(
