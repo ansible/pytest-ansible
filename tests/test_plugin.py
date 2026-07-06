@@ -2,12 +2,17 @@
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
 from unittest import mock
 from unittest.mock import MagicMock
 
 from pytest_ansible.plugin import PyTestAnsiblePlugin, pytest_generate_tests
 
 from .conftest import skip_ansible_219
+
+
+if TYPE_CHECKING:
+    import pytest
 
 
 class MockItem:
@@ -160,3 +165,64 @@ def test_pytest_collection_modifyitems_no_fixtures():  # type: ignore[no-untyped
     with mock.patch.object(plugin, "assert_required_ansible_parameters") as mock_assert:
         plugin.pytest_collection_modifyitems(mock_config, items)  # type: ignore[no-untyped-call]
         mock_assert.assert_not_called()
+
+
+def test_any_item_uses_ansible_fixtures_skips_items_without_fixturenames():  # type: ignore[no-untyped-def]  # noqa: ANN201
+    """Items without a fixturenames attribute are silently skipped."""
+
+    class NoFixtureItem:
+        pass
+
+    result = PyTestAnsiblePlugin._any_item_uses_ansible_fixtures(
+        [NoFixtureItem()],
+    )
+    assert result is False
+
+
+def test_any_item_uses_ansible_fixtures_skips_request_fixture():  # type: ignore[no-untyped-def]  # noqa: ANN201
+    """The reserved 'request' fixture name should be silently skipped."""
+    result = PyTestAnsiblePlugin._any_item_uses_ansible_fixtures(
+        [MockItem(fixturenames=["request"])],
+    )
+    assert result is False
+
+
+def test_any_item_uses_ansible_fixtures_skips_known_fixture_defs():  # type: ignore[no-untyped-def]  # noqa: ANN201
+    """Fixtures present in _fixtureinfo.name2fixturedefs are skipped."""
+
+    class ItemWithFixtureDefs:
+        fixturenames = ["my_custom_fixture"]  # noqa: RUF012
+
+        class _fixtureinfo:  # noqa: N801
+            name2fixturedefs = {"my_custom_fixture": [MagicMock()]}  # noqa: RUF012
+
+    result = PyTestAnsiblePlugin._any_item_uses_ansible_fixtures(
+        [ItemWithFixtureDefs()],
+    )
+    assert result is False
+
+
+def test_any_item_uses_ansible_fixtures_returns_true_for_ansible_fixture():  # type: ignore[no-untyped-def]  # noqa: ANN201
+    """Return True when an item uses an OUR_FIXTURES fixture."""
+    result = PyTestAnsiblePlugin._any_item_uses_ansible_fixtures(
+        [MockItem(fixturenames=["ansible_adhoc"])],
+    )
+    assert result is True
+
+
+def test_any_item_uses_ansible_fixtures_logs_undefined(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    """Fixtures with no definition and not 'request' trigger a log error.
+
+    Args:
+        caplog: pytest log capture fixture
+    """
+    import logging
+
+    with caplog.at_level(logging.ERROR, logger="pytest_ansible.plugin"):
+        result = PyTestAnsiblePlugin._any_item_uses_ansible_fixtures(
+            [MockItem(fixturenames=["unknown_fixture"])],
+        )
+    assert result is False
+    assert "unknown_fixture" in caplog.text
