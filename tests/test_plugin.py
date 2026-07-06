@@ -329,10 +329,8 @@ def test_warn_or_fail_on_v219():  # type: ignore[no-untyped-def]  # noqa: ANN201
     from pytest_ansible.plugin import warn_or_fail
 
     with (
-        patch("pytest_ansible.plugin.has_ansible_v219", True),
-        patch(  # noqa: FBT003
-            "pytest_ansible.plugin.pytest"
-        ) as mock_pytest,
+        patch("pytest_ansible.plugin.has_ansible_v219", True),  # noqa: FBT003
+        patch("pytest_ansible.plugin.pytest") as mock_pytest,
     ):
         warn_or_fail("ansible_host")
         mock_pytest.exit.assert_called_once()
