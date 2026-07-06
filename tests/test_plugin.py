@@ -2,14 +2,17 @@
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
 from unittest import mock
 from unittest.mock import MagicMock
-
-import pytest
 
 from pytest_ansible.plugin import PyTestAnsiblePlugin, pytest_generate_tests
 
 from .conftest import skip_ansible_219
+
+
+if TYPE_CHECKING:
+    import pytest
 
 
 class MockItem:
@@ -207,7 +210,7 @@ def test_any_item_uses_ansible_fixtures_returns_true_for_ansible_fixture():  # t
     assert result is True
 
 
-def test_any_item_uses_ansible_fixtures_logs_undefined(  # type: ignore[no-untyped-def]
+def test_any_item_uses_ansible_fixtures_logs_undefined(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
     """Fixtures with no definition and not 'request' trigger a log error.
