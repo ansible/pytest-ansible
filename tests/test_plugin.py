@@ -5,6 +5,8 @@ from __future__ import annotations
 from unittest import mock
 from unittest.mock import MagicMock
 
+import pytest
+
 from pytest_ansible.plugin import PyTestAnsiblePlugin, pytest_generate_tests
 
 from .conftest import skip_ansible_219
@@ -186,10 +188,10 @@ def test_any_item_uses_ansible_fixtures_skips_known_fixture_defs():  # type: ign
     """Fixtures present in _fixtureinfo.name2fixturedefs are skipped."""
 
     class ItemWithFixtureDefs:
-        fixturenames = ["my_custom_fixture"]
+        fixturenames = ["my_custom_fixture"]  # noqa: RUF012
 
         class _fixtureinfo:  # noqa: N801
-            name2fixturedefs = {"my_custom_fixture": [MagicMock()]}
+            name2fixturedefs = {"my_custom_fixture": [MagicMock()]}  # noqa: RUF012
 
     result = PyTestAnsiblePlugin._any_item_uses_ansible_fixtures(
         [ItemWithFixtureDefs()],
@@ -205,7 +207,9 @@ def test_any_item_uses_ansible_fixtures_returns_true_for_ansible_fixture():  # t
     assert result is True
 
 
-def test_any_item_uses_ansible_fixtures_logs_undefined(caplog):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
+def test_any_item_uses_ansible_fixtures_logs_undefined(  # type: ignore[no-untyped-def]
+    caplog: pytest.LogCaptureFixture,
+) -> None:
     """Fixtures with no definition and not 'request' trigger a log error.
 
     Args:
