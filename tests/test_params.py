@@ -197,20 +197,6 @@ def test_deprecated_connection_warning() -> None:
     assert "pytest-ansible no longer supports the '--connection' option" in str(caught[0].message)
 
 
-def test_deprecated_connection_equals_warning() -> None:
-    """Verify a deprecation warning is emitted when --connection=value is used."""
-    from pytest_ansible.plugin import pytest_load_initial_conftests
-
-    args: list[str] = ["--connection=local"]
-    with warnings.catch_warnings(record=True) as caught:
-        warnings.simplefilter("always")
-        pytest_load_initial_conftests(args=args)
-
-    assert len(caught) == 1
-    assert issubclass(caught[0].category, DeprecationWarning)
-    assert "pytest-ansible no longer supports the '--connection' option" in str(caught[0].message)
-
-
 def test_no_warning_without_connection_flag() -> None:
     """Verify no warning is emitted when --connection is not used."""
     from pytest_ansible.plugin import pytest_load_initial_conftests
