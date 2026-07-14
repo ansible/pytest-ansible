@@ -203,11 +203,14 @@ pytest \
     [--ask-become-pass] \
     [--limit <limit>] \
     [--ansible-unit-inject-only] \
-    [--molecule] \                       # deprecated
-    [--molecule-unavailable-driver] \    # deprecated
-    [--skip-no-git-change] \             # deprecated
+    [--molecule] \
+    [--molecule-unavailable-driver] \
+    [--skip-no-git-change] \
     [--check]
 ```
+
+`--molecule`, `--molecule-unavailable-driver`, and `--skip-no-git-change` are
+deprecated; prefer `molecule test --all`.
 
 ### Inventory
 

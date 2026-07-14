@@ -282,19 +282,25 @@ def pytest_addoption(parser: pytest.Parser) -> None:
         "--molecule_unavailable_driver",
         action="store",
         default=None,
-        help="DEPRECATED: What marker to add to molecule scenarios when driver is ",
+        help=("DEPRECATED: What marker to add to molecule scenarios when driver is unavailable."),
     )
     group.addoption(
         "--molecule_base_config",
         action="store",
         default=None,
-        help="DEPRECATED: Path to the molecule base config file. The value of this option is ",
+        help=(
+            "DEPRECATED: Path to the molecule base config file. The value of this "
+            "option is passed to molecule."
+        ),
     )
     group.addoption(
         "--skip_no_git_change",
         action="store",
         default=None,
-        help="DEPRECATED: Commit to use as a reference for this test. If the role wasn't",
+        help=(
+            "DEPRECATED: Commit to use as a reference for this test. If the role "
+            "wasn't changed, the scenario is skipped."
+        ),
     )
     # Add github marker to --help
     parser.addini("ansible", "Ansible integration", "args")

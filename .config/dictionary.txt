@@ -14,12 +14,10 @@ addini
 addinivalue
 addoption
 addopts
-autorefs
 autouse
 capfd
 caplog
 conftests
-facelessuser
 fixturedefs
 fixtureinfo
 fixturenames
@@ -30,13 +28,11 @@ funcargs
 getfixturevalue
 getgroup
 getplugin
-inlinehilite
 junitxml
 lineinfile
 makeconftest
 makepyfile
 metafunc
-mkdocstrings
 modifyitems
 pandoc
 parseoutcomes
