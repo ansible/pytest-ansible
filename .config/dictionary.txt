@@ -33,8 +33,6 @@ getplugin
 inlinehilite
 junitxml
 lineinfile
-linenums
-magiclink
 makeconftest
 makepyfile
 metafunc
@@ -46,13 +44,11 @@ pluginmanager
 posargs
 prek
 pydoclint
-pymdownx
 pytester
 pytestmark
 pytrace
 reportinfo
 runpytest
-superfences
 testinfra
 testpaths
 tombi

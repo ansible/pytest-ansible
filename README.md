@@ -132,64 +132,38 @@ E   ModuleNotFoundError: No module named 'ansible_collections'
 HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
 ```
 
-## Molecule Scenario Integration
+## Molecule Scenario Integration (deprecated)
 
-This functionality assists in running Molecule `scenarios` using `pytest`. It
-enables pytest discovery of all `molecule.yml` files inside the codebase and
-runs them as pytest tests. It allows you to include Molecule scenarios as part
-of your pytest test suite, allowing you to thoroughly test your Ansible roles
-and playbooks across different scenarios and environments.
+> **Deprecated:** Running Molecule scenarios via pytest-ansible will be removed
+> in a future release.
 
-## Running molecule scenarios using pytest
+Prefer the Molecule CLI (and tox-ansible for collections):
 
-Molecule scenarios can be tested using 2 different methods if molecule is
-installed.
-
-**Recommended:**
-
-Add a `test_integration.py` file to the `tests/integration` directory of the
-ansible collection:
-
-```
-"""Tests for molecule scenarios."""
-from __future__ import absolute_import, division, print_function
-
-from pytest_ansible.molecule import MoleculeScenario
-
-
-def test_integration(molecule_scenario: MoleculeScenario) -> None:
-    """Run molecule for each scenario.
-
-    :param molecule_scenario: The molecule scenario object
-    """
-    proc = molecule_scenario.test()
-    assert proc.returncode == 0
+```bash
+molecule test --all
+# With shared_state collections, use molecule's own concurrency:
+molecule test --all --workers 4
 ```
 
-The `molecule_scenario` fixture provides parameterized molecule scenarios
-discovered in the collection's `extensions/molecule` directory, as well as other
-directories within the collection.
+### Why this is deprecated
 
-`molecule test -s <scenario>` will be run for each scenario and a completed
-subprocess returned from the `test()` call.
+pytest-ansible runs each scenario as a separate `molecule test -s <scenario>`
+subprocess. That only works for **standalone** scenarios. It does **not**
+support Molecule `shared_state` (create once in the default scenario, run
+component scenarios, destroy once) or `--workers`. Those require Molecule's
+native multi-scenario orchestration.
 
-**Legacy:**
+### Migration
 
-Run molecule with the `--molecule` command line parameter to inject each
-molecule directory found in the current working directory. Each scenario will be
-injected as an external test in the the tests available for pytest. Due to the
-nature of this approach, the molecule scenarios are not represented as python
-tests and may not show in the IDE's pytest test tree.
+| Old (pytest-ansible) | New |
+| --- | --- |
+| `molecule_scenario` fixture + glue test file | `molecule test --all` |
+| `pytest --molecule` | `molecule test --all` |
+| Collection CI via pytest integration env | tox-ansible molecule test type |
 
-To run Molecule scenarios using pytest, follow these steps:
-
-1. Install the `pytest-ansible` plugin using pip:
-
-```
-pip install pytest-ansible
-```
-
-2. Execute pytest to run Molecule scenarios: `pytest`
+The `--molecule*` CLI options, `molecule_scenario` fixture, and
+`pytest_ansible.molecule.MoleculeScenario` remain available temporarily but
+emit a `DeprecationWarning`.
 
 ## Ansible Integration for Pytest Tests
 
@@ -229,9 +203,9 @@ pytest \
     [--ask-become-pass] \
     [--limit <limit>] \
     [--ansible-unit-inject-only] \
-    [--molecule] \
-    [--molecule-unavailable-driver] \
-    [--skip-no-git-change] \
+    [--molecule] \                       # deprecated
+    [--molecule-unavailable-driver] \    # deprecated
+    [--skip-no-git-change] \             # deprecated
     [--check]
 ```
 
