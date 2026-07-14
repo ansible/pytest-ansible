@@ -5,26 +5,140 @@
 [![License](https://img.shields.io/pypi/l/pytest-ansible.svg)](https://pypi.python.org/pypi/pytest-ansible/)
 [![Supported Python Versions](https://img.shields.io/pypi/pyversions/pytest-ansible.svg)](https://pypi.python.org/pypi/pytest-ansible/)
 
-The `pytest-ansible` plugin is designed to provide seamless integration between
-`pytest` and `Ansible`, allowing you to efficiently run and test Ansible-related
-tasks and scenarios within your pytest test suite. This plugin enhances the
-testing workflow by offering three distinct pieces of functionality:
+## A note from pytest-ansible
 
-1. **Unit Testing for Ansible Collections**: This feature aids in running unit
-   tests for `Ansible collections` using `pytest`. It allows you to validate the
-   behavior of your Ansible `modules` and `roles` in isolation, ensuring that
-   each component functions as expected.
+I've made the difficult decision to deprecate myself.
 
-2. **Molecule Scenario Integration**: The plugin assists in running Molecule
-   `scenarios` using `pytest`. This integration streamlines the testing of
-   Ansible roles and playbooks across different environments, making it easier
-   to identify and fix issues across diverse setups.
+My first commit was **25 July 2014** — a small pytest plugin so you could aim
+Ansible at inventory from inside a test function and get something friendlier
+than shell soup. Over the next decade-plus (700+ commits) I grew inventory
+fixtures, markers, collection unit-test path injection, and for a while even
+helped run Molecule scenarios through pytest. It was a good run.
 
-3. **Ansible Integration for Pytest Tests**: With this functionality, you can
-   seamlessly use `Ansible` from within your `pytest` tests. This opens up
-   possibilities to interact with Ansible components and perform tasks like
-   provisioning resources, testing configurations, and more, all while
-   leveraging the power and flexibility of pytest.
+Somewhere along the way the ecosystem caught up — and then leaped ahead. Plain
+**pytest**, **ansible-test**, **molecule** (especially with `shared_state` and
+`--workers`), **tox-ansible**, **ansible-dev-environment (ADE)**, and
+**ansible-creator** now carry the day for collection authors. They own
+orchestration, installs, and scenarios better than a single plugin ever should.
+That's not a eulogy for pytest; it's a thank-you to the rich Python testing
+world that made better tools possible.
+
+To everyone who filed issues, sent PRs, reviewed docs, fixed CI at odd hours,
+or quietly kept dependencies green: thank you. James Laska lit the fuse; many
+humans (and a few tireless bots) kept the lights on. You're why I lasted long
+enough to see myself replaced properly.
+
+**Planned project end-of-life: December 2026.** Until then I still install and
+run for existing users. Prefer pinning a release if you need more time.
+Molecule-via-pytest is already on a faster deprecation track — see
+[Molecule Scenario Integration (deprecated)](#molecule-scenario-integration-deprecated)
+below.
+
+### Where to go next
+
+| What you used me for | Use instead |
+| --- | --- |
+| Collection unit tests / import path magic | [ADE](https://github.com/ansible/ansible-dev-environment) (`ade install -e`) + plain pytest |
+| Collection CI matrix | [tox-ansible](https://github.com/ansible/tox-ansible) |
+| Integration / Molecule scenarios | `molecule test --all` (and tox-ansible's molecule test type) |
+| Iterate hosts/groups in pytest | `ansible-inventory --list` + `pytest.mark.parametrize` (below) |
+| Ad-hoc module calls from pytest | Small in-repo helper shelling out to `ansible` (below), or a Molecule scenario |
+
+### Migration: iterate hosts (parametrize)
+
+```python
+# tests/conftest.py — copy into your repo
+from __future__ import annotations
+
+import json
+import subprocess
+
+
+def inventory_hosts(inventory: str = "inventory") -> list[str]:
+    data = json.loads(
+        subprocess.check_output(
+            ["ansible-inventory", "-i", inventory, "--list"],
+            text=True,
+        )
+    )
+    hosts = data.get("_meta", {}).get("hostvars") or data.get("all", {}).get("hosts") or []
+    return sorted(hosts)
+
+
+def pytest_generate_tests(metafunc) -> None:
+    if "hostname" in metafunc.fixturenames:
+        metafunc.parametrize("hostname", inventory_hosts())
+```
+
+```python
+# tests/test_ping.py
+import subprocess
+
+
+def test_ping(hostname: str) -> None:
+    subprocess.run(
+        ["ansible", "-i", "inventory", hostname, "-m", "ping"],
+        check=True,
+    )
+```
+
+For a group, read `data["webservers"]["hosts"]` (or your group name) from the
+same JSON and parametrize that list instead.
+
+### Migration: run a module (in-repo helper)
+
+```python
+# tests/helpers/ansible_cli.py
+from __future__ import annotations
+
+import subprocess
+
+
+def run_module(
+    module: str,
+    *,
+    inventory: str = "inventory",
+    hosts: str = "all",
+    args: str = "",
+    extra: list[str] | None = None,
+) -> subprocess.CompletedProcess[str]:
+    cmd = ["ansible", "-i", inventory, hosts, "-m", module]
+    if args:
+        cmd.extend(["-a", args])
+    if extra:
+        cmd.extend(extra)
+    return subprocess.run(cmd, check=False, capture_output=True, text=True)
+```
+
+```python
+def test_setup_localhost() -> None:
+    proc = run_module(
+        "setup",
+        inventory="localhost,",
+        hosts="localhost",
+        extra=["-c", "local"],
+    )
+    assert proc.returncode == 0
+
+
+def test_become_example(hostname: str) -> None:
+    proc = run_module(
+        "ping",
+        hosts=hostname,
+        extra=["--become", "--become-user", "root"],
+    )
+    assert proc.returncode == 0
+```
+
+These patterns replace `ansible_host` / `ansible_group` iterators and most
+`ansible_module` / `ansible_adhoc` / `ansible_facts` / `localhost` usage. They
+are deliberately copy-paste — not a new shared library. For real multi-host
+integration with shared infrastructure, prefer Molecule.
+
+## What this plugin still does (legacy)
+
+Until December 2026, the fixtures and CLI flags below remain available but are
+not the recommended path. Prefer the migration notes above.
 
 ## Supported Ansible
 
@@ -165,14 +279,17 @@ The `--molecule*` CLI options, `molecule_scenario` fixture, and
 `pytest_ansible.molecule.MoleculeScenario` remain available temporarily but
 emit a `DeprecationWarning`.
 
-## Ansible Integration for Pytest Tests
+## Ansible Integration for Pytest Tests (legacy)
+
+> **Legacy:** Prefer the [migration notes](#migration-iterate-hosts-parametrize)
+> above. These fixtures remain until the December 2026 project end-of-life.
 
 The `ansible_module`, `ansible_adhoc`, `localhost`, and `ansible_facts` fixtures
 are provided to help you integrate Ansible functionalities into your pytest
 tests. These fixtures allow you to interact with Ansible modules, run commands
 on localhost, fetch Ansible facts, and more.
 
-## Fixtures and helpers for use in tests
+## Fixtures and helpers for use in tests (legacy)
 
 Here's a quick overview of the available fixtures:
 

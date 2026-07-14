@@ -1,6 +1,14 @@
 # Getting Started
 
-## Unit Testing for Ansible Collections
+!!! warning
+
+    **pytest-ansible is deprecated** (project end-of-life: **December 2026**).
+    Prefer [ADE](https://github.com/ansible/ansible-dev-environment) + plain
+    pytest for collection unit tests, and `molecule test --all` for scenarios.
+    See the [README note](https://github.com/ansible/pytest-ansible#a-note-from-pytest-ansible)
+    for migration examples (host iteration, in-repo `ansible` helpers).
+
+## Unit Testing for Ansible Collections (legacy)
 
 The `pytest-ansible` plugin allows ansible collection's unit tests to be run
 with only `pytest`. It offers a focused approach to testing individual Ansible
@@ -8,6 +16,9 @@ modules. With this plugin, you can write and execute unit tests specifically for
 Ansible modules, ensuring the accuracy and reliability of your module code. This
 is particularly useful for verifying the correctness of module behavior in
 isolation.
+
+For new work, prefer `ade install -e` and plain pytest instead of relying on
+collection path injection.
 
 To use `pytest-ansible`, follow these steps:
 
