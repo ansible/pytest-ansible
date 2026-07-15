@@ -5,12 +5,14 @@ on:
   release:
     types: [published]
 
+permissions:
+  contents: read # checkout source for the build
+  id-token: write # PyPI trusted publishing (OIDC)
+
 jobs:
   release:
     environment: release
     runs-on: ubuntu-24.04
-    permissions:
-      id-token: write
 
     env:
       FORCE_COLOR: 1
@@ -39,6 +41,7 @@ jobs:
   forum_post:
     needs: release
     runs-on: ubuntu-24.04
+    permissions: {}
 
     steps:
       - name: Retrieve the forum post script from team-devtools

@@ -11,6 +11,12 @@ on:
   pull_request_target:
     types: [opened, labeled, unlabeled, synchronize]
 
+# Caller must grant at least the permissions required by team-devtools ack.yml.
+permissions:
+  checks: write # required-labels / status checks
+  contents: write # needed to update release draft
+  pull-requests: write # PR approval, labels, and merge
+
 jobs:
   ack:
     uses: ansible/team-devtools/.github/workflows/ack.yml@main
