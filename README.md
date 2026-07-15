@@ -321,12 +321,12 @@ pytest \
     [--limit <limit>] \
     [--ansible-unit-inject-only] \
     [--molecule] \
-    [--molecule-unavailable-driver] \
-    [--skip-no-git-change] \
+    [--molecule_unavailable_driver] \
+    [--skip_no_git_change] \
     [--check]
 ```
 
-`--molecule`, `--molecule-unavailable-driver`, and `--skip-no-git-change` are
+`--molecule`, `--molecule_unavailable_driver`, and `--skip_no_git_change` are
 deprecated; prefer `molecule test --all`.
 
 ### Inventory
