@@ -13,7 +13,7 @@ on:
 
 # Caller must grant at least the permissions required by team-devtools ack.yml.
 permissions:
-  checks: write # required-labels / status checks
+  checks: read # required-labels / status checks
   contents: write # needed to update release draft
   pull-requests: write # PR approval, labels, and merge
 
