@@ -18,6 +18,7 @@ ignorePaths:
   - \.*
   - cspell.config.yaml
   - uv.lock
+  - mkdocs.yml
 
   - "*.egg-info"
 

@@ -26,6 +26,29 @@ from ansible_compat.config import ansible_version
 molecule_spec = importlib.util.find_spec("molecule")
 HAS_MOLECULE = molecule_spec is not None
 
+MOLECULE_DEPRECATION = (
+    "Running Molecule scenarios via pytest-ansible is deprecated and will be "
+    "removed in a future release. Use the Molecule CLI instead "
+    "(`molecule test --all`, optionally with `--workers` when using "
+    "shared_state). For collections, prefer tox-ansible's molecule test type. "
+    "See the pytest-ansible documentation for migration details."
+)
+
+_molecule_deprecation_warned = False
+
+
+def warn_molecule_deprecated(*, stacklevel: int = 2) -> None:
+    """Emit a one-time DeprecationWarning for molecule-via-pytest usage.
+
+    Args:
+        stacklevel: Warning stacklevel passed to warnings.warn.
+    """
+    global _molecule_deprecation_warned  # noqa: PLW0603
+    if _molecule_deprecation_warned:
+        return
+    _molecule_deprecation_warned = True
+    warnings.warn(MOLECULE_DEPRECATION, DeprecationWarning, stacklevel=stacklevel)
+
 
 logger = logging.getLogger(__name__)
 counter = 0
@@ -272,6 +295,7 @@ class MoleculeScenario:
         Returns:
             The completed process
         """
+        warn_molecule_deprecated()
         args = [sys.executable, "-m", "molecule", "test", "-s", self.name]
 
         # We append the additional options to molecule call, allowing user to

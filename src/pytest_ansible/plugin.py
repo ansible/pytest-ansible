@@ -36,7 +36,12 @@ from pytest_ansible.fixtures import (
 from pytest_ansible.has_version import has_ansible_v219
 from pytest_ansible.host_manager.utils import get_host_manager
 
-from .molecule import HAS_MOLECULE, MoleculeFile, MoleculeScenario
+from .molecule import (
+    HAS_MOLECULE,
+    MoleculeFile,
+    MoleculeScenario,
+    warn_molecule_deprecated,
+)
 from .units import inject, inject_only
 
 
@@ -114,11 +119,20 @@ def _load_scenarios(config: pytest.Config) -> None:
 def pytest_load_initial_conftests(
     args: list[str],
 ) -> None:
-    """Detect deprecated --connection usage and warn.
+    """Detect deprecated --connection / --molecule usage and warn.
 
     Args:
         args: Combined list of CLI args and addopts values
     """
+    molecule_cli_options = (
+        "--molecule",
+        "--molecule_unavailable_driver",
+        "--molecule-unavailable-driver",
+        "--molecule_base_config",
+        "--molecule-base-config",
+        "--skip_no_git_change",
+        "--skip-no-git-change",
+    )
     for arg in args:
         if arg == "--connection" or arg.startswith("--connection="):
             warnings.warn(
@@ -129,6 +143,12 @@ def pytest_load_initial_conftests(
                 DeprecationWarning,
                 stacklevel=1,
             )
+            break
+
+    for arg in args:
+        option = arg.split("=", maxsplit=1)[0]
+        if option in molecule_cli_options:
+            warn_molecule_deprecated(stacklevel=1)
             break
 
 
@@ -253,25 +273,34 @@ def pytest_addoption(parser: pytest.Parser) -> None:
         "--molecule",
         action="store_true",
         default=False,
-        help="Enable support for running discovered molecule scenarios from pytest.",
+        help=(
+            "DEPRECATED: Enable support for running discovered molecule scenarios "
+            "from pytest. Use `molecule test --all` instead."
+        ),
     )
     group.addoption(
         "--molecule_unavailable_driver",
         action="store",
         default=None,
-        help="What marker to add to molecule scenarios when driver is ",
+        help=("DEPRECATED: What marker to add to molecule scenarios when driver is unavailable."),
     )
     group.addoption(
         "--molecule_base_config",
         action="store",
         default=None,
-        help="Path to the molecule base config file. The value of this option is ",
+        help=(
+            "DEPRECATED: Path to the molecule base config file. The value of this "
+            "option is passed to molecule."
+        ),
     )
     group.addoption(
         "--skip_no_git_change",
         action="store",
         default=None,
-        help="Commit to use as a reference for this test. If the role wasn't",
+        help=(
+            "DEPRECATED: Commit to use as a reference for this test. If the role "
+            "wasn't changed, the scenario is skipped."
+        ),
     )
     # Add github marker to --help
     parser.addini("ansible", "Ansible integration", "args")
@@ -326,6 +355,7 @@ def pytest_collect_file(
         return None
     if not parent.config.option.molecule:
         return None
+    warn_molecule_deprecated()
     if not HAS_MOLECULE:  # pragma: no cover
         pytest.exit(
             f"molecule not installed or found, unable to collect test {file_path}",
@@ -399,6 +429,7 @@ def pytest_generate_tests(metafunc):  # type: ignore[no-untyped-def]  # noqa: AN
         metafunc.parametrize("ansible_group", iter(hosts[g] for g in extra_groups))
 
     if "molecule_scenario" in metafunc.fixturenames:
+        warn_molecule_deprecated()
         if not HAS_MOLECULE:
             pytest.exit("molecule not installed or found.")
 
