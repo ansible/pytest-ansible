@@ -21,6 +21,15 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
   cancel-in-progress: true
 
+# Caller must grant at least the permissions required by team-devtools tox.yml.
+# Narrower scopes (e.g. contents: read only) cause reusable workflow startup_failure.
+permissions:
+  checks: read
+  contents: read
+  id-token: write # OIDC tokens used by reusable tox jobs
+  packages: write # some tox environments might produce containers
+  pull-requests: write # allow codenotify to comment on pull-request
+
 jobs:
   tox:
     uses: ansible/team-devtools/.github/workflows/tox.yml@main
