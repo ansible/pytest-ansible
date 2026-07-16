@@ -17,6 +17,7 @@ addopts
 autouse
 capfd
 caplog
+conftest
 conftests
 fixturedefs
 fixtureinfo
@@ -28,6 +29,7 @@ funcargs
 getfixturevalue
 getgroup
 getplugin
+hostvars
 junitxml
 lineinfile
 makeconftest
