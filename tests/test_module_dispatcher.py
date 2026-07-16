@@ -67,8 +67,9 @@ def test_ansible_module_error(hosts):  # type: ignore[no-untyped-def]  # noqa: A
     """Verify that AnsibleModuleError is raised when no such module exists."""
     from pytest_ansible.errors import AnsibleModuleError
 
+    all_hosts = hosts().all
     with pytest.raises(AnsibleModuleError) as exc_info:
-        hosts().all.a_module_that_most_certainly_does_not_exist()
+        all_hosts.a_module_that_most_certainly_does_not_exist()
     assert (
         str(exc_info.value)
         == f"The module {'a_module_that_most_certainly_does_not_exist'} was not found in configured module paths."  # noqa: E501
