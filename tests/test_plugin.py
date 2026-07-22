@@ -425,7 +425,8 @@ def test_pytest_configure_verbose_and_inject(
         mock_ansible.utils.VERBOSITY = 0
         pytest_configure(config)
         expected_verbosity = 2
-        assert mock_ansible.utils.VERBOSITY == expected_verbosity
+        verbosity = mock_ansible.utils.VERBOSITY
+        assert verbosity == expected_verbosity
 
 
 def test_pytest_configure_verbose_display_fallback() -> None:
