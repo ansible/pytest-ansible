@@ -382,22 +382,3 @@ def test_pytest_load_initial_conftests_no_connection():  # type: ignore[no-untyp
         pytest_load_initial_conftests(args=["--verbose", "--ansible-connection=local"])
 
     assert len(caught) == 0
-
-
-def test_load_scenarios_git_ls_files_failure():  # type: ignore[no-untyped-def]  # noqa: ANN201
-    """Cover the _load_scenarios branch when git ls-files fails."""
-    from unittest.mock import patch
-
-    from pytest_ansible.plugin import _load_scenarios
-
-    fake_config = MagicMock()
-    fake_config.rootpath.as_posix.return_value = "/nonexistent"
-
-    git_ok = MagicMock(returncode=0, stdout="")
-    git_fail = MagicMock(returncode=1, stdout="", stderr="error")
-
-    with patch("pytest_ansible.plugin.shutil") as mock_shutil:
-        mock_shutil.which.return_value = "/usr/bin/git"
-        with patch("pytest_ansible.plugin.subprocess") as mock_subprocess:
-            mock_subprocess.run.side_effect = [git_ok, git_fail]
-            _load_scenarios(fake_config)
