@@ -424,8 +424,8 @@ def pytest_generate_tests(metafunc):  # type: ignore[no-untyped-def]  # noqa: AN
             raise pytest.UsageError(exception)  # noqa: B904
         groups = hosts.options["inventory_manager"].list_groups()
         extra_groups = hosts.get_extra_inventory_groups()
-        # Return the group name as a string (once — pytest rejects duplicate fixture names)
-        all_groups = [*groups, *extra_groups]
+        # Parametrize once (pytest rejects duplicate fixture names) with stable dedupe
+        all_groups = list(dict.fromkeys([*groups, *extra_groups]))
         metafunc.parametrize("ansible_group", iter(hosts[g] for g in all_groups))
 
     if "molecule_scenario" in metafunc.fixturenames:

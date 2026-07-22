@@ -591,8 +591,8 @@ def test_pytest_generate_tests_ansible_group_mocked() -> None:
 
     hosts = MagicMock()
     hosts.options = {"inventory_manager": MagicMock()}
-    hosts.options["inventory_manager"].list_groups.return_value = ["group1"]
-    hosts.get_extra_inventory_groups.return_value = ["extra_group"]
+    hosts.options["inventory_manager"].list_groups.return_value = ["group1", "shared"]
+    hosts.get_extra_inventory_groups.return_value = ["extra_group", "shared"]
     hosts.__getitem__ = MagicMock(side_effect=lambda key: key)
 
     plugin = MagicMock()
@@ -608,7 +608,7 @@ def test_pytest_generate_tests_ansible_group_mocked() -> None:
     metafunc.parametrize.assert_called_once()
     args, _kwargs = metafunc.parametrize.call_args
     assert args[0] == "ansible_group"
-    assert list(args[1]) == ["group1", "extra_group"]
+    assert list(args[1]) == ["group1", "shared", "extra_group"]
 
 
 def test_pytest_generate_tests_ansible_host_success() -> None:
