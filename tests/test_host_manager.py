@@ -204,7 +204,7 @@ def test_base_host_manager_default_dispatcher() -> None:
     """_default_dispatcher is a no-op."""
     manager = BaseHostManager.__new__(BaseHostManager)
     manager.options = {"inventory": "localhost,"}
-    assert manager._default_dispatcher() is None
+    assert manager._default_dispatcher() is None  # type: ignore[no-untyped-call]
 
 
 def test_base_host_manager_missing_required_kwargs() -> None:
@@ -212,7 +212,7 @@ def test_base_host_manager_missing_required_kwargs() -> None:
     manager = BaseHostManager.__new__(BaseHostManager)
     manager.options = {}
     with pytest.raises(TypeError, match="Missing required keyword argument"):
-        manager.check_required_kwargs()
+        manager.check_required_kwargs()  # type: ignore[no-untyped-call]
 
 
 def test_base_host_manager_has_matching_inventory_ansible_error() -> None:
@@ -221,7 +221,7 @@ def test_base_host_manager_has_matching_inventory_ansible_error() -> None:
     inv = MagicMock()
     inv.list_hosts.side_effect = ansible.errors.AnsibleError("bad pattern")
     manager.options = {"inventory_manager": inv}
-    assert manager.has_matching_inventory("broken[") is False
+    assert manager.has_matching_inventory("broken[") is False  # type: ignore[no-untyped-call]
 
 
 def test_base_host_manager_getitem_from_dict() -> None:
@@ -257,4 +257,4 @@ def test_base_host_manager_initialize_inventory_not_implemented() -> None:
     """initialize_inventory must be implemented by subclasses."""
     manager = BaseHostManager.__new__(BaseHostManager)
     with pytest.raises(NotImplementedError, match="Must be implemented by sub-class"):
-        manager.initialize_inventory()
+        manager.initialize_inventory()  # type: ignore[no-untyped-call]

@@ -394,7 +394,11 @@ def test_build_tqm_kwargs_extra() -> None:
 
 
 def test_get_collection_name_success(tmp_path: Path) -> None:
-    """get_collection_name returns namespace/name from galaxy.yml."""
+    """get_collection_name returns namespace/name from galaxy.yml.
+
+    Args:
+        tmp_path: Temporary directory containing galaxy.yml
+    """
     (tmp_path / "galaxy.yml").write_text(
         "namespace: my_ns\nname: my_col\n",
         encoding="utf-8",
@@ -408,7 +412,12 @@ def test_get_collection_name_missing_file(
     tmp_path: Path,
     caplog: pytest.LogCaptureFixture,
 ) -> None:
-    """get_collection_name returns None when galaxy.yml is absent."""
+    """get_collection_name returns None when galaxy.yml is absent.
+
+    Args:
+        tmp_path: Temporary directory without galaxy.yml
+        caplog: pytest log capture fixture
+    """
     with caplog.at_level(logging.ERROR):
         namespace, name = get_collection_name(tmp_path)
     assert namespace is None
@@ -420,7 +429,12 @@ def test_get_collection_name_missing_keys(
     tmp_path: Path,
     caplog: pytest.LogCaptureFixture,
 ) -> None:
-    """get_collection_name returns None when galaxy.yml lacks namespace/name."""
+    """get_collection_name returns None when galaxy.yml lacks namespace/name.
+
+    Args:
+        tmp_path: Temporary directory with incomplete galaxy.yml
+        caplog: pytest log capture fixture
+    """
     (tmp_path / "galaxy.yml").write_text("version: 1.0.0\n", encoding="utf-8")
     with caplog.at_level(logging.ERROR):
         namespace, name = get_collection_name(tmp_path)
@@ -430,7 +444,11 @@ def test_get_collection_name_missing_keys(
 
 
 def test_inject_without_ansible(caplog: pytest.LogCaptureFixture) -> None:
-    """Inject returns early when ansible is unavailable."""
+    """Inject returns early when ansible is unavailable.
+
+    Args:
+        caplog: pytest log capture fixture
+    """
     with (
         patch.object(units_mod, "HAS_ANSIBLE", new=False),
         caplog.at_level(logging.ERROR),
@@ -440,7 +458,11 @@ def test_inject_without_ansible(caplog: pytest.LogCaptureFixture) -> None:
 
 
 def test_inject_without_yaml(caplog: pytest.LogCaptureFixture) -> None:
-    """Inject returns early when pyyaml is unavailable."""
+    """Inject returns early when pyyaml is unavailable.
+
+    Args:
+        caplog: pytest log capture fixture
+    """
     with (
         patch.object(units_mod, "HAS_ANSIBLE", new=True),
         patch.object(units_mod, "HAS_YAML", new=False),
@@ -454,7 +476,12 @@ def test_inject_without_collection_name(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """Inject returns early when collection name cannot be resolved."""
+    """Inject returns early when collection name cannot be resolved.
+
+    Args:
+        tmp_path: Temporary collection path
+        monkeypatch: pytest monkeypatch fixture
+    """
     monkeypatch.setattr(
         units_mod,
         "get_collection_name",
@@ -471,7 +498,12 @@ def test_inject_with_collections_path_env(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """Inject honors COLLECTIONS_PATH and COLLECTIONS_PATHS env vars."""
+    """Inject honors COLLECTIONS_PATH and COLLECTIONS_PATHS env vars.
+
+    Args:
+        tmp_path: Temporary collection path
+        monkeypatch: pytest monkeypatch fixture
+    """
     monkeypatch.setattr(
         units_mod,
         "get_collection_name",
@@ -497,7 +529,11 @@ def test_inject_with_collections_path_env(
 def test_acf_inject_without_collection_finder(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
-    """acf_inject logs when collection finder is unavailable."""
+    """acf_inject logs when collection finder is unavailable.
+
+    Args:
+        caplog: pytest log capture fixture
+    """
     with (
         patch.object(units_mod, "HAS_COLLECTION_FINDER", new=False),
         caplog.at_level(logging.DEBUG),
@@ -519,7 +555,11 @@ def test_determine_envvar_with_collection_finder() -> None:
 
 
 def test_inject_only_skips_empty_paths(monkeypatch: pytest.MonkeyPatch) -> None:
-    """inject_only should ignore empty PATH segments."""
+    """inject_only should ignore empty PATH segments.
+
+    Args:
+        monkeypatch: pytest monkeypatch fixture
+    """
     monkeypatch.setenv("ANSIBLE_COLLECTIONS_PATH", "")
     original_path = list(sys.path)
     try:
@@ -532,8 +572,6 @@ def test_inject_only_skips_empty_paths(monkeypatch: pytest.MonkeyPatch) -> None:
 
 def test_units_reload_without_yaml_and_collection_finder() -> None:
     """Cover ImportError fallbacks when yaml / collection finder are unavailable."""
-    import importlib
-
     saved_yaml = sys.modules.get("yaml")
     finder_key = "ansible.utils.collection_loader._collection_finder"
     saved_finder = sys.modules.get(finder_key)

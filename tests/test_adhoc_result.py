@@ -174,4 +174,4 @@ def test_connection_failure_extra_inventory_v2():  # type: ignore[no-untyped-def
 def test_adhoc_result_keys_method() -> None:
     """AdHocResult.keys should return contacted host keys."""
     result = AdHocResult(contacted={"h1": {"changed": False}, "h2": {"changed": True}})
-    assert set(result.keys()) == {"h1", "h2"}
+    assert set(result.keys()) == {"h1", "h2"}  # type: ignore[no-untyped-call]

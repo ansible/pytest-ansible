@@ -88,6 +88,10 @@ def _write_molecule_yml(tmp_path: Path, data: dict) -> Path:  # type: ignore[typ
 def _make_parent(config: MagicMock, path: Path) -> MagicMock:
     """Build a parent mock suitable for MoleculeItem/File construction.
 
+    Args:
+        config: Pytest config mock
+        path: Path associated with the parent node
+
     Returns:
         A MagicMock parent with config/path/session attributes set.
     """
@@ -103,20 +107,28 @@ def _make_parent(config: MagicMock, path: Path) -> MagicMock:
 def test_molecule_pytest_configure_registers_markers(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """molecule_pytest_configure should register driver/molecule markers."""
+    """molecule_pytest_configure should register driver/molecule markers.
+
+    Args:
+        monkeypatch: pytest monkeypatch fixture
+    """
+    from types import ModuleType, SimpleNamespace
+
     config = MagicMock()
     config._metadata = {"Packages": {}}
-    config.option = MagicMock()
+    config.option = SimpleNamespace()
     added: list[str] = []
     config.addinivalue_line = lambda _section, line: added.append(line)
 
     monkeypatch.setattr(sys, "platform", "darwin")
 
-    with (
-        patch.dict("sys.modules", {"molecule": MagicMock(), "molecule.api": MagicMock()}),
-        patch("molecule.api.drivers", return_value=["default", "docker"]),
+    mock_api = ModuleType("molecule.api")
+    mock_api.drivers = lambda: ["default", "docker"]  # type: ignore[attr-defined]
+    with patch.dict(
+        "sys.modules",
+        {"molecule": ModuleType("molecule"), "molecule.api": mock_api},
     ):
-        molecule_pytest_configure(config)
+        molecule_pytest_configure(config)  # type: ignore[no-untyped-call]
 
     assert config.option.molecule["default"]["available"] is True
     assert any("no_driver:" in line for line in added)
@@ -127,10 +139,17 @@ def test_molecule_pytest_configure_selinux_import_error(
     monkeypatch: pytest.MonkeyPatch,
     caplog: pytest.LogCaptureFixture,
 ) -> None:
-    """Cover the selinux ImportError branch on linux with selinux config present."""
+    """Cover the selinux ImportError branch on linux with selinux config present.
+
+    Args:
+        monkeypatch: pytest monkeypatch fixture
+        caplog: pytest log capture fixture
+    """
+    from types import ModuleType, SimpleNamespace
+
     config = MagicMock()
     config._metadata = {"Packages": {}}
-    config.option = MagicMock()
+    config.option = SimpleNamespace()
     config.addinivalue_line = MagicMock()
 
     monkeypatch.setattr(sys, "platform", "linux")
@@ -143,35 +162,47 @@ def test_molecule_pytest_configure_selinux_import_error(
         if name == "selinux":
             msg = "no selinux"
             raise ImportError(msg)
-        return real_import(name, *args, **kwargs)
+        return real_import(name, *args, **kwargs)  # type: ignore[arg-type]
 
+    mock_api = ModuleType("molecule.api")
+    mock_api.drivers = list  # type: ignore[attr-defined]
     with (
-        patch.dict("sys.modules", {"molecule": MagicMock(), "molecule.api": MagicMock()}),
-        patch("molecule.api.drivers", return_value=[]),
+        patch.dict(
+            "sys.modules",
+            {"molecule": ModuleType("molecule"), "molecule.api": mock_api},
+        ),
         patch.object(Path, "is_file", return_value=True),
         patch("builtins.__import__", side_effect=fake_import),
         caplog.at_level(logging.ERROR),
     ):
-        molecule_pytest_configure(config)
+        molecule_pytest_configure(config)  # type: ignore[no-untyped-call]
 
     assert "libselinux" in caplog.text
 
 
 def test_molecule_file_collect_from_parent(tmp_path: Path) -> None:
-    """MoleculeFile.collect should yield a MoleculeItem via from_parent."""
+    """MoleculeFile.collect should yield a MoleculeItem via from_parent.
+
+    Args:
+        tmp_path: Temporary directory containing molecule.yml
+    """
     path = _write_molecule_yml(tmp_path, {"driver": {"name": "default"}})
     mol_file = MagicMock(spec=MoleculeFile)
     mol_file.path = path
 
     with patch.object(MoleculeItem, "from_parent", return_value=MagicMock()) as mock_fp:
-        items = list(MoleculeFile.collect(mol_file))
+        items = list(MoleculeFile.collect(mol_file))  # type: ignore[no-untyped-call]
 
     assert len(items) == 1
     mock_fp.assert_called_once()
 
 
 def test_molecule_file_collect_legacy_constructor(tmp_path: Path) -> None:
-    """Cover the else branch when from_parent is unavailable."""
+    """Cover the else branch when from_parent is unavailable.
+
+    Args:
+        tmp_path: Temporary directory containing molecule.yml
+    """
     path = _write_molecule_yml(tmp_path, {"driver": {"name": "default"}})
     mol_file = MagicMock(spec=MoleculeFile)
     mol_file.path = path
@@ -188,14 +219,19 @@ def test_molecule_file_collect_legacy_constructor(tmp_path: Path) -> None:
         patch("builtins.hasattr", fake_hasattr),
         patch("pytest_ansible.molecule.MoleculeItem", return_value=fake_item) as mock_cls,
     ):
-        items = list(MoleculeFile.collect(mol_file))
+        items = list(MoleculeFile.collect(mol_file))  # type: ignore[no-untyped-call]
 
     assert items == [fake_item]
     mock_cls.assert_called_once()
 
 
 def test_molecule_file_str(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    """MoleculeFile.__str__ returns path relative to cwd."""
+    """MoleculeFile.__str__ returns path relative to cwd.
+
+    Args:
+        tmp_path: Temporary directory containing molecule.yml
+        monkeypatch: pytest monkeypatch fixture
+    """
     rel = Path("relative/molecule.yml")
     full = tmp_path / rel
     full.parent.mkdir(parents=True)
@@ -211,7 +247,12 @@ def test_molecule_item_init_markers_and_str(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """Cover MoleculeItem.__init__ marker paths, __str__, and reportinfo."""
+    """Cover MoleculeItem.__init__ marker paths, __str__, and reportinfo.
+
+    Args:
+        tmp_path: Temporary directory containing molecule.yml
+        monkeypatch: pytest monkeypatch fixture
+    """
     path = _write_molecule_yml(
         tmp_path,
         {
@@ -232,7 +273,7 @@ def test_molecule_item_init_markers_and_str(
 
     assert item.molecule_driver == "default"
     assert str(item) == "test0[default]"
-    assert item.reportinfo() == (path, 0, "use_case: test0")
+    assert item.reportinfo() == (path, 0, "use_case: test0")  # type: ignore[no-untyped-call]
     # xfail + skip + platform + molecule + driver markers
     assert mock_add_marker.call_count >= 4  # noqa: PLR2004
 
@@ -241,7 +282,12 @@ def test_molecule_item_global_config_and_unavailable_driver(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """Cover global config merge and unavailable-driver marker."""
+    """Cover global config merge and unavailable-driver marker.
+
+    Args:
+        tmp_path: Temporary directory containing molecule.yml
+        monkeypatch: pytest monkeypatch fixture
+    """
     global_cfg = tmp_path / ".config" / "molecule" / "config.yml"
     global_cfg.parent.mkdir(parents=True)
     global_cfg.write_text(yaml.dump({"driver": {"name": "docker"}}), encoding="utf-8")
@@ -262,15 +308,24 @@ def test_molecule_item_global_config_and_unavailable_driver(
 
 
 def test_molecule_item_yaml_loader_empty(tmp_path: Path) -> None:
-    """yaml_loader should return {} for empty YAML documents."""
+    """yaml_loader should return {} for empty YAML documents.
+
+    Args:
+        tmp_path: Temporary directory for an empty YAML file
+    """
     empty = tmp_path / "empty.yml"
     empty.write_text("", encoding="utf-8")
     item = MoleculeItem.__new__(MoleculeItem)
-    assert item.yaml_loader(str(empty)) == {}
+    # Pass a Path: molecule.yaml_loader uses Path.open(filepath, ...) as self
+    assert item.yaml_loader(empty) == {}  # type: ignore[arg-type]
 
 
 def test_molecule_item_runtest_disabled(tmp_path: Path) -> None:
-    """Runtest should skip when --molecule is disabled."""
+    """Runtest should skip when --molecule is disabled.
+
+    Args:
+        tmp_path: Temporary directory containing molecule.yml
+    """
     path = _write_molecule_yml(tmp_path, {"driver": {"name": "default"}})
     item = MoleculeItem.__new__(MoleculeItem)
     item.path = path
@@ -280,14 +335,19 @@ def test_molecule_item_runtest_disabled(tmp_path: Path) -> None:
     item.config.getoption = MagicMock(return_value=False)
 
     with pytest.raises(pytest.skip.Exception, match="Molecule tests are disabled"):
-        MoleculeItem.runtest(item)
+        MoleculeItem.runtest(item)  # type: ignore[no-untyped-call]
 
 
 def test_molecule_item_runtest_success(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """Runtest should run molecule and succeed on returncode 0."""
+    """Runtest should run molecule and succeed on returncode 0.
+
+    Args:
+        tmp_path: Temporary directory containing molecule.yml
+        monkeypatch: pytest monkeypatch fixture
+    """
     path = _write_molecule_yml(tmp_path, {"driver": {"name": "default"}})
     item = MoleculeItem.__new__(MoleculeItem)
     item.path = path
@@ -304,7 +364,7 @@ def test_molecule_item_runtest_success(
     proc.__exit__ = MagicMock(return_value=False)
 
     with patch("pytest_ansible.molecule.subprocess.Popen", return_value=proc) as mock_popen:
-        MoleculeItem.runtest(item)
+        MoleculeItem.runtest(item)  # type: ignore[no-untyped-call]
 
     cmd = mock_popen.call_args[0][0]
     assert "--base-config" in cmd
@@ -312,7 +372,11 @@ def test_molecule_item_runtest_success(
 
 
 def test_molecule_item_runtest_failure(tmp_path: Path) -> None:
-    """Runtest should fail when molecule returns non-zero."""
+    """Runtest should fail when molecule returns non-zero.
+
+    Args:
+        tmp_path: Temporary directory containing molecule.yml
+    """
     path = _write_molecule_yml(tmp_path, {"driver": {"name": "default"}})
     item = MoleculeItem.__new__(MoleculeItem)
     item.path = path
@@ -331,11 +395,15 @@ def test_molecule_item_runtest_failure(tmp_path: Path) -> None:
         patch("pytest_ansible.molecule.subprocess.Popen", return_value=proc),
         pytest.raises(pytest.fail.Exception, match="Error code 2"),
     ):
-        MoleculeItem.runtest(item)
+        MoleculeItem.runtest(item)  # type: ignore[no-untyped-call]
 
 
 def test_molecule_item_runtest_skip_no_git_change(tmp_path: Path) -> None:
-    """Runtest should skip when git diff reports no changes."""
+    """Runtest should skip when git diff reports no changes.
+
+    Args:
+        tmp_path: Temporary directory containing molecule.yml
+    """
     path = _write_molecule_yml(tmp_path, {"driver": {"name": "default"}})
     item = MoleculeItem.__new__(MoleculeItem)
     item.path = path
@@ -353,7 +421,7 @@ def test_molecule_item_runtest_skip_no_git_change(tmp_path: Path) -> None:
         patch("pytest_ansible.molecule.subprocess.Popen", return_value=git_proc),
         pytest.raises(pytest.skip.Exception, match="No change in role"),
     ):
-        MoleculeItem.runtest(item)
+        MoleculeItem.runtest(item)  # type: ignore[no-untyped-call]
 
 
 def test_molecule_exception_error() -> None:
@@ -368,7 +436,11 @@ def test_molecule_exception_error() -> None:
 
 
 def test_molecule_item_runtest_with_git_changes(tmp_path: Path) -> None:
-    """Runtest continues when git diff reports changes."""
+    """Runtest continues when git diff reports changes.
+
+    Args:
+        tmp_path: Temporary directory containing molecule.yml
+    """
     path = _write_molecule_yml(tmp_path, {"driver": {"name": "default"}})
     item = MoleculeItem.__new__(MoleculeItem)
     item.path = path
@@ -392,14 +464,19 @@ def test_molecule_item_runtest_with_git_changes(tmp_path: Path) -> None:
         "pytest_ansible.molecule.subprocess.Popen",
         side_effect=[git_proc, mol_proc],
     ):
-        MoleculeItem.runtest(item)
+        MoleculeItem.runtest(item)  # type: ignore[no-untyped-call]
 
 
 def test_molecule_scenario_test(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """MoleculeScenario.test runs molecule with optional MOLECULE_OPTS."""
+    """MoleculeScenario.test runs molecule with optional MOLECULE_OPTS.
+
+    Args:
+        tmp_path: Temporary scenario directory
+        monkeypatch: pytest monkeypatch fixture
+    """
     scenario = MoleculeScenario(
         name="default",
         parent_directory=tmp_path,
@@ -424,7 +501,12 @@ def test_molecule_scenario_test_without_opts(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """MoleculeScenario.test without MOLECULE_OPTS covers the unset branch."""
+    """MoleculeScenario.test without MOLECULE_OPTS covers the unset branch.
+
+    Args:
+        tmp_path: Temporary scenario directory
+        monkeypatch: pytest monkeypatch fixture
+    """
     scenario = MoleculeScenario(
         name="default",
         parent_directory=tmp_path,

@@ -17,8 +17,6 @@ from .conftest import NEGATIVE_HOST_PATTERNS, POSITIVE_HOST_PATTERNS
 
 def test_type_error() -> None:
     """Verify that BaseModuleDispatcher cannot be instantiated."""
-    from pytest_ansible.module_dispatcher import BaseModuleDispatcher
-
     with pytest.raises(TypeError, match=r"^Can't instantiate.*$"):
         BaseModuleDispatcher(inventory="localhost,")  # type: ignore[abstract] #pylint: disable=abstract-class-instantiated
 
@@ -87,21 +85,32 @@ def test_ansible_module_error(hosts):  # type: ignore[no-untyped-def]  # noqa: A
 class _ConcreteDispatcher(BaseModuleDispatcher):
     """Minimal concrete dispatcher for testing base-class branches."""
 
-    def has_module(self, name: str) -> str:
+    def has_module(self, name: str) -> str:  # pylint: disable=useless-parent-delegation
         """Delegate to base implementation for coverage.
+
+        Args:
+            name: Module name passed through to the base method
 
         Returns:
             Result of the base has_module implementation.
         """
         return super().has_module(name)
 
-    def _run(self, *args, **kwargs):  # type: ignore[no-untyped-def]  # noqa: ANN002, ANN003, ANN202
+    def _run(  # pylint: disable=useless-parent-delegation
+        self,
+        *args: object,
+        **kwargs: object,
+    ) -> object:
         """Delegate to base implementation for coverage.
+
+        Args:
+            *args: Positional args forwarded to the base method
+            **kwargs: Keyword args forwarded to the base method
 
         Returns:
             Result of the base _run implementation.
         """
-        return super()._run(*args, **kwargs)
+        return super()._run(*args, **kwargs)  # type: ignore[no-untyped-call]
 
 
 def test_base_dispatcher_missing_required_kwargs() -> None:
@@ -140,7 +149,7 @@ def test_v213_reload_without_custom_loader_support() -> None:
         if fromlist and "init_plugin_loader" in fromlist:
             msg = "init_plugin_loader unavailable"
             raise ImportError(msg)
-        return real_import(name, globals, locals, fromlist, level)
+        return real_import(name, globals, locals, fromlist, level)  # type: ignore[arg-type]
 
     try:
         if original is not None:
@@ -243,7 +252,7 @@ def test_module_dispatcher_run_without_custom_loader() -> None:
         patch.object(dispatcher, "_raise_on_unreachable"),
     ):
         mock_play.return_value.load.return_value = MagicMock()
-        dispatcher._run()
+        dispatcher._run()  # type: ignore[no-untyped-call]
 
     mock_init.assert_not_called()
 
@@ -277,7 +286,7 @@ def test_module_dispatcher_run_with_module_args() -> None:
         patch.object(dispatcher, "_raise_on_unreachable"),
     ):
         mock_play.return_value.load.return_value = MagicMock()
-        result = dispatcher._run("arg1", "arg2")
+        result = dispatcher._run("arg1", "arg2")  # type: ignore[no-untyped-call]
 
     assert "arg1" in mock_ds.call_args[0][0]["_raw_params"]
     assert result.contacted == {}
@@ -301,7 +310,11 @@ def test_module_dispatcher_assert_hosts_exist_no_match() -> None:
 def test_module_dispatcher_configure_adhoc_cli_verbosity_and_flags(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """_configure_adhoc_cli handles verbosity and boolean option flags."""
+    """_configure_adhoc_cli handles verbosity and boolean option flags.
+
+    Args:
+        monkeypatch: pytest monkeypatch fixture
+    """
     dispatcher = ModuleDispatcherV213.__new__(ModuleDispatcherV213)
     dispatcher.options = {
         "host_pattern": "localhost",
