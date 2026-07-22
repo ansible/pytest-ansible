@@ -6,7 +6,7 @@ from types import GeneratorType
 
 import pytest
 
-from pytest_ansible.results import ModuleResult
+from pytest_ansible.results import AdHocResult, ModuleResult
 
 from .conftest import ALL_EXTRA_HOSTS, ALL_HOSTS
 
@@ -169,3 +169,9 @@ def test_connection_failure_extra_inventory_v2():  # type: ignore[no-untyped-def
         "Failed to connect to the host via ssh"
         in exc_info.value.dark["unknown.example.extra.com"]["msg"]
     )
+
+
+def test_adhoc_result_keys_method() -> None:
+    """AdHocResult.keys should return contacted host keys."""
+    result = AdHocResult(contacted={"h1": {"changed": False}, "h2": {"changed": True}})
+    assert set(result.keys()) == {"h1", "h2"}  # type: ignore[no-untyped-call]

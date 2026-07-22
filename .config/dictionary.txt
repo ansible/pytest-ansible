@@ -19,10 +19,12 @@ capfd
 caplog
 conftest
 conftests
+delenv
 fixturedefs
 fixtureinfo
 fixturenames
 fqcn
+fromlist
 fspath
 fstring
 funcargs
@@ -36,6 +38,7 @@ makeconftest
 makepyfile
 metafunc
 modifyitems
+nodeid
 pandoc
 parseoutcomes
 pluginmanager

@@ -2,17 +2,28 @@
 
 from __future__ import annotations
 
+import logging
+
 from typing import TYPE_CHECKING
 from unittest import mock
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
-from pytest_ansible.plugin import PyTestAnsiblePlugin, pytest_generate_tests
+import ansible.errors
+import pytest
+
+from pytest_ansible.plugin import (
+    PyTestAnsiblePlugin,
+    pytest_addoption,
+    pytest_collect_file,
+    pytest_configure,
+    pytest_generate_tests,
+)
 
 from .conftest import skip_ansible_219
 
 
 if TYPE_CHECKING:
-    import pytest
+    from pathlib import Path
 
 
 class MockItem:
@@ -115,7 +126,7 @@ def test_pytest_generate_tests_with_ansible_group():  # type: ignore[no-untyped-
 
     pytest_generate_tests(metafunc)  # type: ignore[no-untyped-call]
 
-    assert metafunc.parametrize.call_count == 2  # noqa: PLR2004  # Called twice for ansible_group
+    metafunc.parametrize.assert_called_once()
 
 
 def test_pytest_collection_modifyitems_with_marker():  # type: ignore[no-untyped-def]  # noqa: ANN201, D103
@@ -218,8 +229,6 @@ def test_any_item_uses_ansible_fixtures_logs_undefined(
     Args:
         caplog: pytest log capture fixture
     """
-    import logging
-
     with caplog.at_level(logging.ERROR, logger="pytest_ansible.plugin"):
         result = PyTestAnsiblePlugin._any_item_uses_ansible_fixtures(
             [MockItem(fixturenames=["unknown_fixture"])],
@@ -264,8 +273,6 @@ def test_any_item_uses_ansible_fixtures_no_name2fixturedefs():  # type: ignore[n
 
 def test_pytest_collect_file_no_molecule_option():  # type: ignore[no-untyped-def]  # noqa: ANN201
     """Return None when config.option has no molecule attribute."""
-    from pytest_ansible.plugin import pytest_collect_file
-
     parent = MagicMock()
     del parent.config.option.molecule
 
@@ -275,8 +282,6 @@ def test_pytest_collect_file_no_molecule_option():  # type: ignore[no-untyped-de
 
 def test_pytest_collect_file_molecule_disabled():  # type: ignore[no-untyped-def]  # noqa: ANN201
     """Return None when --molecule is not enabled."""
-    from pytest_ansible.plugin import pytest_collect_file
-
     parent = MagicMock()
     parent.config.option.molecule = False
 
@@ -290,8 +295,6 @@ def test_pytest_collect_file_symlink(tmp_path):  # type: ignore[no-untyped-def] 
     Args:
         tmp_path: pytest tmp_path fixture
     """
-    from pytest_ansible.plugin import pytest_collect_file
-
     real_file = tmp_path / "real_molecule.yml"
     real_file.write_text("---\n")
     symlink = tmp_path / "molecule.yml"
@@ -310,8 +313,6 @@ def test_pytest_collect_file_non_molecule_yml(tmp_path):  # type: ignore[no-unty
     Args:
         tmp_path: pytest tmp_path fixture
     """
-    from pytest_ansible.plugin import pytest_collect_file
-
     other_file = tmp_path / "playbook.yml"
     other_file.write_text("---\n")
 
@@ -324,8 +325,6 @@ def test_pytest_collect_file_non_molecule_yml(tmp_path):  # type: ignore[no-unty
 
 def test_warn_or_fail_on_v219():  # type: ignore[no-untyped-def]  # noqa: ANN201
     """On Ansible 2.19+, warn_or_fail should call pytest.exit."""
-    from unittest.mock import patch
-
     from pytest_ansible.plugin import warn_or_fail
 
     with (
@@ -339,8 +338,6 @@ def test_warn_or_fail_on_v219():  # type: ignore[no-untyped-def]  # noqa: ANN201
 def test_warn_or_fail_pre_v219():  # type: ignore[no-untyped-def]  # noqa: ANN201
     """Before Ansible 2.19, warn_or_fail should emit a DeprecationWarning."""
     import warnings
-
-    from unittest.mock import patch
 
     from pytest_ansible.plugin import warn_or_fail
 
@@ -382,3 +379,310 @@ def test_pytest_load_initial_conftests_no_connection():  # type: ignore[no-untyp
         pytest_load_initial_conftests(args=["--verbose", "--ansible-connection=local"])
 
     assert len(caught) == 0
+
+
+def test_pytest_addoption_without_ansible() -> None:
+    """pytest_addoption returns early when ansible is not installed."""
+    with patch("pytest_ansible.plugin.HAS_ANSIBLE", new=False):
+        pytest_addoption(MagicMock())
+
+
+def test_pytest_configure_without_ansible() -> None:
+    """pytest_configure returns early when ansible is not installed."""
+    with patch("pytest_ansible.plugin.HAS_ANSIBLE", new=False):
+        pytest_configure(MagicMock())
+
+
+def test_pytest_configure_verbose_and_inject(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """pytest_configure sets verbosity and injects collection path.
+
+    Args:
+        tmp_path: Temporary directory for a fake collection root
+        monkeypatch: pytest monkeypatch fixture
+    """
+    (tmp_path / "galaxy.yml").write_text(
+        "namespace: ns\nname: col\n",
+        encoding="utf-8",
+    )
+    config = MagicMock()
+    config.option.verbose = 2
+    config.option.ansible_unit_inject_only = False
+    config.invocation_params.dir = tmp_path
+    config.pluginmanager.register = MagicMock(return_value=True)
+    config.addinivalue_line = MagicMock()
+    config.rootpath = tmp_path
+
+    monkeypatch.setattr("pytest_ansible.plugin.inject", MagicMock())
+    monkeypatch.setattr("pytest_ansible.plugin._load_scenarios", MagicMock())
+
+    with (
+        patch("pytest_ansible.plugin.HAS_ANSIBLE", new=True),
+        patch("pytest_ansible.plugin.ansible") as mock_ansible,
+    ):
+        mock_ansible.utils.VERBOSITY = 0
+        pytest_configure(config)
+        expected_verbosity = 2
+        verbosity = mock_ansible.utils.VERBOSITY
+        assert verbosity == expected_verbosity
+
+
+def test_pytest_configure_verbose_display_fallback() -> None:
+    """pytest_configure uses ansible.utils.display.verbosity when VERBOSITY missing."""
+    config = MagicMock()
+    config.option.verbose = 1
+    config.option.ansible_unit_inject_only = True
+    config.pluginmanager.register = MagicMock(return_value=True)
+    config.addinivalue_line = MagicMock()
+    config.rootpath = MagicMock()
+
+    class Utils:
+        display = MagicMock()
+
+    with (
+        patch("pytest_ansible.plugin.HAS_ANSIBLE", new=True),
+        patch("pytest_ansible.plugin.ansible") as mock_ansible,
+        patch("pytest_ansible.plugin.inject_only") as mock_inject_only,
+        patch("pytest_ansible.plugin._load_scenarios"),
+    ):
+        mock_ansible.utils = Utils()
+        pytest_configure(config)
+        assert mock_ansible.utils.display.verbosity == 1
+        mock_inject_only.assert_called_once()
+
+
+def test_pytest_collect_file_molecule_yml(tmp_path: Path) -> None:
+    """pytest_collect_file returns MoleculeFile for molecule.yml.
+
+    Args:
+        tmp_path: Temporary directory containing molecule.yml
+    """
+    mol = tmp_path / "molecule.yml"
+    mol.write_text("---\n", encoding="utf-8")
+    parent = MagicMock()
+    parent.config.option.molecule = True
+
+    with (
+        patch("pytest_ansible.plugin.HAS_MOLECULE", new=True),
+        patch("pytest_ansible.plugin.warn_molecule_deprecated"),
+        patch("pytest_ansible.plugin.MoleculeFile") as mock_file,
+    ):
+        molecule_node = MagicMock(name="molecule-file")
+        mock_file.from_parent.return_value = molecule_node
+        result = pytest_collect_file(file_path=mol, parent=parent)
+
+    assert result is molecule_node
+    mock_file.from_parent.assert_called_once()
+
+
+def test_pytest_generate_tests_molecule_scenario_without_molecule() -> None:
+    """pytest_generate_tests exits when molecule is missing for molecule_scenario."""
+    metafunc = MagicMock()
+    metafunc.fixturenames = ["molecule_scenario"]
+
+    with (
+        patch("pytest_ansible.plugin.HAS_MOLECULE", new=False),
+        patch("pytest_ansible.plugin.warn_molecule_deprecated"),
+        patch("pytest_ansible.plugin.pytest") as mock_pytest,
+    ):
+        pytest_generate_tests(metafunc)  # type: ignore[no-untyped-call]
+        mock_pytest.exit.assert_called_once()
+
+
+def test_pytest_generate_tests_ansible_host_error() -> None:
+    """pytest_generate_tests wraps AnsibleError as UsageError for ansible_host."""
+    metafunc = MagicMock()
+    metafunc.fixturenames = ["ansible_host"]
+    metafunc.config.getoption.side_effect = {
+        "ansible_host_pattern": "localhost",
+        "ansible_inventory": "/etc/ansible/hosts",
+    }.get
+
+    plugin = MagicMock()
+    plugin.initialize.side_effect = ansible.errors.AnsibleError("fail")
+    metafunc.config.pluginmanager.getplugin.return_value = plugin
+
+    with (
+        patch("pytest_ansible.plugin.warn_or_fail"),
+        patch.object(PyTestAnsiblePlugin, "assert_required_ansible_parameters"),
+        pytest.raises(pytest.UsageError),
+    ):
+        pytest_generate_tests(metafunc)  # type: ignore[no-untyped-call]
+
+
+def test_pytest_generate_tests_ansible_group_error() -> None:
+    """pytest_generate_tests wraps AnsibleError as UsageError for ansible_group."""
+    metafunc = MagicMock()
+    metafunc.fixturenames = ["ansible_group"]
+    metafunc.config.getoption.side_effect = {
+        "ansible_host_pattern": "localhost",
+        "ansible_inventory": "/etc/ansible/hosts",
+    }.get
+
+    plugin = MagicMock()
+    plugin.initialize.side_effect = ansible.errors.AnsibleError("fail")
+    metafunc.config.pluginmanager.getplugin.return_value = plugin
+
+    with (
+        patch("pytest_ansible.plugin.warn_or_fail"),
+        patch.object(PyTestAnsiblePlugin, "assert_required_ansible_parameters"),
+        pytest.raises(pytest.UsageError),
+    ):
+        pytest_generate_tests(metafunc)  # type: ignore[no-untyped-call]
+
+
+def test_pytest_generate_tests_molecule_scenario_parametrizes() -> None:
+    """pytest_generate_tests parametrizes molecule_scenario when molecule exists."""
+    metafunc = MagicMock()
+    metafunc.fixturenames = ["molecule_scenario"]
+    scenario = MagicMock()
+    scenario.test_id = "role-default"
+
+    with (
+        patch("pytest_ansible.plugin.HAS_MOLECULE", new=True),
+        patch("pytest_ansible.plugin.warn_molecule_deprecated"),
+        patch("pytest_ansible.plugin.scenarios", [scenario]),
+    ):
+        pytest_generate_tests(metafunc)  # type: ignore[no-untyped-call]
+
+    metafunc.parametrize.assert_called_once_with(
+        "molecule_scenario",
+        [scenario],
+        ids=["role-default"],
+    )
+
+
+def test_plugin_initialize_config_only() -> None:
+    """Initialize with only config (no request) covers the request skip branch."""
+    config = MagicMock()
+    plugin = PyTestAnsiblePlugin(config)
+    plugin._load_ansible_config = MagicMock(return_value={"inventory": "inv"})  # type: ignore[method-assign]
+
+    with patch("pytest_ansible.plugin.get_host_manager", return_value="hm") as mock_hm:
+        result = plugin.initialize(config=config)  # type: ignore[no-untyped-call]
+
+    assert result == "hm"
+    mock_hm.assert_called_once_with(inventory="inv")
+
+
+def test_plugin_initialize_request_only() -> None:
+    """Initialize with only request (no config) covers the config skip branch."""
+    request = MagicMock()
+    plugin = PyTestAnsiblePlugin(MagicMock())
+    plugin._load_request_config = MagicMock(return_value={"user": "u"})  # type: ignore[method-assign]
+
+    with patch("pytest_ansible.plugin.get_host_manager", return_value="hm") as mock_hm:
+        result = plugin.initialize(request=request)  # type: ignore[no-untyped-call]
+
+    assert result == "hm"
+    mock_hm.assert_called_once_with(user="u")
+
+
+def test_pytest_generate_tests_ansible_group_mocked() -> None:
+    """pytest_generate_tests parametrizes ansible_group from inventory groups."""
+    metafunc = MagicMock()
+    metafunc.fixturenames = ["ansible_group"]
+    metafunc.config.getoption.side_effect = {
+        "ansible_host_pattern": "localhost",
+        "ansible_inventory": "/etc/ansible/hosts",
+    }.get
+
+    hosts = MagicMock()
+    hosts.options = {"inventory_manager": MagicMock()}
+    hosts.options["inventory_manager"].list_groups.return_value = ["group1", "shared"]
+    hosts.get_extra_inventory_groups.return_value = ["extra_group", "shared"]
+    hosts.__getitem__ = MagicMock(side_effect=lambda key: key)
+
+    plugin = MagicMock()
+    plugin.initialize.return_value = hosts
+    metafunc.config.pluginmanager.getplugin.return_value = plugin
+
+    with (
+        patch("pytest_ansible.plugin.warn_or_fail"),
+        patch.object(PyTestAnsiblePlugin, "assert_required_ansible_parameters"),
+    ):
+        pytest_generate_tests(metafunc)  # type: ignore[no-untyped-call]
+
+    metafunc.parametrize.assert_called_once()
+    args, _kwargs = metafunc.parametrize.call_args
+    assert args[0] == "ansible_group"
+    assert list(args[1]) == ["group1", "shared", "extra_group"]
+
+
+def test_pytest_generate_tests_ansible_host_success() -> None:
+    """pytest_generate_tests parametrizes ansible_host from inventory hosts."""
+    metafunc = MagicMock()
+    metafunc.fixturenames = ["ansible_host"]
+    metafunc.config.getoption.side_effect = {
+        "ansible_host_pattern": "localhost",
+        "ansible_inventory": "/etc/ansible/hosts",
+    }.get
+
+    hosts = MagicMock()
+    hosts.__iter__ = MagicMock(return_value=iter(["localhost"]))
+    hosts.__getitem__ = MagicMock(side_effect=lambda key: key)
+
+    plugin = MagicMock()
+    plugin.initialize.return_value = hosts
+    metafunc.config.pluginmanager.getplugin.return_value = plugin
+
+    with (
+        patch("pytest_ansible.plugin.warn_or_fail"),
+        patch.object(PyTestAnsiblePlugin, "assert_required_ansible_parameters"),
+    ):
+        pytest_generate_tests(metafunc)  # type: ignore[no-untyped-call]
+
+    metafunc.parametrize.assert_called_once()
+
+
+def test_plugin_initialize_merges_config_and_request() -> None:
+    """Initialize merges config, request, and kwargs."""
+    config = MagicMock()
+    request = MagicMock()
+    plugin = PyTestAnsiblePlugin(config)
+
+    with patch("pytest_ansible.plugin.get_host_manager", return_value="hm") as mock_hm:
+        plugin._load_ansible_config = MagicMock(return_value={"inventory": "inv"})  # type: ignore[method-assign]
+        plugin._load_request_config = MagicMock(return_value={"user": "u"})  # type: ignore[method-assign]
+        result = plugin.initialize(config=config, request=request, connection="local")  # type: ignore[no-untyped-call]
+
+    assert result == "hm"
+    mock_hm.assert_called_once()
+    kwargs = mock_hm.call_args.kwargs
+    assert kwargs["inventory"] == "inv"
+    assert kwargs["user"] == "u"
+    assert kwargs["connection"] == "local"
+
+
+def test_assert_required_ansible_parameters_missing_inventory() -> None:
+    """assert_required_ansible_parameters raises when inventory is falsy."""
+    config = MagicMock()
+    config.getoption.return_value = None
+    with pytest.raises(pytest.UsageError, match="Unable to find an inventory file"):
+        PyTestAnsiblePlugin.assert_required_ansible_parameters(config)  # type: ignore[no-untyped-call]
+
+
+def test_load_scenarios_git_rev_parse_failure(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    """_load_scenarios warns when the directory is not a git repository.
+
+    Args:
+        caplog: pytest log capture fixture
+    """
+    from pytest_ansible.plugin import _load_scenarios
+
+    config = MagicMock()
+    config.rootpath.as_posix.return_value = "/tmp/not-a-repo"  # noqa: S108
+    failed = MagicMock(returncode=1, stdout="", stderr="not a git repo")
+
+    with (
+        patch("pytest_ansible.plugin.shutil.which", return_value="/usr/bin/git"),
+        patch("pytest_ansible.plugin.subprocess.run", return_value=failed),
+        caplog.at_level(logging.WARNING, logger="pytest_ansible.plugin"),
+    ):
+        _load_scenarios(config)
+
+    assert "Unable to find git root" in caplog.text
