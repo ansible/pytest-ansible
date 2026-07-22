@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import importlib
 import logging
 import re
 import subprocess  # noqa: S404
@@ -10,13 +11,21 @@ import sys
 from typing import TYPE_CHECKING
 from unittest.mock import MagicMock, patch
 
+from pytest_ansible import units as units_mod
 from pytest_ansible.module_dispatcher.v213 import (
     ModuleDispatcherV213,
     ResultAccumulator,
     _execute_play,
 )
 from pytest_ansible.molecule import _populate_config_metadata
-from pytest_ansible.units import _resolve_collections_dir, inject, inject_only
+from pytest_ansible.units import (
+    _resolve_collections_dir,
+    acf_inject,
+    determine_envvar,
+    get_collection_name,
+    inject,
+    inject_only,
+)
 
 
 if TYPE_CHECKING:
@@ -203,8 +212,7 @@ def test_resolve_collections_dir_creates_symlinks(tmp_path: Path) -> None:
 def test_for_params():  # type: ignore[no-untyped-def]  # noqa: ANN201
     """Test for params."""
     proc = subprocess.run(
-        "pytest --help",  # noqa: S607
-        shell=True,
+        [sys.executable, "-m", "pytest", "--help"],
         capture_output=True,
         check=False,
     )
@@ -383,3 +391,199 @@ def test_build_tqm_kwargs_extra() -> None:
     assert result["inventory"] is extra_inv
     assert result["variable_manager"] is extra_vm
     assert result["loader"] is extra_loader
+
+
+def test_get_collection_name_success(tmp_path: Path) -> None:
+    """get_collection_name returns namespace/name from galaxy.yml."""
+    (tmp_path / "galaxy.yml").write_text(
+        "namespace: my_ns\nname: my_col\n",
+        encoding="utf-8",
+    )
+    namespace, name = get_collection_name(tmp_path)
+    assert namespace == "my_ns"
+    assert name == "my_col"
+
+
+def test_get_collection_name_missing_file(
+    tmp_path: Path,
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    """get_collection_name returns None when galaxy.yml is absent."""
+    with caplog.at_level(logging.ERROR):
+        namespace, name = get_collection_name(tmp_path)
+    assert namespace is None
+    assert name is None
+    assert "No galaxy.yml" in caplog.text
+
+
+def test_get_collection_name_missing_keys(
+    tmp_path: Path,
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    """get_collection_name returns None when galaxy.yml lacks namespace/name."""
+    (tmp_path / "galaxy.yml").write_text("version: 1.0.0\n", encoding="utf-8")
+    with caplog.at_level(logging.ERROR):
+        namespace, name = get_collection_name(tmp_path)
+    assert namespace is None
+    assert name is None
+    assert "does not contain namespace" in caplog.text
+
+
+def test_inject_without_ansible(caplog: pytest.LogCaptureFixture) -> None:
+    """Inject returns early when ansible is unavailable."""
+    with (
+        patch.object(units_mod, "HAS_ANSIBLE", new=False),
+        caplog.at_level(logging.ERROR),
+    ):
+        inject(MagicMock())
+    assert "ansible is not installed" in caplog.text
+
+
+def test_inject_without_yaml(caplog: pytest.LogCaptureFixture) -> None:
+    """Inject returns early when pyyaml is unavailable."""
+    with (
+        patch.object(units_mod, "HAS_ANSIBLE", new=True),
+        patch.object(units_mod, "HAS_YAML", new=False),
+        caplog.at_level(logging.ERROR),
+    ):
+        inject(MagicMock())
+    assert "pyyaml is not installed" in caplog.text
+
+
+def test_inject_without_collection_name(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Inject returns early when collection name cannot be resolved."""
+    monkeypatch.setattr(
+        units_mod,
+        "get_collection_name",
+        lambda _path: (None, None),
+    )
+    with (
+        patch.object(units_mod, "HAS_ANSIBLE", new=True),
+        patch.object(units_mod, "HAS_YAML", new=True),
+    ):
+        inject(tmp_path)
+
+
+def test_inject_with_collections_path_env(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Inject honors COLLECTIONS_PATH and COLLECTIONS_PATHS env vars."""
+    monkeypatch.setattr(
+        units_mod,
+        "get_collection_name",
+        lambda _path: ("ns", "col"),
+    )
+    monkeypatch.setenv("COLLECTIONS_PATH", str(tmp_path / "extra1"))
+    monkeypatch.setenv("COLLECTIONS_PATHS", str(tmp_path / "extra2"))
+    (tmp_path / "collections" / "ansible_collections").mkdir(parents=True)
+
+    with (
+        patch.object(units_mod, "HAS_ANSIBLE", new=True),
+        patch.object(units_mod, "HAS_YAML", new=True),
+        patch.object(units_mod, "acf_inject") as mock_acf,
+    ):
+        inject(tmp_path)
+
+    mock_acf.assert_called_once()
+    paths = mock_acf.call_args.kwargs["paths"]
+    assert any("extra1" in p for p in paths)
+    assert any("extra2" in p for p in paths)
+
+
+def test_acf_inject_without_collection_finder(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    """acf_inject logs when collection finder is unavailable."""
+    with (
+        patch.object(units_mod, "HAS_COLLECTION_FINDER", new=False),
+        caplog.at_level(logging.DEBUG),
+    ):
+        acf_inject(paths=["/tmp/collections"])  # noqa: S108
+    assert "_ACF not available" in caplog.text
+
+
+def test_determine_envvar_without_collection_finder() -> None:
+    """determine_envvar returns ANSIBLE_COLLECTIONS_PATHS without finder."""
+    with patch.object(units_mod, "HAS_COLLECTION_FINDER", new=False):
+        assert determine_envvar() == "ANSIBLE_COLLECTIONS_PATHS"
+
+
+def test_determine_envvar_with_collection_finder() -> None:
+    """determine_envvar returns ANSIBLE_COLLECTIONS_PATH with finder."""
+    with patch.object(units_mod, "HAS_COLLECTION_FINDER", new=True):
+        assert determine_envvar() == "ANSIBLE_COLLECTIONS_PATH"
+
+
+def test_inject_only_skips_empty_paths(monkeypatch: pytest.MonkeyPatch) -> None:
+    """inject_only should ignore empty PATH segments."""
+    monkeypatch.setenv("ANSIBLE_COLLECTIONS_PATH", "")
+    original_path = list(sys.path)
+    try:
+        with patch.object(units_mod, "acf_inject") as mock_acf:
+            units_mod.inject_only()
+        mock_acf.assert_called_once()
+    finally:
+        sys.path[:] = original_path
+
+
+def test_units_reload_without_yaml_and_collection_finder() -> None:
+    """Cover ImportError fallbacks when yaml / collection finder are unavailable."""
+    import importlib
+
+    saved_yaml = sys.modules.get("yaml")
+    finder_key = "ansible.utils.collection_loader._collection_finder"
+    saved_finder = sys.modules.get(finder_key)
+
+    try:
+        sys.modules["yaml"] = None  # type: ignore[assignment]
+        sys.modules[finder_key] = None  # type: ignore[assignment]
+        reloaded = importlib.reload(units_mod)
+        assert reloaded.HAS_YAML is False
+        assert reloaded.HAS_COLLECTION_FINDER is False
+    finally:
+        if saved_yaml is not None:
+            sys.modules["yaml"] = saved_yaml
+        else:
+            sys.modules.pop("yaml", None)
+        if saved_finder is not None:
+            sys.modules[finder_key] = saved_finder
+        else:
+            sys.modules.pop(finder_key, None)
+        importlib.reload(units_mod)
+        assert units_mod.HAS_YAML is True
+
+
+def test_has_version_import_error_branch() -> None:
+    """Cover the ImportError/AttributeError fallback in has_version."""
+    import pytest_ansible.has_version as hv
+
+    class BrokenAnsible:
+        """ansible stand-in whose version access raises AttributeError."""
+
+        @property
+        def version(self) -> str:
+            """Raise to simulate a broken ansible install.
+
+            Raises:
+                AttributeError: Always raised to mimic a broken install.
+            """
+            msg = "missing"
+            raise AttributeError(msg)
+
+        def __getattr__(self, name: str) -> str:
+            if name == "__version__":
+                return self.version
+            msg = name
+            raise AttributeError(msg)
+
+    with patch.dict(sys.modules, {"ansible": BrokenAnsible()}):
+        importlib.reload(hv)
+        assert hv.has_ansible_v2 is False
+        assert hv.has_ansible_v219 is False
+
+    importlib.reload(hv)
+    assert hv.has_ansible_v213 is True
