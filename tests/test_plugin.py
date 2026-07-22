@@ -126,7 +126,7 @@ def test_pytest_generate_tests_with_ansible_group():  # type: ignore[no-untyped-
 
     pytest_generate_tests(metafunc)  # type: ignore[no-untyped-call]
 
-    assert metafunc.parametrize.call_count == 2  # noqa: PLR2004  # Called twice for ansible_group
+    metafunc.parametrize.assert_called_once()
 
 
 def test_pytest_collection_modifyitems_with_marker():  # type: ignore[no-untyped-def]  # noqa: ANN201, D103
@@ -425,7 +425,7 @@ def test_pytest_configure_verbose_and_inject(
         mock_ansible.utils.VERBOSITY = 0
         pytest_configure(config)
         expected_verbosity = 2
-        assert expected_verbosity == mock_ansible.utils.VERBOSITY
+        assert mock_ansible.utils.VERBOSITY == expected_verbosity
 
 
 def test_pytest_configure_verbose_display_fallback() -> None:
@@ -604,8 +604,10 @@ def test_pytest_generate_tests_ansible_group_mocked() -> None:
     ):
         pytest_generate_tests(metafunc)  # type: ignore[no-untyped-call]
 
-    expected_calls = 2
-    assert metafunc.parametrize.call_count == expected_calls
+    metafunc.parametrize.assert_called_once()
+    args, _kwargs = metafunc.parametrize.call_args
+    assert args[0] == "ansible_group"
+    assert list(args[1]) == ["group1", "extra_group"]
 
 
 def test_pytest_generate_tests_ansible_host_success() -> None:

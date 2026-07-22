@@ -167,6 +167,8 @@ def test_v213_reload_without_custom_loader_support() -> None:
 
 def test_execute_play_tqm_init_failure() -> None:
     """_execute_play cleanup is skipped when TaskQueueManager construction fails."""
+    play = MagicMock()
+    variable_manager = MagicMock()
     with (
         patch(
             "pytest_ansible.module_dispatcher.v213.TaskQueueManager",
@@ -174,22 +176,23 @@ def test_execute_play_tqm_init_failure() -> None:
         ),
         pytest.raises(RuntimeError, match="tqm init failed"),
     ):
-        _execute_play(MagicMock(), {}, MagicMock())
+        _execute_play(play, {}, variable_manager)
 
 
 def test_module_dispatcher_v213_requires_ansible() -> None:
     """ModuleDispatcherV213 raises ImportError when ansible < 2.13."""
+    kwargs = {
+        "inventory": "localhost,",
+        "inventory_manager": MagicMock(),
+        "variable_manager": MagicMock(),
+        "host_pattern": "all",
+        "loader": MagicMock(),
+    }
     with (
         patch("pytest_ansible.module_dispatcher.v213.has_ansible_v213", new=False),
         pytest.raises(ImportError, match=r"Only supported with ansible-2\.13"),
     ):
-        ModuleDispatcherV213(
-            inventory="localhost,",
-            inventory_manager=MagicMock(),
-            variable_manager=MagicMock(),
-            host_pattern="all",
-            loader=MagicMock(),
-        )
+        ModuleDispatcherV213(**kwargs)
 
 
 def test_module_dispatcher_has_module_string_path() -> None:

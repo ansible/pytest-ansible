@@ -618,10 +618,11 @@ def test_has_version_import_error_branch() -> None:
             msg = name
             raise AttributeError(msg)
 
-    with patch.dict(sys.modules, {"ansible": BrokenAnsible()}):
+    try:
+        with patch.dict(sys.modules, {"ansible": BrokenAnsible()}):
+            importlib.reload(hv)
+            assert hv.has_ansible_v2 is False
+            assert hv.has_ansible_v219 is False
+    finally:
         importlib.reload(hv)
-        assert hv.has_ansible_v2 is False
-        assert hv.has_ansible_v219 is False
-
-    importlib.reload(hv)
     assert hv.has_ansible_v213 is True
