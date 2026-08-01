@@ -12,7 +12,7 @@ class AnsibleNoHostsMatch(ansible.errors.AnsibleError):  # type: ignore[misc]
 class AnsibleConnectionFailure(ansible.errors.AnsibleError):  # type: ignore[misc]
     """Sub-class AnsibleError when connection failures occur."""
 
-    def __init__(self, msg, dark=None, contacted=None) -> None:  # type: ignore[no-untyped-def]  # noqa: ANN001
+    def __init__(self, msg, dark=None, contacted=None) -> None:  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument]
         """Initialize connection error class."""
         super().__init__(msg)
         self.contacted = contacted

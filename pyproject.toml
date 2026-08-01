@@ -397,14 +397,14 @@ target-version = "py310"
 
 [tool.ruff.lint]
 ignore = [
-  "COM812",  # conflicts with ISC001 on format
-  "CPY001",  # missing-copyright-notice
-  "ISC001",  # conflicts with COM812 on format
-  "PLC0415",  # import should be at the top-level of a file
+  "missing-trailing-comma",  # conflicts with ISC001 on format
+  "missing-copyright-notice",  # missing-copyright-notice
+  "single-line-implicit-string-concatenation",  # conflicts with COM812 on format
+  "import-outside-top-level",  # import should be at the top-level of a file
   # temporary disabled when we enabled preview mode:
-  "RUF052",
-  "PLC2701",
-  "PLR6301",
+  "used-dummy-variable",
+  "import-private-name",
+  "no-self-use",
 ]
 select = ["ALL"]
 
@@ -418,10 +418,10 @@ lines-between-types = 1  # Separate import/from with 1 line
 required-imports = ["from __future__ import annotations"]
 
 [tool.ruff.lint.per-file-ignores]
-"_version.py" = ["SIM108"]
-"tests/**" = ["SLF001", "S101", "S602", "T201", "RUF076"]
+"_version.py" = ["if-else-block-instead-of-if-exp"]
+"tests/**" = ["private-member-access", "assert", "subprocess-popen-with-shell-equals-true", "print", "pytest-fixture-autouse"]
 "tests/fixtures/ansible_collections/test/test/tests/unit/plugins/modules/test_pool.py" = [
-  "INP001"
+  "implicit-namespace-package"
 ]
 
 [tool.ruff.lint.pydocstyle]

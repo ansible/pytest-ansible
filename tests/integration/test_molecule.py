@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 import os
-import subprocess  # noqa: S404
+import subprocess  # ruff: ignore[suspicious-subprocess-import]
 import sys
 
 from typing import TYPE_CHECKING
@@ -26,7 +26,7 @@ def test_molecule_collect(caplog: pytest.LogCaptureFixture) -> None:
     """
     with caplog.at_level(logging.WARNING):
         proc = subprocess.run(
-            "pytest --molecule --collect-only",  # noqa: S607
+            "pytest --molecule --collect-only",  # ruff: ignore[start-process-with-partial-path]
             capture_output=True,
             shell=True,
             check=True,
@@ -49,7 +49,7 @@ def test_molecule_disabled() -> None:
         shell=True,
         text=True,
     )
-    assert proc.returncode == 4  # noqa: PLR2004
+    assert proc.returncode == 4  # ruff: ignore[magic-value-comparison]
     # First check is for pytest 7 behavior, second for pytest >=8
     assert "ERROR: found no collectors" in proc.stderr or "ERROR: not found" in proc.stderr
 

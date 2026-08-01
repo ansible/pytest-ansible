@@ -100,7 +100,7 @@ NEGATIVE_HOST_SLICES = [
 ]
 
 
-def pytest_runtest_setup(item):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
+def pytest_runtest_setup(item):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function, undocumented-public-function]
     # Conditionally skip tests that are pinned to a specific ansible version
     if isinstance(item, pytest.Function):
         # conditionally xfail
@@ -116,7 +116,7 @@ def pytest_runtest_setup(item):  # type: ignore[no-untyped-def]  # noqa: ANN001,
 class PyTestOption:
     """Helper class that provides methods for creating and managing an inventory file."""
 
-    def __init__(self, config, pytester) -> None:  # type: ignore[no-untyped-def]  # noqa: ANN001, D107
+    def __init__(self, config, pytester) -> None:  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, undocumented-public-init]
         self.config = config
 
         # Create inventory file
@@ -145,12 +145,12 @@ class PyTestOption:
         # Create ansible.cfg file
 
     @property
-    def args(self):  # type: ignore[no-untyped-def]  # noqa: ANN201, D102
+    def args(self):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-return-type-undocumented-public-function, undocumented-public-method]
         return ["--tb", "native"]
 
 
 @pytest.fixture(autouse=True)
-def _clear_global_context():  # type: ignore[no-untyped-def]  # noqa: ANN202
+def _clear_global_context():  # type: ignore[no-untyped-def]  # ruff: ignore[missing-return-type-private-function]
     # Reset the stored command line args
     # if context object does not exist because of old version of ansible, we don't need it
     if co is not None:
@@ -158,16 +158,16 @@ def _clear_global_context():  # type: ignore[no-untyped-def]  # noqa: ANN202
 
 
 @pytest.fixture
-def option(request, pytester):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
+def option(request, pytester):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
     """Returns an instance of PyTestOption to help tests pass parameters and
     use a common inventory file.
-    """  # noqa: D205
+    """  # ruff: ignore[missing-blank-line-after-summary]
     return PyTestOption(request.config, pytester)
 
 
 @pytest.fixture
-def hosts():  # type: ignore[no-untyped-def]  # noqa: ANN201, D103
-    def create_host_manager(include_extra_inventory=False):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN202, FBT002
+def hosts():  # type: ignore[no-untyped-def]  # ruff: ignore[missing-return-type-undocumented-public-function, undocumented-public-function]
+    def create_host_manager(include_extra_inventory=False):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-private-function, boolean-default-value-positional-argument]
         kwargs = {"inventory": ",".join(ALL_HOSTS), "connection": "local"}
         if include_extra_inventory:
             kwargs["extra_inventory"] = ",".join(ALL_EXTRA_HOSTS)

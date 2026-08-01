@@ -29,7 +29,7 @@ invalid_hosts = ("none", "all", "*", "local*")
 
 
 @pytest.fixture
-def module_result_ok(request):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, ARG001, D103
+def module_result_ok(request):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function, unused-function-argument, undocumented-public-function]
     return ModuleResult(
         invocation={"module_name": "debug", "module_args": {"msg": "testing"}},
         msg="testing",
@@ -40,7 +40,7 @@ def module_result_ok(request):  # type: ignore[no-untyped-def]  # noqa: ANN001, 
 
 
 @pytest.fixture
-def module_result_failed():  # type: ignore[no-untyped-def]  # noqa: ANN201, D103
+def module_result_failed():  # type: ignore[no-untyped-def]  # ruff: ignore[missing-return-type-undocumented-public-function, undocumented-public-function]
     return ModuleResult(
         invocation={"module_name": "fail", "module_args": {}},
         failed=True,
@@ -51,7 +51,7 @@ def module_result_failed():  # type: ignore[no-untyped-def]  # noqa: ANN201, D10
 
 
 @pytest.fixture
-def module_result_changed(request):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, ARG001, D103
+def module_result_changed(request):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function, unused-function-argument, undocumented-public-function]
     return ModuleResult(
         changed=True,
         end="2016-06-17 21:32:54.877597",
@@ -80,13 +80,13 @@ def module_result_changed(request):  # type: ignore[no-untyped-def]  # noqa: ANN
 
 
 @pytest.fixture
-def _module_result_skipped():  # type: ignore[no-untyped-def]  # noqa: ANN202
+def _module_result_skipped():  # type: ignore[no-untyped-def]  # ruff: ignore[missing-return-type-private-function]
     msg = "Coming soon!"
     raise NotImplementedError(msg)
 
 
 @pytest.fixture
-def _module_result_unreachable():  # type: ignore[no-untyped-def]  # noqa: ANN202
+def _module_result_unreachable():  # type: ignore[no-untyped-def]  # ruff: ignore[missing-return-type-private-function]
     msg = "Coming soon!"
     raise NotImplementedError(msg)
 
@@ -114,6 +114,6 @@ def _module_result_unreachable():  # type: ignore[no-untyped-def]  # noqa: ANN20
         ),
     ),
 )
-def test_is_property(request, fixture_name, prop, expected_result):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
+def test_is_property(request, fixture_name, prop, expected_result):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function, undocumented-public-function]
     fixture = request.getfixturevalue(fixture_name)
     assert getattr(fixture, prop) == expected_result

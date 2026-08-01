@@ -275,7 +275,7 @@ def test_molecule_item_init_markers_and_str(
     assert str(item) == "test0[default]"
     assert item.reportinfo() == (path, 0, "use_case: test0")  # type: ignore[no-untyped-call]
     # xfail + skip + platform + molecule + driver markers
-    assert mock_add_marker.call_count >= 4  # noqa: PLR2004
+    assert mock_add_marker.call_count >= 4  # ruff: ignore[magic-value-comparison]
 
 
 def test_molecule_item_global_config_and_unavailable_driver(
@@ -352,7 +352,7 @@ def test_molecule_item_runtest_success(
     item = MoleculeItem.__new__(MoleculeItem)
     item.path = path
     item.config = MagicMock()
-    item.config.option.molecule_base_config = "/tmp/base.yml"  # noqa: S108
+    item.config.option.molecule_base_config = "/tmp/base.yml"  # ruff: ignore[hardcoded-temp-file]
     item.config.option.skip_no_git_change = None
     item.config.getoption = MagicMock(return_value=True)
     monkeypatch.setenv("MOLECULE_OPTS", "--debug")

@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from pytest_ansible.host_manager.base import BaseHostManager
 
 
-def get_host_manager(*args, **kwargs) -> BaseHostManager:  # type: ignore[no-untyped-def]  # noqa: ANN002, ANN003
+def get_host_manager(*args, **kwargs) -> BaseHostManager:  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-args, missing-type-kwargs]
     """Initialize and return a HostManager instance.
 
     Args:

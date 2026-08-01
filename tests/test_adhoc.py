@@ -24,7 +24,7 @@ except ImportError:
     EXIT_NOTESTSCOLLECTED = ExitCode.NO_TESTS_COLLECTED
 
 
-def test_contacted_with_params(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
+def test_contacted_with_params(pytester, option):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
     """FIXME."""
     src = """
         import pytest
@@ -53,7 +53,7 @@ def test_contacted_with_params(pytester, option):  # type: ignore[no-untyped-def
     assert result.parseoutcomes()["passed"] == 1
 
 
-def test_contacted_with_params_and_inventory_marker(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
+def test_contacted_with_params_and_inventory_marker(pytester, option):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
     """FIXME."""
     src = f"""
         import pytest
@@ -78,7 +78,7 @@ def test_contacted_with_params_and_inventory_marker(pytester, option):  # type: 
     assert result.parseoutcomes()["passed"] == 1
 
 
-def test_contacted_with_params_and_host_pattern_marker(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
+def test_contacted_with_params_and_host_pattern_marker(pytester, option):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
     """FIXME."""
     src = """
         import pytest
@@ -108,7 +108,7 @@ def test_contacted_with_params_and_host_pattern_marker(pytester, option):  # typ
     assert result.parseoutcomes()["passed"] == 1
 
 
-def test_contacted_with_params_and_inventory_host_pattern_marker(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
+def test_contacted_with_params_and_inventory_host_pattern_marker(pytester, option):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
     """FIXME."""
     src = f"""
         import pytest
@@ -138,11 +138,11 @@ def test_contacted_with_params_and_inventory_host_pattern_marker(pytester, optio
     assert result.parseoutcomes()["passed"] == 1
 
 
-def test_become(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
+def test_become(pytester, option):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
     """Test --ansible-become* parameters.  This test doesn't actually 'sudo',
     but verifies that 'sudo' was attempted by asserting
     '--ansible-become-user' fails as expected.
-    """  # noqa: D205
+    """  # ruff: ignore[missing-blank-line-after-summary]
     src = f"""
         import pytest
         import ansible
@@ -176,11 +176,11 @@ def test_become(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN0
                 else:
                     assert 'msg' in result, "Missing expected field in JSON response: msg"
                     assert 'sudo: unknown user: unknown_user' in result['msg']
-        """  # noqa: E501
+        """  # ruff: ignore[line-too-long]
 
     pytester.makepyfile(src)
     result = pytester.runpytest_subprocess(
-        *option.args  # noqa: RUF005
+        *option.args  # ruff: ignore[collection-literal-concatenation]
         + [
             "--ansible-inventory",
             str(option.inventory),
@@ -195,7 +195,7 @@ def test_become(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN0
     assert result.parseoutcomes()["passed"] == 1
 
 
-def test_dark_with_params(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
+def test_dark_with_params(pytester, option):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
     """FIXME."""
     src = """
         import pytest
@@ -224,7 +224,7 @@ def test_dark_with_params(pytester, option):  # type: ignore[no-untyped-def]  # 
     assert result.parseoutcomes()["passed"] == 1
 
 
-def test_dark_with_params_and_inventory_marker(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
+def test_dark_with_params_and_inventory_marker(pytester, option):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
     """FIXME."""
     src = f"""
         import pytest
@@ -249,7 +249,7 @@ def test_dark_with_params_and_inventory_marker(pytester, option):  # type: ignor
     assert result.parseoutcomes()["passed"] == 1
 
 
-def test_dark_with_params_and_host_pattern_marker(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
+def test_dark_with_params_and_host_pattern_marker(pytester, option):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
     """FIXME."""
     src = """
         import pytest
@@ -281,7 +281,7 @@ def test_dark_with_params_and_host_pattern_marker(pytester, option):  # type: ig
 
 
 @pytest.mark.old
-def test_dark_with_debug_enabled(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
+def test_dark_with_debug_enabled(pytester, option):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
     """Verify that when verbosity is enabled, additional output is provided upon host failure."""
     src = """
         import pytest
