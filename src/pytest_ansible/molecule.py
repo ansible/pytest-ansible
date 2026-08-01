@@ -6,7 +6,7 @@ import importlib.util
 import logging
 import os
 import shlex
-import subprocess  # noqa: S404
+import subprocess  # ruff: ignore[suspicious-subprocess-import]
 import sys
 import warnings
 
@@ -43,7 +43,7 @@ def warn_molecule_deprecated(*, stacklevel: int = 2) -> None:
     Args:
         stacklevel: Warning stacklevel passed to warnings.warn.
     """
-    global _molecule_deprecation_warned  # noqa: PLW0603
+    global _molecule_deprecation_warned  # ruff: ignore[global-statement]
     if _molecule_deprecation_warned:
         return
     _molecule_deprecation_warned = True
@@ -54,7 +54,7 @@ logger = logging.getLogger(__name__)
 counter = 0
 
 
-def _populate_config_metadata(config) -> None:  # type: ignore[no-untyped-def]  # noqa: ANN001
+def _populate_config_metadata(config) -> None:  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument]
     """Populate pytest config metadata with molecule/ansible info and env vars."""
     if not hasattr(config, "_metadata"):
         return
@@ -62,21 +62,21 @@ def _populate_config_metadata(config) -> None:  # type: ignore[no-untyped-def]  
     interesting_env_vars = ("ANSIBLE", "MOLECULE", "DOCKER", "PODMAN", "VAGRANT", "VIRSH", "ZUUL")
 
     for package in ["molecule"]:
-        config._metadata["Packages"][package] = version(package)  # noqa: SLF001
+        config._metadata["Packages"][package] = version(package)  # ruff: ignore[private-member-access]
 
-    if "Tools" not in config._metadata:  # noqa: SLF001
-        config._metadata["Tools"] = {}  # noqa: SLF001
-    config._metadata["Tools"]["ansible"] = str(ansible_version())  # noqa: SLF001
+    if "Tools" not in config._metadata:  # ruff: ignore[private-member-access]
+        config._metadata["Tools"] = {}  # ruff: ignore[private-member-access]
+    config._metadata["Tools"]["ansible"] = str(ansible_version())  # ruff: ignore[private-member-access]
 
     env = ""
     for key, value in sorted(os.environ.items()):
         for var_name in interesting_env_vars:
             if key.startswith(var_name):
                 env += f"{key}={value} "
-    config._metadata["env"] = env  # noqa: SLF001
+    config._metadata["env"] = env  # ruff: ignore[private-member-access]
 
 
-def molecule_pytest_configure(config):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
+def molecule_pytest_configure(config):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
     """Pytest hook for loading our specific configuration."""
     _populate_config_metadata(config)
 
@@ -110,7 +110,7 @@ def molecule_pytest_configure(config):  # type: ignore[no-untyped-def]  # noqa: 
         # validate selinux availability
         if sys.platform == "linux" and Path("/etc/selinux/config").is_file():
             try:
-                import selinux  # noqa: F401 pylint: disable=import-outside-toplevel
+                import selinux  # ruff: ignore[unused-import] pylint: disable=import-outside-toplevel
             except ImportError:
                 logger.exception(
                     "It appears that you are trying to use "
@@ -127,10 +127,10 @@ def molecule_pytest_configure(config):  # type: ignore[no-untyped-def]  # noqa: 
 class MoleculeFile(pytest.File):
     """Wrapper class for molecule files."""
 
-    def collect(self):  # type: ignore[no-untyped-def]  # noqa: ANN201
-        """Test generator."""  # noqa: DOC402
+    def collect(self):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-return-type-undocumented-public-function]
+        """Test generator."""  # ruff: ignore[docstring-missing-yields]
         # pylint: disable=global-statement
-        global counter  # noqa: PLW0603
+        global counter  # ruff: ignore[global-statement]
         if hasattr(MoleculeItem, "from_parent"):
             yield MoleculeItem.from_parent(name=f"test{counter}", parent=self)
         else:
@@ -148,7 +148,7 @@ class MoleculeItem(pytest.Item):
     Pytest supports multiple tests per file, molecule only one "test".
     """
 
-    def __init__(self, name, parent) -> None:  # type: ignore[no-untyped-def]  # noqa: ANN001
+    def __init__(self, name, parent) -> None:  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument]
         """Construct MoleculeItem."""
         self.funcargs = {}  # type: ignore[var-annotated]
         super().__init__(name, parent)
@@ -206,7 +206,7 @@ class MoleculeItem(pytest.Item):
         with Path.open(filepath, encoding="utf-8") as file_descriptor:  # type: ignore[call-overload]
             return yaml.safe_load(file_descriptor) or {}
 
-    def runtest(self):  # type: ignore[no-untyped-def]  # noqa: ANN201
+    def runtest(self):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-return-type-undocumented-public-function]
         """Perform effective test run."""
         folder = self.path.parent
         folders = folder.parts
@@ -217,8 +217,8 @@ class MoleculeItem(pytest.Item):
         if self.config.option.molecule_base_config:
             cmd.extend(("--base-config", self.config.option.molecule_base_config))
         if self.config.option.skip_no_git_change:
-            with subprocess.Popen(  # noqa: S603
-                [  # noqa: S607
+            with subprocess.Popen(  # ruff: ignore[subprocess-without-shell-equals-true]
+                [  # ruff: ignore[start-process-with-partial-path]
                     "git",
                     "diff",
                     self.config.option.skip_no_git_change,
@@ -244,7 +244,7 @@ class MoleculeItem(pytest.Item):
         if self.config.getoption("--molecule"):
             # Workaround for STDOUT/STDERR line ordering issue:
             # https://github.com/pytest-dev/pytest/issues/5449
-            with subprocess.Popen(  # noqa: S603
+            with subprocess.Popen(  # ruff: ignore[subprocess-without-shell-equals-true]
                 cmd,
                 cwd=cwd,
                 stdout=subprocess.PIPE,
@@ -252,7 +252,7 @@ class MoleculeItem(pytest.Item):
                 universal_newlines=True,
             ) as proc:
                 for line in proc.stdout:  # type: ignore[union-attr]
-                    print(line, end="")  # noqa: T201
+                    print(line, end="")  # ruff: ignore[print]
                 proc.wait()
                 if proc.returncode != 0:
                     pytest.fail(
@@ -262,7 +262,7 @@ class MoleculeItem(pytest.Item):
         else:
             pytest.skip("Molecule tests are disabled")
 
-    def reportinfo(self):  # type: ignore[no-untyped-def]  # noqa: ANN201
+    def reportinfo(self):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-return-type-undocumented-public-function]
         """Return representation of test location when in verbose mode."""
         return self.fspath, 0, f"use_case: {self.name}"
 

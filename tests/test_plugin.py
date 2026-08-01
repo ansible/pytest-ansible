@@ -29,11 +29,11 @@ if TYPE_CHECKING:
 class MockItem:
     """Mock class for item object."""
 
-    def __init__(self, fixturenames, marker=None) -> None:  # type: ignore[no-untyped-def]  # noqa: ANN001, D107
+    def __init__(self, fixturenames, marker=None) -> None:  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, undocumented-public-init]
         self.fixturenames = fixturenames
         self.marker = marker
 
-    def get_closest_marker(self, marker_name):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, ARG002, D102
+    def get_closest_marker(self, marker_name):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function, unused-method-argument, undocumented-public-method]
         return self.marker
 
 
@@ -44,15 +44,15 @@ class MockConfig:
         options: A dictionary of options.
     """
 
-    options = {}  # type: ignore[var-annotated]  # noqa: RUF012
+    options = {}  # type: ignore[var-annotated]  # ruff: ignore[mutable-class-default]
 
-    def setoption(self, option_name, value):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D102
+    def setoption(self, option_name, value):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function, undocumented-public-method]
         self.options[option_name] = value
 
-    def getoption(self, option_name):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D102
+    def getoption(self, option_name):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function, undocumented-public-method]
         return self.options.get(option_name)
 
-    def __init__(self) -> None:  # noqa: D107
+    def __init__(self) -> None:  # ruff: ignore[undocumented-public-init]
         self.options = {
             "ansible_host_pattern": "localhost",
             "ansible_inventory": "/etc/ansible/hosts",
@@ -62,21 +62,21 @@ class MockConfig:
 class MockPluginManager:
     """Mock class for pluginmanager object."""
 
-    def getplugin(self, name):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, ARG002, D102
+    def getplugin(self, name):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function, unused-method-argument, undocumented-public-method]
         return MagicMock()
 
 
 class MockMetafunc:
     """Mock class for metafunc object."""
 
-    def __init__(self, fixturenames) -> None:  # type: ignore[no-untyped-def]  # noqa: ANN001, D107
+    def __init__(self, fixturenames) -> None:  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, undocumented-public-init]
         self.fixturenames = fixturenames
         self.config = MockConfig()
         self.parametrize = MagicMock()
 
 
 @skip_ansible_219
-def test_pytest_generate_tests_with_ansible_host():  # type: ignore[no-untyped-def]  # noqa: ANN201, D103
+def test_pytest_generate_tests_with_ansible_host():  # type: ignore[no-untyped-def]  # ruff: ignore[missing-return-type-undocumented-public-function, undocumented-public-function]
     metafunc = MagicMock()
     metafunc.fixturenames = ["ansible_host"]
     metafunc.config = MagicMock()
@@ -100,7 +100,7 @@ def test_pytest_generate_tests_with_ansible_host():  # type: ignore[no-untyped-d
 
 
 @skip_ansible_219
-def test_pytest_generate_tests_with_ansible_group():  # type: ignore[no-untyped-def]  # noqa: ANN201, D103
+def test_pytest_generate_tests_with_ansible_group():  # type: ignore[no-untyped-def]  # ruff: ignore[missing-return-type-undocumented-public-function, undocumented-public-function]
     metafunc = MagicMock()
     metafunc.fixturenames = ["ansible_group"]
     config = MagicMock()
@@ -129,7 +129,7 @@ def test_pytest_generate_tests_with_ansible_group():  # type: ignore[no-untyped-
     metafunc.parametrize.assert_called_once()
 
 
-def test_pytest_collection_modifyitems_with_marker():  # type: ignore[no-untyped-def]  # noqa: ANN201, D103
+def test_pytest_collection_modifyitems_with_marker():  # type: ignore[no-untyped-def]  # ruff: ignore[missing-return-type-undocumented-public-function, undocumented-public-function]
     # Mock configuration with ansible_ marker
     mock_config = MockConfig()
     mock_config.setoption("ansible_host_pattern", "some_pattern")  # type: ignore[no-untyped-call]
@@ -148,7 +148,7 @@ def test_pytest_collection_modifyitems_with_marker():  # type: ignore[no-untyped
         plugin.pytest_collection_modifyitems(mock_config, items)  # type: ignore[no-untyped-call]
 
 
-def test_pytest_collection_modifyitems_without_marker():  # type: ignore[no-untyped-def]  # noqa: ANN201, D103
+def test_pytest_collection_modifyitems_without_marker():  # type: ignore[no-untyped-def]  # ruff: ignore[missing-return-type-undocumented-public-function, undocumented-public-function]
     # Mock configuration without ansible_ marker
     mock_config = MockConfig()
     mock_config.setoption("ansible_host_pattern", "some_pattern")  # type: ignore[no-untyped-call]
@@ -163,7 +163,7 @@ def test_pytest_collection_modifyitems_without_marker():  # type: ignore[no-unty
         mock_assert.assert_called_once()
 
 
-def test_pytest_collection_modifyitems_no_fixtures():  # type: ignore[no-untyped-def]  # noqa: ANN201, D103
+def test_pytest_collection_modifyitems_no_fixtures():  # type: ignore[no-untyped-def]  # ruff: ignore[missing-return-type-undocumented-public-function, undocumented-public-function]
     # Mock configuration without ansible_ marker
     mock_config = MockConfig()
     mock_config.setoption("ansible_host_pattern", "some_pattern")  # type: ignore[no-untyped-call]
@@ -178,7 +178,7 @@ def test_pytest_collection_modifyitems_no_fixtures():  # type: ignore[no-untyped
         mock_assert.assert_not_called()
 
 
-def test_any_item_uses_ansible_fixtures_skips_items_without_fixturenames():  # type: ignore[no-untyped-def]  # noqa: ANN201
+def test_any_item_uses_ansible_fixtures_skips_items_without_fixturenames():  # type: ignore[no-untyped-def]  # ruff: ignore[missing-return-type-undocumented-public-function]
     """Items without a fixturenames attribute are silently skipped."""
 
     class NoFixtureItem:
@@ -190,7 +190,7 @@ def test_any_item_uses_ansible_fixtures_skips_items_without_fixturenames():  # t
     assert result is False
 
 
-def test_any_item_uses_ansible_fixtures_skips_request_fixture():  # type: ignore[no-untyped-def]  # noqa: ANN201
+def test_any_item_uses_ansible_fixtures_skips_request_fixture():  # type: ignore[no-untyped-def]  # ruff: ignore[missing-return-type-undocumented-public-function]
     """The reserved 'request' fixture name should be silently skipped."""
     result = PyTestAnsiblePlugin._any_item_uses_ansible_fixtures(
         [MockItem(fixturenames=["request"])],
@@ -198,14 +198,14 @@ def test_any_item_uses_ansible_fixtures_skips_request_fixture():  # type: ignore
     assert result is False
 
 
-def test_any_item_uses_ansible_fixtures_skips_known_fixture_defs():  # type: ignore[no-untyped-def]  # noqa: ANN201
+def test_any_item_uses_ansible_fixtures_skips_known_fixture_defs():  # type: ignore[no-untyped-def]  # ruff: ignore[missing-return-type-undocumented-public-function]
     """Fixtures present in _fixtureinfo.name2fixturedefs are skipped."""
 
     class ItemWithFixtureDefs:
-        fixturenames = ["my_custom_fixture"]  # noqa: RUF012
+        fixturenames = ["my_custom_fixture"]  # ruff: ignore[mutable-class-default]
 
-        class _fixtureinfo:  # noqa: N801
-            name2fixturedefs = {"my_custom_fixture": [MagicMock()]}  # noqa: RUF012
+        class _fixtureinfo:  # ruff: ignore[invalid-class-name]
+            name2fixturedefs = {"my_custom_fixture": [MagicMock()]}  # ruff: ignore[mutable-class-default]
 
     result = PyTestAnsiblePlugin._any_item_uses_ansible_fixtures(
         [ItemWithFixtureDefs()],
@@ -213,7 +213,7 @@ def test_any_item_uses_ansible_fixtures_skips_known_fixture_defs():  # type: ign
     assert result is False
 
 
-def test_any_item_uses_ansible_fixtures_returns_true_for_ansible_fixture():  # type: ignore[no-untyped-def]  # noqa: ANN201
+def test_any_item_uses_ansible_fixtures_returns_true_for_ansible_fixture():  # type: ignore[no-untyped-def]  # ruff: ignore[missing-return-type-undocumented-public-function]
     """Return True when an item uses an OUR_FIXTURES fixture."""
     result = PyTestAnsiblePlugin._any_item_uses_ansible_fixtures(
         [MockItem(fixturenames=["ansible_adhoc"])],
@@ -237,16 +237,16 @@ def test_any_item_uses_ansible_fixtures_logs_undefined(
     assert "unknown_fixture" in caplog.text
 
 
-def test_any_item_uses_ansible_fixtures_fixtureinfo_miss():  # type: ignore[no-untyped-def]  # noqa: ANN201
+def test_any_item_uses_ansible_fixtures_fixtureinfo_miss():  # type: ignore[no-untyped-def]  # ruff: ignore[missing-return-type-undocumented-public-function]
     """Fixture present in _fixtureinfo but not matching name2fixturedefs falls through."""
 
     class ItemWithPartialFixtureDefs:
         """Item where fixture is NOT in name2fixturedefs."""
 
-        fixturenames = ["other_fixture"]  # noqa: RUF012
+        fixturenames = ["other_fixture"]  # ruff: ignore[mutable-class-default]
 
-        class _fixtureinfo:  # noqa: N801
-            name2fixturedefs = {"different_fixture": [MagicMock()]}  # noqa: RUF012
+        class _fixtureinfo:  # ruff: ignore[invalid-class-name]
+            name2fixturedefs = {"different_fixture": [MagicMock()]}  # ruff: ignore[mutable-class-default]
 
     result = PyTestAnsiblePlugin._any_item_uses_ansible_fixtures(
         [ItemWithPartialFixtureDefs()],
@@ -254,15 +254,15 @@ def test_any_item_uses_ansible_fixtures_fixtureinfo_miss():  # type: ignore[no-u
     assert result is False
 
 
-def test_any_item_uses_ansible_fixtures_no_name2fixturedefs():  # type: ignore[no-untyped-def]  # noqa: ANN201
+def test_any_item_uses_ansible_fixtures_no_name2fixturedefs():  # type: ignore[no-untyped-def]  # ruff: ignore[missing-return-type-undocumented-public-function]
     """Item with _fixtureinfo but without name2fixturedefs attribute."""
 
     class ItemWithBareFixtureInfo:
         """Item where _fixtureinfo lacks name2fixturedefs."""
 
-        fixturenames = ["some_fixture"]  # noqa: RUF012
+        fixturenames = ["some_fixture"]  # ruff: ignore[mutable-class-default]
 
-        class _fixtureinfo:  # noqa: N801
+        class _fixtureinfo:  # ruff: ignore[invalid-class-name]
             pass
 
     result = PyTestAnsiblePlugin._any_item_uses_ansible_fixtures(
@@ -271,7 +271,7 @@ def test_any_item_uses_ansible_fixtures_no_name2fixturedefs():  # type: ignore[n
     assert result is False
 
 
-def test_pytest_collect_file_no_molecule_option():  # type: ignore[no-untyped-def]  # noqa: ANN201
+def test_pytest_collect_file_no_molecule_option():  # type: ignore[no-untyped-def]  # ruff: ignore[missing-return-type-undocumented-public-function]
     """Return None when config.option has no molecule attribute."""
     parent = MagicMock()
     del parent.config.option.molecule
@@ -280,7 +280,7 @@ def test_pytest_collect_file_no_molecule_option():  # type: ignore[no-untyped-de
     assert result is None
 
 
-def test_pytest_collect_file_molecule_disabled():  # type: ignore[no-untyped-def]  # noqa: ANN201
+def test_pytest_collect_file_molecule_disabled():  # type: ignore[no-untyped-def]  # ruff: ignore[missing-return-type-undocumented-public-function]
     """Return None when --molecule is not enabled."""
     parent = MagicMock()
     parent.config.option.molecule = False
@@ -289,7 +289,7 @@ def test_pytest_collect_file_molecule_disabled():  # type: ignore[no-untyped-def
     assert result is None
 
 
-def test_pytest_collect_file_symlink(tmp_path):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
+def test_pytest_collect_file_symlink(tmp_path):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
     """Return None for symlinked files.
 
     Args:
@@ -307,7 +307,7 @@ def test_pytest_collect_file_symlink(tmp_path):  # type: ignore[no-untyped-def] 
     assert result is None
 
 
-def test_pytest_collect_file_non_molecule_yml(tmp_path):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
+def test_pytest_collect_file_non_molecule_yml(tmp_path):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
     """Return None for files not named molecule.yml.
 
     Args:
@@ -323,26 +323,26 @@ def test_pytest_collect_file_non_molecule_yml(tmp_path):  # type: ignore[no-unty
     assert result is None
 
 
-def test_warn_or_fail_on_v219():  # type: ignore[no-untyped-def]  # noqa: ANN201
+def test_warn_or_fail_on_v219():  # type: ignore[no-untyped-def]  # ruff: ignore[missing-return-type-undocumented-public-function]
     """On Ansible 2.19+, warn_or_fail should call pytest.exit."""
     from pytest_ansible.plugin import warn_or_fail
 
     with (
-        patch("pytest_ansible.plugin.has_ansible_v219", True),  # noqa: FBT003
+        patch("pytest_ansible.plugin.has_ansible_v219", True),  # ruff: ignore[boolean-positional-value-in-call]
         patch("pytest_ansible.plugin.pytest") as mock_pytest,
     ):
         warn_or_fail("ansible_host")
         mock_pytest.exit.assert_called_once()
 
 
-def test_warn_or_fail_pre_v219():  # type: ignore[no-untyped-def]  # noqa: ANN201
+def test_warn_or_fail_pre_v219():  # type: ignore[no-untyped-def]  # ruff: ignore[missing-return-type-undocumented-public-function]
     """Before Ansible 2.19, warn_or_fail should emit a DeprecationWarning."""
     import warnings
 
     from pytest_ansible.plugin import warn_or_fail
 
     with (
-        patch("pytest_ansible.plugin.has_ansible_v219", False),  # noqa: FBT003
+        patch("pytest_ansible.plugin.has_ansible_v219", False),  # ruff: ignore[boolean-positional-value-in-call]
         warnings.catch_warnings(record=True) as caught,
     ):
         warnings.simplefilter("always")
@@ -353,7 +353,7 @@ def test_warn_or_fail_pre_v219():  # type: ignore[no-untyped-def]  # noqa: ANN20
     assert "ansible_host" in str(caught[0].message)
 
 
-def test_pytest_load_initial_conftests_connection_equals():  # type: ignore[no-untyped-def]  # noqa: ANN201
+def test_pytest_load_initial_conftests_connection_equals():  # type: ignore[no-untyped-def]  # ruff: ignore[missing-return-type-undocumented-public-function]
     """The --connection=value form should also trigger a deprecation warning."""
     import warnings
 
@@ -368,7 +368,7 @@ def test_pytest_load_initial_conftests_connection_equals():  # type: ignore[no-u
     assert "--ansible-connection" in str(caught[0].message)
 
 
-def test_pytest_load_initial_conftests_no_connection():  # type: ignore[no-untyped-def]  # noqa: ANN201
+def test_pytest_load_initial_conftests_no_connection():  # type: ignore[no-untyped-def]  # ruff: ignore[missing-return-type-undocumented-public-function]
     """No warning emitted when --connection is absent."""
     import warnings
 
@@ -675,7 +675,7 @@ def test_load_scenarios_git_rev_parse_failure(
     from pytest_ansible.plugin import _load_scenarios
 
     config = MagicMock()
-    config.rootpath.as_posix.return_value = "/tmp/not-a-repo"  # noqa: S108
+    config.rootpath.as_posix.return_value = "/tmp/not-a-repo"  # ruff: ignore[hardcoded-temp-file]
     failed = MagicMock(returncode=1, stdout="", stderr="not a git repo")
 
     with (

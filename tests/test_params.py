@@ -33,7 +33,7 @@ except ImportError:
     EXIT_NOTESTSCOLLECTED = ExitCode.NO_TESTS_COLLECTED
 
 
-def test_plugin_help(pytester):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
+def test_plugin_help(pytester):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
     """Verifies expected output from of pytest --help."""
     result = pytester.runpytest("--help")
     result.stdout.fnmatch_lines(
@@ -57,7 +57,7 @@ def test_plugin_help(pytester):  # type: ignore[no-untyped-def]  # noqa: ANN001,
     )
 
 
-def test_plugin_markers(pytester):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
+def test_plugin_markers(pytester):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
     """Verifies expected output from of pytest --markers."""
     result = pytester.runpytest("--markers")
     result.stdout.fnmatch_lines(
@@ -67,14 +67,14 @@ def test_plugin_markers(pytester):  # type: ignore[no-untyped-def]  # noqa: ANN0
     )
 
 
-def test_report_header(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
+def test_report_header(pytester, option):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
     """Verify the expected ansible version in the pytest report header."""
     result = pytester.runpytest(*option.args)
     assert result.ret == EXIT_NOTESTSCOLLECTED
     result.stdout.fnmatch_lines([f"ansible: {ansible.__version__}"])
 
 
-def test_params_not_required_when_not_using_fixture(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
+def test_params_not_required_when_not_using_fixture(pytester, option):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
     """Verify the ansible parameters are not required if the fixture is not used."""
     src = """
         import pytest
@@ -136,7 +136,7 @@ def test_params_required_when_using_fixture(
         "--module-path",
     ),
 )
-def test_param_requires_value(pytester, required_value_parameter):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
+def test_param_requires_value(pytester, required_value_parameter):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
     """Verifies failure when not providing a value to a parameter that requires a value."""
     result = pytester.runpytest(*[required_value_parameter])
     assert result.ret == EXIT_USAGEERROR
@@ -146,7 +146,7 @@ def test_param_requires_value(pytester, required_value_parameter):  # type: igno
 
 
 @pytest.mark.requires_ansible_v2
-def test_params_required_without_inventory_with_host_pattern_v2(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
+def test_params_required_without_inventory_with_host_pattern_v2(pytester, option):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function, undocumented-public-function]
     src = """
         import pytest
         def test_func(ansible_module):
@@ -157,7 +157,7 @@ def test_params_required_without_inventory_with_host_pattern_v2(pytester, option
     assert result.ret == EXIT_OK
 
 
-def test_param_override_with_marker(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
+def test_param_override_with_marker(pytester, option):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function, undocumented-public-function]
     src = """
         import pytest
         @pytest.mark.ansible(inventory='local,', connection='local', host_pattern='all')

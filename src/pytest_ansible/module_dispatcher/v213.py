@@ -48,10 +48,10 @@ def _execute_play(
         tqm = TaskQueueManager(**tqm_kwargs)
         if has_ansible_v219:
             tqm.load_callbacks()
-            callback._init_callback_methods()  # noqa: SLF001
+            callback._init_callback_methods()  # ruff: ignore[private-member-access]
             callback.set_options()
-            if tqm._callback_plugins:  # noqa: SLF001
-                tqm._callback_plugins[0] = callback  # noqa: SLF001
+            if tqm._callback_plugins:  # ruff: ignore[private-member-access]
+                tqm._callback_plugins[0] = callback  # ruff: ignore[private-member-access]
         tqm.run(play)
     finally:
         if tqm:
@@ -61,28 +61,28 @@ def _execute_play(
 class ResultAccumulator(CallbackBase):  # type: ignore[misc]
     """Fixme."""
 
-    def __init__(self, *args, **kwargs) -> None:  # type: ignore[no-untyped-def]  # noqa: ANN002, ANN003
+    def __init__(self, *args, **kwargs) -> None:  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-args, missing-type-kwargs]
         """Initialize object."""
         super().__init__(*args, **kwargs)
         self.contacted = {}  # type: ignore[var-annotated]
         self.unreachable = {}  # type: ignore[var-annotated]
 
-    def v2_runner_on_failed(self, result, *args, **kwargs):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN002, ANN003, ANN201, ARG002
+    def v2_runner_on_failed(self, result, *args, **kwargs):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-type-args, missing-type-kwargs, missing-return-type-undocumented-public-function, unused-method-argument]
         """Fixme."""
         result2 = {"failed": True}
-        result2.update(result._result)  # noqa: SLF001
-        self.contacted[result._host.get_name()] = result2  # noqa: SLF001
+        result2.update(result._result)  # ruff: ignore[private-member-access]
+        self.contacted[result._host.get_name()] = result2  # ruff: ignore[private-member-access]
 
-    def v2_runner_on_ok(self, result):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
+    def v2_runner_on_ok(self, result):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
         """Fixme."""
-        self.contacted[result._host.get_name()] = result._result  # noqa: SLF001
+        self.contacted[result._host.get_name()] = result._result  # ruff: ignore[private-member-access]
 
-    def v2_runner_on_unreachable(self, result):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
+    def v2_runner_on_unreachable(self, result):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
         """Fixme."""
-        self.unreachable[result._host.get_name()] = result._result  # noqa: SLF001
+        self.unreachable[result._host.get_name()] = result._result  # ruff: ignore[private-member-access]
 
     @property
-    def results(self):  # type: ignore[no-untyped-def]  # noqa: ANN201
+    def results(self):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-return-type-undocumented-public-function]
         """Fixme."""
         return {"contacted": self.contacted, "unreachable": self.unreachable}
 
@@ -102,7 +102,7 @@ class ModuleDispatcherV213(BaseModuleDispatcher):
         "loader",
     )
 
-    def __init__(self, **kwargs) -> None:  # type: ignore[no-untyped-def]  # noqa: ANN003
+    def __init__(self, **kwargs) -> None:  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-kwargs]
         """Fixme.
 
         Raises:
@@ -137,8 +137,8 @@ class ModuleDispatcherV213(BaseModuleDispatcher):
             return ""
         return str(found.resolved_fqcn)
 
-    def _run(self, *module_args, **complex_args):  # type: ignore[no-untyped-def]  # noqa: ANN002, ANN003, ANN202
-        """Execute an ansible adhoc command returning the result in a AdhocResult object."""  # noqa: DOC201
+    def _run(self, *module_args, **complex_args):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-args, missing-type-kwargs, missing-return-type-private-function]
+        """Execute an ansible adhoc command returning the result in a AdhocResult object."""  # ruff: ignore[docstring-missing-returns]
         if module_args:
             complex_args.update({"_raw_params": " ".join(module_args)})
 
@@ -197,7 +197,7 @@ class ModuleDispatcherV213(BaseModuleDispatcher):
         no_hosts = False
         if len(hosts + extra_hosts) == 0:
             no_hosts = True
-            warnings.warn("provided hosts list is empty, only localhost is available")  # noqa: B028
+            warnings.warn("provided hosts list is empty, only localhost is available")  # ruff: ignore[no-explicit-stacklevel]
 
         self.options["inventory_manager"].subset(self.options.get("subset"))
         hosts = self.options["inventory_manager"].list_hosts(
@@ -232,7 +232,7 @@ class ModuleDispatcherV213(BaseModuleDispatcher):
             "module_path",
         ):
             arg_value = self.options.get(argument)
-            argument = argument.replace("_", "-")  # noqa: PLW2901
+            argument = argument.replace("_", "-")  # ruff: ignore[redefined-loop-name]
 
             if isinstance(arg_value, typing.Hashable) and arg_value in {None, False}:
                 continue
@@ -306,8 +306,8 @@ class ModuleDispatcherV213(BaseModuleDispatcher):
                 contacted=callback.contacted,
             )
         if callback_extra is not None and callback_extra.unreachable:
-            raise AnsibleConnectionFailure(  # noqa: TRY003
-                "Host unreachable in the extra inventory",  # noqa: EM101
+            raise AnsibleConnectionFailure(  # ruff: ignore[raise-vanilla-args]
+                "Host unreachable in the extra inventory",  # ruff: ignore[raw-string-in-exception]
                 dark=callback_extra.unreachable,
                 contacted=callback_extra.contacted,
             )

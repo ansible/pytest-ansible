@@ -8,7 +8,7 @@ import pytest
 
 
 @pytest.mark.ansible(inventory="local,", connection="local", host_pattern="all")
-def test_func(ansible_module: Any) -> None:  # noqa: ANN401
+def test_func(ansible_module: Any) -> None:  # ruff: ignore[any-type]
     """Sample test for ansible module.
 
     Args:

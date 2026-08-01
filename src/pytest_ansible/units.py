@@ -49,14 +49,14 @@ def get_collection_name(start_path: Path) -> tuple[str | None, str | None]:
         with info_file.open(encoding="utf-8") as file_handler:
             galaxy_info = yaml.safe_load(file_handler)
     except FileNotFoundError:
-        logger.error("No galaxy.yml file found, plugin not activated")  # noqa: TRY400
+        logger.error("No galaxy.yml file found, plugin not activated")  # ruff: ignore[error-instead-of-exception]
         return None, None
 
     try:
         namespace = galaxy_info["namespace"]
         name = galaxy_info["name"]
     except KeyError:
-        logger.error("galaxy.yml file does not contain namespace and name")  # noqa: TRY400
+        logger.error("galaxy.yml file does not contain namespace and name")  # ruff: ignore[error-instead-of-exception]
         return None, None
 
     logger.debug("galaxy.yml file found, plugin activated")
@@ -160,9 +160,9 @@ def acf_inject(paths: list[str]) -> None:
     """
     if HAS_COLLECTION_FINDER:
         acf = _AnsibleCollectionFinder(paths=paths)
-        acf._install()  # noqa: SLF001
+        acf._install()  # ruff: ignore[private-member-access]
         logger.debug("_ACF installed: %s", paths)
-        logger.debug("_ACF configured paths: %s", acf._n_configured_paths)  # noqa: SLF001
+        logger.debug("_ACF configured paths: %s", acf._n_configured_paths)  # ruff: ignore[private-member-access]
     else:
         logger.debug("_ACF not available")
 
@@ -174,7 +174,7 @@ def determine_envvar() -> str:
 
     Returns:
         The appropriate environment variable to use
-    """  # noqa: E501
+    """  # ruff: ignore[line-too-long]
     if not HAS_COLLECTION_FINDER:
         return "ANSIBLE_COLLECTIONS_PATHS"
     return "ANSIBLE_COLLECTIONS_PATH"

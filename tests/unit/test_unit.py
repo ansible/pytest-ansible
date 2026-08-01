@@ -5,7 +5,7 @@ from __future__ import annotations
 import importlib
 import logging
 import re
-import subprocess  # noqa: S404
+import subprocess  # ruff: ignore[suspicious-subprocess-import]
 import sys
 
 from typing import TYPE_CHECKING
@@ -47,7 +47,7 @@ def test_inject(
     """
     caplog.set_level(logging.DEBUG)
 
-    def mock_get_collection_name(start_path: Path) -> tuple[str | None, str | None]:  # noqa: ARG001
+    def mock_get_collection_name(start_path: Path) -> tuple[str | None, str | None]:  # ruff: ignore[unused-function-argument]
         """Mock the get_collection_name function.
 
         Args:
@@ -209,7 +209,7 @@ def test_resolve_collections_dir_creates_symlinks(tmp_path: Path) -> None:
     assert not (name_dir / "collections").exists()
 
 
-def test_for_params():  # type: ignore[no-untyped-def]  # noqa: ANN201
+def test_for_params():  # type: ignore[no-untyped-def]  # ruff: ignore[missing-return-type-undocumented-public-function]
     """Test for params."""
     proc = subprocess.run(
         [sys.executable, "-m", "pytest", "--help"],
@@ -289,7 +289,7 @@ def test_execute_play_non_v219() -> None:
             "pytest_ansible.module_dispatcher.v213.TaskQueueManager",
             return_value=mock_tqm_instance,
         ),
-        patch("pytest_ansible.module_dispatcher.v213.has_ansible_v219", False),  # noqa: FBT003
+        patch("pytest_ansible.module_dispatcher.v213.has_ansible_v219", False),  # ruff: ignore[boolean-positional-value-in-call]
     ):
         play = MagicMock()
         callback = ResultAccumulator()
@@ -310,7 +310,7 @@ def test_execute_play_v219_empty_callback_plugins() -> None:
             "pytest_ansible.module_dispatcher.v213.TaskQueueManager",
             return_value=mock_tqm_instance,
         ),
-        patch("pytest_ansible.module_dispatcher.v213.has_ansible_v219", True),  # noqa: FBT003
+        patch("pytest_ansible.module_dispatcher.v213.has_ansible_v219", True),  # ruff: ignore[boolean-positional-value-in-call]
     ):
         play = MagicMock()
         callback = MagicMock()
@@ -331,7 +331,7 @@ def test_execute_play_v219_with_callback_plugins() -> None:
             "pytest_ansible.module_dispatcher.v213.TaskQueueManager",
             return_value=mock_tqm_instance,
         ),
-        patch("pytest_ansible.module_dispatcher.v213.has_ansible_v219", True),  # noqa: FBT003
+        patch("pytest_ansible.module_dispatcher.v213.has_ansible_v219", True),  # ruff: ignore[boolean-positional-value-in-call]
     ):
         play = MagicMock()
         callback = MagicMock()
@@ -362,7 +362,7 @@ def test_build_tqm_kwargs_non_v219() -> None:
     }
     callback = ResultAccumulator()
 
-    with patch("pytest_ansible.module_dispatcher.v213.has_ansible_v219", False):  # noqa: FBT003
+    with patch("pytest_ansible.module_dispatcher.v213.has_ansible_v219", False):  # ruff: ignore[boolean-positional-value-in-call]
         result = ModuleDispatcherV213._build_tqm_kwargs(dispatcher, callback)
 
     assert result["stdout_callback"] is callback
@@ -385,7 +385,7 @@ def test_build_tqm_kwargs_extra() -> None:
     }
     callback = ResultAccumulator()
 
-    with patch("pytest_ansible.module_dispatcher.v213.has_ansible_v219", True):  # noqa: FBT003
+    with patch("pytest_ansible.module_dispatcher.v213.has_ansible_v219", True):  # ruff: ignore[boolean-positional-value-in-call]
         result = ModuleDispatcherV213._build_tqm_kwargs(dispatcher, callback, extra=True)
 
     assert result["inventory"] is extra_inv
@@ -538,7 +538,7 @@ def test_acf_inject_without_collection_finder(
         patch.object(units_mod, "HAS_COLLECTION_FINDER", new=False),
         caplog.at_level(logging.DEBUG),
     ):
-        acf_inject(paths=["/tmp/collections"])  # noqa: S108
+        acf_inject(paths=["/tmp/collections"])  # ruff: ignore[hardcoded-temp-file]
     assert "_ACF not available" in caplog.text
 
 

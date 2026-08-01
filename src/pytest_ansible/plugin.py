@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 import shlex
 import shutil
-import subprocess  # noqa: S404
+import subprocess  # ruff: ignore[suspicious-subprocess-import]
 import warnings
 
 from pathlib import Path
@@ -14,7 +14,7 @@ from typing import TYPE_CHECKING, Any
 import pytest
 
 
-try:  # noqa: PLW0717
+try:  # ruff: ignore[too-many-statements-in-try-clause]
     import ansible
     import ansible.constants
     import ansible.errors
@@ -52,7 +52,7 @@ logger = logging.getLogger(__name__)
 
 # Silence linters for imported fixtures
 # pylint: disable=pointless-statement, no-member
-(fixture_ansible_adhoc, fixture_ansible_module, ansible_facts, localhost)  # noqa: B018
+(fixture_ansible_adhoc, fixture_ansible_module, ansible_facts, localhost)  # ruff: ignore[useless-expression]
 
 log_map = {
     0: logging.CRITICAL,
@@ -76,7 +76,7 @@ def _load_scenarios(config: pytest.Config) -> None:
 
     # Ensure we are in a git repo
     args = f"{git_path} rev-parse --git-dir"
-    proc = subprocess.run(  # noqa: S602
+    proc = subprocess.run(  # ruff: ignore[subprocess-popen-with-shell-equals-true]
         args,
         capture_output=True,
         check=False,
@@ -92,7 +92,7 @@ def _load_scenarios(config: pytest.Config) -> None:
     # Find all molecule scenarios not gitignored
     glob_pattern = ":(glob)**/molecule/*/molecule.yml"
     args = f"{git_path} ls-files {shlex.quote(glob_pattern)}"
-    proc = subprocess.run(  # noqa: S602
+    proc = subprocess.run(  # ruff: ignore[subprocess-popen-with-shell-equals-true]
         args,
         capture_output=True,
         check=False,
@@ -267,7 +267,7 @@ def pytest_addoption(parser: pytest.Parser) -> None:
         "--ansible-unit-inject-only",
         action="store_true",
         default=False,
-        help="Enable support for ansible collection unit tests by only injecting existing ANSIBLE_COLLECTIONS_PATH.",  # noqa: E501
+        help="Enable support for ansible collection unit tests by only injecting existing ANSIBLE_COLLECTIONS_PATH.",  # ruff: ignore[line-too-long]
     )
     group.addoption(
         "--molecule",
@@ -329,7 +329,7 @@ def pytest_configure(config: pytest.Config) -> None:
         logger.setLevel(level)
     logger.debug("Logging initialized")
 
-    assert config.pluginmanager.register(PyTestAnsiblePlugin(config), "ansible")  # noqa: S101
+    assert config.pluginmanager.register(PyTestAnsiblePlugin(config), "ansible")  # ruff: ignore[assert]
 
     if config.option.ansible_unit_inject_only:
         inject_only()
@@ -350,7 +350,7 @@ def pytest_collect_file(
     file_path: Path | None,
     parent: pytest.Collector,
 ) -> Node | None:
-    """Transform each found molecule.yml into a pytest test."""  # noqa: DOC201
+    """Transform each found molecule.yml into a pytest test."""  # ruff: ignore[docstring-missing-returns]
     if not hasattr(parent.config.option, "molecule"):
         return None
     if not parent.config.option.molecule:
@@ -386,7 +386,7 @@ def warn_or_fail(fixture_name: str) -> None:
         )
 
 
-def pytest_generate_tests(metafunc):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
+def pytest_generate_tests(metafunc):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
     """Generate tests when specific `ansible_*` fixtures are used by tests.
 
     Raises:
@@ -404,7 +404,7 @@ def pytest_generate_tests(metafunc):  # type: ignore[no-untyped-def]  # noqa: AN
                 pattern=metafunc.config.getoption("ansible_host_pattern"),
             )
         except ansible.errors.AnsibleError as exception:
-            raise pytest.UsageError(exception)  # noqa: B904
+            raise pytest.UsageError(exception)  # ruff: ignore[raise-without-from-inside-except]
 
         # Return the host name as a string
         metafunc.parametrize("ansible_host", iter(hosts[h] for h in hosts))
@@ -421,7 +421,7 @@ def pytest_generate_tests(metafunc):  # type: ignore[no-untyped-def]  # noqa: AN
                 pattern=metafunc.config.getoption("ansible_host_pattern"),
             )
         except ansible.errors.AnsibleError as exception:
-            raise pytest.UsageError(exception)  # noqa: B904
+            raise pytest.UsageError(exception)  # ruff: ignore[raise-without-from-inside-except]
         groups = hosts.options["inventory_manager"].list_groups()
         extra_groups = hosts.get_extra_inventory_groups()
         # Parametrize once (pytest rejects duplicate fixture names); drop overlaps
@@ -443,21 +443,21 @@ def pytest_generate_tests(metafunc):  # type: ignore[no-untyped-def]  # noqa: AN
 class PyTestAnsiblePlugin:
     """Ansible PyTest Plugin Class."""
 
-    def __init__(self, config) -> None:  # type: ignore[no-untyped-def]  # noqa: ANN001
+    def __init__(self, config) -> None:  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument]
         """Initialize plugin."""
         self.config = config
 
-    def pytest_report_header(self):  # type: ignore[no-untyped-def]  # noqa: ANN201
+    def pytest_report_header(self):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-return-type-undocumented-public-function]
         """Return the version of ansible."""
         return f"ansible: {ansible.__version__}"
 
-    def pytest_collection_modifyitems(self, config, items):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
+    def pytest_collection_modifyitems(self, config, items):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
         """Validate --ansible-* parameters."""
         if self._any_item_uses_ansible_fixtures(items):
             self.assert_required_ansible_parameters(config)  # type: ignore[no-untyped-call]
 
     @staticmethod
-    def _any_item_uses_ansible_fixtures(items) -> bool:  # type: ignore[no-untyped-def]  # noqa: ANN001
+    def _any_item_uses_ansible_fixtures(items) -> bool:  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument]
         """Return True if any collected item requests one of OUR_FIXTURES."""
         for item in items:
             if not hasattr(item, "fixturenames"):
@@ -469,8 +469,8 @@ class PyTestAnsiblePlugin:
 
                 if (
                     hasattr(item, "_fixtureinfo")
-                    and hasattr(item._fixtureinfo, "name2fixturedefs")  # noqa: SLF001
-                    and fixture_name in item._fixtureinfo.name2fixturedefs  # noqa: SLF001
+                    and hasattr(item._fixtureinfo, "name2fixturedefs")  # ruff: ignore[private-member-access]
+                    and fixture_name in item._fixtureinfo.name2fixturedefs  # ruff: ignore[private-member-access]
                 ):
                     continue
                 if fixture_name == "request":
@@ -481,7 +481,7 @@ class PyTestAnsiblePlugin:
                 )
         return False
 
-    def _load_ansible_config(self, config):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN202
+    def _load_ansible_config(self, config):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-private-function]
         """Load ansible configuration from command-line.
 
         Returns:
@@ -536,7 +536,7 @@ class PyTestAnsiblePlugin:
         return kwargs
 
     @deprecated("Host management is deprecated and will be removed in a future release")
-    def initialize(self, config=None, request=None, **kwargs):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN003, ANN201
+    def initialize(self, config=None, request=None, **kwargs):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-type-kwargs, missing-return-type-undocumented-public-function]
         """Return an initialized Ansible Host Manager instance."""
         ansible_cfg = {}
         # merge command-line configuration options
@@ -550,7 +550,7 @@ class PyTestAnsiblePlugin:
         return get_host_manager(**ansible_cfg)
 
     @staticmethod
-    def assert_required_ansible_parameters(config):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN205
+    def assert_required_ansible_parameters(config):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-static-method]
         """Assert whether the required --ansible-* parameters were provided.
 
         Raises:
@@ -564,7 +564,7 @@ class PyTestAnsiblePlugin:
         ansible_inventory = config.getoption("ansible_inventory")
         if not ansible_inventory:
             errors.append(
-                "Unable to find an inventory file, specify one with the --ansible-inventory/--inventory "  # noqa: E501
+                "Unable to find an inventory file, specify one with the --ansible-inventory/--inventory "  # ruff: ignore[line-too-long]
                 "parameter.",
             )
 
