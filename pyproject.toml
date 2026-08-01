@@ -419,7 +419,13 @@ required-imports = ["from __future__ import annotations"]
 
 [tool.ruff.lint.per-file-ignores]
 "_version.py" = ["if-else-block-instead-of-if-exp"]
-"tests/**" = ["private-member-access", "assert", "subprocess-popen-with-shell-equals-true", "print", "pytest-fixture-autouse"]
+"tests/**" = [
+  "private-member-access",
+  "assert",
+  "subprocess-popen-with-shell-equals-true",
+  "print",
+  "pytest-fixture-autouse"
+]
 "tests/fixtures/ansible_collections/test/test/tests/unit/plugins/modules/test_pool.py" = [
   "implicit-namespace-package"
 ]
