@@ -30,7 +30,7 @@ pytestmark = [
     "include_extra_inventory",
     (True, False),
 )
-def test_host_manager_len(hosts, include_extra_inventory):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
+def test_host_manager_len(hosts, include_extra_inventory):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function, undocumented-public-function]
     _hosts = hosts(include_extra_inventory=include_extra_inventory)
     assert len(_hosts) == len(ALL_HOSTS) + len(
         ALL_EXTRA_HOSTS if include_extra_inventory else [],
@@ -41,7 +41,7 @@ def test_host_manager_len(hosts, include_extra_inventory):  # type: ignore[no-un
     "include_extra_inventory",
     (True, False),
 )
-def test_host_manager_keys(hosts, include_extra_inventory):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
+def test_host_manager_keys(hosts, include_extra_inventory):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function, undocumented-public-function]
     _hosts = hosts(include_extra_inventory=include_extra_inventory)
     sorted_keys = _hosts.keys()
     sorted_keys.sort()
@@ -57,7 +57,7 @@ def test_host_manager_keys(hosts, include_extra_inventory):  # type: ignore[no-u
     "include_extra_inventory",
     (True, False),
 )
-def test_host_manager_contains(host_pattern, num_hosts, hosts, include_extra_inventory):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, ARG001, D103
+def test_host_manager_contains(host_pattern, num_hosts, hosts, include_extra_inventory):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function, unused-function-argument, undocumented-public-function]
     _hosts = hosts(include_extra_inventory=include_extra_inventory)
     if not include_extra_inventory and host_pattern.startswith("extra"):
         assert host_pattern not in _hosts, f"{host_pattern} in hosts"
@@ -70,11 +70,11 @@ def test_host_manager_contains(host_pattern, num_hosts, hosts, include_extra_inv
     NEGATIVE_HOST_PATTERNS,
 )
 @pytest.mark.parametrize("include_extra_inventory", (True, False))
-def test_host_manager_not_contains(  # type: ignore[no-untyped-def]  # noqa: ANN201, D103
-    host_pattern,  # noqa: ANN001
-    num_hosts,  # noqa: ANN001, ARG001
-    hosts,  # noqa: ANN001
-    include_extra_inventory,  # noqa: ANN001
+def test_host_manager_not_contains(  # type: ignore[no-untyped-def]  # ruff: ignore[missing-return-type-undocumented-public-function, undocumented-public-function]
+    host_pattern,  # ruff: ignore[missing-type-function-argument]
+    num_hosts,  # ruff: ignore[missing-type-function-argument, unused-function-argument]
+    hosts,  # ruff: ignore[missing-type-function-argument]
+    include_extra_inventory,  # ruff: ignore[missing-type-function-argument]
 ):
     _hosts = hosts(include_extra_inventory=include_extra_inventory)
     assert host_pattern not in _hosts
@@ -88,7 +88,7 @@ def test_host_manager_not_contains(  # type: ignore[no-untyped-def]  # noqa: ANN
     "include_extra_inventory",
     (True, False),
 )
-def test_host_manager_getitem(host_pattern, num_hosts, hosts, include_extra_inventory):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, ARG001, D103
+def test_host_manager_getitem(host_pattern, num_hosts, hosts, include_extra_inventory):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function, unused-function-argument, undocumented-public-function]
     _hosts = hosts(include_extra_inventory=include_extra_inventory)
     if not include_extra_inventory and host_pattern.startswith("extra"):
         assert host_pattern not in _hosts
@@ -104,11 +104,11 @@ def test_host_manager_getitem(host_pattern, num_hosts, hosts, include_extra_inve
     "include_extra_inventory",
     (True, False),
 )
-def test_host_manager_not_getitem(  # type: ignore[no-untyped-def]  # noqa: ANN201, D103
-    host_pattern,  # noqa: ANN001
-    num_hosts,  # noqa: ANN001, ARG001
-    hosts,  # noqa: ANN001
-    include_extra_inventory,  # noqa: ANN001
+def test_host_manager_not_getitem(  # type: ignore[no-untyped-def]  # ruff: ignore[missing-return-type-undocumented-public-function, undocumented-public-function]
+    host_pattern,  # ruff: ignore[missing-type-function-argument]
+    num_hosts,  # ruff: ignore[missing-type-function-argument, unused-function-argument]
+    hosts,  # ruff: ignore[missing-type-function-argument]
+    include_extra_inventory,  # ruff: ignore[missing-type-function-argument]
 ):
     _hosts = hosts(include_extra_inventory=include_extra_inventory)
     with pytest.raises(KeyError):
@@ -123,7 +123,7 @@ def test_host_manager_not_getitem(  # type: ignore[no-untyped-def]  # noqa: ANN2
     "include_extra_inventory",
     (True, False),
 )
-def test_host_manager_getattr(host_pattern, num_hosts, hosts, include_extra_inventory):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, ARG001, D103
+def test_host_manager_getattr(host_pattern, num_hosts, hosts, include_extra_inventory):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function, unused-function-argument, undocumented-public-function]
     _hosts = hosts(include_extra_inventory=include_extra_inventory)
     if not include_extra_inventory and host_pattern.startswith("extra"):
         assert not hasattr(_hosts, host_pattern)
@@ -139,7 +139,7 @@ def test_host_manager_getattr(host_pattern, num_hosts, hosts, include_extra_inve
     "include_extra_inventory",
     (True, False),
 )
-def test_host_manager_slice(host_slice, num_hosts, hosts, include_extra_inventory):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
+def test_host_manager_slice(host_slice, num_hosts, hosts, include_extra_inventory):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function, undocumented-public-function]
     _hosts = hosts(include_extra_inventory=include_extra_inventory)
     assert len(_hosts[host_slice]) == num_hosts[include_extra_inventory], (
         f"{len(_hosts[host_slice])} != {num_hosts} for {host_slice}"
@@ -155,7 +155,7 @@ def test_host_manager_slice(host_slice, num_hosts, hosts, include_extra_inventor
     "include_extra_inventory",
     (True, False),
 )
-def test_host_manager_not_slice(host_slice, hosts, include_extra_inventory):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
+def test_host_manager_not_slice(host_slice, hosts, include_extra_inventory):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function, undocumented-public-function]
     _hosts = hosts(include_extra_inventory=include_extra_inventory)
     with pytest.raises(KeyError):
         _hosts[host_slice]
@@ -169,11 +169,11 @@ def test_host_manager_not_slice(host_slice, hosts, include_extra_inventory):  # 
     "include_extra_inventory",
     (True, False),
 )
-def test_host_manager_not_getattr(  # type: ignore[no-untyped-def]  # noqa: ANN201, D103
-    host_pattern,  # noqa: ANN001
-    num_hosts,  # noqa: ANN001, ARG001
-    hosts,  # noqa: ANN001
-    include_extra_inventory,  # noqa: ANN001
+def test_host_manager_not_getattr(  # type: ignore[no-untyped-def]  # ruff: ignore[missing-return-type-undocumented-public-function, undocumented-public-function]
+    host_pattern,  # ruff: ignore[missing-type-function-argument]
+    num_hosts,  # ruff: ignore[missing-type-function-argument, unused-function-argument]
+    hosts,  # ruff: ignore[missing-type-function-argument]
+    include_extra_inventory,  # ruff: ignore[missing-type-function-argument]
 ):
     _hosts = hosts(include_extra_inventory=include_extra_inventory)
     assert not hasattr(_hosts, host_pattern)
@@ -181,7 +181,7 @@ def test_host_manager_not_getattr(  # type: ignore[no-untyped-def]  # noqa: ANN2
         getattr(_hosts, host_pattern)
 
 
-def test_defaults(request):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
+def test_defaults(request):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function, undocumented-public-function]
     from ansible.constants import DEFAULT_TRANSPORT  # pylint: disable=no-name-in-module
 
     plugin = request.config.pluginmanager.getplugin("ansible")

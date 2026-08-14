@@ -22,10 +22,10 @@ def test_type_error() -> None:
 
 
 @pytest.mark.requires_ansible_v2
-def test_importerror_requires_v1():  # type: ignore[no-untyped-def]  # noqa: ANN201, D103
+def test_importerror_requires_v1():  # type: ignore[no-untyped-def]  # ruff: ignore[missing-return-type-undocumented-public-function, undocumented-public-function]
     with pytest.raises(ImportError):
         # pylint: disable=unused-import
-        import pytest_ansible.module_dispatcher.v1  # type: ignore[import-not-found] # noqa: F401 # pylint: disable=import-error, no-name-in-module
+        import pytest_ansible.module_dispatcher.v1  # type: ignore[import-not-found] # ruff: ignore[unused-import] # pylint: disable=import-error, no-name-in-module
 
 
 @pytest.mark.parametrize(
@@ -36,7 +36,7 @@ def test_importerror_requires_v1():  # type: ignore[no-untyped-def]  # noqa: ANN
     "include_extra_inventory",
     (True, False),
 )
-def test_dispatcher_len(host_pattern, num_hosts, hosts, include_extra_inventory):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
+def test_dispatcher_len(host_pattern, num_hosts, hosts, include_extra_inventory):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function, undocumented-public-function]
     hosts = hosts(include_extra_inventory=include_extra_inventory)
     assert len(getattr(hosts, host_pattern)) == num_hosts[include_extra_inventory]
 
@@ -49,7 +49,7 @@ def test_dispatcher_len(host_pattern, num_hosts, hosts, include_extra_inventory)
     "include_extra_inventory",
     (True, False),
 )
-def test_dispatcher_contains(host_pattern, num_hosts, hosts, include_extra_inventory):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, ARG001, D103
+def test_dispatcher_contains(host_pattern, num_hosts, hosts, include_extra_inventory):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function, unused-function-argument, undocumented-public-function]
     hosts = hosts(include_extra_inventory=include_extra_inventory)
     assert host_pattern in hosts["all"]
 
@@ -59,17 +59,17 @@ def test_dispatcher_contains(host_pattern, num_hosts, hosts, include_extra_inven
     "include_extra_inventory",
     (True, False),
 )
-def test_dispatcher_not_contains(  # type: ignore[no-untyped-def]  # noqa: ANN201, D103
-    host_pattern,  # noqa: ANN001
-    num_hosts,  # noqa: ANN001, ARG001
-    hosts,  # noqa: ANN001
-    include_extra_inventory,  # noqa: ANN001
+def test_dispatcher_not_contains(  # type: ignore[no-untyped-def]  # ruff: ignore[missing-return-type-undocumented-public-function, undocumented-public-function]
+    host_pattern,  # ruff: ignore[missing-type-function-argument]
+    num_hosts,  # ruff: ignore[missing-type-function-argument, unused-function-argument]
+    hosts,  # ruff: ignore[missing-type-function-argument]
+    include_extra_inventory,  # ruff: ignore[missing-type-function-argument]
 ):
     hosts = hosts(include_extra_inventory=include_extra_inventory)
     assert host_pattern not in hosts["all"]
 
 
-def test_ansible_module_error(hosts):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
+def test_ansible_module_error(hosts):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
     """Verify that AnsibleModuleError is raised when no such module exists."""
     from pytest_ansible.errors import AnsibleModuleError
 
@@ -78,7 +78,7 @@ def test_ansible_module_error(hosts):  # type: ignore[no-untyped-def]  # noqa: A
         all_hosts.a_module_that_most_certainly_does_not_exist()
     assert (
         str(exc_info.value)
-        == f"The module {'a_module_that_most_certainly_does_not_exist'} was not found in configured module paths."  # noqa: E501
+        == f"The module {'a_module_that_most_certainly_does_not_exist'} was not found in configured module paths."  # ruff: ignore[line-too-long]
     )
 
 
@@ -141,8 +141,8 @@ def test_v213_reload_without_custom_loader_support() -> None:
 
     def fake_import(
         name: str,
-        globals: object = None,  # noqa: A002
-        locals: object = None,  # noqa: A002
+        globals: object = None,  # ruff: ignore[builtin-argument-shadowing]
+        locals: object = None,  # ruff: ignore[builtin-argument-shadowing]
         fromlist: tuple[str, ...] = (),
         level: int = 0,
     ) -> object:
@@ -204,7 +204,7 @@ def test_module_dispatcher_has_module_string_path() -> None:
         "variable_manager": MagicMock(),
         "host_pattern": "all",
         "loader": MagicMock(),
-        "module_path": "/tmp/modules",  # noqa: S108
+        "module_path": "/tmp/modules",  # ruff: ignore[hardcoded-temp-file]
     }
     with patch("pytest_ansible.module_dispatcher.v213.module_loader") as mock_loader:
         found = MagicMock()
@@ -212,7 +212,7 @@ def test_module_dispatcher_has_module_string_path() -> None:
         found.resolved_fqcn = "ansible.builtin.ping"
         mock_loader.find_plugin_with_context.return_value = found
         assert dispatcher.has_module("ping") == "ansible.builtin.ping"
-        mock_loader.add_directory.assert_called_with("/tmp/modules")  # noqa: S108
+        mock_loader.add_directory.assert_called_with("/tmp/modules")  # ruff: ignore[hardcoded-temp-file]
 
 
 def test_module_dispatcher_has_module_not_found() -> None:

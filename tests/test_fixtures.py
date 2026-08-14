@@ -4,14 +4,14 @@ from __future__ import annotations
 
 
 try:
-    from _pytest.main import EXIT_OK  # type: ignore  # noqa: PGH003
+    from _pytest.main import EXIT_OK  # type: ignore  # ruff: ignore[blanket-type-ignore]
 except ImportError:
     from _pytest.main import ExitCode  # type: ignore[attr-defined]
 
     EXIT_OK = ExitCode.OK
 
 
-def test_ansible_adhoc(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
+def test_ansible_adhoc(pytester, option):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function, undocumented-public-function]
     src = """
         import pytest
         import types
@@ -34,7 +34,7 @@ def test_ansible_adhoc(pytester, option):  # type: ignore[no-untyped-def]  # noq
     assert result.parseoutcomes()["passed"] == 1
 
 
-def test_ansible_module(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
+def test_ansible_module(pytester, option):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function, undocumented-public-function]
     src = """
         import pytest
         from pytest_ansible.module_dispatcher import BaseModuleDispatcher
@@ -55,7 +55,7 @@ def test_ansible_module(pytester, option):  # type: ignore[no-untyped-def]  # no
     assert result.parseoutcomes()["passed"] == 1
 
 
-def test_ansible_facts(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
+def test_ansible_facts(pytester, option):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function, undocumented-public-function]
     src = """
         import pytest
         from pytest_ansible.results import AdHocResult
@@ -76,7 +76,7 @@ def test_ansible_facts(pytester, option):  # type: ignore[no-untyped-def]  # noq
     assert result.parseoutcomes()["passed"] == 1
 
 
-def test_localhost(pytester, option):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201, D103
+def test_localhost(pytester, option):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function, undocumented-public-function]
     src = """
         import pytest
         from pytest_ansible.module_dispatcher import BaseModuleDispatcher

@@ -11,7 +11,7 @@ has_ansible_v212 = False
 has_ansible_v213 = False
 has_ansible_v219 = False
 
-try:  # noqa: PLW0717
+try:  # ruff: ignore[too-many-statements-in-try-clause]
     import ansible
 
     from packaging.version import parse as parse_version

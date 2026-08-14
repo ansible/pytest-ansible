@@ -2,13 +2,13 @@
 
 from __future__ import annotations
 
-import subprocess  # noqa: S404
+import subprocess  # ruff: ignore[suspicious-subprocess-import]
 
 
 def test_ansible_test() -> None:
     """Test for params."""
     proc = subprocess.run(
-        "ansible-test units --target-python default",  # noqa: S607
+        "ansible-test units --target-python default",  # ruff: ignore[start-process-with-partial-path]
         shell=True,
         stdin=subprocess.DEVNULL,
         stdout=subprocess.DEVNULL,

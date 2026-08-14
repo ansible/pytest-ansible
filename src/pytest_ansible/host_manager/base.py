@@ -20,7 +20,7 @@ class BaseHostManager:
 
     _required_kwargs = ("inventory",)
 
-    def __init__(self, *args, **kwargs) -> None:  # type: ignore[no-untyped-def]  # noqa: ANN002, ANN003, ARG002
+    def __init__(self, *args, **kwargs) -> None:  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-args, missing-type-kwargs, unused-method-argument]
         """Fixme."""
         self.options = kwargs
 
@@ -32,11 +32,11 @@ class BaseHostManager:
         # Initialize ansible inventory manager
         self.initialize_inventory()  # type: ignore[no-untyped-call]
 
-    def _default_dispatcher(self, **kwargs):  # type: ignore[no-untyped-def]  # noqa: ANN003, ANN202
+    def _default_dispatcher(self, **kwargs):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-kwargs, missing-return-type-private-function]
         pass
 
-    def get_extra_inventory_hosts(self, host_pattern=None):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
-        """Fixme."""  # noqa: DOC201
+    def get_extra_inventory_hosts(self, host_pattern=None):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
+        """Fixme."""  # ruff: ignore[docstring-missing-returns]
         try:
             if host_pattern is None:
                 extra_inventory_hosts = [
@@ -53,15 +53,15 @@ class BaseHostManager:
             extra_inventory_hosts = []
         return extra_inventory_hosts
 
-    def get_extra_inventory_groups(self):  # type: ignore[no-untyped-def]  # noqa: ANN201
-        """Fixme."""  # noqa: DOC201
+    def get_extra_inventory_groups(self):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-return-type-undocumented-public-function]
+        """Fixme."""  # ruff: ignore[docstring-missing-returns]
         try:
             extra_inventory_groups = self.options["extra_inventory_manager"].groups
         except KeyError:
             extra_inventory_groups = []
         return extra_inventory_groups
 
-    def check_required_kwargs(self, **kwargs):  # type: ignore[no-untyped-def]  # noqa: ANN003, ANN201, ARG002
+    def check_required_kwargs(self, **kwargs):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-kwargs, missing-return-type-undocumented-public-function, unused-method-argument]
         """Raise a TypeError if any required kwargs are missing.
 
         Raises:
@@ -72,7 +72,7 @@ class BaseHostManager:
                 msg = f"Missing required keyword argument '{kwarg}'"
                 raise TypeError(msg)
 
-    def has_matching_inventory(self, host_pattern):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN201
+    def has_matching_inventory(self, host_pattern):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
         """Return whether any matching ansible inventory is found for the provided host_pattern."""
         try:
             return (
@@ -84,7 +84,7 @@ class BaseHostManager:
         except ansible.errors.AnsibleError:
             return False
 
-    def __getitem__(self, item):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN204
+    def __getitem__(self, item):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-special-method]
         """Return a ModuleDispatcher instance described the provided `item`.
 
         Raises:
@@ -107,7 +107,7 @@ class BaseHostManager:
         self.options["host_pattern"] = item
         return self._dispatcher(**self.options)  # type: ignore[no-untyped-call]
 
-    def __getattr__(self, attr):  # type: ignore[no-untyped-def]  # noqa: ANN001, ANN204
+    def __getattr__(self, attr):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument, missing-return-type-special-method]
         """Return a ModuleDispatcher instance described the provided `attr`.
 
         Raises:
@@ -119,13 +119,13 @@ class BaseHostManager:
         self.options["host_pattern"] = attr
         return self._dispatcher(**self.options)  # type: ignore[no-untyped-call]
 
-    def keys(self):  # type: ignore[no-untyped-def]  # noqa: ANN201
-        """Fixme."""  # noqa: DOC201
+    def keys(self):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-return-type-undocumented-public-function]
+        """Fixme."""  # ruff: ignore[docstring-missing-returns]
         inventory_hosts = [h.name for h in self.options["inventory_manager"].list_hosts()]
         extra_inventory_hosts = self.get_extra_inventory_hosts()  # type: ignore[no-untyped-call]
         return inventory_hosts + extra_inventory_hosts
 
-    def __iter__(self):  # type: ignore[no-untyped-def]  # noqa: ANN204
+    def __iter__(self):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-return-type-special-method]
         """Return an iterator for hosts matching the `host_pattern`."""
         extra_hosts = self.get_extra_inventory_hosts(  # type: ignore[no-untyped-call]
             host_pattern=self.options["host_pattern"],
@@ -144,11 +144,11 @@ class BaseHostManager:
             self.get_extra_inventory_hosts(),  # type: ignore[no-untyped-call]
         )
 
-    def __contains__(self, item) -> bool:  # type: ignore[no-untyped-def]  # noqa: ANN001
+    def __contains__(self, item) -> bool:  # type: ignore[no-untyped-def]  # ruff: ignore[missing-type-function-argument]
         """Return whether there is inventory matching the provided `item`."""
         return self.has_matching_inventory(item)  # type: ignore[no-any-return, no-untyped-call]
 
-    def initialize_inventory(self):  # type: ignore[no-untyped-def]  # noqa: ANN201
+    def initialize_inventory(self):  # type: ignore[no-untyped-def]  # ruff: ignore[missing-return-type-undocumented-public-function]
         """Fixme.
 
         Raises:
