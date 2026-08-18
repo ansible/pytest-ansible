@@ -2,30 +2,8 @@
 
 [project]
 authors = [{ "name" = "Ansible by Red Hat", "email" = "info@ansible.com" }]
-classifiers = [
-  "Development Status :: 5 - Production/Stable",
-  "Intended Audience :: Developers",
-  "License :: OSI Approved :: MIT License",
-  "Operating System :: OS Independent",
-  "Programming Language :: Python",
-  "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3.10",
-  "Programming Language :: Python :: 3.11",
-  "Programming Language :: Python :: 3.12",
-  "Programming Language :: Python :: 3.13",
-  "Topic :: Software Development :: Quality Assurance",
-  "Topic :: Software Development :: Testing",
-  "Topic :: Utilities"
-]
-dependencies = [
-  "ansible-compat>=25.8.2",
-  "ansible-core>=2.16.19,!=2.17.*",
-  "cffi>=1.15.1",
-  "packaging>=23.2",
-  "pytest>=6",
-  "pytest-xdist>=3.8.0",
-  "typing-extensions>=4.15.0"
-]
+classifiers = ["Development Status :: 5 - Production/Stable", "Intended Audience :: Developers", "License :: OSI Approved :: MIT License", "Operating System :: OS Independent", "Programming Language :: Python", "Programming Language :: Python :: 3", "Programming Language :: Python :: 3.10", "Programming Language :: Python :: 3.11", "Programming Language :: Python :: 3.12", "Programming Language :: Python :: 3.13", "Topic :: Software Development :: Quality Assurance", "Topic :: Software Development :: Testing", "Topic :: Utilities"]
+dependencies = ["ansible-compat>=25.8.2", "ansible-core>=2.16.19,!=2.17.*", "cffi>=1.15.1", "packaging>=23.2", "pytest>=6", "pytest-xdist>=3.8.0", "typing-extensions>=4.15.0"]
 description = "Plugin for pytest to simplify calling ansible modules from tests or fixtures"
 dynamic = ["version"]
 keywords = ["ansible", "pytest", "testing"]
@@ -370,17 +348,7 @@ fail-on = ["useless-suppression"]
 [tool.pytest.ini_options]
 addopts = "-ra --showlocals --durations=10"
 cache_dir = "./.cache/.pytest"
-filterwarnings = [
-  "error",
-  "ignore::ResourceWarning",
-  "ignore:This process \\(pid=.*\\) is multi-threaded, use of fork\\(\\) may lead to deadlocks in the child.:DeprecationWarning",
-  "ignore:AnsibleCollectionFinder has already been configured:UserWarning",
-  "ignore:Host management is deprecated and will be removed in a future release:DeprecationWarning",
-  "ignore:ansible_host fixture is deprecated and will be removed in a future release.:DeprecationWarning",
-  "ignore:ansible_group fixture is deprecated and will be removed in a future release.:DeprecationWarning",
-  "ignore:pytest-ansible no longer supports the '--connection' option:DeprecationWarning",
-  "ignore:Running Molecule scenarios via pytest-ansible is deprecated:DeprecationWarning"
-]
+filterwarnings = ["error", "ignore::ResourceWarning", "ignore:This process \\(pid=.*\\) is multi-threaded, use of fork\\(\\) may lead to deadlocks in the child.:DeprecationWarning", "ignore:AnsibleCollectionFinder has already been configured:UserWarning", "ignore:Host management is deprecated and will be removed in a future release:DeprecationWarning", "ignore:ansible_host fixture is deprecated and will be removed in a future release.:DeprecationWarning", "ignore:ansible_group fixture is deprecated and will be removed in a future release.:DeprecationWarning", "ignore:pytest-ansible no longer supports the '--connection' option:DeprecationWarning", "ignore:Running Molecule scenarios via pytest-ansible is deprecated:DeprecationWarning"]
 junit_family = "xunit2"
 markers = ["old", "unit", "requires_ansible_v2"]
 testpaths = "tests"
@@ -419,31 +387,15 @@ required-imports = ["from __future__ import annotations"]
 
 [tool.ruff.lint.per-file-ignores]
 "_version.py" = ["if-else-block-instead-of-if-exp"]
-"tests/**" = [
-  "private-member-access",
-  "assert",
-  "subprocess-popen-with-shell-equals-true",
-  "print",
-  "pytest-fixture-autouse"
-]
-"tests/fixtures/ansible_collections/test/test/tests/unit/plugins/modules/test_pool.py" = [
-  "implicit-namespace-package"
-]
+"tests/**" = ["private-member-access", "assert", "subprocess-popen-with-shell-equals-true", "print", "pytest-fixture-autouse"]
+"tests/fixtures/ansible_collections/test/test/tests/unit/plugins/modules/test_pool.py" = ["implicit-namespace-package"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
 
 [tool.setuptools_scm]
 # To prevent accidental pick of mobile version tags such 'v6'
-git_describe_command = [
-  "git",
-  "describe",
-  "--dirty",
-  "--long",
-  "--tags",
-  "--match",
-  "v*.*"
-]
+git_describe_command = ["git", "describe", "--dirty", "--long", "--tags", "--match", "v*.*"]
 local_scheme = "no-local-version"
 version_file = "src/pytest_ansible/_version.py"
 
@@ -458,19 +410,7 @@ requires = ["setuptools>=65.3", "tox>=4.30.2", "tox-extra>=2.1", "tox-uv>=1.28"]
 skip_missing_interpreters = true
 
 [tool.tox.env.deps]
-commands = [
-  [
-    "prek",
-    "run",
-    "--all-files",
-    "--show-diff-on-failure",
-    "--hook-stage",
-    "manual",
-    "deps"
-  ],
-  ["prek", "autoupdate"],
-  ["tox", "-e", "lint"]
-]
+commands = [["prek", "run", "--all-files", "--show-diff-on-failure", "--hook-stage", "manual", "deps"], ["prek", "autoupdate"], ["tox", "-e", "lint"]]
 commands_pre = []
 description = "Bump all test dependencies"
 dependency_groups = ["lint"]
@@ -486,12 +426,7 @@ uv_sync_flags = ["--upgrade", "--prerelease=allow"]
 uv_sync_locked = false
 
 [tool.tox.env.docs]
-commands = [
-  [
-    "mkdocs",
-    { default = ["build", "--strict", "--site-dir=_readthedocs/html/"], extend = true, replace = "posargs" }
-  ]
-]
+commands = [["mkdocs", { default = ["build", "--strict", "--site-dir=_readthedocs/html/"], extend = true, replace = "posargs" }]]
 commands_post = []
 commands_pre = []
 dependency_groups = ["docs"]
@@ -518,26 +453,13 @@ uv_resolution = "lowest"
 
 [tool.tox.env.milestone]
 dependency_groups = ["dev"]
-deps = [
-  "ansible-core@ https://github.com/ansible/ansible/archive/milestone.tar.gz"
-]
+deps = ["ansible-core@ https://github.com/ansible/ansible/archive/milestone.tar.gz"]
 description = "Run tests with ansible-core milestone branch and without dependencies constraints"
 runner = "uv-venv-runner"
 uv_sync_locked = false
 
 [tool.tox.env.pkg]
-commands = [
-  ["rm", "-rf", "{tox_root}/dist/"],
-  [
-    "python",
-    "-m",
-    "build",
-    "--outdir",
-    "{tox_root}/dist/",
-    "{tox_root}"
-  ],
-  ["sh", "-c", "python -m twine check --strict {tox_root}/dist/*"]
-]
+commands = [["rm", "-rf", "{tox_root}/dist/"], ["python", "-m", "build", "--outdir", "{tox_root}/dist/", "{tox_root}"], ["sh", "-c", "python -m twine check --strict {tox_root}/dist/*"]]
 commands_post = []
 commands_pre = []
 dependency_groups = ["pkg"]
@@ -548,69 +470,12 @@ skip_install = true
 
 [tool.tox.env_run_base]
 allowlist_externals = ["./tools/report-coverage", "git", "rm", "sh"]
-commands = [
-  [
-    "python",
-    "-c",
-    "import pathlib; pathlib.Path(\"{env_site_packages_dir}/cov.pth\").write_text(\"import coverage; coverage.process_startup()\")"
-  ],
-  [
-    "python",
-    "-m",
-    "coverage",
-    "run",
-    "-m",
-    "pytest",
-    { default = [
-      "-ra",
-      "-n",
-      "auto",
-      "--showlocals",
-      "--doctest-modules",
-      "--durations=10",
-      "--junitxml=./junit.xml"
-    ], extend = true, replace = "posargs" }
-  ],
-  ["./tools/report-coverage"]
-]
+commands = [["python", "-c", "import pathlib; pathlib.Path(\"{env_site_packages_dir}/cov.pth\").write_text(\"import coverage; coverage.process_startup()\")"], ["python", "-m", "coverage", "run", "-m", "pytest", { default = ["-ra", "-n", "auto", "--showlocals", "--doctest-modules", "--durations=10", "--junitxml=./junit.xml"], extend = true, replace = "posargs" }], ["./tools/report-coverage"]]
 commands_post = []
-commands_pre = [
-  [
-    "sh",
-    "-c",
-    "rm -f {env_dir}/.coverage* coverage.xml 2>/dev/null || true"
-  ],
-  ["coverage", "erase"]
-]
+commands_pre = [["sh", "-c", "rm -f {env_dir}/.coverage* coverage.xml 2>/dev/null || true"], ["coverage", "erase"]]
 description = """Run the tests: py{py_dot_ver}"""
 package = "editable"
-pass_env = [
-  "CI",
-  "CONTAINER_*",
-  "CURL_CA_BUNDLE",
-  "FORCE_COLOR",
-  "DOCKER_*",
-  "GITHUB_*",
-  "HOME",
-  "LANG",
-  "LC_*",
-  "NO_COLOR",
-  "PRE_COMMIT_HOME",
-  "PYTEST_*",
-  "PYTHON*",
-  "PYTHONBREAKPOINT",
-  "PYTHONIOENCODING",
-  "PYTHONPYCACHEPREFIX",
-  "PY_COLORS",
-  "REQUESTS_CA_BUNDLE",
-  "RTD_TOKEN",
-  "SETUPTOOLS_SCM_DEBUG",
-  "SSH_AUTH_SOCK",
-  "TERM",
-  "USER",
-  "SSL_CERT_FILE",
-  "UV_*"
-]
+pass_env = ["CI", "CONTAINER_*", "CURL_CA_BUNDLE", "FORCE_COLOR", "DOCKER_*", "GITHUB_*", "HOME", "LANG", "LC_*", "NO_COLOR", "PRE_COMMIT_HOME", "PYTEST_*", "PYTHON*", "PYTHONBREAKPOINT", "PYTHONIOENCODING", "PYTHONPYCACHEPREFIX", "PY_COLORS", "REQUESTS_CA_BUNDLE", "RTD_TOKEN", "SETUPTOOLS_SCM_DEBUG", "SSH_AUTH_SOCK", "TERM", "USER", "SSL_CERT_FILE", "UV_*"]
 runner = "uv-venv-lock-runner"
 
 [tool.tox.env_run_base.set_env]
