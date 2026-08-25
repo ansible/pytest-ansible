@@ -304,7 +304,7 @@ class MoleculeScenario:
         if opts:
             args.extend(shlex.split(opts))
 
-        return subprocess.run(
+        return subprocess.run(  # ruff: ignore[subprocess-without-shell-equals-true]
             args=args,
             capture_output=False,
             check=False,
