@@ -70,7 +70,7 @@ repos:
         entry: sh -ec "pydoclint -q . && pydoclint --generate-baseline=1 ."
         pass_filenames: false
         priority: 6
-  - repo: https://github.com/rockygeekz/team-devtools
+  - repo: https://github.com/ansible/team-devtools
     rev: c44381c
     hooks:
       - id: check-platform-constraints
