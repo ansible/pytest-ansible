@@ -14,7 +14,7 @@
 		},
 		{
 			"matchPackageNames": ["cryptography"],
-			"allowedVersions": "<38",
+			"allowedVersions": "<51",
 			"description": "Platform compatibility constraint"
 		},
 		{
