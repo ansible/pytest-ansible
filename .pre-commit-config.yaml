@@ -71,7 +71,7 @@ repos:
         pass_filenames: false
         priority: 6
   - repo: https://github.com/ansible/team-devtools
-    rev: v26.4.0
+    rev: c44381c
     hooks:
       - id: check-platform-constraints
         priority: 0
