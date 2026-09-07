@@ -26,7 +26,7 @@ pytest-ansible = "pytest_ansible.plugin"
 dev = [
   "cffi>=1.15.1",  # indirect dependency of ansible-core
   "coverage[toml]>=7.10.6",
-  "cryptography>=37",
+  "cryptography>=50.0.0",
   "molecule>=25.7.0",
   "mypy>=1.17.1",
   "pip>=25.2",
@@ -490,7 +490,7 @@ TERM = "xterm-256color"
 constraint-dependencies = [
   "cairosvg>=2.9.0",
   "idna>=3.18",
-  "pymdown-extensions>=11.0",
+  "pymdown-extensions>=11.0.1",
   "urllib3>=2.7.0",
 ]
 package = true
