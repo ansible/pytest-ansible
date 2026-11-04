@@ -574,11 +574,14 @@ def test_units_reload_without_yaml_and_collection_finder() -> None:
     """Cover ImportError fallbacks when yaml / collection finder are unavailable."""
     saved_yaml = sys.modules.get("yaml")
     finder_key = "ansible.utils.collection_loader._collection_finder"
+    new_finder_key = "ansible.module_utils._internal._collection_loader._collection_finder"
     saved_finder = sys.modules.get(finder_key)
+    saved_new_finder = sys.modules.get(new_finder_key)
 
     try:
         sys.modules["yaml"] = None  # type: ignore[assignment]
         sys.modules[finder_key] = None  # type: ignore[assignment]
+        sys.modules[new_finder_key] = None  # type: ignore[assignment]
         reloaded = importlib.reload(units_mod)
         assert reloaded.HAS_YAML is False
         assert reloaded.HAS_COLLECTION_FINDER is False
@@ -591,6 +594,10 @@ def test_units_reload_without_yaml_and_collection_finder() -> None:
             sys.modules[finder_key] = saved_finder
         else:
             sys.modules.pop(finder_key, None)
+        if saved_new_finder is not None:
+            sys.modules[new_finder_key] = saved_new_finder
+        else:
+            sys.modules.pop(new_finder_key, None)
         importlib.reload(units_mod)
         assert units_mod.HAS_YAML is True
 
