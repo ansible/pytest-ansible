@@ -24,9 +24,14 @@ except ImportError:
     HAS_ANSIBLE = False
 
 try:
-    from ansible.utils.collection_loader._collection_finder import (
-        _AnsibleCollectionFinder,
-    )
+    try:
+        from ansible.module_utils._internal._collection_loader._collection_finder import (
+            _AnsibleCollectionFinder,
+        )
+    except ImportError:
+        from ansible.utils.collection_loader._collection_finder import (
+            _AnsibleCollectionFinder,
+        )
 
     HAS_COLLECTION_FINDER = True
 except ImportError:
