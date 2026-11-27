@@ -14,12 +14,10 @@ addini
 addinivalue
 addoption
 addopts
-autouse
 capfd
 caplog
 conftest
 conftests
-delenv
 fixturedefs
 fixtureinfo
 fixturenames
